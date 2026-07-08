@@ -465,7 +465,7 @@ Obtém todos os exercícios
 
 ↓
 
-Traduz os campos necessários para português
+Traduz para português (mapa estático): categoria, equipamento e músculos
 
 ↓
 
