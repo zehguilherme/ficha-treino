@@ -508,31 +508,46 @@ Sincronização concluída
 
 # Tecnologias
 
-## Front-end
+## Compartilhados
 
-- Aplicação Next.js com App Router sem usar as rotas de API (https://nextjs.org/docs)
 - TypeScript
-- JWT
-  - O JWT terá duração de 24 horas. Após sua expiração, o usuário deverá realizar um novo login.
+- Zod — validação de dados no frontend e backend (https://zod.dev)
+- Variáveis de ambiente com dotenv + validação via Zod
 - ESLint
 - Prettier
+- Jest — testes unitários e de integração
+
+## Autenticação
+
+- JWT (gerado e validado pelo backend, armazenado no localStorage do frontend)
+- Validade: 24 horas, sem refresh token (https://jwt.io)
+- `@react-oauth/google` (frontend) — Google Sign-In
+- `google-auth-library` (backend) — validação do ID Token
+
+## Front-end
+
+- Next.js com App Router, sem usar rotas de API (https://nextjs.org/docs)
+- Gerenciamento de estado com `useState` e `useEffect`
 - Estilização
-  - Tailwind CSS (https://tailwindcss.com/docs/installation/using-vite)
-  - Componentes do ShadCN (https://ui.shadcn.com/docs/installation)
+  - Tailwind CSS (https://tailwindcss.com/docs/installation/framework-guides/nextjs)
+  - ShadCN (https://ui.shadcn.com/docs/installation)
+- TypeScript (compartilhado)
+- Zod (compartilhado)
+- Jest (compartilhado)
 
 ## Back-end
 
-- API
-  - Node.js com Express (https://expressjs.com/en/5x/starter/installing/)
-- API de exercícios
-  - https://oss.exercisedb.dev/docs
-- Arquitetura MVC para separação de responsabilidades
-  - Model
-  - View (a view será o próprio front-end em Next.js)
-  - Controller
-- Banco de dados relacional
-  - PostgreSQL
-  - Não vai ser usado ORM junto do banco de dados
-- Docker com Docker Compose para subir os containers do banco e API (https://docs.docker.com/manuals/)
+- Node.js com Express (https://expressjs.com/en/starter/installing.html)
+- API de exercícios: ExerciseDB OSS (https://oss.exercisedb.dev/docs)
+- SQL puro (raw SQL) com `pg` (node-postgres)
+- `node-cron` — agendador da sincronização diária às 03:00 UTC
+- Docker + Docker Compose para subir os containers do banco e API (https://docs.docker.com/manuals/)
+
+## Arquitetura
+
+- API REST com frontend separado (inspirada em MVC)
+  - Model: banco de dados + raw SQL
+  - View: front-end Next.js
+  - Controller: rotas Express
 
 # Estrutura esperada do projeto
