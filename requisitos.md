@@ -306,13 +306,13 @@ O frontend nunca realizará requisições diretamente para a ExerciseDB OSS.
 
 ## Sincronização
 
-A sincronização dos exercícios será executada automaticamente todos os dias às 03:00 (horário do servidor) pelo backend.
+A sincronização dos exercícios será executada automaticamente todos os dias às 03:00 UTC pelo backend.
 
 Durante a sincronização, o backend deverá:
 
 1. Consultar a ExerciseDB OSS.
 2. Obter todos os exercícios disponíveis.
-3. Traduzir para português os campos utilizados pela aplicação.
+3. Traduzir para português (via mapa estático) os campos de vocabulário controlado: categoria, equipamento e músculos.
 4. Criar os exercícios que ainda não existirem no banco de dados.
 5. Atualizar os dados dos exercícios já existentes utilizando o `api_exercise_id` como identificador único.
 
@@ -392,6 +392,8 @@ Os seguintes campos da ExerciseDB OSS serão persistidos no banco de dados:
 ## Remoção
 
 Caso um exercício deixe de existir na ExerciseDB OSS, ele permanecerá no banco de dados da aplicação enquanto existir associado a pelo menos um treino.
+
+Caso um exercício perca sua última associação, ele se tornará órfão e poderá ser removido em um job de limpeza posterior, sem impacto para os usuários.
 
 # Fluxos de autenticação
 
