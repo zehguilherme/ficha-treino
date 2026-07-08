@@ -442,6 +442,10 @@ Frontend armazena o token (Local Storage)
 Usuário autenticado
 ```
 
+**Biblioteca de autenticação:** Google Sign-In manual com `@react-oauth/google` (frontend) e `google-auth-library` (backend).
+
+**Sessão:** sem refresh token. O JWT expira em 24h e o usuário deve refazer o login. Durante uma sessão ativa, o frontend verifica a expiração do token e redireciona para a tela de login quando necessário.
+
 # Fluxo de sincronização dos exercícios
 
 ```
