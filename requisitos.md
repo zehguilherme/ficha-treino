@@ -180,6 +180,10 @@ Cada exercício deverá apresentar:
 - nome;
 - GIF de execução;
 - categoria;
+- equipamento;
+- músculo principal;
+- músculos secundários;
+- instruções;
 - checkbox **Feito**.
 
 ### Marcação
@@ -211,7 +215,8 @@ A persistência tem como objetivo:
 Durante a sincronização dos exercícios com a ExerciseDB OSS:
 
 - os dados originais da API serão obtidos;
-- os campos textuais necessários serão traduzidos para português;
+- os campos de vocabulário controlado (categoria, equipamento, músculos) serão traduzidos usando mapa estático no código;
+- os campos de nome e instruções serão mantidos em inglês;
 - o exercício será persistido ou atualizado no banco de dados.
 
 # Regras de negócio
@@ -274,7 +279,9 @@ categoria_original
 equipamento
 equipamento_original
 musculo_principal
+musculo_principal_original
 musculos_secundarios
+musculos_secundarios_original
 instrucoes
 gif_url
 created_at
@@ -414,11 +421,29 @@ Caso uma sincronização falhe:
 
 A ExerciseDB OSS fornece todas as informações dos exercícios em inglês.
 
-Durante a sincronização, o backend será responsável por traduzir para português todos os campos utilizados pela aplicação.
+A tradução será feita por **mapa estático no código** (dicionário), sem o uso de APIs externas de tradução.
 
-As traduções serão armazenadas permanentemente no banco de dados.
+### Campos traduzidos por mapa estático
 
-A aplicação nunca realizará traduções em tempo de execução.
+Os campos de vocabulário controlado (conjunto finito de termos) serão mapeados no código:
+
+- `categoria` (bodyPart)
+- `equipamento`
+- `músculo principal` (target)
+- `músculos secundários`
+
+### Campos mantidos em inglês
+
+Os campos abaixo serão armazenados e exibidos no idioma original da API:
+
+- `nome`
+- `instruções`
+
+### Regras
+
+- A tradução ocorre apenas durante a sincronização, nunca em tempo de execução.
+- Os valores traduzidos são armazenados permanentemente no banco de dados.
+- Se um termo novo (não mapeado) aparecer em uma sincronização futura, ele será armazenado em inglês e registrado em log para atualização manual do mapa.
 
 Os seguintes campos da ExerciseDB OSS serão persistidos no banco de dados:
 
@@ -426,9 +451,13 @@ Os seguintes campos da ExerciseDB OSS serão persistidos no banco de dados:
 - nome
 - gif_url
 - categoria (bodyPart)
+- categoria_original
 - equipamento
+- equipamento_original
 - músculo principal
+- músculo_principal_original
 - músculos secundários
+- músculos_secundarios_original
 - instruções
 
 ## Remoção
