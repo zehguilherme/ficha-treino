@@ -497,7 +497,6 @@ Sincronização concluída
 - Comunicação entre frontend e backend utilizando HTTPS.
 - API REST com troca de dados em JSON.
 - Código-fonte escrito em TypeScript.
-- Utilização do fuso horário do navegador do usuário para exibição de datas e horários, quando aplicável.
 - Todas as rotas de gerenciamento de treinos e exercícios exigem autenticação.
 - A aplicação deve tratar falhas da API externa sem comprometer o funcionamento dos treinos já cadastrados.
 - Os dados persistidos devem manter integridade referencial no banco de dados.
