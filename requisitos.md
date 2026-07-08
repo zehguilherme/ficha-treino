@@ -241,11 +241,10 @@ Durante a sincronização dos exercícios com a ExerciseDB OSS:
 - Criação dos treinos
   - Após o primeiro login, o sistema criará automaticamente sete treinos, um para cada dia da semana, inicialmente sem exercícios. O usuário poderá adicionar exercícios a qualquer treino quando desejar.
 - Caso um exercício já exista na tabela Exercício, ele não deverá ser criado novamente.
-- Seus dados deverão ser atualizados com as informações mais recentes da API antes de associá-lo ao treino.
 - O frontend nunca deverá consumir diretamente a ExerciseDB.
 - Todas as pesquisas de exercícios deverão consultar apenas o banco de dados da aplicação.
 - A sincronização da ExerciseDB é responsabilidade exclusiva do backend.
-- Durante a sincronização, os dados dos exercícios deverão ser traduzidos para português antes de serem persistidos.
+- Durante a sincronização, os campos de vocabulário controlado (categoria, equipamento, músculos) deverão ser traduzidos para português usando mapa estático; os campos de nome e instruções permanecem em inglês.
 - Durante a sincronização, o sistema deverá criar novos exercícios e atualizar os já existentes utilizando o campo `api_exercise_id` como identificador único.
 
 # Modelo conceitual
