@@ -33,7 +33,7 @@ O sistema **não** terá funcionalidades sociais, compartilhamento de treinos ou
 - Visualizar todos os treinos.
 - Editar um treino
   - Um treino é editado exclusivamente através da adição ou remoção de exercícios.
-- Remover todos os exercícios do treino
+- Remover exercícios do treino (individualmente)
 - Limpar todas as marcações de um treino.
 
 ## Exercícios
@@ -132,11 +132,9 @@ Não será permitido:
 
 - alterar a ordem dos exercícios.
 
-### Remover todos os exercícios do treino
+### Remover exercícios do treino
 
-Será possível:
-
-- remover um exercício específico;
+A remoção é individual — o usuário remove exercícios específicos, um por vez.
 
 O treino nunca é excluído.
 
@@ -434,8 +432,6 @@ Os seguintes campos da ExerciseDB OSS serão persistidos no banco de dados:
 - instruções
 
 ## Remoção
-
-Caso um exercício deixe de estar associado a qualquer treino, ele deverá ser removido automaticamente do banco de dados imediatamente após sua última associação ser removida.
 
 Caso um exercício deixe de existir na ExerciseDB OSS, ele permanecerá no banco de dados da aplicação enquanto existir associado a pelo menos um treino.
 
