@@ -86,7 +86,7 @@ Ao excluir a conta deverão ser removidos permanentemente:
 
 - usuário;
 - todos os treinos;
-- todos os exercícios pertencentes aos treinos.
+- todas as associações de exercícios aos treinos.
 
 A exclusão da conta é permanente e irreversível.
 
@@ -497,7 +497,7 @@ Sincronização concluída
 - Comunicação entre frontend e backend utilizando HTTPS.
 - API REST com troca de dados em JSON.
 - Código-fonte escrito em TypeScript.
-- Todas as rotas de gerenciamento de treinos e exercícios exigem autenticação.
+- Todas as rotas de gerenciamento de treinos e exercícios exigem autenticação, exceto rotas de autenticação e sincronização.
 - A aplicação deve tratar falhas da API externa sem comprometer o funcionamento dos treinos já cadastrados.
 - Os dados persistidos devem manter integridade referencial no banco de dados.
 - O sistema deve registrar logs de erros da API para facilitar diagnóstico.
