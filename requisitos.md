@@ -1,10 +1,12 @@
 # Sistema de Controle de Treinos de Academia
 
+Aplicação web para gerenciamento de treinos de academia. Stack: Next.js + Express + PostgreSQL + Docker + TypeScript. Autenticação Google OAuth 2.0, dados de exercícios em PT-BR importados via seed, imagens JPG via CDN, sem dependência de API externa.
+
 # Objetivo do sistema
 
 Desenvolver uma aplicação web para que usuários possam gerenciar seus treinos de academia de forma simples, acessando-os pelo navegador em computadores e dispositivos móveis.
 
-O sistema permitirá que cada usuário monte seus treinos semanais utilizando exercícios sincronizados da API pública ExerciseDB OSS e armazenados no banco de dados da aplicação.
+O sistema terá como base um conjunto de exercícios em português brasileiro importado do dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr), armazenado no banco de dados da aplicação.
 
 # Escopo
 
@@ -13,36 +15,10 @@ O sistema deverá permitir:
 - Autenticação utilizando uma conta Google;
 - Gerenciamento dos treinos semanais do usuário;
 - Pesquisa de exercícios disponíveis no banco de dados da aplicação;
-- Sincronização automática diária dos exercícios da API pública ExerciseDB OSS para o banco de dados da aplicação.
 - Armazenamento no banco de dados das informações dos exercícios utilizados;
 - Marcação manual dos exercícios concluídos.
 
 O sistema **não** terá funcionalidades sociais, compartilhamento de treinos ou criação manual de exercícios.
-
-# Casos de uso
-
-## Autenticação
-
-- Fazer login com Google.
-- Fazer logout.
-- Criar automaticamente um usuário no primeiro login.
-- Excluir permanentemente a conta do usuário.
-
-## Treinos
-
-- Visualizar todos os treinos.
-- Editar um treino
-  - Um treino é editado exclusivamente através da adição ou remoção de exercícios.
-- Remover exercícios do treino (individualmente)
-- Limpar todas as marcações de um treino.
-
-## Exercícios
-
-- Pesquisar exercícios.
-- Adicionar exercícios ao treino.
-- Remover exercícios do treino.
-- Marcar um exercício como realizado.
-- Desmarcar um exercício.
 
 # Funcionalidades
 
@@ -161,29 +137,28 @@ Essa ação **não deverá** remover exercícios.
 
 ## Exercícios
 
-Os exercícios terão como fonte de dados a API pública ExerciseDB OSS.
+Os exercícios têm como fonte o dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr), traduzido para português brasileiro.
 
-Após serem sincronizados pelo backend, os exercícios serão armazenados no banco de dados da aplicação.
+Os dados são importados para o banco de dados da aplicação uma única vez, durante o setup inicial (seed).
 
-As pesquisas realizadas pelos usuários consultarão exclusivamente o banco de dados da aplicação.
+Não há sincronização periódica com API externa.
 
 ### Pesquisa
 
 - A busca dos exercícios ocorrerá enquanto o usuário digita (debounce).
 - A pesquisa será realizada no banco de dados da aplicação.
-- O backend será responsável por consultar apenas os exercícios previamente sincronizados.
 
 ### Informações exibidas
 
 Cada exercício deverá apresentar:
 
-- nome;
-- GIF de execução;
+- nome (em português);
+- imagem JPG de execução;
 - categoria;
 - equipamento;
 - músculo principal;
 - músculos secundários;
-- instruções;
+- instruções (em português);
 - checkbox **Feito**.
 
 ### Marcação
@@ -199,25 +174,17 @@ O estado permanecerá salvo até que:
 
 ### Categorias
 
-A API define os nomes das categorias existentes para cada exercício
+O dataset define os valores de categoria, equipamento e músculos já em português brasileiro.
 
-### Persistência
+### Imagens
 
-Os exercícios obtidos na ExerciseDB serão persistidos no banco de dados da aplicação.
+As imagens de execução são servidas via CDN do repositório [free-exercise-db](https://github.com/yuhonas/free-exercise-db) no formato JPG.
 
-A persistência tem como objetivo:
+Cada exercício possui duas imagens (0.jpg e 1.jpg), acessíveis pela URL:
 
-- reduzir dependência da API externa;
-- manter os treinos funcionais mesmo sem acesso à API;
-- permitir tradução dos dados para português;
-- reduzir requisições repetidas para a API.
-
-Durante a sincronização dos exercícios com a ExerciseDB OSS:
-
-- os dados originais da API serão obtidos;
-- os campos de vocabulário controlado (categoria, equipamento, músculos) serão traduzidos usando mapa estático no código;
-- os campos de nome e instruções serão mantidos em inglês;
-- o exercício será persistido ou atualizado no banco de dados.
+```
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{exercise_id}/{indice}.jpg
+```
 
 # Regras de negócio
 
@@ -240,12 +207,9 @@ Durante a sincronização dos exercícios com a ExerciseDB OSS:
 - A marcação dos exercícios é persistida até alteração manual ou limpeza do treino.
 - Criação dos treinos
   - Após o primeiro login, o sistema criará automaticamente sete treinos, um para cada dia da semana, inicialmente sem exercícios. O usuário poderá adicionar exercícios a qualquer treino quando desejar.
-- Caso um exercício já exista na tabela Exercício, ele não deverá ser criado novamente.
-- O frontend nunca deverá consumir diretamente a ExerciseDB.
+- Os dados dos exercícios são importados uma única vez via script de seed, utilizando `exercise_id` como identificador único.
+- O frontend nunca deverá consumir API externa de exercícios.
 - Todas as pesquisas de exercícios deverão consultar apenas o banco de dados da aplicação.
-- A sincronização da ExerciseDB é responsabilidade exclusiva do backend.
-- Durante a sincronização, os campos de vocabulário controlado (categoria, equipamento, músculos) deverão ser traduzidos para português usando mapa estático; os campos de nome e instruções permanecem em inglês.
-- Durante a sincronização, o sistema deverá criar novos exercícios e atualizar os já existentes utilizando o campo `api_exercise_id` como identificador único.
 
 # Modelo conceitual
 
@@ -270,19 +234,14 @@ updated_at
 Exercício
 ──────────────
 id
-api_exercise_id
-nome
-nome_original
-categoria
-categoria_original
-equipamento
-equipamento_original
-musculo_principal
-musculo_principal_original
-musculos_secundarios
-musculos_secundarios_original
-instrucoes
-gif_url
+exercise_id        (slug único, ex: "3_4_Sit-Up")
+nome               (em português)
+categoria          (em português)
+equipamento        (em português)
+musculo_principal  (em português)
+musculos_secundarios (em português, text[])
+instrucoes         (em português, text[])
+imagem_url         (ex: "3_4_Sit-Up/0.jpg")
 created_at
 updated_at
 
@@ -296,200 +255,38 @@ created_at
 updated_at
 ```
 
-# API externa de exercícios
+# Fonte de dados de exercícios
 
-A aplicação utilizará a API pública ExerciseDB OSS como fonte oficial dos exercícios.
+O sistema utiliza o dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr) como fonte dos exercícios.
 
-A API será utilizada exclusivamente pelo backend.
+Trata-se de um arquivo JSON com mais de 800 exercícios já traduzidos para o português brasileiro, baseado no repositório [free-exercise-db](https://github.com/yuhonas/free-exercise-db).
 
-O frontend nunca realizará requisições diretamente para a ExerciseDB OSS.
+## Seed
 
-## Sincronização
+A importação dos dados ocorre uma única vez através de um script de seed executado durante o setup inicial da aplicação.
 
-A sincronização dos exercícios será executada automaticamente todos os dias às 03:00 UTC pelo backend.
+O script de seed faz download do JSON do GitHub, faz upsert dos exercícios usando `exercise_id` como chave, e constrói o campo `imagem_url`. Exercícios que deixaram de existir no dataset são removidos apenas se não estiverem associados a nenhum treino.
 
-Durante a sincronização, o backend deverá:
+### Imagens
 
-1. Consultar a ExerciseDB OSS.
-2. Obter todos os exercícios disponíveis.
-3. Traduzir para português (via mapa estático) os campos de vocabulário controlado: categoria, equipamento e músculos.
-4. Criar os exercícios que ainda não existirem no banco de dados.
-5. Atualizar os dados dos exercícios já existentes utilizando o `api_exercise_id` como identificador único.
+Servidas via CDN (jsDelivr):
 
-Após a sincronização, todas as pesquisas de exercícios realizadas pelos usuários consultarão exclusivamente o banco de dados da aplicação.
+```
+https://cdn.jsdelivr.net/gh/yohonas/free-exercise-db@main/exercises/{exercise_id}/0.jpg
+https://cdn.jsdelivr.net/gh/yohonas/free-exercise-db@main/exercises/{exercise_id}/1.jpg
+```
 
-A sincronização é incremental.
-
-Para cada exercício retornado pela ExerciseDB:
-
-- se não existir, deverá ser criado;
-- se existir, deverá ser atualizado.
-
-A sincronização nunca deverá remover exercícios da tabela Exercício.
-
-### Logs da sincronização
-
-Cada sincronização deverá registrar:
-
-- data e hora de início;
-- data e hora de término;
-- duração;
-- quantidade de exercícios criados;
-- quantidade de exercícios atualizados;
-- quantidade de falhas.
-
-### Falha na sincronização
-
-Caso uma sincronização falhe:
-
-- os exercícios já existentes no banco de dados deverão permanecer disponíveis;
-- a falha deverá ser registrada em log;
-- a próxima sincronização deverá ocorrer normalmente no horário agendado.
-
-## Tradução
-
-A ExerciseDB OSS fornece todas as informações dos exercícios em inglês.
-
-A tradução será feita por **mapa estático no código** (dicionário), sem o uso de APIs externas de tradução.
-
-### Campos traduzidos por mapa estático
-
-Os campos de vocabulário controlado (conjunto finito de termos) serão mapeados no código:
-
-- `categoria` (bodyPart)
-- `equipamento`
-- `músculo principal` (target)
-- `músculos secundários`
-
-### Campos mantidos em inglês
-
-Os campos abaixo serão armazenados e exibidos no idioma original da API:
-
-- `nome`
-- `instruções`
-
-### Regras
-
-- A tradução ocorre apenas durante a sincronização, nunca em tempo de execução.
-- Os valores traduzidos são armazenados permanentemente no banco de dados.
-- Se um termo novo (não mapeado) aparecer em uma sincronização futura, ele será armazenado em inglês e registrado em log para atualização manual do mapa.
-
-Os seguintes campos da ExerciseDB OSS serão persistidos no banco de dados:
-
-- api_exercise_id
-- nome
-- gif_url
-- categoria (bodyPart)
-- categoria_original
-- equipamento
-- equipamento_original
-- músculo principal
-- músculo_principal_original
-- músculos secundários
-- músculos_secundarios_original
-- instruções
-
-## Remoção
-
-Caso um exercício deixe de existir na ExerciseDB OSS, ele permanecerá no banco de dados da aplicação enquanto existir associado a pelo menos um treino.
-
-Caso um exercício perca sua última associação, ele se tornará órfão e poderá ser removido em um job de limpeza posterior, sem impacto para os usuários.
+Cada exercício possui duas imagens no formato JPG.
 
 # Fluxos de autenticação
 
-```
-Usuário
+1. Usuário clica "Entrar com Google" → Google OAuth 2.0 + OpenID Connect
+2. Frontend recebe o ID Token e envia para a API
+3. API valida o token, procura usuário pelo `google_id`
+4. Se existe → gera JWT. Se não → cria usuário → gera JWT
+5. Frontend armazena o JWT no localStorage
 
-↓
-
-Clique em "Entrar com Google"
-
-↓
-
-Google OAuth 2.0 + OpenID Connect
-
-↓
-
-Frontend recebe o ID Token
-
-↓
-
-Frontend envia o token para a API
-
-↓
-
-API valida o token
-
-↓
-
-Procura usuário pelo google_id
-
-↓
-
-Existe?
-
-├── Sim → gera sessão/JWT
-└── Não → cria usuário → gera sessão/JWT
-
-O JWT terá duração de 24 horas. Após sua expiração, o usuário deverá realizar um novo login.
-
-↓
-
-Frontend armazena o token (Local Storage)
-
-↓
-
-Usuário autenticado
-```
-
-**Biblioteca de autenticação:** Google Sign-In manual com `@react-oauth/google` (frontend) e `google-auth-library` (backend).
-
-**Sessão:** sem refresh token. O JWT expira em 24h e o usuário deve refazer o login. Durante uma sessão ativa, o frontend verifica a expiração do token e redireciona para a tela de login quando necessário.
-
-# Fluxo de sincronização dos exercícios
-
-```
-Agendador diário
-
-↓
-
-Backend
-
-↓
-
-Consulta a ExerciseDB OSS
-
-↓
-
-Obtém todos os exercícios
-
-↓
-
-Traduz para português (mapa estático): categoria, equipamento e músculos
-
-↓
-
-Verifica se o exercício já existe pelo api_exercise_id
-
-↓
-
-Existe?
-
-├── Sim → Atualiza os dados
-└── Não → Cria o exercício
-
-↓
-
-Salva no banco de dados
-
-↓
-
-Registra os resultados da sincronização em log
-
-↓
-
-Sincronização concluída
-```
+O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o login. O frontend verifica a expiração e redireciona para o login quando necessário.
 
 # Requisitos não funcionais
 
@@ -497,14 +294,9 @@ Sincronização concluída
 - Comunicação entre frontend e backend utilizando HTTPS.
 - API REST com troca de dados em JSON.
 - Código-fonte escrito em TypeScript.
-- Todas as rotas de gerenciamento de treinos e exercícios exigem autenticação, exceto rotas de autenticação e sincronização.
-- A aplicação deve tratar falhas da API externa sem comprometer o funcionamento dos treinos já cadastrados.
+- Todas as rotas de gerenciamento de treinos e exercícios exigem autenticação, exceto rotas de autenticação.
 - Os dados persistidos devem manter integridade referencial no banco de dados.
-- O sistema deve registrar logs de erros da API para facilitar diagnóstico.
-- A sincronização diária deverá ser executada automaticamente pelo backend sem intervenção do usuário.
-- A sincronização deverá ser idempotente, permitindo múltiplas execuções sem criar exercícios duplicados.
-- A sincronização deverá registrar logs para auditoria e diagnóstico.
-- A sincronização deverá utilizar o campo `api_exercise_id` como identificador único dos exercícios.
+- O sistema não depende de API externa para funcionamento dos treinos.
 
 # Tecnologias
 
@@ -538,10 +330,8 @@ Sincronização concluída
 ## Back-end
 
 - Node.js com Express (https://expressjs.com/en/starter/installing.html)
-- API de exercícios: ExerciseDB OSS (https://oss.exercisedb.dev/docs)
 - SQL puro (raw SQL) com `pg` (node-postgres)
-- `node-cron` — agendador da sincronização diária às 03:00 UTC
-- Docker + Docker Compose para subir os containers do banco e API (https://docs.docker.com/manuals/)
+- Docker + Docker Compose para subir os containers do banco
 
 ## Arquitetura
 
