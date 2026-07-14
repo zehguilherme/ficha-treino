@@ -228,8 +228,6 @@ Workout
 id                   SERIAL (PK)
 user_id              INTEGER NOT NULL (FK → User.id)
 week_day             ENUM (DOMINGO, SEGUNDA, TERÇA, QUARTA, QUINTA, SEXTA, SABADO) NOT NULL
-created_at
-updated_at
 
 UNIQUE (user_id, week_day)
 
@@ -256,7 +254,6 @@ workout_id           INTEGER NOT NULL (FK → Workout.id)
 exercise_id          VARCHAR(50) NOT NULL (FK → Exercise.id)
 done                 BOOLEAN DEFAULT FALSE NOT NULL
 created_at
-updated_at
 
 UNIQUE (workout_id, exercise_id)
 ```
