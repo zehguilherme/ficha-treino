@@ -214,43 +214,45 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{exercise_id
 # Modelo conceitual
 
 ```
-Usuário
+User
 ──────────────
 id
 google_id
-nome
+name
 email
 created_at
 updated_at
 
-Treino
+Workout
 ──────────────
 id
-usuario_id
-dia_semana ENUM (DOMINGO, SEGUNDA, TERÇA, QUARTA, QUINTA, SEXTA, SABADO)
+user_id              (FK → User.id)
+week_day             ENUM (DOMINGO, SEGUNDA, TERÇA, QUARTA, QUINTA, SEXTA, SABADO)
 created_at
 updated_at
 
-Exercício
+Exercise
 ──────────────
-id
-exercise_id        (slug único, ex: "3_4_Sit-Up")
-nome               (em português)
-categoria          (em português)
-equipamento        (em português)
-musculo_principal  (em português)
-musculos_secundarios (em português, text[])
-instrucoes         (em português, text[])
-imagem_url         (ex: "3_4_Sit-Up/0.jpg")
+id                   (PK, VARCHAR — JSON exercise slug, ex: "3_4_Sit-Up")
+name                 VARCHAR(255) NOT NULL
+force                VARCHAR(10)
+level                VARCHAR(15) NOT NULL
+mechanic             VARCHAR(10)
+equipment            VARCHAR(50)
+primary_muscles      TEXT[] NOT NULL
+secondary_muscles    TEXT[]
+instructions         TEXT[] NOT NULL
+category             VARCHAR(20) NOT NULL
+images               TEXT[] NOT NULL
 created_at
 updated_at
 
-Treino_Exercício
+Workout_Exercise
 ────────────────────
 id
-treino_id
-exercicio_id
-concluido BOOLEAN DEFAULT FALSE NOT NULL
+workout_id           (FK → Workout.id)
+exercise_id          (FK → Exercise.id)
+done                 BOOLEAN DEFAULT FALSE NOT NULL
 created_at
 updated_at
 ```
@@ -265,7 +267,7 @@ Trata-se de um arquivo JSON com mais de 800 exercícios já traduzidos para o po
 
 A importação dos dados ocorre uma única vez através de um script de seed executado durante o setup inicial da aplicação.
 
-O script de seed faz download do JSON do GitHub, faz upsert dos exercícios usando `exercise_id` como chave, e constrói o campo `imagem_url`. Exercícios que deixaram de existir no dataset são removidos apenas se não estiverem associados a nenhum treino.
+O script de seed faz download do JSON do GitHub, faz upsert dos exercícios usando o campo `id` do JSON como PK, e armazena o array `images`. Exercícios que deixaram de existir no dataset são removidos apenas se não estiverem associados a nenhum treino.
 
 ### Imagens
 
