@@ -307,7 +307,7 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
 
 - TypeScript
 - Zod — validação de dados no frontend e backend (https://zod.dev)
-- Variáveis de ambiente com dotenv + validação via Zod
+- Variáveis de ambiente: dotenv no backend, Next.js com suporte nativo a `.env.local` no frontend + validação via Zod
 - ESLint
 - Prettier
 - Jest — testes unitários e de integração
