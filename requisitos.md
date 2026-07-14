@@ -233,10 +233,10 @@ updated_at
 
 Exercise
 ──────────────
-id                   (PK, VARCHAR — JSON exercise slug, ex: "3_4_Sit-Up")
+id                   VARCHAR(50) (PK)
 name                 VARCHAR(255) NOT NULL
 force                VARCHAR(10)
-level                VARCHAR(15) NOT NULL
+level                VARCHAR(20) NOT NULL
 mechanic             VARCHAR(10)
 equipment            VARCHAR(50)
 primary_muscles      TEXT[] NOT NULL

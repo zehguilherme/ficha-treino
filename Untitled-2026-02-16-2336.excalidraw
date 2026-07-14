@@ -226,27 +226,27 @@
       "index": "a3V",
       "roundness": null,
       "seed": 634785963,
-      "version": 1647,
-      "versionNonce": 1808695264,
+      "version": 1674,
+      "versionNonce": 1805144608,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1784037758788,
+      "updated": 1784047057914,
       "link": null,
       "locked": false,
-      "text": "Workout_Exercise\n\n- ID: AUTO_INCREMENT (PK)\n- WORKOUT_ID (FK)\n- EXERCISE_ID (FK)\n- DONE: BOOLEAN DEFAULT\nFALSE\n- CREATED_AT\n- UPDATED_AT\n\nUNIQUE (ID_WORKOUT,\nID_EXERCISE)",
+      "text": "Workout_Exercise\n\n- ID: AUTO_INCREMENT (PK)\n- WORKOUT_ID (FK)\n- EXERCISE_ID (FK)\n- DONE: BOOLEAN DEFAULT\nFALSE NOT NULL\n- CREATED_AT\n- UPDATED_AT\n\nUNIQUE (ID_WORKOUT,\nID_EXERCISE)",
       "fontSize": 28,
       "fontFamily": 6,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": "0kL-b6iGIp_tCQR5c2O0s",
-      "originalText": "Workout_Exercise\n\n- ID: AUTO_INCREMENT (PK)\n- WORKOUT_ID (FK)\n- EXERCISE_ID (FK)\n- DONE: BOOLEAN DEFAULT FALSE\n- CREATED_AT\n- UPDATED_AT\n\nUNIQUE (ID_WORKOUT, ID_EXERCISE)",
+      "originalText": "Workout_Exercise\n\n- ID: AUTO_INCREMENT (PK)\n- WORKOUT_ID (FK)\n- EXERCISE_ID (FK)\n- DONE: BOOLEAN DEFAULT FALSE NOT NULL\n- CREATED_AT\n- UPDATED_AT\n\nUNIQUE (ID_WORKOUT, ID_EXERCISE)",
       "autoResize": true,
       "lineHeight": 1.25
     },
     {
       "id": "twaWCx-rIQ5njnNzHaeD3",
       "type": "rectangle",
-      "x": -136.0612972767675,
+      "x": -134.95018616565642,
       "y": -5855.083681466072,
       "width": 679.9265286215467,
       "height": 605,
@@ -265,8 +265,8 @@
         "type": 3
       },
       "seed": 226424907,
-      "version": 2835,
-      "versionNonce": 1144682464,
+      "version": 2836,
+      "versionNonce": 567667232,
       "isDeleted": false,
       "boundElements": [
         {
@@ -282,14 +282,14 @@
           "type": "arrow"
         }
       ],
-      "updated": 1784037064808,
+      "updated": 1784047855040,
       "link": null,
       "locked": false
     },
     {
       "id": "7brBoFdUdZ9W049L1CXYQ",
       "type": "text",
-      "x": -131.0612972767675,
+      "x": -129.95018616565642,
       "y": -5815.083681466072,
       "width": 645.3436279296875,
       "height": 525,
@@ -306,20 +306,20 @@
       "index": "a5",
       "roundness": null,
       "seed": 1212401125,
-      "version": 2934,
-      "versionNonce": 1776319456,
+      "version": 2961,
+      "versionNonce": 1546113568,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1784037064808,
+      "updated": 1784047860830,
       "link": null,
       "locked": false,
-      "text": "Exercise\n\n- ID (PK)\n- NAME: VARCHAR (255) NOT NULL\n- FORCE: VARCHAR (10) NOT NULL\n- LEVEL: VARCHAR (10) NOT NULL\n- MECHANIC: VARCHAR (10) NOT NULL\n- EQUIPMENT: VARCHAR (30) NOT NULL\n- PRIMARY_MUSCLES: ARRAY STRING NOT NULL\n- SECONDARY_MUSCLES: ARRAY STRING\n- INSTRUCTIONS: ARRAY STRING NOT NULL\n- CATEGORY: VARCHAR (10) NOT NULL\n- IMAGES: ARRAY STRING NOT NULL\n- CREATED_AT\n- UPDATED_AT",
+      "text": "Exercise\n\n- ID: VARCHAR (50) (PK)\n- NAME: VARCHAR (255) NOT NULL\n- FORCE: VARCHAR (10)\n- LEVEL: VARCHAR (20) NOT NULL\n- MECHANIC: VARCHAR (10)\n- EQUIPMENT: VARCHAR (50)\n- PRIMARY_MUSCLES: ARRAY STRING NOT NULL\n- SECONDARY_MUSCLES: ARRAY STRING\n- INSTRUCTIONS: ARRAY STRING NOT NULL\n- CATEGORY: VARCHAR (20) NOT NULL\n- IMAGES: ARRAY STRING NOT NULL\n- CREATED_AT\n- UPDATED_AT",
       "fontSize": 28,
       "fontFamily": 6,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": "twaWCx-rIQ5njnNzHaeD3",
-      "originalText": "Exercise\n\n- ID (PK)\n- NAME: VARCHAR (255) NOT NULL\n- FORCE: VARCHAR (10) NOT NULL\n- LEVEL: VARCHAR (10) NOT NULL\n- MECHANIC: VARCHAR (10) NOT NULL\n- EQUIPMENT: VARCHAR (30) NOT NULL\n- PRIMARY_MUSCLES: ARRAY STRING NOT NULL\n- SECONDARY_MUSCLES: ARRAY STRING\n- INSTRUCTIONS: ARRAY STRING NOT NULL\n- CATEGORY: VARCHAR (10) NOT NULL\n- IMAGES: ARRAY STRING NOT NULL\n- CREATED_AT\n- UPDATED_AT",
+      "originalText": "Exercise\n\n- ID: VARCHAR (50) (PK)\n- NAME: VARCHAR (255) NOT NULL\n- FORCE: VARCHAR (10)\n- LEVEL: VARCHAR (20) NOT NULL\n- MECHANIC: VARCHAR (10)\n- EQUIPMENT: VARCHAR (50)\n- PRIMARY_MUSCLES: ARRAY STRING NOT NULL\n- SECONDARY_MUSCLES: ARRAY STRING\n- INSTRUCTIONS: ARRAY STRING NOT NULL\n- CATEGORY: VARCHAR (20) NOT NULL\n- IMAGES: ARRAY STRING NOT NULL\n- CREATED_AT\n- UPDATED_AT",
       "autoResize": true,
       "lineHeight": 1.25
     },
@@ -660,10 +660,10 @@
     {
       "id": "PpXAPqohA2IBaFCjukRK0",
       "type": "arrow",
-      "x": 169.28772767064376,
-      "y": -6001.617515155522,
-      "width": 33.2621133961338,
-      "height": 140.53383368944924,
+      "x": 169.3289422158242,
+      "y": -6001.622730641709,
+      "width": 34.28825647399765,
+      "height": 140.53904917563614,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -677,11 +677,11 @@
       "index": "aq",
       "roundness": null,
       "seed": 1500212843,
-      "version": 1332,
-      "versionNonce": 1948647392,
+      "version": 1333,
+      "versionNonce": 247063072,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1784037064808,
+      "updated": 1784047855040,
       "link": null,
       "locked": false,
       "points": [
@@ -690,8 +690,8 @@
           0
         ],
         [
-          33.2621133961338,
-          140.53383368944924
+          34.28825647399765,
+          140.53904917563614
         ]
       ],
       "startBinding": {
@@ -5978,10 +5978,10 @@
     {
       "id": "Q5WLVuqpk9xnpoAeX5_tJ",
       "type": "arrow",
-      "x": 860.0947022458648,
-      "y": -5629.4129775999045,
-      "width": 310.2294709010856,
-      "height": 75.43092079230246,
+      "x": 860.1464149720949,
+      "y": -5629.373603228323,
+      "width": 309.17007251620464,
+      "height": 75.38738922834182,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -5995,11 +5995,11 @@
       "index": "b0L",
       "roundness": null,
       "seed": 1394686313,
-      "version": 169,
-      "versionNonce": 642122793,
+      "version": 170,
+      "versionNonce": 2105056800,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1783984352883,
+      "updated": 1784047855040,
       "link": null,
       "locked": false,
       "points": [
@@ -6008,8 +6008,8 @@
           0
         ],
         [
-          -310.2294709010856,
-          75.43092079230246
+          -309.17007251620464,
+          75.38738922834182
         ]
       ],
       "startBinding": {
