@@ -216,20 +216,22 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{exercise_id
 ```
 User
 ──────────────
-id
-google_id
-name
-email
+id                   SERIAL (PK)
+google_id            VARCHAR(255) NOT NULL UNIQUE
+name                 VARCHAR(255) NOT NULL
+email                VARCHAR(255) NOT NULL
 created_at
 updated_at
 
 Workout
 ──────────────
-id
-user_id              (FK → User.id)
-week_day             ENUM (DOMINGO, SEGUNDA, TERÇA, QUARTA, QUINTA, SEXTA, SABADO)
+id                   SERIAL (PK)
+user_id              INTEGER NOT NULL (FK → User.id)
+week_day             ENUM (DOMINGO, SEGUNDA, TERÇA, QUARTA, QUINTA, SEXTA, SABADO) NOT NULL
 created_at
 updated_at
+
+UNIQUE (user_id, week_day)
 
 Exercise
 ──────────────
@@ -249,12 +251,14 @@ updated_at
 
 Workout_Exercise
 ────────────────────
-id
-workout_id           (FK → Workout.id)
-exercise_id          (FK → Exercise.id)
+id                   SERIAL (PK)
+workout_id           INTEGER NOT NULL (FK → Workout.id)
+exercise_id          VARCHAR(50) NOT NULL (FK → Exercise.id)
 done                 BOOLEAN DEFAULT FALSE NOT NULL
 created_at
 updated_at
+
+UNIQUE (workout_id, exercise_id)
 ```
 
 # Fonte de dados de exercícios
