@@ -6,7 +6,7 @@ Aplicação web para gerenciamento de treinos de academia. Stack: Next.js + Expr
 
 Desenvolver uma aplicação web para que usuários possam gerenciar seus treinos de academia de forma simples, acessando-os pelo navegador em computadores e dispositivos móveis.
 
-O sistema terá como base um conjunto de exercícios em português brasileiro importado do dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr), armazenado no banco de dados da aplicação.
+O sistema terá como base um conjunto de exercícios em português brasileiro importado do dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr) (arquivo [`exercises-ptbr-full-translation.json`](https://github.com/joao-gugel/exercicios-bd-ptbr/blob/main/exercises/exercises-ptbr-full-translation.json)), armazenado no banco de dados da aplicação.
 
 # Escopo
 
@@ -137,7 +137,7 @@ Essa ação **não deverá** remover exercícios.
 
 ## Exercícios
 
-Os exercícios têm como fonte o dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr), traduzido para português brasileiro.
+Os exercícios têm como fonte o dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr) (arquivo [`exercises-ptbr-full-translation.json`](https://github.com/joao-gugel/exercicios-bd-ptbr/blob/main/exercises/exercises-ptbr-full-translation.json)), traduzido para português brasileiro.
 
 Os dados são importados para o banco de dados da aplicação uma única vez, durante o setup inicial (seed).
 
@@ -260,7 +260,7 @@ UNIQUE (workout_id, exercise_id)
 
 # Fonte de dados de exercícios
 
-O sistema utiliza o dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr) como fonte dos exercícios.
+O sistema utiliza o dataset open source [exercicios-bd-ptbr](https://github.com/joao-gugel/exercicios-bd-ptbr) como fonte dos exercícios, mais especificamente o arquivo [`exercises-ptbr-full-translation.json`](https://raw.githubusercontent.com/joao-gugel/exercicios-bd-ptbr/main/exercises/exercises-ptbr-full-translation.json).
 
 Trata-se de um arquivo JSON com mais de 800 exercícios já traduzidos para o português brasileiro, baseado no repositório [free-exercise-db](https://github.com/yuhonas/free-exercise-db).
 
@@ -268,7 +268,7 @@ Trata-se de um arquivo JSON com mais de 800 exercícios já traduzidos para o po
 
 A importação dos dados ocorre uma única vez através de um script de seed executado durante o setup inicial da aplicação.
 
-O script de seed faz download do JSON do GitHub, faz upsert dos exercícios usando o campo `id` do JSON como PK, e armazena o array `images`. Exercícios que deixaram de existir no dataset são removidos apenas se não estiverem associados a nenhum treino.
+O script de seed faz download do arquivo [`exercises-ptbr-full-translation.json`](https://raw.githubusercontent.com/joao-gugel/exercicios-bd-ptbr/main/exercises/exercises-ptbr-full-translation.json) do GitHub, faz upsert dos exercícios usando o campo `id` do JSON como PK, e armazena o array `images`. Exercícios que deixaram de existir no dataset são removidos apenas se não estiverem associados a nenhum treino.
 
 ### Imagens
 
