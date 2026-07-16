@@ -214,7 +214,7 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{exercise_id
 # Modelo conceitual
 
 ```
-User
+Users
 ──────────────
 id                   SERIAL (PK)
 google_id            VARCHAR(255) NOT NULL UNIQUE
@@ -223,15 +223,15 @@ email                VARCHAR(255) NOT NULL
 created_at
 updated_at
 
-Workout
+Workouts
 ──────────────
 id                   SERIAL (PK)
-user_id              INTEGER NOT NULL (FK → User.id)
+user_id              INTEGER NOT NULL (FK → Users.id)
 week_day             ENUM (DOMINGO, SEGUNDA, TERÇA, QUARTA, QUINTA, SEXTA, SABADO) NOT NULL
 
 UNIQUE (user_id, week_day)
 
-Exercise
+Exercises
 ──────────────
 id                   VARCHAR(50) (PK)
 name                 VARCHAR(255) NOT NULL
@@ -247,11 +247,11 @@ images               TEXT[] NOT NULL
 created_at
 updated_at
 
-Workout_Exercise
+Workout_Exercises
 ────────────────────
 id                   SERIAL (PK)
-workout_id           INTEGER NOT NULL (FK → Workout.id)
-exercise_id          VARCHAR(50) NOT NULL (FK → Exercise.id)
+workout_id           INTEGER NOT NULL (FK → Workouts.id)
+exercise_id          VARCHAR(50) NOT NULL (FK → Exercises.id)
 done                 BOOLEAN DEFAULT FALSE NOT NULL
 created_at
 
