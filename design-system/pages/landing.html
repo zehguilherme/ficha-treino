@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha Treino — Seu treino organizado</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: 210 40% 98%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --primary: 222.2 47.4% 11.2%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 210 40% 96.1%;
+      --secondary-foreground: 222.2 47.4% 11.2%;
+      --muted: 210 40% 96.1%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96.1%;
+      --accent-foreground: 222.2 47.4% 11.2%;
+      --border: 214.3 31.8% 91.4%;
+      --ring: 222.2 84% 4.9%;
+      --radius: 0.5rem;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      min-height: 100vh;
+    }
+
+    .header {
+      background: hsl(var(--card));
+      border-bottom: 1px solid hsl(var(--border));
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .header-logo {
+      width: 1.75rem;
+      height: 1.75rem;
+      background: hsl(var(--foreground));
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-logo svg {
+      width: 0.875rem;
+      height: 0.875rem;
+      color: hsl(var(--background));
+    }
+
+    .header-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-login-header {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: hsl(var(--foreground));
+      background: none;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      padding: 0.375rem 0.75rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-login-header:hover {
+      background: hsl(var(--secondary));
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 3.5rem);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, hsl(var(--foreground) / 0.75) 0%, hsl(var(--foreground) / 0.45) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      text-align: center;
+      color: white;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: hsl(var(--background) / 0.8);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-headline {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-headline em {
+      font-style: normal;
+      color: hsl(var(--background));
+      text-decoration: underline;
+      text-decoration-color: hsl(var(--background) / 0.3);
+      text-underline-offset: 0.2em;
+      text-decoration-thickness: 2px;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.125rem);
+      line-height: 1.6;
+      color: hsl(var(--background) / 0.8);
+      max-width: 32rem;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: hsl(var(--foreground));
+      background: hsl(var(--background));
+      border: none;
+      border-radius: calc(var(--radius) + 0.125rem);
+      padding: 0.875rem 2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .hero-cta:hover {
+      background: hsl(var(--background) / 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px hsl(var(--foreground) / 0.2);
+    }
+
+    .hero-cta svg {
+      width: 1rem;
+      height: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .hero-cta:hover svg {
+      transform: translateX(3px);
+    }
+
+    .features {
+      padding: 5rem 1.5rem;
+      max-width: 64rem;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) + 0.125rem);
+      padding: 1.5rem;
+      text-align: center;
+      transition: border-color 0.15s;
+    }
+
+    .feature-card:hover {
+      border-color: hsl(var(--ring) / 0.1);
+    }
+
+    .feature-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      background: hsl(var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    .feature-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: hsl(var(--foreground));
+    }
+
+    .feature-title {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 0.375rem;
+    }
+
+    .feature-desc {
+      font-size: 0.8125rem;
+      color: hsl(var(--muted-foreground));
+      line-height: 1.5;
+    }
+
+    .footer {
+      border-top: 1px solid hsl(var(--border));
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+    }
+
+    @media (max-width: 640px) {
+      .hero-content { padding: 3rem 1.5rem; }
+      .features { padding: 3rem 1rem; }
+      .features-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 6.5 17.5 17.5" />
+          <path d="M17.5 6.5 6.5 17.5" />
+          <circle cx="12" cy="5" r="1" />
+          <circle cx="12" cy="19" r="1" />
+          <circle cx="5" cy="12" r="1" />
+          <circle cx="19" cy="12" r="1" />
+        </svg>
+      </div>
+      <span class="header-title">Ficha Treino</span>
+      <div class="header-right">
+        <button class="btn-login-header" onclick="window.location.href='login.html'" data-od-id="btn-entrar-header">Entrar</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" data-od-id="hero">
+    <img class="hero-bg" src="../assets/hero-gym.jpg" alt="Academia organizada" loading="eager">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Ficha Treino</p>
+      <h1 class="hero-headline">
+        Seu próximo shape<br><em>começa aqui</em>
+      </h1>
+      <p class="hero-subtitle">
+        Organize seus treinos, acompanhe cada exercício e evolua com consistência. 
+        O planejamento que separa quem sonha de quem conquista.
+      </p>
+      <button class="hero-cta" onclick="window.location.href='login.html'" data-od-id="btn-comecar-agora">
+        Começar agora
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="features" data-od-id="features">
+    <div class="features-grid">
+      <div class="feature-card" data-od-id="feature-card-plano">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Plano de treino</h3>
+        <p class="feature-desc">Monte sua ficha com exercícios organizados por dia da semana.</p>
+      </div>
+      <div class="feature-card" data-od-id="feature-card-evolucao">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Acompanhe sua evolução</h3>
+        <p class="feature-desc">Marque exercícios como feitos e veja seu progresso semanal.</p>
+      </div>
+      <div class="feature-card" data-od-id="feature-card-simplicidade">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Simplicidade</h3>
+        <p class="feature-desc">Interface limpa e direta. Foco no que importa: seu treino.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" data-od-id="footer">
+    Ficha Treino &mdash; Seu treino organizado
+  </footer>
+</body>
+</html>

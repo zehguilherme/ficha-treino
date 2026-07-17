@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Source Example — 404 Page</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="../colors_and_type.css"><style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;background:hsl(var(--background));color:hsl(var(--foreground));min-height:100vh;display:flex;align-items:center;justify-content:center}
+.snapshot-label{position:absolute;top:0;left:0;right:0;background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.5rem 1rem;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+.error-page{text-align:center;padding:2rem 1.5rem;max-width:28rem}
+.error-code{font-size:5rem;font-weight:800;letter-spacing:-0.04em;line-height:1;color:hsl(var(--foreground));margin-bottom:0.25rem}
+.error-code span{color:hsl(var(--muted-foreground)/0.3)}
+.error-title{font-size:1.125rem;font-weight:600;letter-spacing:-0.01em;margin-bottom:0.5rem}
+.error-desc{font-size:0.875rem;color:hsl(var(--muted-foreground));margin-bottom:1.5rem;line-height:1.6}
+.btn-home{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.8125rem;font-weight:500;letter-spacing:0.02em;color:hsl(var(--foreground));background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:var(--radius);padding:0.5rem 1rem;text-decoration:none;cursor:pointer}
+.btn-home:hover{background:hsl(var(--secondary))}
+.btn-home svg{width:1rem;height:1rem}
+</style></head><body>
+<div class="snapshot-label">source_examples/07-404-page.html — 404 page (404.html)</div>
+<div class="error-page">
+<div class="error-code">4<span>0</span>4</div>
+<h1 class="error-title">Página não encontrada</h1>
+<p class="error-desc">Parece que você tentou acessar um exercício ou página que não existe. Respira, volta e tenta de novo.</p>
+<a href="landing.html" class="btn-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Voltar para o início</a>
+</div>
+</body></html>

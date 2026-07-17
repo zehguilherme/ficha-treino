@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha Treino - Meus Treinos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: 210 40% 98%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --primary: 222.2 47.4% 11.2%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 210 40% 96.1%;
+      --secondary-foreground: 222.2 47.4% 11.2%;
+      --muted: 210 40% 96.1%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96.1%;
+      --accent-foreground: 222.2 47.4% 11.2%;
+      --border: 214.3 31.8% 91.4%;
+      --ring: 222.2 84% 4.9%;
+      --radius: 0.5rem;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      min-height: 100vh;
+    }
+
+    .header {
+      background: hsl(var(--card));
+      border-bottom: 1px solid hsl(var(--border));
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .header-logo {
+      width: 1.75rem;
+      height: 1.75rem;
+      background: hsl(var(--foreground));
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-logo svg {
+      width: 0.875rem;
+      height: 0.875rem;
+      color: hsl(var(--background));
+    }
+
+    .header-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .avatar {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background: hsl(var(--muted));
+      border: 1px solid hsl(var(--border));
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: hsl(var(--muted-foreground));
+      margin-bottom: 2rem;
+    }
+
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+      gap: 1rem;
+    }
+
+    .day-card {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) + 0.125rem);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .day-card:hover {
+      border-color: hsl(var(--ring) / 0.15);
+      box-shadow: 0 1px 3px hsl(var(--foreground) / 0.04);
+    }
+
+    .day-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .day-name {
+      font-size: 0.9375rem;
+      font-weight: 500;
+    }
+
+    .day-badge {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      background: hsl(var(--secondary));
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 500;
+    }
+
+    .day-card.empty .day-name {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .exercise-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .exercise-preview-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .exercise-preview-item .dot {
+      width: 0.375rem;
+      height: 0.375rem;
+      border-radius: 50%;
+      background: hsl(var(--muted-foreground));
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      font-size: 0.8125rem;
+      color: hsl(var(--muted-foreground));
+      font-style: italic;
+    }
+
+    .menu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 0.375rem);
+      right: 0;
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px hsl(var(--foreground) / 0.06);
+      min-width: 10rem;
+      padding: 0.25rem;
+      z-index: 100;
+    }
+
+    .menu-dropdown.open {
+      display: block;
+    }
+
+    .menu-item {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8125rem;
+      color: hsl(var(--foreground));
+      background: none;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.1s;
+    }
+
+    .menu-item:hover {
+      background: hsl(var(--muted));
+    }
+
+    .menu-item.danger {
+      color: hsl(var(--destructive));
+    }
+
+    .header-right {
+      position: relative;
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 1.5rem 1rem; }
+      .week-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="header-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6.5 6.5 17.5 17.5" />
+            <path d="M17.5 6.5 6.5 17.5" />
+            <circle cx="12" cy="5" r="1" />
+            <circle cx="12" cy="19" r="1" />
+            <circle cx="5" cy="12" r="1" />
+            <circle cx="19" cy="12" r="1" />
+          </svg>
+        </div>
+        <span class="header-title">Ficha Treino</span>
+      </div>
+      <div class="header-right">
+        <div class="avatar" onclick="toggleMenu()">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4" alt="Avatar">
+        </div>
+        <div class="menu-dropdown" id="userMenu">
+          <button class="menu-item" onclick="window.location.href='minha-conta.html'">Minha conta</button>
+          <button class="menu-item danger" onclick="window.location.href='login.html'">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">Meus Treinos</h1>
+    <p class="page-subtitle">Selecione um dia para gerenciar seus exercícios</p>
+
+    <div class="week-grid">
+      <div class="day-card" onclick="window.location.href='workout-day.html?day=domingo'" data-od-id="day-card-domingo">
+        <div class="day-card-header">
+          <span class="day-name">Domingo</span>
+          <span class="day-badge">0</span>
+        </div>
+        <div class="exercise-preview">
+          <span class="empty-state">Nenhum exercício</span>
+        </div>
+      </div>
+
+      <div class="day-card" onclick="window.location.href='workout-day.html?day=segunda'" data-od-id="day-card-segunda">
+        <div class="day-card-header">
+          <span class="day-name">Segunda-feira</span>
+          <span class="day-badge">4</span>
+        </div>
+        <div class="exercise-preview">
+          <div class="exercise-preview-item"><span class="dot"></span> Crucifixo inclinado</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Desenvolvimento com halteres</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Elevação lateral</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Supino reto com barra</div>
+        </div>
+      </div>
+
+      <div class="day-card" onclick="window.location.href='workout-day.html?day=terca'" data-od-id="day-card-terca">
+        <div class="day-card-header">
+          <span class="day-name">Terça-feira</span>
+          <span class="day-badge">3</span>
+        </div>
+        <div class="exercise-preview">
+          <div class="exercise-preview-item"><span class="dot"></span> Puxada frontal</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Remada curvada</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Rosca direta</div>
+        </div>
+      </div>
+
+      <div class="day-card" onclick="window.location.href='workout-day.html?day=quarta'" data-od-id="day-card-quarta">
+        <div class="day-card-header">
+          <span class="day-name">Quarta-feira</span>
+          <span class="day-badge">2</span>
+        </div>
+        <div class="exercise-preview">
+          <div class="exercise-preview-item"><span class="dot"></span> Agachamento livre</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Cadeira extensora</div>
+        </div>
+      </div>
+
+      <div class="day-card" onclick="window.location.href='workout-day.html?day=quinta'" data-od-id="day-card-quinta">
+        <div class="day-card-header">
+          <span class="day-name">Quinta-feira</span>
+          <span class="day-badge">0</span>
+        </div>
+        <div class="exercise-preview">
+          <span class="empty-state">Nenhum exercício</span>
+        </div>
+      </div>
+
+      <div class="day-card" onclick="window.location.href='workout-day.html?day=sexta'" data-od-id="day-card-sexta">
+        <div class="day-card-header">
+          <span class="day-name">Sexta-feira</span>
+          <span class="day-badge">3</span>
+        </div>
+        <div class="exercise-preview">
+          <div class="exercise-preview-item"><span class="dot"></span> Crucifixo reto</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Elevação lateral</div>
+          <div class="exercise-preview-item"><span class="dot"></span> Tríceps corda</div>
+        </div>
+      </div>
+
+      <div class="day-card" onclick="window.location.href='workout-day.html?day=sabado'" data-od-id="day-card-sabado">
+        <div class="day-card-header">
+          <span class="day-name">Sábado</span>
+          <span class="day-badge">1</span>
+        </div>
+        <div class="exercise-preview">
+          <div class="exercise-preview-item"><span class="dot"></span> Cadeira flexora</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('userMenu').classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.header-right')) {
+        document.getElementById('userMenu').classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>

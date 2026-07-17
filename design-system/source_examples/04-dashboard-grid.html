@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Source Example — Dashboard Grid</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="../colors_and_type.css"><style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;background:hsl(var(--background));color:hsl(var(--foreground));min-height:100vh}
+.snapshot-label{background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.5rem 1rem;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+.page{padding:1.5rem;max-width:64rem;margin:0 auto}
+.page-title{font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.25rem}
+.page-subtitle{font-size:0.875rem;color:hsl(var(--muted-foreground));margin-bottom:1.5rem}
+.header{background:hsl(var(--card));border-bottom:1px solid hsl(var(--border));position:sticky;top:0;z-index:50}
+.header-inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;height:3.5rem;display:flex;align-items:center;gap:0.75rem}
+.header-logo{width:1.75rem;height:1.75rem;background:hsl(var(--foreground));border-radius:0.375rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.header-logo svg{width:0.875rem;height:0.875rem;color:hsl(var(--background))}
+.header-title{font-size:1rem;font-weight:600;letter-spacing:-0.01em}
+.header-right{margin-left:auto}
+.week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:0.75rem}
+.day-card{background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:calc(var(--radius)+0.125rem);padding:1rem;cursor:pointer;transition:border-color 0.15s,box-shadow 0.15s}
+.day-card:hover{border-color:hsl(var(--ring)/0.12);box-shadow:0 1px 3px hsl(var(--foreground)/0.06)}
+.day-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem}
+.day-card-name{font-size:0.9375rem;font-weight:500}
+.day-card-count{font-size:0.75rem;color:hsl(var(--muted-foreground));background:hsl(var(--secondary));padding:0.125rem 0.5rem;border-radius:9999px;font-weight:500}
+.day-card-exercises{display:flex;flex-direction:column;gap:0.25rem}
+.day-card-exercise{font-size:0.8125rem;color:hsl(var(--muted-foreground))}
+</style></head><body>
+<div class="snapshot-label">source_examples/04-dashboard-grid.html — Dashboard (dashboard.html)</div>
+<header class="header"><div class="header-inner">
+<div class="header-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6.5 6.5 17.5 17.5"/><path d="M17.5 6.5 6.5 17.5"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></div>
+<span class="header-title">Ficha Treino</span>
+<div class="header-right"><span style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">Olá, Usuário</span></div>
+</div></header>
+<div class="page">
+<h1 class="page-title">Meus Treinos</h1>
+<p class="page-subtitle">Selecione o dia para ver os exercícios</p>
+<div class="week-grid">
+<div class="day-card"><div class="day-card-header"><span class="day-card-name">Segunda-feira</span><span class="day-card-count">4</span></div><div class="day-card-exercises"><span class="day-card-exercise">• Supino reto</span><span class="day-card-exercise">• Crucifixo</span><span class="day-card-exercise">• Desenvolvimento</span><span class="day-card-exercise">• Elevação lateral</span></div></div>
+<div class="day-card"><div class="day-card-header"><span class="day-card-name">Terça-feira</span><span class="day-card-count">3</span></div><div class="day-card-exercises"><span class="day-card-exercise">• Puxada frontal</span><span class="day-card-exercise">• Remada curvada</span><span class="day-card-exercise">• Rosca direta</span></div></div>
+<div class="day-card"><div class="day-card-header"><span class="day-card-name">Quarta-feira</span><span class="day-card-count">4</span></div><div class="day-card-exercises"><span class="day-card-exercise">• Agachamento</span><span class="day-card-exercise">• Cadeira extensora</span><span class="day-card-exercise">• Mesa flexora</span><span class="day-card-exercise">• Panturrilha</span></div></div>
+<div class="day-card"><div class="day-card-header"><span class="day-card-name">Quinta-feira</span><span class="day-card-count">3</span></div><div class="day-card-exercises"><span class="day-card-exercise">• Supino inclinado</span><span class="day-card-exercise">• Cross-over</span><span class="day-card-exercise">• Tríceps pulley</span></div></div>
+</div>
+</div>
+</body></html>
