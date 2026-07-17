@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DS — Typography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --background:210 40% 98%; --foreground:222.2 84% 4.9%; --card:0 0% 100%; --secondary:210 40% 96.1%; --muted-foreground:215.4 16.3% 46.9%; --border:214.3 31.8% 91.4%; --radius:0.5rem; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Inter,system-ui,sans-serif; background:hsl(var(--background)); color:hsl(var(--foreground)); padding:2rem; }
+h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; }
+.sub { font-size:0.875rem; color:hsl(var(--muted-foreground)); margin:0.25rem 0 2rem; }
+.specimen { padding:1rem 0; border-bottom:1px solid hsl(var(--border)); }
+.specimen:last-child { border-bottom:none; }
+.label { font-size:0.75rem; color:hsl(var(--muted-foreground)); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.25rem; }
+</style>
+</head><body>
+<h1>Typography Specimens</h1>
+<p class="sub">Inter — all weights</p>
+<div class="specimen"><div class="label">Hero (800 / clamp 2.25-3.75rem / -0.03em)</div><div style="font-size:clamp(2.25rem,5vw,3.75rem);font-weight:800;line-height:1.08;letter-spacing:-0.03em">Seu próximo shape começa aqui</div></div>
+<div class="specimen"><div class="label">Page Title (600 / 1.5rem / -0.02em)</div><div style="font-size:1.5rem;font-weight:600;letter-spacing:-0.02em">Meus Treinos</div></div>
+<div class="specimen"><div class="label">Header Title (600 / 1rem / -0.01em)</div><div style="font-size:1rem;font-weight:600;letter-spacing:-0.01em">Ficha Treino</div></div>
+<div class="specimen"><div class="label">Card Heading (600 / 0.9375rem)</div><div style="font-size:0.9375rem;font-weight:600">Supino reto com barra</div></div>
+<div class="specimen"><div class="label">Body (400 / 0.875rem / 1.6)</div><div style="font-size:0.875rem;line-height:1.6">Organize seus treinos, acompanhe cada exercício e evolua com consistência. O planejamento que separa quem sonha de quem conquista.</div></div>
+<div class="specimen"><div class="label">UI Button (500 / 0.8125rem / 0.02em / uppercase)</div><div style="font-size:0.8125rem;font-weight:500;letter-spacing:0.02em;text-transform:uppercase">Remover · Adicionar · Entrar</div></div>
+<div class="specimen"><div class="label">Tag (500 / 0.6875rem / 0.06em / uppercase)</div><div style="font-size:0.6875rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase">força · barra · halteres</div></div>
+<div class="specimen"><div class="label">404 Code (800 / 5rem / -0.04em)</div><div style="font-size:5rem;font-weight:800;line-height:1;letter-spacing:-0.04em">404</div></div>
+</body></html>

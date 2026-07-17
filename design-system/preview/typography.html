@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DS Preview — Typography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --background:210 40% 98%; --foreground:222.2 84% 4.9%; --card:0 0% 100%; --card-foreground:222.2 84% 4.9%; --primary:222.2 47.4% 11.2%; --primary-foreground:210 40% 98%; --secondary:210 40% 96.1%; --secondary-foreground:222.2 47.4% 11.2%; --muted:210 40% 96.1%; --muted-foreground:215.4 16.3% 46.9%; --accent:210 40% 96.1%; --accent-foreground:222.2 47.4% 11.2%; --destructive:0 84.2% 60.2%; --destructive-foreground:210 40% 98%; --border:214.3 31.8% 91.4%; --ring:222.2 84% 4.9%; --radius:0.5rem; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Inter, system-ui, sans-serif; background:hsl(var(--background)); color:hsl(var(--foreground)); padding:2rem; }
+h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.25rem; }
+.subtitle { font-size:0.875rem; color:hsl(var(--muted-foreground)); margin-bottom:2rem; }
+table { width:100%; border-collapse:collapse; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:calc(var(--radius) + 0.125rem); overflow:hidden; }
+th, td { text-align:left; padding:0.75rem 1rem; border-bottom:1px solid hsl(var(--border)); }
+th { font-size:0.75rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:hsl(var(--muted-foreground)); background:hsl(var(--secondary)); }
+td { font-size:0.875rem; }
+td:last-child { color:hsl(var(--muted-foreground)); font-family:monospace; font-size:0.75rem; }
+.demo-h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; }
+.demo-h2 { font-size:1rem; font-weight:600; letter-spacing:-0.01em; }
+.demo-h3 { font-size:0.9375rem; font-weight:600; }
+.demo-body { font-size:0.875rem; font-weight:400; line-height:1.6; }
+.demo-btn { font-size:0.8125rem; font-weight:500; letter-spacing:0.02em; text-transform:uppercase; }
+.demo-label { font-size:0.75rem; font-weight:400; letter-spacing:0.02em; }
+.demo-tag { font-size:0.6875rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; padding:0.125rem 0.5rem; background:hsl(var(--secondary)); border-radius:9999px; display:inline-block; }
+.demo-hero { font-size:clamp(2.25rem,5vw,3.75rem); font-weight:800; line-height:1.08; letter-spacing:-0.03em; }
+.demo-404 { font-size:5rem; font-weight:800; line-height:1; letter-spacing:-0.04em; }
+</style>
+</head><body>
+<h1>🔤 Typography Scale</h1>
+<p class="subtitle">Inter — single family for display + body</p>
+
+<table>
+  <thead><tr><th>Role</th><th>Sample</th><th>Specs</th></tr></thead>
+  <tbody>
+    <tr><td>Hero headline</td><td class="demo-hero">Seu próximo shape</td><td>clamp(2.25rem, 5vw, 3.75rem) / 800 / -0.03em</td></tr>
+    <tr><td>Page title</td><td class="demo-h1">Meus Treinos</td><td>1.5rem / 600 / -0.02em</td></tr>
+    <tr><td>Header title</td><td class="demo-h2">Ficha Treino</td><td>1rem / 600 / -0.01em</td></tr>
+    <tr><td>Card heading</td><td class="demo-h3">Supino reto com barra</td><td>0.9375rem / 600</td></tr>
+    <tr><td>Body</td><td class="demo-body">Organize seus treinos, acompanhe cada exercício e evolua com consistência.</td><td>0.875rem / 400 / 1.6</td></tr>
+    <tr><td>UI Button</td><td><span class="demo-btn">Remover</span></td><td>0.8125rem / 500 / 0.02em / uppercase</td></tr>
+    <tr><td>Label / caption</td><td><span class="demo-label">NOME</span></td><td>0.75rem / 400 / 0.02em</td></tr>
+    <tr><td>Tag / badge</td><td><span class="demo-tag">força</span></td><td>0.6875rem / 500 / 0.06em / uppercase</td></tr>
+    <tr><td>404 code</td><td class="demo-404">404</td><td>5rem / 800 / -0.04em</td></tr>
+    <tr><td>Eyebrow</td><td style="font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:hsl(var(--muted-foreground))">Ficha Treino</td><td>0.75rem / 500 / 0.08em / uppercase</td></tr>
+  </tbody>
+</table>
+
+<h2 style="font-size:0.9375rem;font-weight:600;margin-top:2rem;margin-bottom:0.75rem">Weights available</h2>
+<div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+  <div><span style="font-weight:400">Inter 400</span></div>
+  <div><span style="font-weight:500">Inter 500</span></div>
+  <div><span style="font-weight:600">Inter 600</span></div>
+  <div><span style="font-weight:700">Inter 700</span></div>
+  <div><span style="font-weight:800">Inter 800</span></div>
+</div>
+</body></html>
