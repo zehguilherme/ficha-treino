@@ -322,13 +322,17 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
 ## Front-end
 
 - Next.js com App Router, sem usar rotas de API (https://nextjs.org/docs)
-- Gerenciamento de estado com `useState` e `useEffect`
+- TanStack Query (`@tanstack/react-query`) — estado do servidor (cache, fetching, mutations)
+- Context API — estado global do cliente (sessão do usuário)
+- `useState` — exclusivamente para estado local de UI (inputs, modais)
 - Estilização
   - Tailwind CSS (https://tailwindcss.com/docs/installation/framework-guides/nextjs)
   - ShadCN (https://ui.shadcn.com/docs/installation)
 - TypeScript (compartilhado)
 - Zod (compartilhado)
 - Jest (compartilhado)
+- @tanstack/react-query
+- @tanstack/react-query-devtools (dev)
 
 ## Back-end
 
