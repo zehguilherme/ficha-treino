@@ -1,0 +1,196 @@
+{
+  "project_type": "fullstack",
+  "features": [
+    {
+      "id": "api-001",
+      "type": "api",
+      "area": "infra",
+      "title": "Docker Compose + PostgreSQL",
+      "behavior": "docker compose up -d sobe PostgreSQL, health check responde na API",
+      "verification": "docker compose up -d --wait && curl -sf http://localhost:3001/api/health",
+      "status": "in_progress",
+      "evidence": ""
+    },
+    {
+      "id": "api-002",
+      "type": "api",
+      "area": "seed",
+      "title": "Seed de exercícios",
+      "behavior": "Script baixa exercises-ptbr-full-translation.json e faz upsert no DB",
+      "verification": "curl -sf http://localhost:3001/api/exercises?limit=1 | jq '.total > 800'",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "api-003",
+      "type": "api",
+      "area": "auth",
+      "title": "Google OAuth → JWT",
+      "behavior": "POST /api/auth/google com ID token retorna JWT; GET /api/auth/me retorna usuário",
+      "verification": "curl -X POST http://localhost:3001/api/auth/google -H 'Content-Type: application/json' -d '{\"token\":\"...\"}'",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "api-004",
+      "type": "api",
+      "area": "auth",
+      "title": "Criação automática de treinos no signup",
+      "behavior": "Ao criar usuário, gerar 7 treinos (um por dia da semana) sem exercícios",
+      "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts | jq '.workouts | length == 7'",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "api-005",
+      "type": "api",
+      "area": "workouts",
+      "title": "CRUD de treinos e exercícios do treino",
+      "behavior": "GET /api/workouts/:weekDay retorna exercícios do dia; POST adiciona; DELETE remove",
+      "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts/SEGUNDA",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "api-006",
+      "type": "api",
+      "area": "exercises",
+      "title": "Busca de exercícios",
+      "behavior": "GET /api/exercises?q=supino retorna resultados filtrados por nome",
+      "verification": "curl -H 'Authorization: Bearer $JWT' 'http://localhost:3001/api/exercises?q=supino' | jq '.items | length > 0'",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "api-007",
+      "type": "api",
+      "area": "workouts",
+      "title": "Marcar/desmarcar exercício como concluído",
+      "behavior": "PATCH /api/workout-exercises/:id alterna done; POST /:weekDay/clear desmarca todos",
+      "verification": "curl -X PATCH -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workout-exercises/1",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "api-008",
+      "type": "api",
+      "area": "account",
+      "title": "Excluir conta (cascade)",
+      "behavior": "DELETE /api/account remove usuário + treinos + associações",
+      "verification": "curl -X DELETE -H 'Authorization: Bearer $JWT' http://localhost:3001/api/account",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "ui-001",
+      "type": "ui",
+      "area": "auth",
+      "category": "functional",
+      "description": "Tela de login com botão Google OAuth",
+      "steps": [
+        "Navegar para /login",
+        "Ver botão 'Entrar com Google'",
+        "Clicar inicia fluxo OAuth",
+        "Após sucesso, redirecionar para /dashboard"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-002",
+      "type": "ui",
+      "area": "workouts",
+      "category": "functional",
+      "description": "Dashboard com grid semanal de 7 treinos",
+      "steps": [
+        "Autenticar e navegar para /dashboard",
+        "Ver 7 cards (Domingo a Sábado)",
+        "Cada card exibe nome do dia e contagem de exercícios",
+        "Clicar em um card navega para /workout/[weekDay]"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-003",
+      "type": "ui",
+      "area": "workouts",
+      "category": "functional",
+      "description": "Workout day com lista de exercícios",
+      "steps": [
+        "Navegar para /workout/[weekDay]",
+        "Ver lista de exercícios em ordem alfabética",
+        "Cada exercício mostra nome, imagem, categoria, equipamento, músculos, instruções",
+        "Header com contador done/total"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-004",
+      "type": "ui",
+      "area": "exercises",
+      "category": "functional",
+      "description": "Busca de exercícios com debounce",
+      "steps": [
+        "Na página workout day, digitar no search input",
+        "Resultados aparecem com debounce",
+        "Clicar em um resultado adiciona ao treino",
+        "Campo de busca tem ícone de lupa"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-005",
+      "type": "ui",
+      "area": "exercises",
+      "category": "functional",
+      "description": "Checkbox de conclusão + carrossel de imagens",
+      "steps": [
+        "Cada exercício tem checkbox 'Feito'",
+        "Marcar persiste até desmarcar ou limpar treino",
+        "Carrossel navega entre 0.jpg e 1.jpg",
+        "Instruções expansíveis com chevron"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-006",
+      "type": "ui",
+      "area": "workouts",
+      "category": "functional",
+      "description": "Limpar treino (desmarcar todos)",
+      "steps": [
+        "Botão 'Limpar treino' na página do dia",
+        "Confirmar ação",
+        "Todos os checkboxes voltam a false",
+        "Contador vai a 0/total"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-007",
+      "type": "ui",
+      "area": "account",
+      "category": "functional",
+      "description": "Página Minha Conta",
+      "steps": [
+        "Navegar para /account",
+        "Ver nome e email do usuário",
+        "Botão 'Excluir conta' destacado em vermelho"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-008",
+      "type": "ui",
+      "area": "account",
+      "category": "functional",
+      "description": "Modal de confirmação de exclusão",
+      "steps": [
+        "Clicar 'Excluir conta'",
+        "Modal de confirmação aparece",
+        "Confirmar remove conta + redireciona para login",
+        "Cancelar fecha modal"
+      ],
+      "passes": false
+    }
+  ]
+}
