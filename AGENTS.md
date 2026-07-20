@@ -10,13 +10,25 @@
 - UI: Tailwind + ShadCN HSL tokens (`design-system/colors_and_type.css`)
 - Testes: Jest (planejado)
 
+## Módulos
+
+| Módulo        | Path             | Doc                              | Verify        |
+| ------------- | ---------------- | -------------------------------- | ------------- |
+| backend       | `backend/`       | `backend/backend.md`             | `init.sh`     |
+| frontend      | `frontend/`      | `frontend/frontend.md`           | `init.sh`     |
+| design-system | `design-system/` | `design-system/design-system.md` | previews HTML |
+
 ## Estado atual
 
 - `backend/` e `frontend/` estão vazios — implementação não começou
 - `specification.md` = RF, RNF, modelo conceitual, regras de negócio
 - `design-system/` = tokens ShadCN, componentes HTML/CSS, previews (`preview/`)
-- `docs/superpowers/specs/` = ADRs de arquitetura (ex: TanStack Query mapping, optimistic updates)
+- `docs/superpowers/specs/` = ADRs de arquitetura
 - Nenhum `.env`, `package.json`, `docker-compose.yml` ou `tsconfig.json` existe ainda
+
+## Feature ativa
+
+Feature atual: `api-001` (Docker Compose + PostgreSQL) — ver `feature_list.json` e `progress.md`
 
 ## Workflow
 
@@ -24,3 +36,5 @@
 - Backend é Express separado — **não** usar rotas de API do Next.js
 - Imagens: CDN jsDelivr (`https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/0.jpg`)
 - PT-BR em toda UI e dados de exercícios
+- Antes de editar um módulo, ler seu arquivo `<module>.md`
+- Feature concluída → marcar em `feature_list.json` e `progress.md`
