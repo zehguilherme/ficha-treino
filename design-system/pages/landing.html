@@ -208,9 +208,14 @@
     }
 
     .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 1.5rem;
+    }
+
+    .features-grid .feature-card {
+      flex: 1 1 14rem;
     }
 
     .feature-card {
@@ -266,7 +271,7 @@
     @media (max-width: 640px) {
       .hero-content { padding: 3rem 1.5rem; }
       .features { padding: 3rem 1rem; }
-      .features-grid { grid-template-columns: 1fr; }
+      .features-grid .feature-card { flex: 1 1 100%; max-width: calc(50% - 0.75rem); }
     }
   </style>
 </head>

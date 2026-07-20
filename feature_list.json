@@ -82,6 +82,21 @@
       "evidence": ""
     },
     {
+      "id": "ui-000",
+      "type": "ui",
+      "area": "landing",
+      "category": "functional",
+      "description": "Landing page pública com hero + features",
+      "steps": [
+        "Navegar para /",
+        "Ver header com logo + botão 'Entrar'",
+        "Ver hero section com headline, subtitle e CTA 'Começar agora'",
+        "Ver 3 feature cards (Plano de treino, Evolução, Simplicidade)",
+        "Clicar 'Entrar' ou 'Começar agora' navega para /login"
+      ],
+      "passes": false
+    },
+    {
       "id": "ui-001",
       "type": "ui",
       "area": "auth",
