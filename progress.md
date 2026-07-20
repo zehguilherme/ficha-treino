@@ -27,6 +27,7 @@ Criar `docker-compose.yml` com PostgreSQL, configurar conexão no backend, imple
 
 ## Histórico
 
-| Data       | Feature         | Status |
-| ---------- | --------------- | ------ |
-| 2026-07-20 | Harness modular | Criado |
+| Data       | Feature            | Status      |
+| ---------- | ------------------ | ----------- |
+| 2026-07-20 | Harness modular    | Criado      |
+| 2026-07-20 | Next.js scaffolding | Concluído  |
