@@ -2,17 +2,16 @@
 
 ## Última sessão
 
-2026-07-20: Criado harness modular inicial.
+2026-07-20: Inicializado Next.js 16 no frontend.
 
 ## O que foi feito
 
-- `AGENTS.md` reescrito como índice modular com tabela de módulos
-- `backend/backend.md` — doc do módulo backend
-- `frontend/frontend.md` — doc do módulo frontend
-- `feature_list.json` — 16 features mapeadas (8 api + 8 ui)
-- `init.sh` — script de verificação do harness
-- `progress.md` — tracking de progresso
-- `session-handoff.md` — este arquivo
+- `frontend/` scaffolded com Next.js 16 (App Router, Tailwind, TypeScript, ESLint)
+- Limpeza de boilerplate (SVGs, favicon, README, AGENTS.md, CLAUDE.md)
+- `src/app/page.tsx` — homepage com "Ficha de Treino"
+- `src/app/layout.tsx` — metadata e lang pt-BR
+- `src/app/globals.css` — só `@import "tailwindcss"`
+- Build verificado (`npm run build` passou sem erros)
 
 ## Feature ativa
 

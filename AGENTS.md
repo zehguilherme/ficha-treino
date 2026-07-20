@@ -20,7 +20,8 @@
 
 ## Estado atual
 
-- `backend/` e `frontend/` estão vazios — implementação não começou
+- `frontend/` inicializado com Next.js 16 (App Router, Tailwind, TypeScript, ESLint) — página inicial "Ficha de Treino"
+- `backend/` vazio — implementação não começou
 - `specification.md` = RF, RNF, modelo conceitual, regras de negócio
 - `design-system/` = tokens ShadCN, componentes HTML/CSS, previews (`preview/`)
 - `docs/superpowers/specs/` = ADRs de arquitetura
