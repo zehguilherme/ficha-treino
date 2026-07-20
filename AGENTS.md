@@ -21,11 +21,12 @@
 ## Estado atual
 
 - `frontend/` inicializado com Next.js 16 (App Router, Tailwind, TypeScript, ESLint) — página inicial "Ficha de Treino"
-- `backend/` vazio — implementação não começou
+- `backend/` vazio — infra pendente (`docker-compose.yml`, `package.json`, `tsconfig.json`)
 - `specification.md` = RF, RNF, modelo conceitual, regras de negócio
 - `design-system/` = tokens ShadCN, componentes HTML/CSS, previews (`preview/`)
 - `docs/superpowers/specs/` = ADRs de arquitetura
-- Nenhum `.env`, `package.json`, `docker-compose.yml` ou `tsconfig.json` existe ainda
+- `.github/dependabot.yml` configurado para npm
+- Nenhum `.env` ou `docker-compose.yml` existe ainda (backend infra será criado em `api-001`)
 
 ## Feature ativa
 
