@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.env*
+*.log
+.DS_Store
+coverage/
+build/
+dist/
+
+.playwright-mcp/
+snapshot.txt

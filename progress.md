@@ -8,7 +8,8 @@ Criar `docker-compose.yml` com PostgreSQL, configurar conexão no backend, imple
 
 ## Próximos passos
 
-1. api-001: Docker Compose + PostgreSQL
+1. ui-000: Landing page
+2. api-001: Docker Compose + PostgreSQL
 2. api-002: Seed de exercícios
 3. api-003: Google OAuth → JWT
 4. api-004: Criação automática de treinos no signup

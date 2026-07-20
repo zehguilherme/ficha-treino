@@ -8,6 +8,7 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 
 | Rota                 | Componente       | Descrição                          |
 | -------------------- | ---------------- | ---------------------------------- |
+| `/`                  | `HomePage`       | Landing page pública com hero + features |
 | `/login`             | `LoginPage`      | Login com Google OAuth             |
 | `/dashboard`         | `DashboardPage`  | Grid semanal com 7 cards de treino |
 | `/workout/[weekDay]` | `WorkoutDayPage` | Exercícios do dia + search         |
