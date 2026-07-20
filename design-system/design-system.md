@@ -125,6 +125,8 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Inner padding | 0 1.5rem |
 | Gap (ícone + título) | 0.75rem |
 
+**Header counter (workout day):** `.header-counter` pill badge on the right side, shows `[done] / [total]` exercises. Font `0.75rem`/500, color `--muted-foreground`, bg `--secondary`, padding `0.125rem 0.5rem`, border-radius `9999px`, `flex-shrink: 0`. Updates dynamically on checkbox toggle, add/remove exercise, and clear workout.
+
 ### 4.4 Formulários
 
 **Search input:**
