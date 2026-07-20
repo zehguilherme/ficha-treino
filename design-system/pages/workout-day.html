@@ -87,6 +87,17 @@
       flex: 1;
     }
 
+    .header-counter {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: hsl(var(--muted-foreground));
+      background: hsl(var(--secondary));
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
     .container {
       max-width: 56rem;
       margin: 0 auto;
@@ -602,6 +613,7 @@
         </svg>
       </button>
       <span class="header-title" id="pageDayName">Segunda-feira</span>
+      <span class="header-counter" id="headerCounter">0 / 0</span>
     </div>
   </header>
 
@@ -782,11 +794,19 @@
           </div>
         `;
       }).join('');
+      updateHeaderCounter();
       initCarousels();
+    }
+
+    function updateHeaderCounter() {
+      const total = currentIds.length;
+      const done = currentIds.filter(id => doneState[id]).length;
+      document.getElementById('headerCounter').textContent = `${done} / ${total}`;
     }
 
     function toggleDone(id) {
       doneState[id] = !doneState[id];
+      updateHeaderCounter();
     }
 
     function toggleInstructions(id) {
@@ -798,12 +818,14 @@
       currentIds = currentIds.filter(e => e !== id);
       delete doneState[id];
       renderExercises();
+      updateHeaderCounter();
     }
 
     function addExercise(id) {
       if (!currentIds.includes(id)) {
         currentIds.push(id);
         renderExercises();
+        updateHeaderCounter();
       }
       document.getElementById('searchInput').value = '';
       document.getElementById('searchResults').classList.add('hidden');

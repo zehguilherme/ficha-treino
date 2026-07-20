@@ -193,6 +193,7 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 - z-index: 50
 - Left: back button (icon 2rem) + title (flex gap 0.75rem)
 - Right: avatar with dropdown menu
+- **Workout header counter** (`header-counter`): right side, shows `[done] / [total]` exercises. Styled as pill badge (`--secondary` bg, `--muted-foreground` text, `0.75rem`/500, `9999px` radius, `0.125rem 0.5rem` padding). Updates on checkbox toggle, add/remove exercise, and clear workout.
 
 ### Dashboard grid
 - `grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr))`
