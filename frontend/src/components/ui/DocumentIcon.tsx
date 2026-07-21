@@ -2,7 +2,7 @@ type DocumentIconProps = {
   className?: string;
 };
 
-export const DocumentIcon = ({ className = "w-5 h-5" }: DocumentIconProps) => (
+export const DocumentIcon = ({ className = 'w-5 h-5' }: DocumentIconProps) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"

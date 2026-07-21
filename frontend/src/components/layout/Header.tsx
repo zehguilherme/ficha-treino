@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { DumbbellIcon } from "@/components/ui/DumbbellIcon";
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
+import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 
 export const Header = () => {
   return (
@@ -9,9 +9,7 @@ export const Header = () => {
         <div className="w-7 h-7 bg-foreground rounded-md flex items-center justify-center shrink-0">
           <DumbbellIcon />
         </div>
-        <span className="text-base font-semibold tracking-tight">
-          Ficha de Treino
-        </span>
+        <span className="text-base font-semibold tracking-tight">Ficha de Treino</span>
         <div className="ml-auto">
           <Button variant="outline" asChild>
             <Link href="/login">Entrar</Link>

@@ -2,7 +2,7 @@ type DumbbellIconProps = {
   className?: string;
 };
 
-export const DumbbellIcon = ({ className = "w-3.5 h-3.5 text-background" }: DumbbellIconProps) => (
+export const DumbbellIcon = ({ className = 'w-3.5 h-3.5 text-background' }: DumbbellIconProps) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"

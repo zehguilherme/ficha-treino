@@ -50,6 +50,7 @@ src/
 ## Verificação
 
 ```bash
+npm run lint && npm run format:check
 docker compose up -d
 npx tsx src/seed.ts
 curl http://localhost:3001/api/health
