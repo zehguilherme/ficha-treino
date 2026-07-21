@@ -41,3 +41,4 @@ Feature atual: `api-001` (Docker Compose + PostgreSQL) — ver `feature_list.jso
 - Antes de editar um módulo, ler seu arquivo `<module>.md`
 - Feature concluída → marcar em `feature_list.json` e `progress.md`
 - Funções JavaScript/TypeScript devem ser arrow functions (`const fn = () => {}`), exceto construtores de classe e `function*` generators
+- **Nunca** usar `export default`. Sempre usar `export` nomeado. Exceção: arquivos de rota do Next.js em `src/app/**/{page,layout,loading,error,not-found,template,default}.{ts,tsx}`
