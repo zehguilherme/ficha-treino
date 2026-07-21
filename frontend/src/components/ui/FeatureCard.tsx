@@ -11,9 +11,7 @@ export const FeatureCard = ({ title, description, icon }: FeatureCardProps) => {
         {icon}
       </div>
       <h3 className="text-[0.9375rem] font-semibold mb-1.5">{title}</h3>
-      <p className="text-[0.8125rem] text-muted-foreground leading-[1.5]">
-        {description}
-      </p>
+      <p className="text-[0.8125rem] text-muted-foreground leading-[1.5]">{description}</p>
     </div>
   );
 };

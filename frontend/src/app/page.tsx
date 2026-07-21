@@ -1,28 +1,28 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { Button } from "@/components/ui/Button";
-import { FeatureCard } from "@/components/ui/FeatureCard";
-import { DocumentIcon } from "@/components/ui/DocumentIcon";
-import { ChartIcon } from "@/components/ui/ChartIcon";
-import { ClockIcon } from "@/components/ui/ClockIcon";
-import { ArrowRightIcon } from "@/components/ui/ArrowRightIcon";
+import Image from 'next/image';
+import Link from 'next/link';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import { Button } from '@/components/ui/Button';
+import { FeatureCard } from '@/components/ui/FeatureCard';
+import { DocumentIcon } from '@/components/ui/DocumentIcon';
+import { ChartIcon } from '@/components/ui/ChartIcon';
+import { ClockIcon } from '@/components/ui/ClockIcon';
+import { ArrowRightIcon } from '@/components/ui/ArrowRightIcon';
 
 const features = [
   {
-    title: "Plano de treino",
-    desc: "Monte sua ficha com exercícios organizados por dia da semana.",
+    title: 'Plano de treino',
+    desc: 'Monte sua ficha com exercícios organizados por dia da semana.',
     icon: <DocumentIcon />,
   },
   {
-    title: "Acompanhe sua evolução",
-    desc: "Marque exercícios como feitos e veja seu progresso semanal.",
+    title: 'Acompanhe sua evolução',
+    desc: 'Marque exercícios como feitos e veja seu progresso semanal.',
     icon: <ChartIcon />,
   },
   {
-    title: "Simplicidade",
-    desc: "Interface limpa e direta. Foco no que importa: seu treino.",
+    title: 'Simplicidade',
+    desc: 'Interface limpa e direta. Foco no que importa: seu treino.',
     icon: <ClockIcon />,
   },
 ];
@@ -54,9 +54,8 @@ const HomePage = () => {
             </em>
           </h1>
           <p className="text-[clamp(1rem,2vw,1.125rem)] leading-relaxed text-background/80 max-w-lg mx-auto mb-10">
-            Organize seus treinos, acompanhe cada exercício e evolua com
-            consistência. O planejamento que separa quem sonha de quem
-            conquista.
+            Organize seus treinos, acompanhe cada exercício e evolua com consistência. O
+            planejamento que separa quem sonha de quem conquista.
           </p>
           <Button
             asChild
@@ -73,12 +72,7 @@ const HomePage = () => {
       <section className="w-full py-12 px-4 sm:py-20 sm:px-6 max-w-5xl mx-auto">
         <div className="flex flex-wrap justify-center gap-6">
           {features.map((f) => (
-            <FeatureCard
-              key={f.title}
-              title={f.title}
-              description={f.desc}
-              icon={f.icon}
-            />
+            <FeatureCard key={f.title} title={f.title} description={f.desc} icon={f.icon} />
           ))}
         </div>
       </section>

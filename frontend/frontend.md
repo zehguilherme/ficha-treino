@@ -69,6 +69,7 @@ src/
 ## Verificação
 
 ```bash
+npm run lint && npm run format:check
 npm run dev
 # abrir http://localhost:3000
 ```

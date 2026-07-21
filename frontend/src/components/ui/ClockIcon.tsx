@@ -2,7 +2,7 @@ type ClockIconProps = {
   className?: string;
 };
 
-export const ClockIcon = ({ className = "w-5 h-5" }: ClockIconProps) => (
+export const ClockIcon = ({ className = 'w-5 h-5' }: ClockIconProps) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"

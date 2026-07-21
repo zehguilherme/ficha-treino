@@ -2,7 +2,7 @@ type ArrowRightIconProps = {
   className?: string;
 };
 
-export const ArrowRightIcon = ({ className = "w-4 h-4" }: ArrowRightIconProps) => (
+export const ArrowRightIcon = ({ className = 'w-4 h-4' }: ArrowRightIconProps) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"

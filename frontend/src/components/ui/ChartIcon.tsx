@@ -2,7 +2,7 @@ type ChartIconProps = {
   className?: string;
 };
 
-export const ChartIcon = ({ className = "w-5 h-5" }: ChartIconProps) => (
+export const ChartIcon = ({ className = 'w-5 h-5' }: ChartIconProps) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
