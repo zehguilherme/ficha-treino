@@ -13,6 +13,27 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    files: ["src/**/*.{ts,tsx,js,jsx}"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "ExportDefaultDeclaration",
+          message:
+            "Use named exports. Default export é permitido apenas em arquivos de rota do Next.js (page, layout, loading, error, not-found, template, default).",
+        },
+      ],
+    },
+  },
+  {
+    files: [
+      "src/app/**/{page,layout,loading,error,not-found,template,default}.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-syntax": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
