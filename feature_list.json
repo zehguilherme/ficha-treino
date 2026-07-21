@@ -194,6 +194,16 @@
       "passes": false
     },
     {
+      "id": "tool-001",
+      "type": "tooling",
+      "area": "frontend",
+      "title": "PascalCase para componentes de interface",
+      "behavior": "Componentes em src/components/ devem começar com maiúscula; script valida; AGENTS.md documenta",
+      "verification": "cd frontend && npm run test:component-names",
+      "status": "completed",
+      "evidence": "npm run test:component-names passa sem violações"
+    },
+    {
       "id": "ui-008",
       "type": "ui",
       "area": "account",

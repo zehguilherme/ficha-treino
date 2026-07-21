@@ -93,3 +93,4 @@ Toda alteração de interface, funcionalidade ou correção de bug deve passar p
 - JWT armazenado em localStorage
 - Sem API externa de exercícios — tudo via backend local
 - SVGs na UI devem ser componentes React em arquivos separados (ex: `ArrowLeftIcon.tsx`), nunca inline no JSX. Se um SVG já existe inline, extrair para componente.
+- Componentes em `src/components/` devem usar PascalCase (ex: `Button.tsx`, `FeatureCard.tsx`). Arquivos em `src/app/` são exceção (rotas Next.js).
