@@ -1,12 +1,12 @@
 ---
 name: ficha-treino-design-system
-description: Ficha Treino gym workout tracking app design system. ShadCN HSL tokens, Inter type, minimal neutral palette.
+description: Ficha de Treino gym workout tracking app design system. ShadCN HSL tokens, Inter type, minimal neutral palette.
 user-invocable: true
 ---
 
-# Ficha Treino Design System — Skill
+# Ficha de Treino Design System — Skill
 
-Reusable Claude Design skill for generating UI that matches the Ficha Treino workout web app.
+Reusable Claude Design skill for generating UI that matches the Ficha de Treino workout web app.
 
 ## What is inside
 
@@ -24,7 +24,7 @@ Reusable Claude Design skill for generating UI that matches the Ficha Treino wor
 
 ## Source context
 
-Extracted from 6 HTML screens of the Ficha Treino workout app (landing, login, dashboard, workout-day, minha-conta, 404). Built with Tailwind CDN + ShadCN tokens + Inter. Brazilian Portuguese throughout.
+Extracted from 6 HTML screens of the Ficha de Treino workout app (landing, login, dashboard, workout-day, minha-conta, 404). Built with Tailwind CDN + ShadCN tokens + Inter. Brazilian Portuguese throughout.
 
 **Key extraction details:** Hero uses `filter: brightness(0.35)` + gradient overlay. 404 uses semi-transparent "0" character. Day grid uses `repeat(auto-fill, minmax(14rem, 1fr))`. Google button uses 4-color branded SVG.
 

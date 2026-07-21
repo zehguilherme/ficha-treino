@@ -43,7 +43,7 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-foreground/75 to-foreground/45 z-[1]" />
         <div className="relative z-10 max-w-3xl mx-auto py-12 px-6 sm:py-16 sm:px-8 text-center text-white">
           <p className="text-xs font-medium tracking-[0.08em] uppercase text-background/80 mb-6">
-            Ficha Treino
+            Ficha de Treino
           </p>
           <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold leading-[1.08] tracking-[-0.03em] mb-5">
             Seu próximo shape

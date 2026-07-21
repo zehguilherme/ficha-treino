@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "=== Verificando harness Ficha Treino ==="
+echo "=== Verificando harness Ficha de Treino ==="
 
 test -f docker-compose.yml || { echo "Faltando: docker-compose.yml"; exit 1; }
 test -f backend/package.json || { echo "Faltando: backend/package.json"; exit 1; }

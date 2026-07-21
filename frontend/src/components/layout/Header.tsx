@@ -9,7 +9,7 @@ export const Header = () => {
           <DumbbellIcon />
         </div>
         <span className="text-base font-semibold tracking-tight">
-          Ficha Treino
+          Ficha de Treino
         </span>
         <div className="ml-auto">
           <Button variant="outline" href="/login">

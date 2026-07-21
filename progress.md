@@ -1,4 +1,4 @@
-# Progresso — Ficha Treino
+# Progresso — Ficha de Treino
 
 ## Feature atual
 

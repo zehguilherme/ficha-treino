@@ -1,6 +1,6 @@
-# Ficha Treino — App UI Kit
+# Ficha de Treino — App UI Kit
 
-Applied component kit extracted from the live Ficha Treino workout app. Documents applied kit structure, component files, usage workflow, design notes, and source basis.
+Applied component kit extracted from the live Ficha de Treino workout app. Documents applied kit structure, component files, usage workflow, design notes, and source basis.
 
 ## Structure (component files)
 
