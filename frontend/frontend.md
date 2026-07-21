@@ -66,3 +66,4 @@ npm run dev
 - Sem rotas de API do Next.js — tudo via Express separado
 - JWT armazenado em localStorage
 - Sem API externa de exercícios — tudo via backend local
+- SVGs na UI devem ser componentes React em arquivos separados (ex: `ArrowLeftIcon.tsx`), nunca inline no JSX. Se um SVG já existe inline, extrair para componente.
