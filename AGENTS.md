@@ -39,6 +39,8 @@ Feature atual: `api-001` (Docker Compose + PostgreSQL) — ver `feature_list.jso
 - Imagens: CDN jsDelivr (`https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/0.jpg`)
 - PT-BR em toda UI e dados de exercícios
 - Antes de editar um módulo, ler seu arquivo `<module>.md`
+- **Sempre** verificar a documentação Swagger atual (servida em `/api/docs`, spec em `src/swagger.ts` + annotations JSDoc nas rotas) antes de modificar ou adicionar endpoints
+- Todo endpoint novo/modificado deve ter sua annotation `@openapi` JSDoc — validar com `npm run dev` + acesso a `/api/docs`
 - Feature concluída → marcar em `feature_list.json` e `progress.md`
 - Funções JavaScript/TypeScript devem ser arrow functions (`const fn = () => {}`), exceto construtores de classe e `function*` generators
 - **Nunca** usar `export default`. Sempre usar `export` nomeado. Exceção: arquivos de rota do Next.js em `src/app/**/{page,layout,loading,error,not-found,template,default}.{ts,tsx}`
