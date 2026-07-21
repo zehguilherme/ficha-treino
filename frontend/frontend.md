@@ -61,6 +61,20 @@ npm run dev
 # abrir http://localhost:3000
 ```
 
+### Checklist de UI/UX/Acessibilidade
+
+Toda alteração de interface, funcionalidade ou correção de bug deve passar pela verificação abaixo antes de considerar concluída:
+
+- Navegação por teclado (Tab, Enter, Escape) — fluxo lógico e sem travamentos
+- Contraste de cores respeitando os tokens HSL do `design-system/` — nunca cores hardcoded
+- Foco visível (`--ring`) em todos os elementos interativos
+- `aria-label` em botões de ícone (ex: `"Fechar"`, `"Remover exercício"`)
+- Estados: hover, focus, active, disabled, error — todos mapeados
+- Responsividade: containers com max-width, grid colapsa para 1 coluna em <640px
+- Rolagem do carrossel com scroll-snap e sem quebra visual
+- Loading, empty state e erro em mutações (TanStack Query)
+- Atualizações dinâmicas (check/uncheck, add/remove) sem perda de foco do teclado
+
 ## Constraints
 
 - Sem rotas de API do Next.js — tudo via Express separado
