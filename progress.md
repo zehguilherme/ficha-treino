@@ -2,15 +2,13 @@
 
 ## Feature atual
 
-**tool-001 — PascalCase para componentes de interface**
+**api-001 — Docker Compose + PostgreSQL**
 
-Regra de nomenclatura + script de validação + documentação para agentes.
+docker-compose.yml, db.ts, health check endpoint. Ver issue #32.
 
 ## Próximos passos
 
 1. ui-000: Landing page
-2. api-001: Docker Compose + PostgreSQL
-2. api-001b: Scaffold Express + rota de teste
 2. api-002: Seed de exercícios
 3. api-003: Google OAuth → JWT
 4. api-004: Criação automática de treinos no signup
@@ -36,3 +34,4 @@ Regra de nomenclatura + script de validação + documentação para agentes.
 | 2026-07-20 | Harness files review | Atualizado |
 | 2026-07-21 | tool-001 — PascalCase para componentes | Concluído |
 | 2026-07-21 | api-001b — Scaffold Express + test route | Concluído |
+| 2026-07-21 | api-001 — Docker Compose + PostgreSQL | In progress |

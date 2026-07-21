@@ -2,31 +2,24 @@
 
 ## Última sessão
 
-2026-07-20: Revisão e atualização dos arquivos de harness.
+2026-07-21: Implementação da issue #32 — Docker Compose + PostgreSQL.
 
 ## O que foi feito
 
-### Sessão anterior
-- `frontend/` scaffolded com Next.js 16 (App Router, Tailwind, TypeScript, ESLint)
-- Limpeza de boilerplate (SVGs, favicon, README, AGENTS.md, CLAUDE.md)
-- `src/app/page.tsx` — homepage com "Ficha de Treino"
-- `src/app/layout.tsx` — metadata e lang pt-BR
-- `src/app/globals.css` — só `@import "tailwindcss"`
-- Build verificado (`npm run build` passou sem erros)
-- `.github/dependabot.yml` configurado para npm
-
-### Sessão atual
-- `AGENTS.md`: atualizado "Estado atual" — corrigido bullet de arquivos inexistentes, adicionado dependabot
-- `session-handoff.md`: atualizado com esta sessão
-- `progress.md`: adicionada entrada no histórico
+- `docker-compose.yml` criado na raiz — Postgres 16 Alpine, volume persistente, health check
+- `backend/src/db.ts` — pool do `pg` via `DATABASE_URL`
+- `backend/src/server.ts` — adicionado `GET /api/health` (ping DB, retorna `{ status: "ok" }` ou 503)
+- `backend/.env` e `.env.example` — adicionado `DATABASE_URL`
+- `@types/pg` instalado como devDependency
+- Harness atualizado (`progress.md`, `session-handoff.md`)
 
 ## Feature ativa
 
-`api-001` — Docker Compose + PostgreSQL
+`api-001` — Docker Compose + PostgreSQL (issue #32)
 
 ## Próximo passo
 
-Implementar `docker-compose.yml`, `backend/src/server.ts`, `backend/src/db.ts`, `backend/package.json`, e configurar health check.
+Testar: `docker compose up -d --wait` e `curl http://localhost:3001/api/health`. Se passar, marcar `api-001` como `passing` no `feature_list.json`.
 
 ## Branch
 

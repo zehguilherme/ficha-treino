@@ -8,8 +8,8 @@
       "title": "Docker Compose + PostgreSQL",
       "behavior": "docker compose up -d sobe PostgreSQL, health check responde na API",
       "verification": "docker compose up -d --wait && curl -sf http://localhost:3001/api/health",
-      "status": "in_progress",
-      "evidence": ""
+"status": "passing",
+      "evidence": "docker compose up -d --wait sobe Postgres com health check; curl localhost:3001/api/health retorna {\"status\":\"ok\"}"
     },
     {
       "id": "api-001b",
