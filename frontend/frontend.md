@@ -89,6 +89,7 @@ Toda alteração de interface, funcionalidade ou correção de bug deve passar p
 
 ## Constraints
 
+- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito
 - Sem rotas de API do Next.js — tudo via Express separado
 - JWT armazenado em localStorage
 - Sem API externa de exercícios — tudo via backend local

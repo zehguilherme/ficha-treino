@@ -10,6 +10,7 @@ Regra de nomenclatura + script de validação + documentação para agentes.
 
 1. ui-000: Landing page
 2. api-001: Docker Compose + PostgreSQL
+2. api-001b: Scaffold Express + rota de teste
 2. api-002: Seed de exercícios
 3. api-003: Google OAuth → JWT
 4. api-004: Criação automática de treinos no signup
@@ -34,3 +35,4 @@ Regra de nomenclatura + script de validação + documentação para agentes.
 | 2026-07-20 | Next.js scaffolding | Concluído  |
 | 2026-07-20 | Harness files review | Atualizado |
 | 2026-07-21 | tool-001 — PascalCase para componentes | Concluído |
+| 2026-07-21 | api-001b — Scaffold Express + test route | Concluído |

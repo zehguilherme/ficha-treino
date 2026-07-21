@@ -57,6 +57,7 @@ curl http://localhost:3001/api/health
 
 ## Constraints
 
+- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito
 - Sem ORM — raw SQL com `pg` apenas
 - Zod schemas compartilhados com frontend via `shared/`
 - JWT gerado e validado no backend, sem refresh
