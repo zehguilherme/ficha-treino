@@ -57,7 +57,7 @@ A reusable design system package extracted from the Ficha de Treino gym workout 
 5. Use `.btn-solid`, `.btn-outline`, `.btn-destructive`, `.btn-ghost` classes
 6. Use `.card-hover` for clickable card patterns
 7. Use `.day-card` + subclasses for dashboard grid items
-8. For dark mode: add `.dark` on `<html>` element
+
 9. Use preserved build assets from `build/brand-assets/`
 10. Run `design-system-package-audit` before finalizing
 
@@ -66,5 +66,5 @@ A reusable design system package extracted from the Ficha de Treino gym workout 
 2. Open `preview/typography-specimens.html` to verify type scale
 3. Open `preview/components.html` to verify button/card variants
 4. Compare source HTML against DESIGN.md for fidelity
-5. Verify dark mode by checking `colors_and_type.css` contains `.dark` / `@media (prefers-color-scheme: dark)` block
+
 6. Run audit command before approving

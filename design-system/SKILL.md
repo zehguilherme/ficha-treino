@@ -10,7 +10,7 @@ Reusable Claude Design skill for generating UI that matches the Ficha de Treino 
 
 ## What is inside
 
-- ShadCN-based HSL token set (8 semantic colors) with dark theme
+- ShadCN-based HSL token set (8 semantic colors)
 - Inter typography scale (400–800, 0.6875rem–5rem)
 - 10+ button variants (solid, outline, destructive, ghost, Google)
 - 6 card types (day, exercise, settings, auth, feature, 404)
@@ -33,20 +33,18 @@ Extracted from 6 HTML screens of the Ficha de Treino workout app (landing, login
 - Generating new screens or components for a fitness/gym workout tracking app
 - Any project needing a minimal, neutral, utilitarian design language
 - Projects using ShadCN-style HSL tokens with a single typeface approach
-- Adding dark mode to an existing project (tokens included)
 - Building workout exercise forms with carousel, tags, and action toggles
 
 ## How to use
 
-1. Read `DESIGN.md` for full reference including dark theme and implementation notes
+1. Read `DESIGN.md` for full reference and implementation notes
 2. Copy `colors_and_type.css` tokens into your first `<style>` block
 3. Import Inter from Google Fonts (`weights 400,500,600,700,800`)
 4. Use `data-od-id="kebab-case-id"` on interactive elements
 5. Reference component patterns from `ui_kits/app/`
-6. Apply `.dark` class on `<html>` or use `prefers-color-scheme: dark` for dark mode
-7. For Google buttons, use the 4-color branded SVG (not `currentColor`)
-8. For hero images, always apply `filter: brightness(0.35)` + gradient overlay
-9. Run `design-system-package-audit` on completion
+6. For Google buttons, use the 4-color branded SVG (not `currentColor`)
+7. For hero images, always apply `filter: brightness(0.35)` + gradient overlay
+8. Run `design-system-package-audit` on completion
 
 ### Reuse workflow
 
