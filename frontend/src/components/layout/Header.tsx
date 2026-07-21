@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { DumbbellIcon } from "@/components/ui/DumbbellIcon";
 
@@ -12,8 +13,8 @@ export const Header = () => {
           Ficha de Treino
         </span>
         <div className="ml-auto">
-          <Button variant="outline" href="/login">
-            Entrar
+          <Button variant="outline" asChild>
+            <Link href="/login">Entrar</Link>
           </Button>
         </div>
       </div>

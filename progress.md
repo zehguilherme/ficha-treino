@@ -2,9 +2,9 @@
 
 ## Feature atual
 
-**api-001 — Docker Compose + PostgreSQL**
+**tool-001 — PascalCase para componentes de interface**
 
-Criar `docker-compose.yml` com PostgreSQL, configurar conexão no backend, implementar health check em `GET /api/health`.
+Regra de nomenclatura + script de validação + documentação para agentes.
 
 ## Próximos passos
 
@@ -33,3 +33,4 @@ Criar `docker-compose.yml` com PostgreSQL, configurar conexão no backend, imple
 | 2026-07-20 | Harness modular    | Criado      |
 | 2026-07-20 | Next.js scaffolding | Concluído  |
 | 2026-07-20 | Harness files review | Atualizado |
+| 2026-07-21 | tool-001 — PascalCase para componentes | Concluído |

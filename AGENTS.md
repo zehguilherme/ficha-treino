@@ -42,4 +42,5 @@ Feature atual: `api-001` (Docker Compose + PostgreSQL) — ver `feature_list.jso
 - Feature concluída → marcar em `feature_list.json` e `progress.md`
 - Funções JavaScript/TypeScript devem ser arrow functions (`const fn = () => {}`), exceto construtores de classe e `function*` generators
 - **Nunca** usar `export default`. Sempre usar `export` nomeado. Exceção: arquivos de rota do Next.js em `src/app/**/{page,layout,loading,error,not-found,template,default}.{ts,tsx}`
+- Componentes de interface em `src/components/` devem usar PascalCase (primeira letra maiúscula). Exceção: arquivos em `src/app/` (rotas Next.js). Validar com `npm run test:component-names`.
 - Toda alteração no frontend (interface, funcionalidade, bug fix) deve passar pela checklist de UI/UX/acessibilidade em `frontend/frontend.md`
