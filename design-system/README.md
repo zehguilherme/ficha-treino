@@ -1,11 +1,11 @@
 ## 📦 Design System Package
 
-> Complete Open Design design system extracted from the Ficha Treino workout app.
+> Complete Open Design design system extracted from the Ficha de Treino workout app.
 > Source project ID: `8d530195-e3fe-468b-b445-6592f2e546eb`
 
 ## Product Overview
 
-A reusable design system package extracted from the Ficha Treino gym workout tracking web application. Contains ShadCN-based HSL token variables, Inter typography scale, component patterns (buttons, cards, headers, modals, tags), inline SVG icon library, and full-page source examples. Designed for reuse in fitness/wellness web apps or any project needing a minimal, neutral, utilitarian ShadCN-based design language with Brazilian Portuguese voice.
+A reusable design system package extracted from the Ficha de Treino gym workout tracking web application. Contains ShadCN-based HSL token variables, Inter typography scale, component patterns (buttons, cards, headers, modals, tags), inline SVG icon library, and full-page source examples. Designed for reuse in fitness/wellness web apps or any project needing a minimal, neutral, utilitarian ShadCN-based design language with Brazilian Portuguese voice.
 
 **Surface:** Token CSS (`colors_and_type.css`) → Component previews (`preview/`) → Applied UI kit (`ui_kits/app/`) → Build assets (`build/`) → Source examples (`source_examples/`).
 

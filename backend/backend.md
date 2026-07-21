@@ -1,4 +1,4 @@
-# Backend — Ficha Treino
+# Backend — Ficha de Treino
 
 ## Propósito
 

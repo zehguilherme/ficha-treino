@@ -1,6 +1,6 @@
-# Ficha Treino Design System
+# Ficha de Treino Design System
 
-> Product: Ficha Treino — Gym workout tracking web app
+> Product: Ficha de Treino — Gym workout tracking web app
 > Framework: ShadCN HSL tokens + Tailwind CSS + Inter
 > Language: Brazilian Portuguese
 > Source screens: landing, login, dashboard, workout-day, minha-conta, 404
@@ -9,7 +9,7 @@
 
 ## 1. Product Context
 
-Ficha Treino is a workout tracking web app. Users log in via Google, organize exercises by day of the week, search exercises in Brazilian Portuguese, mark sets as done, and view exercise instructions with image carousels. The app is CSR after auth, with a static landing/login and no external API dependency.
+Ficha de Treino is a workout tracking web app. Users log in via Google, organize exercises by day of the week, search exercises in Brazilian Portuguese, mark sets as done, and view exercise instructions with image carousels. The app is CSR after auth, with a static landing/login and no external API dependency.
 
 **Screens:** Landing → Login → Dashboard (week grid) → Workout Day (exercise list with search) → Minha Conta (profile + danger zone)
 
@@ -398,7 +398,7 @@ Users who prefer reduced motion should not see jarring animations. All transitio
   - "Esse exercício não existe na sua ficha"
   - "Parece que você tentou pegar um haltere que não está no rack"
 - **Capitalization:** Sentence case in Portuguese (only first word capitalized)
-- **Brand name:** "Ficha Treino" (no hyphen, no "de")
+- **Brand name:** "Ficha de Treino" (no hyphen, no "de")
 - **Icon convention:** Functional icons only, never decorative. Muscle labels may use emoji (💪 for primary) as native inline symbol, not SVG.
 
 ---
@@ -458,7 +458,7 @@ Every page follows this structure:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ficha Treino — [Page Name]</title>
+  <title>Ficha de Treino — [Page Name]</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>@import "colors_and_type.css";</style>

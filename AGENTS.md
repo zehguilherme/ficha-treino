@@ -1,4 +1,4 @@
-# AGENTS.md — Ficha Treino
+# AGENTS.md — Ficha de Treino
 
 ## Stack
 

@@ -1,4 +1,4 @@
-# Frontend — Ficha Treino
+# Frontend — Ficha de Treino
 
 ## Propósito
 

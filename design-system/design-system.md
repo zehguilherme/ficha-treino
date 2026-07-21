@@ -1,4 +1,4 @@
-# Design System — Ficha Treino
+# Design System — Ficha de Treino
 
 Baseado nos tokens ShadCN (HSL) + Tailwind + Inter, extraído de `login.html`, `dashboard.html`, `workout-day.html`, `minha-conta.html`.
 
