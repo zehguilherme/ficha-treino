@@ -49,39 +49,13 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 }
 ```
 
-### Dark theme
-
-```css
-:root.dark,
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 47.4% 11.2%;
-    --card-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
-}
-```
-
 ### Semantic color roles
 
 | Role | Token | Usage |
 |------|-------|-------|
-| Page bg | `hsl(var(--background))` | #f4f5f7 (light) / near-black (dark) |
-| Card bg | `hsl(var(--card))` | White (light) / dark surface (dark) |
-| Primary text | `hsl(var(--foreground))` | Near-black (light) / white (dark) |
+| Page bg | `hsl(var(--background))` | #f4f5f7 |
+| Card bg | `hsl(var(--card))` | White |
+| Primary text | `hsl(var(--foreground))` | Near-black |
 | Secondary text | `hsl(var(--muted-foreground))` | Gray #6b7280 (light) |
 | Borders | `hsl(var(--border))` | All 1px borders |
 | Hover bg | `hsl(var(--secondary))` | Button/card hover, tag bg |

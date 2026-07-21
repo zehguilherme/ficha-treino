@@ -38,13 +38,25 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 ```
 src/
   app/
+    globals.css           (HSL tokens + Tailwind v4)
+    layout.tsx            (root layout: Inter font, lang pt-BR)
+    page.tsx              (HomePage — landing)
     login/page.tsx
     dashboard/page.tsx
     workout/[weekDay]/page.tsx
     account/page.tsx
   components/
-    ui/       (ShadCN)
+    ui/                   (ShadCN)
+      Button.tsx
+      FeatureCard.tsx
+      ArrowRightIcon.tsx
+      ChartIcon.tsx
+      ClockIcon.tsx
+      DocumentIcon.tsx
+      DumbbellIcon.tsx
     layout/
+      Header.tsx
+      Footer.tsx
     workout/
     exercise/
   hooks/
