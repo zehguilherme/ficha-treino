@@ -12,6 +12,16 @@
       "evidence": ""
     },
     {
+      "id": "api-001b",
+      "type": "api",
+      "area": "infra",
+      "title": "Scaffold Express + test route",
+      "behavior": "Express app with TypeScript, cors, json middleware. GET /api/test returns { message: \"Teste\" }",
+      "verification": "curl http://localhost:3001/api/test | jq '.message == \"Teste\"'",
+      "status": "completed",
+      "evidence": "curl http://localhost:3001/api/test retorna {\"message\":\"Teste\"}"
+    },
+    {
       "id": "api-002",
       "type": "api",
       "area": "seed",

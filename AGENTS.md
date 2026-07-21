@@ -43,4 +43,5 @@ Feature atual: `api-001` (Docker Compose + PostgreSQL) — ver `feature_list.jso
 - Funções JavaScript/TypeScript devem ser arrow functions (`const fn = () => {}`), exceto construtores de classe e `function*` generators
 - **Nunca** usar `export default`. Sempre usar `export` nomeado. Exceção: arquivos de rota do Next.js em `src/app/**/{page,layout,loading,error,not-found,template,default}.{ts,tsx}`
 - Componentes de interface em `src/components/` devem usar PascalCase (primeira letra maiúscula). Exceção: arquivos em `src/app/` (rotas Next.js). Validar com `npm run test:component-names`.
+- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito. Se o tipo necessário não existir, criar `type` ou `interface` próprio. Validar com `npm run lint` em cada módulo antes de concluir.
 - Toda alteração no frontend (interface, funcionalidade, bug fix) deve passar pela checklist de UI/UX/acessibilidade em `frontend/frontend.md`
