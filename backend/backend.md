@@ -56,6 +56,20 @@ npx tsx src/seed.ts
 curl http://localhost:3001/api/health
 ```
 
+## Documentação da API (Swagger)
+
+A API utiliza **Swagger/OpenAPI 3.0** para documentação dos endpoints.
+
+- **Geração da spec:** `swagger-jsdoc` — lê annotations `@openapi` nos comentários JSDoc de cada rota
+- **UI interativa:** `swagger-ui-express` — servida em `/api/docs`
+- **Arquivo de configuração:** `src/swagger.ts` — define info, servers, securitySchemes, etc.
+
+### Regras para agentes de IA
+
+- **Sempre** verificar a documentação Swagger atual (via `src/swagger.ts` e annotations nas rotas) antes de modificar ou adicionar um endpoint
+- Todo endpoint novo ou modificado **deve** ter sua annotation `@openapi` correspondente
+- A rota `/api/docs` deve estar acessível e refletir o estado atual de todos os endpoints documentados
+
 ## Constraints
 
 - **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito
