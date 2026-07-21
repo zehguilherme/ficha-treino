@@ -12,14 +12,16 @@ export const metadata: Metadata = {
   title: "Ficha Treino — Seu treino organizado",
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
-}
+};
+
+export default RootLayout;

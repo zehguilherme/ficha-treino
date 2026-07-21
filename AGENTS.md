@@ -40,3 +40,4 @@ Feature atual: `api-001` (Docker Compose + PostgreSQL) — ver `feature_list.jso
 - PT-BR em toda UI e dados de exercícios
 - Antes de editar um módulo, ler seu arquivo `<module>.md`
 - Feature concluída → marcar em `feature_list.json` e `progress.md`
+- Funções JavaScript/TypeScript devem ser arrow functions (`const fn = () => {}`), exceto construtores de classe e `function*` generators

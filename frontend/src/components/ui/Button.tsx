@@ -7,13 +7,13 @@ type ButtonProps = {
   children: React.ReactNode;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function Button({
+export const Button = ({
   variant = "primary",
   href,
   className = "",
   children,
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   const base =
     "inline-flex items-center justify-center gap-2 font-medium tracking-[0.02em] rounded-[var(--radius)] transition-all duration-150 text-[0.8125rem]";
 
@@ -41,4 +41,4 @@ export function Button({
       {children}
     </button>
   );
-}
+};

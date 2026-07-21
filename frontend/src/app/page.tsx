@@ -3,67 +3,30 @@ import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FeatureCard } from "@/components/ui/FeatureCard";
+import { DocumentIcon } from "@/components/ui/DocumentIcon";
+import { ChartIcon } from "@/components/ui/ChartIcon";
+import { ClockIcon } from "@/components/ui/ClockIcon";
+import { ArrowRightIcon } from "@/components/ui/ArrowRightIcon";
 
 const features = [
   {
     title: "Plano de treino",
     desc: "Monte sua ficha com exercícios organizados por dia da semana.",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-5 h-5"
-      >
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
-      </svg>
-    ),
+    icon: <DocumentIcon />,
   },
   {
     title: "Acompanhe sua evolução",
     desc: "Marque exercícios como feitos e veja seu progresso semanal.",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-5 h-5"
-      >
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-      </svg>
-    ),
+    icon: <ChartIcon />,
   },
   {
     title: "Simplicidade",
     desc: "Interface limpa e direta. Foco no que importa: seu treino.",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-5 h-5"
-      >
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-      </svg>
-    ),
+    icon: <ClockIcon />,
   },
 ];
 
-export default function HomePage() {
+const HomePage = () => {
   return (
     <>
       <Header />
@@ -99,18 +62,7 @@ export default function HomePage() {
             className="group inline-flex items-center gap-2 text-[0.9375rem] font-semibold tracking-[0.02em] text-foreground bg-background rounded-[calc(var(--radius)+0.125rem)] px-8 py-3.5 transition-all hover:bg-background/90 hover:-translate-y-px hover:shadow-[0_4px_20px_hsl(222.2,84%,4.9%/0.2)]"
           >
             Começar agora
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-[3px]"
-            >
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
+            <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-[3px]" />
           </Link>
         </div>
       </section>
@@ -131,4 +83,6 @@ export default function HomePage() {
       <Footer />
     </>
   );
-}
+};
+
+export default HomePage;
