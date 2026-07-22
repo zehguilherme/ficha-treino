@@ -76,7 +76,7 @@ npm run dev
 
 ### Checklist de UI/UX/Acessibilidade
 
-Toda alteração de interface, funcionalidade ou correção de bug deve passar pela verificação abaixo antes de considerar concluída:
+Toda alteração de interface, funcionalidade ou correção de bug deve passar pela verificação abaixo antes de considerar concluída — usar skill `ui-accessibility-check`:
 
 - Navegação por teclado (Tab, Enter, Escape) — fluxo lógico e sem travamentos
 - Contraste de cores respeitando os tokens HSL do `design-system/` — nunca cores hardcoded
@@ -90,9 +90,9 @@ Toda alteração de interface, funcionalidade ou correção de bug deve passar p
 
 ## Constraints
 
-- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito
+- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-no-any`
 - Sem rotas de API do Next.js — tudo via Express separado
 - JWT armazenado em localStorage
 - Sem API externa de exercícios — tudo via backend local
 - SVGs na UI devem ser componentes React em arquivos separados (ex: `ArrowLeftIcon.tsx`), nunca inline no JSX. Se um SVG já existe inline, extrair para componente.
-- Componentes em `src/components/` devem usar PascalCase (ex: `Button.tsx`, `FeatureCard.tsx`). Arquivos em `src/app/` são exceção (rotas Next.js).
+- Componentes em `src/components/` devem usar PascalCase (ex: `Button.tsx`, `FeatureCard.tsx`). Arquivos em `src/app/` são exceção (rotas Next.js) — usar skill `component-naming-pascalcase`.
