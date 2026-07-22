@@ -204,6 +204,26 @@
       "passes": false
     },
     {
+      "id": "infra-001",
+      "type": "infra",
+      "area": "database",
+      "title": "Database schema (tables + constraints)",
+      "behavior": "Migration cria 4 tabelas (users, workouts, exercises, workout_exercises) com constraints, FKs e CASCADE",
+      "verification": "docker compose up -d --wait && docker compose exec -T postgres psql -U postgres -d ficha_treino -c \"SELECT tablename FROM pg_tables WHERE schemaname='public'\"",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "infra-002",
+      "type": "infra",
+      "area": "docs",
+      "title": "Mover design-system/ para docs/design-system/",
+      "behavior": "Move pasta design-system/ para docs/design-system/ e atualiza todas as referências em AGENTS.md e frontend.md",
+      "verification": "ls docs/design-system/ && !ls design-system/",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
       "id": "tool-001",
       "type": "tooling",
       "area": "frontend",
@@ -212,6 +232,36 @@
       "verification": "cd frontend && npm run test:component-names",
       "status": "completed",
       "evidence": "npm run test:component-names passa sem violações"
+    },
+    {
+      "id": "tool-002",
+      "type": "tooling",
+      "area": "backend",
+      "title": "Swagger/OpenAPI docs para todos os endpoints",
+      "behavior": "Todas as rotas possuem annotation @openapi JSDoc; /api/docs mostra todos os endpoints",
+      "verification": "curl -sf http://localhost:3001/api/docs | grep -q 'swagger-ui'",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "tool-003",
+      "type": "tooling",
+      "area": "infra",
+      "title": "Pular deploy Vercel em PRs backend-only",
+      "behavior": "ignoredBuildStep no Vercel ignora builds quando apenas backend/ é alterado",
+      "verification": "PR alterando apenas backend/ não dispara deploy no Vercel",
+      "status": "not_started",
+      "evidence": ""
+    },
+    {
+      "id": "tool-004",
+      "type": "tooling",
+      "area": "docs",
+      "title": "README.md (PT-BR) + README-en.md (EN)",
+      "behavior": "READMEs com descrição, stack, setup, estrutura, contribuição — link linguagem cruzado",
+      "verification": "ls README.md README-en.md",
+      "status": "not_started",
+      "evidence": ""
     },
     {
       "id": "ui-008",
@@ -224,6 +274,59 @@
         "Modal de confirmação aparece",
         "Confirmar remove conta + redireciona para login",
         "Cancelar fecha modal"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-009",
+      "type": "ui",
+      "area": "routing",
+      "category": "functional",
+      "description": "Página 404 personalizada para rotas inexistentes",
+      "steps": [
+        "Navegar para /rota-inexistente",
+        "Ver mensagem de erro 404 amigável",
+        "Botão voltar para home"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-010",
+      "type": "ui",
+      "area": "layout",
+      "category": "functional",
+      "description": "Header: logo + título como link (muda conforme auth)",
+      "steps": [
+        "Deslogado: clicar no logo navega para /",
+        "Logado: clicar no logo navega para /dashboard",
+        "Navegação por teclado funciona (Tab + Enter)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-011",
+      "type": "ui",
+      "area": "layout",
+      "category": "functional",
+      "description": "Favicon no frontend",
+      "steps": [
+        "Browser mostra ícone na aba",
+        "favicon.ico + favicon.svg presentes em public/",
+        "layout.tsx referencia os ícones no metadata"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ui-012",
+      "type": "ui",
+      "area": "polish",
+      "category": "enhancement",
+      "description": "Page transitions e micro-interações com Motion",
+      "steps": [
+        "Animações de entrada em listas (exercícios, treinos)",
+        "Transições de página ao navegar entre rotas",
+        "Micro-interações em botões e cards",
+        "Skeleton/loading com animação sutil"
       ],
       "passes": false
     }

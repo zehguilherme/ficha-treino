@@ -2,24 +2,24 @@
 
 ## Última sessão
 
-2026-07-21: Implementação da issue #32 — Docker Compose + PostgreSQL.
+2026-07-22: Revisão de harness — issues do GitHub mapeadas para feature_list.json.
 
 ## O que foi feito
 
-- `docker-compose.yml` criado na raiz — Postgres 16 Alpine, volume persistente, health check
-- `backend/src/db.ts` — pool do `pg` via `DATABASE_URL`
-- `backend/src/server.ts` — adicionado `GET /api/health` (ping DB, retorna `{ status: "ok" }` ou 503)
-- `backend/.env` e `.env.example` — adicionado `DATABASE_URL`
-- `@types/pg` instalado como devDependency
-- Harness atualizado (`progress.md`, `session-handoff.md`)
+- Revisadas todas as 32 issues do GitHub (zehguilherme/ficha-treino)
+- 9 issues não tinham entrada em `feature_list.json`: #51, #49, #8, #4, #28, #44, #46, #47, #52
+- Adicionados: infra-001, infra-002, tool-002, tool-003, tool-004, ui-009–ui-012
+- Corrigido status de api-001 para "Concluído" em progress.md
+- Atualizada feature ativa para infra-001 (database schema)
+- Corrigido AGENTS.md: backend/ descrito como inicializado, não mais "vazio"
 
 ## Feature ativa
 
-`api-001` — Docker Compose + PostgreSQL (issue #32)
+`infra-001` — Database schema (tables + constraints) — issue #51
 
 ## Próximo passo
 
-Testar: `docker compose up -d --wait` e `curl http://localhost:3001/api/health`. Se passar, marcar `api-001` como `passing` no `feature_list.json`.
+Implementar migration `001_create_tables.sql` (ver issue #51), montar como init script no docker-compose.yml, verificar tabelas criadas.
 
 ## Branch
 

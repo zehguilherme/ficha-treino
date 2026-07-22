@@ -21,16 +21,16 @@
 ## Estado atual
 
 - `frontend/` inicializado com Next.js 16 (App Router, Tailwind, TypeScript, ESLint) — página inicial "Ficha de Treino"
-- `backend/` vazio — infra pendente (`docker-compose.yml`, `package.json`, `tsconfig.json`)
+- `backend/` inicializado com Express + TypeScript, Docker Compose + PostgreSQL, health check
 - `specification.md` = RF, RNF, modelo conceitual, regras de negócio
 - `design-system/` = tokens ShadCN, componentes HTML/CSS, previews (`preview/`)
 - `docs/superpowers/specs/` = ADRs de arquitetura
 - `.github/dependabot.yml` configurado para npm
-- Nenhum `.env` ou `docker-compose.yml` existe ainda (backend infra será criado em `api-001`)
+- Swagger/OpenAPI já configurado (`src/swagger.ts`, `/api/docs`)
 
 ## Feature ativa
 
-Feature atual: `api-001` (Docker Compose + PostgreSQL) — ver `feature_list.json` e `progress.md`
+Feature atual: `infra-001` (Database schema) — ver `feature_list.json` e `progress.md`
 
 ## Workflow
 
