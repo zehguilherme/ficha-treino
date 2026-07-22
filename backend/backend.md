@@ -58,7 +58,7 @@ curl http://localhost:3001/api/health
 
 ## Documentação da API (Swagger)
 
-A API utiliza **Swagger/OpenAPI 3.0** para documentação dos endpoints.
+A API utiliza **Swagger/OpenAPI 3.0** para documentação dos endpoints — usar skill `swagger-workflow`.
 
 - **Geração da spec:** `swagger-jsdoc` — lê annotations `@openapi` nos comentários JSDoc de cada rota
 - **UI interativa:** `swagger-ui-express` — servida em `/api/docs`
@@ -72,7 +72,7 @@ A API utiliza **Swagger/OpenAPI 3.0** para documentação dos endpoints.
 
 ## Constraints
 
-- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito
+- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-no-any`
 - Sem ORM — raw SQL com `pg` apenas
 - Zod schemas compartilhados com frontend via `shared/`
 - JWT gerado e validado no backend, sem refresh
