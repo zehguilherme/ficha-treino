@@ -8,7 +8,12 @@ import { swaggerSpec } from './swagger.js';
 const app = express();
 const port = process.env.PORT ?? 3001;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  }),
+);
 app.use(express.json());
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -43,7 +48,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  */
 app.get('/api/health', async (_req, res) => {
   try {
-    await prisma.$queryRawUnsafe('SELECT 1');
+    await prisma.$queryRaw`SELECT 1`;
     res.json({ status: 'ok' });
   } catch {
     res.status(503).json({ status: 'error' });
