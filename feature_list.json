@@ -104,7 +104,7 @@
         "Ver 3 feature cards (Plano de treino, Evolução, Simplicidade)",
         "Clicar 'Entrar' ou 'Começar agora' navega para /login"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ui-001",
@@ -210,8 +210,8 @@
       "title": "Database schema (tables + constraints)",
       "behavior": "Prisma migration cria 4 tabelas (users, workouts, exercises, workout_exercises) com constraints, FKs e CASCADE",
       "verification": "npx prisma migrate status && npx prisma db pull --print",
-      "status": "not_started",
-      "evidence": ""
+      "status": "passing",
+      "evidence": "prisma/schema.prisma com 4 modelos (User, Workout, Exercise, WorkoutExercise); migration 20260729184340_init aplicada com enums, FKs e CASCADE"
     },
     {
       "id": "infra-002",

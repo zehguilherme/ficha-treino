@@ -2,14 +2,13 @@
 
 ## Feature atual
 
-**infra-001 — Database schema (tables + constraints)**
+**api-002 — Seed de exercícios**
 
-Prisma schema + migration com 4 tabelas, constraints, FKs e CASCADE. Ver issue #51.
+Script baixa `exercises-ptbr-full-translation.json` e faz upsert no DB usando Prisma Client.
 
 ## Próximos passos
 
-1. infra-001: Prisma schema + migration
-2. api-002: Seed de exercícios
+1. api-002: Seed de exercícios
 3. api-003: Google OAuth → JWT
 4. api-004: Criação automática de treinos no signup
 5. api-005: CRUD de treinos
@@ -44,3 +43,6 @@ Prisma schema + migration com 4 tabelas, constraints, FKs e CASCADE. Ver issue #
 | 2026-07-21 | tool-001 — PascalCase componentes    | Concluído  |
 | 2026-07-21 | api-001b — Scaffold Express          | Concluído  |
 | 2026-07-21 | api-001 — Docker Compose + PostgreSQL| Concluído  |
+| 2026-07-29 | infra-001 — Database schema          | Concluído  |
+| 2026-07-29 | ui-000 — Landing page                | Concluído  |
+| 2026-07-29 | Verificação código vs docs           | Atualizado |
