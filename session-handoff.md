@@ -2,24 +2,22 @@
 
 ## Última sessão
 
-2026-07-22: Revisão de harness — issues do GitHub mapeadas para feature_list.json.
+2026-07-29: Verificação do estado do código vs documentação — infra-001 e ui-000 marcados como concluídos.
 
 ## O que foi feito
 
-- Revisadas todas as 32 issues do GitHub (zehguilherme/ficha-treino)
-- 9 issues não tinham entrada em `feature_list.json`: #51, #49, #8, #4, #28, #44, #46, #47, #52
-- Adicionados: infra-001, infra-002, tool-002, tool-003, tool-004, ui-009–ui-012
-- Corrigido status de api-001 para "Concluído" em progress.md
-- Atualizada feature ativa para infra-001 (database schema)
-- Corrigido AGENTS.md: backend/ descrito como inicializado, não mais "vazio"
+- Verificado estado real do código (backend + frontend) vs docs
+- `feature_list.json`: infra-001 corrigido de `not_started` → `passing`; ui-000 corrigido de `passes: false` → `passes: true`
+- `progress.md`: feature ativa atualizada para api-002; histórico atualizado
+- `session-handoff.md`: atualizado para refletir novo estado
 
 ## Feature ativa
 
-`infra-001` — Database schema (tables + constraints) — issue #51
+`api-002` — Seed de exercícios
 
 ## Próximo passo
 
-Implementar Prisma schema (`prisma/schema.prisma`) + migration (`npx prisma migrate dev --name init`), montar como init no docker-compose.yml, verificar com `npx prisma db pull`.
+Criar `backend/src/seed.ts` — script que baixa `exercises-ptbr-full-translation.json` do GitHub e faz upsert dos exercícios usando Prisma Client, com `exercise_id` como PK.
 
 ## Branch
 
