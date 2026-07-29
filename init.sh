@@ -12,6 +12,9 @@ test -f frontend/src/app/page.tsx || { echo "Faltando: frontend/src/app/page.tsx
 echo "Subindo containers..."
 docker compose up -d --wait
 
+echo "Aplicando migrations..."
+npx -w backend prisma migrate deploy
+
 echo "Executando seed..."
 npx tsx backend/src/seed.ts
 

@@ -19,7 +19,7 @@
 
 ## Próximo passo
 
-Implementar migration `001_create_tables.sql` (ver issue #51), montar como init script no docker-compose.yml, verificar tabelas criadas.
+Implementar Prisma schema (`prisma/schema.prisma`) + migration (`npx prisma migrate dev --name init`), montar como init no docker-compose.yml, verificar com `npx prisma db pull`.
 
 ## Branch
 
