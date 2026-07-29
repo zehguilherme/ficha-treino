@@ -26,7 +26,7 @@
       "type": "api",
       "area": "seed",
       "title": "Seed de exercícios",
-      "behavior": "Script baixa exercises-ptbr-full-translation.json e faz upsert no DB",
+      "behavior": "Script baixa exercises-ptbr-full-translation.json e faz upsert no DB usando Prisma Client",
       "verification": "curl -sf http://localhost:3001/api/exercises?limit=1 | jq '.total > 800'",
       "status": "not_started",
       "evidence": ""
@@ -208,8 +208,8 @@
       "type": "infra",
       "area": "database",
       "title": "Database schema (tables + constraints)",
-      "behavior": "Migration cria 4 tabelas (users, workouts, exercises, workout_exercises) com constraints, FKs e CASCADE",
-      "verification": "docker compose up -d --wait && docker compose exec -T postgres psql -U postgres -d ficha_treino -c \"SELECT tablename FROM pg_tables WHERE schemaname='public'\"",
+      "behavior": "Prisma migration cria 4 tabelas (users, workouts, exercises, workout_exercises) com constraints, FKs e CASCADE",
+      "verification": "npx prisma migrate status && npx prisma db pull --print",
       "status": "not_started",
       "evidence": ""
     },

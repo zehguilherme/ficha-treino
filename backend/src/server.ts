@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
-import { pool } from './db.js';
+import { prisma } from './db.js';
 import { swaggerSpec } from './swagger.js';
 
 const app = express();
@@ -43,7 +43,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  */
 app.get('/api/health', async (_req, res) => {
   try {
-    await pool.query('SELECT 1');
+    await prisma.$queryRawUnsafe('SELECT 1');
     res.json({ status: 'ok' });
   } catch {
     res.status(503).json({ status: 'error' });

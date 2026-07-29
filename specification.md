@@ -337,13 +337,13 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
 ## Back-end
 
 - Node.js com Express (https://expressjs.com/en/starter/installing.html)
-- SQL puro (raw SQL) com `pg` (node-postgres)
+- Prisma ORM com `@prisma/client`
 - Docker + Docker Compose para subir os containers do banco
 
 ## Arquitetura
 
 - API REST com frontend separado (inspirada em MVC)
-  - Model: banco de dados + raw SQL
+  - Model: banco de dados + Prisma ORM
   - View: front-end Next.js
   - Controller: rotas Express
 

@@ -4,11 +4,11 @@
 
 **infra-001 — Database schema (tables + constraints)**
 
-Migration SQL com 4 tabelas, constraints, FKs e CASCADE. Ver issue #51.
+Prisma schema + migration com 4 tabelas, constraints, FKs e CASCADE. Ver issue #51.
 
 ## Próximos passos
 
-1. infra-001: Database schema
+1. infra-001: Prisma schema + migration
 2. api-002: Seed de exercícios
 3. api-003: Google OAuth → JWT
 4. api-004: Criação automática de treinos no signup

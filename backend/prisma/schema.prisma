@@ -1,0 +1,74 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum WeekDay {
+  DOMINGO
+  SEGUNDA
+  TERÇA
+  QUARTA
+  QUINTA
+  SEXTA
+  SABADO
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  googleId  String    @unique @map("google_id") @db.VarChar(255)
+  name      String    @db.VarChar(255)
+  email     String    @db.VarChar(255)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+  workouts  Workout[]
+
+  @@map("users")
+}
+
+model Workout {
+  id        Int               @id @default(autoincrement())
+  userId    Int               @map("user_id")
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekDay   WeekDay           @map("week_day")
+  exercises WorkoutExercise[]
+
+  @@unique([userId, weekDay])
+  @@map("workouts")
+}
+
+model Exercise {
+  id               String            @id @db.VarChar(50)
+  name             String            @db.VarChar(255)
+  force            String?           @db.VarChar(10)
+  level            String            @db.VarChar(20)
+  mechanic         String?           @db.VarChar(10)
+  equipment        String?           @db.VarChar(50)
+  primaryMuscles   String[]          @map("primary_muscles")
+  secondaryMuscles String[]          @map("secondary_muscles")
+  instructions     String[]
+  category         String            @db.VarChar(20)
+  images           String[]
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz()
+  workoutExercises WorkoutExercise[]
+
+  @@map("exercises")
+}
+
+model WorkoutExercise {
+  id         Int      @id @default(autoincrement())
+  workoutId  Int      @map("workout_id")
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exerciseId String   @map("exercise_id") @db.VarChar(50)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  done       Boolean  @default(false)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@unique([workoutId, exerciseId])
+  @@map("workout_exercises")
+}

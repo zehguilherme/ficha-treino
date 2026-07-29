@@ -2,7 +2,7 @@
 
 ## Propósito
 
-API REST em Express com TypeScript, PostgreSQL raw SQL (`pg`), validação Zod. Responsável por autenticação Google OAuth, CRUD de treinos, busca de exercícios e gerenciamento de conta.
+API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`), validação Zod. Responsável por autenticação Google OAuth, CRUD de treinos, busca de exercícios e gerenciamento de conta.
 
 ## Entry point
 
@@ -28,7 +28,12 @@ API REST em Express com TypeScript, PostgreSQL raw SQL (`pg`), validação Zod. 
 
 Schema (4 tabelas): `Users`, `Workouts`, `Exercises`, `Workout_Exercises` — ver `specification.md` para colunas.
 
-Seed: script que baixa `exercises-ptbr-full-translation.json` e faz upsert dos exercícios.
+Gerenciado via Prisma Migrate:
+- `prisma migrate dev --name <nome>` — cria migrations em desenvolvimento
+- `prisma migrate deploy` — aplica migrations em produção/CI
+- `prisma generate` — gera o Prisma Client (executado automaticamente no `prebuild`)
+
+Seed: script que baixa `exercises-ptbr-full-translation.json` e faz upsert dos exercícios usando Prisma Client.
 
 ## Estrutura de diretórios (planejada)
 
@@ -73,7 +78,7 @@ A API utiliza **Swagger/OpenAPI 3.0** para documentação dos endpoints — usar
 ## Constraints
 
 - **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-no-any`
-- Sem ORM — raw SQL com `pg` apenas
+- Prisma ORM — usar `@prisma/client` para todas as queries
 - Zod schemas compartilhados com frontend via `shared/`
 - JWT gerado e validado no backend, sem refresh
 - Rotas de gerenciamento exigem autenticação (exceto `/api/auth/google` e `/api/health`)
