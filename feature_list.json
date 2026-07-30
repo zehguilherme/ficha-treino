@@ -28,8 +28,8 @@
       "title": "Seed de exercícios",
       "behavior": "Script baixa exercises-ptbr-full-translation.json e faz upsert no DB usando Prisma Client",
       "verification": "curl -sf http://localhost:3001/api/exercises?limit=1 | jq '.total > 800'",
-      "status": "not_started",
-      "evidence": ""
+      "status": "passing",
+      "evidence": "backend/src/seed.ts com upsert em lote de 50, fetch do free-exercise-db, remoção de órfãos; seed.test.ts e jest.config.ts implementados"
     },
     {
       "id": "api-003",

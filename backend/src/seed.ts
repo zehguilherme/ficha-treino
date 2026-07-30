@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import type { PrismaClient } from '@prisma/client';
 
 interface Exercise {
@@ -14,7 +15,8 @@ interface Exercise {
   images: string[];
 }
 
-const API_URL = 'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises.json';
+const API_URL =
+  'https://raw.githubusercontent.com/joao-gugel/exercicios-bd-ptbr/main/exercises/exercises-ptbr-full-translation.json';
 const BATCH_SIZE = 50;
 
 type ExerciseRecord = Record<string, Omit<Exercise, 'id'>>;
