@@ -42,7 +42,7 @@ model Workout {
 }
 
 model Exercise {
-  id               String            @id @db.VarChar(50)
+  id               String            @id @db.VarChar(100)
   name             String            @db.VarChar(255)
   force            String?           @db.VarChar(10)
   level            String            @db.VarChar(20)
@@ -51,7 +51,7 @@ model Exercise {
   primaryMuscles   String[]          @map("primary_muscles")
   secondaryMuscles String[]          @map("secondary_muscles")
   instructions     String[]
-  category         String            @db.VarChar(20)
+  category         String            @db.VarChar(30)
   images           String[]
   createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz()

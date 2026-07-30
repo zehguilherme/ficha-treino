@@ -13,10 +13,10 @@ echo "Subindo containers..."
 docker compose up -d --wait
 
 echo "Aplicando migrations..."
-npx -w backend prisma migrate deploy
+(cd backend && npx prisma migrate deploy)
 
 echo "Executando seed..."
-npx tsx backend/src/seed.ts
+(cd backend && npx tsx src/seed.ts)
 
 echo "Verificando health check..."
 curl -sf http://localhost:3001/api/health > /dev/null || { echo "API não responde"; exit 1; }

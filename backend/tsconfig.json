@@ -7,6 +7,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "esModuleInterop": true,
+    "types": ["jest", "node"],
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,

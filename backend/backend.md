@@ -75,9 +75,41 @@ A API utiliza **Swagger/OpenAPI 3.0** para documentação dos endpoints — usar
 - Todo endpoint novo ou modificado **deve** ter sua annotation `@openapi` correspondente
 - A rota `/api/docs` deve estar acessível e refletir o estado atual de todos os endpoints documentados
 
+## Testes
+
+Stack: **Jest 30 + `@swc/jest`** — transformação rápida sem typecheck (typecheck separado via `tsc --noEmit`).
+
+```bash
+npm test                # Todos os testes
+npm run test:watch      # Modo watch
+npm run test:coverage   # Com cobertura
+```
+
+### Convenções
+
+- **Arquivos:** `src/**/*.test.ts` junto ao módulo testado
+- **Estrutura:** `describe('ModuleName')` → `test('action when condition')`
+- **Idioma:** Inglês
+- **Mocking:** factories exportadas ou locais (ex.: `mockPrismaClient()` em `seed.test.ts`)
+- **Mocks globais:** `globalThis.fetch` sobrescrito por teste, `jest.clearAllMocks()` em `beforeEach`
+
+### Catálogo
+
+#### `src/seed.test.ts`
+
+Testes unitários para a função `seed` (fetch HTTP + upsert em lote + remoção de órfãos).
+
+| Teste | Tipo | Cenário | Assert principal |
+|-------|------|---------|------------------|
+| inserts all exercises when DB is empty | unit | API retorna 3, DB vazio | upsert chamado 3x |
+| updates existing and inserts new exercises | unit | API retorna 1 e 2, DB já tem 1 | upsert chamado 2x com where correto |
+| removes exercises no longer in dataset | unit | API retorna só 1, DB tem 1, 2, 3 | deleteMany chamado com `['2', '3']` |
+| rejects when fetch fails | unit | Fetch retorna 500 | seed rejeita com mensagem de erro |
+| processes in multiple batches above BATCH_SIZE | unit | 51 exercícios (BATCH_SIZE=50) | $transaction chamado 2x |
+
 ## Constraints
 
-- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-no-any`
+- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-staged`
 - Prisma ORM — usar `@prisma/client` para todas as queries
 - Zod schemas compartilhados com frontend via `shared/`
 - JWT gerado e validado no backend, sem refresh

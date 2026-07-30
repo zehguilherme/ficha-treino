@@ -88,9 +88,51 @@ Toda alteração de interface, funcionalidade ou correção de bug deve passar p
 - Loading, empty state e erro em mutações (TanStack Query)
 - Atualizações dinâmicas (check/uncheck, add/remove) sem perda de foco do teclado
 
+## Testes
+
+*(a implementar)*
+
+### Stack recomendada
+
+Mesma do backend para consistência: **Jest + `@swc/jest`** + bibliotecas de teste React.
+
+| Pacote | Propósito |
+|--------|-----------|
+| `jest` | Test runner |
+| `@swc/jest` + `@swc/core` | Transpilação TS (mesma stack do backend) |
+| `@types/jest` | Tipos TypeScript |
+| `jest-environment-jsdom` | Ambiente DOM simulado |
+| `@testing-library/react` | Renderização de componentes React em teste |
+| `@testing-library/jest-dom` | Matchers customizados (`toBeInTheDocument`, etc.) |
+| `@testing-library/user-event` | Simulação de interações do usuário |
+
+Alternativa: **Vitest** é mais rápido com Vite, mas Next.js usa webpack/turbopack então a vantagem é menor. Jest mantém consistência com o backend.
+
+### Configuração mínima (`jest.config.ts`)
+
+```ts
+import type { Config } from 'jest';
+
+const config: Config = {
+  transform: { '^.+\\.tsx?$': '@swc/jest' },
+  testEnvironment: 'jsdom',
+  setupFilesAfterSetup: ['@testing-library/jest-dom'],
+  testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
+};
+
+export default config;
+```
+
+### Convenções
+
+- **Arquivos:** `src/**/*.test.{ts,tsx}` junto ao módulo testado
+- **Estrutura:** `describe('ComponentName')` → `test('action when condition')`
+- **Idioma:** Inglês
+- **Mocking:** mocks globais resetados em `beforeEach`
+
 ## Constraints
 
-- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-no-any`
+- **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-staged`
 - Sem rotas de API do Next.js — tudo via Express separado
 - JWT armazenado em localStorage
 - Sem API externa de exercícios — tudo via backend local
