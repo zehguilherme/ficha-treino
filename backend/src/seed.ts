@@ -91,12 +91,12 @@ export async function seed(prisma: PrismaClient): Promise<void> {
   let removed = 0;
 
   if (removedIds.length > 0) {
-    const result = await prisma.exercise.deleteMany({
+    const result = (await prisma.exercise.deleteMany({
       where: {
         id: { in: removedIds },
         workoutExercises: { none: {} },
       },
-    }) as { count: number };
+    })) as { count: number };
     removed = result.count;
   }
 
