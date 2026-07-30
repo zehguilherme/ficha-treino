@@ -48,3 +48,5 @@ Feature atual: `infra-001` (Database schema) — ver `feature_list.json` e `prog
 - **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito. Se o tipo necessário não existir, criar `type` ou `interface` próprio. Validar com `npm run lint && npm run format:check` em cada módulo antes de concluir — usar skill `type-safety-staged`.
 - Após qualquer modificação no frontend ou backend, executar `npm run lint` e `npm run format` no diretório do módulo modificado antes de concluir
 - Toda alteração no frontend (interface, funcionalidade, bug fix) deve passar pela checklist de UI/UX/acessibilidade em `frontend/frontend.md` — usar skill `ui-accessibility-check`
+- Mensagens de commit devem ser em inglês seguindo o padrão Conventional Commits (`tipo(escopo): descrição`), consistente com o histórico existente (ex.: `feat`, `fix`, `ci`, `chore`, `docs`)
+- Nenhuma operação git (commit, push, merge, rebase, criar PR, etc.) deve ser executada sem autorização explícita do usuário
