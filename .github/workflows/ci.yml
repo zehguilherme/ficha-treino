@@ -18,6 +18,7 @@ jobs:
           cache: npm
           cache-dependency-path: ./backend/package-lock.json
       - run: npm ci --legacy-peer-deps
+      - run: npx prisma generate
       - run: npm run format:check
       - run: npm run lint
       - run: npm test
