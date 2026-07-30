@@ -2,36 +2,42 @@
 
 ## Feature atual
 
-**api-002 — Seed de exercícios**
+**Usuário: backend routes + frontend pages**
 
-Script baixa `exercises-ptbr-full-translation.json` e faz upsert no DB usando Prisma Client.
+Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e marcação de exercícios, conta, e as páginas do frontend.
 
 ## Próximos passos
 
-1. api-002: Seed de exercícios
-3. api-003: Google OAuth → JWT
-4. api-004: Criação automática de treinos no signup
-5. api-005: CRUD de treinos
-6. api-006: Busca de exercícios
-7. api-007: Marcar/desmarcar exercícios
-8. api-008: Excluir conta
-9. tool-002: Swagger/OpenAPI docs
-10. ui-000: Landing page
-11. ui-001: Tela de login
-12. ui-002: Dashboard
-13. ui-003: Workout day
-14. ui-004: Search UI
-15. ui-005: Checkbox + carrossel
-16. ui-006: Limpar treino
-17. ui-007: Minha conta
-18. ui-008: Modal exclusão
-19. ui-009: Página 404
-20. ui-010: Header logo link
-21. ui-011: Favicon
-22. ui-012: Page transitions (Motion)
-23. infra-002: Mover design-system/ para docs/
-24. tool-003: Pular deploy Vercel backend-only
-25. tool-004: README.md + README-en.md
+### Backend (rotas de usuário)
+
+1. api-003: Google OAuth → JWT
+2. api-004: Criação automática de treinos no signup
+3. api-005: CRUD de treinos
+4. api-006: Busca de exercícios
+5. api-007: Marcar/desmarcar exercícios
+6. api-008: Excluir conta
+7. tool-002: Swagger/OpenAPI docs para endpoints de usuário
+
+### Frontend (páginas de usuário)
+
+8. ui-001: Tela de login
+9. ui-002: Dashboard
+10. ui-003: Workout day
+11. ui-004: Search UI
+12. ui-005: Checkbox + carrossel
+13. ui-006: Limpar treino
+14. ui-007: Minha conta
+15. ui-008: Modal exclusão
+16. ui-009: Página 404
+17. ui-010: Header logo link
+18. ui-011: Favicon
+19. ui-012: Page transitions (Motion)
+
+### Demais
+
+20. infra-002: Mover design-system/ para docs/
+21. tool-003: Pular deploy Vercel backend-only
+22. tool-004: README.md + README-en.md
 
 ## Histórico
 
@@ -46,3 +52,7 @@ Script baixa `exercises-ptbr-full-translation.json` e faz upsert no DB usando Pr
 | 2026-07-29 | infra-001 — Database schema          | Concluído  |
 | 2026-07-29 | ui-000 — Landing page                | Concluído  |
 | 2026-07-29 | Verificação código vs docs           | Atualizado |
+| 2026-07-30 | api-002 — Seed de exercícios         | Concluído  |
+| 2026-07-30 | CORS + validação DATABASE_URL        | Concluído  |
+| 2026-07-30 | Docs sync após api-002               | Atualizado |
+| 2026-07-30 | Foco: backend rotas de usuário + frontend páginas | Iniciado |
