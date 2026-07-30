@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from './generated/prisma/client.js';
 
 interface Exercise {
   id: string;
