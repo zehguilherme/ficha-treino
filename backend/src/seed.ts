@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from './generated/prisma/client.js';
 
 interface Exercise {
   id: string;
@@ -13,6 +13,8 @@ interface Exercise {
   instructions: string[];
   category: string;
   images: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const API_URL =
@@ -51,8 +53,6 @@ export async function seed(prisma: PrismaClient): Promise<void> {
   const exercises = await fetchExercises();
   console.log(`✓ ${exercises.length} exercícios baixados`);
 
-  const currentIds = new Set(exercises.map((e) => e.id));
-
   console.log('↓ Inserindo/atualizando...');
 
   const batches = batchInsert(exercises, BATCH_SIZE);
@@ -68,7 +68,7 @@ export async function seed(prisma: PrismaClient): Promise<void> {
       }),
     );
 
-    const results = await prisma.$transaction(queries);
+    const results = (await prisma.$transaction(queries)) as Exercise[];
 
     for (const result of results) {
       if (result.createdAt === result.updatedAt) {
@@ -82,21 +82,21 @@ export async function seed(prisma: PrismaClient): Promise<void> {
   console.log(`    ${inserted}/${exercises.length}`);
 
   console.log('↓ Verificando exercícios removidos do dataset...');
-  const dbIds = await prisma.exercise.findMany({
+  const dbIds = (await prisma.exercise.findMany({
     select: { id: true },
     where: { id: { notIn: exercises.map((e) => e.id) } },
-  });
-  const removedIds = dbIds.map((e: { id: string }) => e.id);
+  })) as { id: string }[];
+  const removedIds = dbIds.map((e) => e.id);
 
   let removed = 0;
 
   if (removedIds.length > 0) {
-    const result = await prisma.exercise.deleteMany({
+    const result = (await prisma.exercise.deleteMany({
       where: {
         id: { in: removedIds },
         workoutExercises: { none: {} },
       },
-    });
+    })) as { count: number };
     removed = result.count;
   }
 
