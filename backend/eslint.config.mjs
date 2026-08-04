@@ -9,7 +9,7 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ["eslint.config.mjs"],
+          allowDefaultProject: ["eslint.config.mjs", "api/index.ts", "scripts/generate-swagger.ts"],
         },
       },
     },
@@ -24,7 +24,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/seed.ts", "src/server.ts", "src/app.ts"],
+    files: ["src/seed.ts", "src/server.ts", "src/app.ts", "scripts/generate-swagger.ts"],
     rules: {
       "no-console": "off",
     },

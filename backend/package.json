@@ -11,6 +11,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
     "studio": "prisma studio",
     "prebuild": "prisma generate",
+    "swagger:gen": "tsx scripts/generate-swagger.ts",
     "seed": "tsx src/seed.ts",
     "setup": "prisma db push",
     "test": "jest",
