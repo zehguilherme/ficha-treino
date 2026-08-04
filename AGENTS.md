@@ -30,7 +30,7 @@
 
 ## Feature ativa
 
-Feature atual: `infra-001` (Database schema) — ver `feature_list.json` e `progress.md`
+Feature atual: `Usuário: backend routes + frontend pages` — ver `feature_list.json` e `progress.md`
 
 ## Workflow
 
