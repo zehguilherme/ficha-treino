@@ -50,3 +50,4 @@ Feature atual: `infra-001` (Database schema) — ver `feature_list.json` e `prog
 - Toda alteração no frontend (interface, funcionalidade, bug fix) deve passar pela checklist de UI/UX/acessibilidade em `frontend/frontend.md` — usar skill `ui-accessibility-check`
 - Mensagens de commit devem ser em inglês seguindo o padrão Conventional Commits (`tipo(escopo): descrição`), consistente com o histórico existente (ex.: `feat`, `fix`, `ci`, `chore`, `docs`)
 - Nenhuma operação git (commit, push, merge, rebase, criar PR, etc.) deve ser executada sem autorização explícita do usuário
+- **Nunca** expor nomes de variáveis de ambiente, secrets, tokens, connection strings ou stack traces em mensagens ao usuário final, `console.*` em código client-facing, ou respostas HTTP. Erros devem ser genéricos no cliente e detalhados apenas no server-side (logs do servidor)
