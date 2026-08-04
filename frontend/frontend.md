@@ -90,33 +90,44 @@ Toda alteração de interface, funcionalidade ou correção de bug deve passar p
 
 ## Testes
 
-*(a implementar)*
+Stack: **Jest 30 + `@swc/jest`** + **Testing Library** — mesma base do backend (transformação rápida sem typecheck; typecheck separado via `next build`).
 
-### Stack recomendada
+```bash
+npm test                # Todos os testes
+npm run test:watch      # Modo watch
+npm run test:coverage   # Com cobertura
+npm run test:component-names  # Validação de nomenclatura PascalCase
+```
 
-Mesma do backend para consistência: **Jest + `@swc/jest`** + bibliotecas de teste React.
+### Configuração (`jest.config.ts`)
 
-| Pacote | Propósito |
-|--------|-----------|
-| `jest` | Test runner |
-| `@swc/jest` + `@swc/core` | Transpilação TS (mesma stack do backend) |
-| `@types/jest` | Tipos TypeScript |
-| `jest-environment-jsdom` | Ambiente DOM simulado |
-| `@testing-library/react` | Renderização de componentes React em teste |
-| `@testing-library/jest-dom` | Matchers customizados (`toBeInTheDocument`, etc.) |
-| `@testing-library/user-event` | Simulação de interações do usuário |
-
-Alternativa: **Vitest** é mais rápido com Vite, mas Next.js usa webpack/turbopack então a vantagem é menor. Jest mantém consistência com o backend.
-
-### Configuração mínima (`jest.config.ts`)
+Transform SWC para TSX (React automatic runtime), ambiente jsdom, alias `@/`, setup com jest-dom:
 
 ```ts
+/** @jest-config-loader esbuild-register */
+
 import type { Config } from 'jest';
 
 const config: Config = {
-  transform: { '^.+\\.tsx?$': '@swc/jest' },
+  transform: {
+    '^.+\\.tsx?$': [
+      '@swc/jest',
+      {
+        jsc: {
+          parser: { syntax: 'typescript', tsx: true },
+          transform: { react: { runtime: 'automatic' } },
+        },
+      },
+    ],
+  },
   testEnvironment: 'jsdom',
-  setupFilesAfterSetup: ['@testing-library/jest-dom'],
+  testEnvironmentOptions: {
+    url: 'http://localhost:3000',
+  },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
 };
 
@@ -126,9 +137,71 @@ export default config;
 ### Convenções
 
 - **Arquivos:** `src/**/*.test.{ts,tsx}` junto ao módulo testado
-- **Estrutura:** `describe('ComponentName')` → `test('action when condition')`
+- **Estrutura:** `describe('ModuleName')` → `test('action when condition')`
 - **Idioma:** Inglês
-- **Mocking:** mocks globais resetados em `beforeEach`
+- **JSDoc:** Todo `test` deve ter um comentário JSDoc acima com a estrutura 3-partes:
+  1. Descrição do cenário
+  2. Detalhes do mock/setup
+  3. `Assert:` o que é verificado
+
+  Exemplo:
+  ```ts
+  /**
+   * Happy path: valid token reaches the handler.
+   * Assert: 200 and body echoes req.user.
+   */
+  test('populates req.user and calls next with valid token', async () => { ... });
+  ```
+- **Mocking:** `jest.mock` para módulos (ex.: `next/navigation`, hooks); mocks referenciados em factories devem ser avaliados lazy (closures) para evitar TDZ do hoisting do `jest.mock`
+- **Mocks globais:** `globalThis.fetch` sobrescrito por teste, `jest.clearAllMocks()` em `beforeEach`
+- **Navegação:** `window.location` é non-configurable no jsdom (não é spy-able) — hooks que navegam recebem um `navigate` injetável (ex.: `useGoogleLogin(navigate)`) para o teste capturar a URL alvo
+
+### Catálogo
+
+#### `src/lib/auth.test.ts`
+
+Testes unitários dos helpers de sessão (`setSession`/`getSession`/`clearSession` com `localStorage`).
+
+| Teste | Tipo | Cenário | Assert principal |
+|-------|------|---------|------------------|
+| setSession stores the token in localStorage | unit | chama `setSession('jwt-token')` | `localStorage` contém o token |
+| getSession returns null when no token is stored | unit | localStorage vazio | retorna `null` |
+| getSession returns the stored token | unit | token armazenado | retorna o token |
+| clearSession removes the stored token | unit | chama `clearSession()` | `getSession()` retorna `null` |
+
+#### `src/hooks/useGoogleLogin.test.ts`
+
+Testes unitários do hook de login Google (URL OAuth + state anti-CSRF + redirect).
+
+| Teste | Tipo | Cenário | Assert principal |
+|-------|------|---------|------------------|
+| builds the Google OAuth URL with all required params | unit | `buildAuthUrl(clientId, redirectUri, state)` | params `client_id`, `redirect_uri`, `response_type=code`, `scope`, `prompt=select_account`, `state` |
+| returns error when the Google client id is not configured | unit | sem `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | `status === 'error'` + mensagem PT-BR, sem state |
+| stores the OAuth state and redirects to Google | unit | clientId configurado | `navigate` recebe URL do Google; `sessionStorage` guarda o mesmo `state` da URL |
+
+#### `src/components/auth/LoginForm.test.tsx`
+
+Testes de componente do formulário de login (hook mockado).
+
+| Teste | Tipo | Cenário | Assert principal |
+|-------|------|---------|------------------|
+| renders the Google login button | component | status `idle` | botão "Entrar com Google" presente |
+| starts the Google login flow on click | component | clique no botão | `startLogin` chamado 1x |
+| shows loading state while logging in | component | status `loading` | botão desabilitado + `aria-busy` + "Entrando..." |
+| shows the error message when login fails | component | status `error` | mensagem em `role="alert"` |
+
+#### `src/app/auth/google/callback/page.test.tsx`
+
+Testes de integração da callback page (`fetch` e `next/navigation` mockados).
+
+| Teste | Tipo | Cenário | Assert principal |
+|-------|------|---------|------------------|
+| exchanges the code and redirects to the dashboard on success | integration | `code`+`state` válidos, API retorna token | `fetch` POST com `{ code }`, `setSession(token)`, redirect `/dashboard` |
+| shows an error when the OAuth state does not match | integration | `state` divergente | alerta de falha, `sessionStorage` limpo, sem fetch |
+| shows an error when code or state is missing | integration | URL sem `code`/`state` | alerta de falha |
+| redirects to login when the user denies access | integration | `error=access_denied` | redirect `/login`, sem fetch |
+| shows an error when the backend rejects the code | integration | `res.ok === false` | alerta "Não foi possível autenticar" |
+| shows a connection error when the fetch fails | integration | `fetch` rejeita | alerta "Não foi possível conectar ao servidor" |
 
 ## Constraints
 
@@ -138,3 +211,4 @@ export default config;
 - Sem API externa de exercícios — tudo via backend local
 - SVGs na UI devem ser componentes React em arquivos separados (ex: `ArrowLeftIcon.tsx`), nunca inline no JSX. Se um SVG já existe inline, extrair para componente.
 - Componentes em `src/components/` devem usar PascalCase (ex: `Button.tsx`, `FeatureCard.tsx`). Arquivos em `src/app/` são exceção (rotas Next.js) — usar skill `component-naming-pascalcase`.
+- Botões e links devem usar componentes ShadCN — renderizar `Button` de `src/components/ui/Button.tsx` para botões e `<Button asChild>` envolvendo `next/link` para links com estilo de botão. **Nunca** usar `<button>` ou `<a>` cru no JSX. Links de texto simples usam `next/link` diretamente.
