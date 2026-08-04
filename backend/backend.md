@@ -169,3 +169,4 @@ Testes unitários para a função `seed` (fetch HTTP + upsert em lote + remoçã
 - Zod schemas compartilhados com frontend via `shared/`
 - JWT gerado e validado no backend, sem refresh
 - Rotas de gerenciamento exigem autenticação (exceto `/api/auth/google` e `/api/health`)
+- **Nunca** expor nomes de variáveis de ambiente, secrets, tokens, connection strings ou stack traces em respostas HTTP ou `console.*` em código client-facing. Erros devem ser genéricos no cliente e detalhados apenas no server-side (logs do servidor)

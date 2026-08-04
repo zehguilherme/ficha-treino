@@ -24,7 +24,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/seed.ts", "src/server.ts"],
+    files: ["src/seed.ts", "src/server.ts", "src/app.ts"],
     rules: {
       "no-console": "off",
     },
