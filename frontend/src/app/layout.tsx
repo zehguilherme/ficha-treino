@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Ficha de Treino — Seu treino organizado',
+  title: 'Ficha de Treino - Seu treino organizado',
 };
 
 const RootLayout = ({

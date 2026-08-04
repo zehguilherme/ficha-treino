@@ -38,8 +38,8 @@
       "title": "Google OAuth → JWT",
       "behavior": "POST /api/auth/google com ID token retorna JWT; GET /api/auth/me retorna usuário",
       "verification": "curl -X POST http://localhost:3001/api/auth/google -H 'Content-Type: application/json' -d '{\"token\":\"...\"}'",
-      "status": "not_started",
-      "evidence": ""
+      "status": "completed",
+      "evidence": "POST /api/auth/google valida ID token (google-auth-library, audience GOOGLE_CLIENT_ID), cria usuário + 7 treinos semanais em $transaction no 1º login, atualiza no recorrente, retorna JWT 24h (claims user_id/google_id); GET /api/auth/me protegido por requireAuth retorna name/email/google_id; 21 testes passando; swagger validado em /api/docs"
     },
     {
       "id": "api-004",
@@ -118,7 +118,8 @@
         "Clicar inicia fluxo OAuth",
         "Após sucesso, redirecionar para /dashboard"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "Página /login com card centralizado conforme design-system/pages/login.html; botão custom 'Entrar com Google' (GoogleIcon) dispara Google Identity Services via useGoogleLogin (loadGsiScript + initialize + prompt); credential enviado a POST /api/auth/google; JWT salvo em localStorage (lib/auth.ts); redirect para /dashboard; estados loading ('Entrando...' + aria-busy), erro PT-BR (role=alert) e recovery quando popup é bloqueado/pulado; lint + tsc + format verificados"
     },
     {
       "id": "ui-002",
