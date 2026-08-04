@@ -2,26 +2,38 @@
 
 ## Última sessão
 
-2026-07-30: api-002 (Seed de exercícios) concluído — `seed.ts`, `seed.test.ts`, `jest.config.ts`.
+2026-08-02: ui-001 (Login Google OAuth) concluído — `LoginPage`, `LoginForm`, `useGoogleLogin`, callback page.
 
 ## O que foi feito
 
-- `backend/src/seed.ts`: script com upsert em lote de 50, fetch do free-exercise-db, remoção de órfãos
-- `backend/src/seed.test.ts`: 167 linhas de teste
-- `backend/jest.config.ts`: configurado
-- `backend/src/server.ts`: CORS configurado com `FRONTEND_URL` e validação de `DATABASE_URL`
-- Schema: colunas ajustadas (tamanhos)
-- `feature_list.json`: api-002 marcado como `passing`
-- `progress.md`: feature ativa avança para api-006; histórico atualizado
-- `session-handoff.md`: atualizado
+- `frontend/src/app/login/page.tsx`: página de login com card centralizado
+- `frontend/src/components/auth/LoginForm.tsx`: componente com Google Identity Services
+- `frontend/src/hooks/useGoogleLogin.ts`: hook com URL OAuth + state anti-CSRF
+- `frontend/src/app/auth/google/callback/page.tsx`: callback do Google OAuth
+- `frontend/src/lib/auth.ts`: helpers de sessão (setSession/getSession/clearSession)
+- `frontend/src/lib/exerciseImage.ts`: helper para URLs de imagens via CDN
+- Testes: LoginForm, useGoogleLogin, callback page, auth helpers
+- `feature_list.json`: ui-001 marcado como `passes: true`
+- `progress.md`: histórico atualizado com api-003 e ui-001
 
 ## Feature ativa
 
-`api-006` — Busca de exercícios
+`backend routes + frontend pages` — rotas de usuário (CRUD treinos, busca exercícios, conta) e páginas correspondentes.
 
-## Próximo passo
+## Próximos passos
 
-Criar `GET /api/exercises` — rota com paginação e filtro por nome/categoria/músculo (Zod validation + Prisma query).
+### Backend
+1. api-004: Criação automática de treinos no signup (já feito em api-003, verificar)
+2. api-005: CRUD de treinos
+3. api-006: Busca de exercícios
+4. api-007: Marcar/desmarcar exercícios
+5. api-008: Excluir conta
+
+### Frontend
+6. ui-002: Dashboard
+7. ui-003: Workout day
+8. ui-004: Search UI
+9. ui-005: Checkbox + carrossel
 
 ## Branch
 
