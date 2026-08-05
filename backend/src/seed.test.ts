@@ -1,4 +1,4 @@
-import { seed } from './seed';
+import { seed } from './seed.js';
 
 function mockPrismaClient(): {
   exercise: {
