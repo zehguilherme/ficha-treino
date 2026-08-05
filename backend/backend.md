@@ -38,6 +38,8 @@ Gerenciado via Prisma Migrate:
 - `prisma generate` — gera o Prisma Client (executado automaticamente no `prebuild`)
 - `npm run studio` — Prisma Studio
 
+**Ambientes:** dev usa PostgreSQL local via Docker (`docker compose up -d`, credenciais `POSTGRES_*` no `.env`). Produção usa **Neon** (projeto `ficha-treino`, branch `production`, db `neondb`); o `DATABASE_URL` de produção está no Vercel e em `.env.production.local`. Migrations/seed em produção rodam sobrescrevendo o env: `DATABASE_URL="<neon-url>" npx prisma migrate deploy` / `npm run seed` (usar conexão direta para migrate, pooled para runtime).
+
 Seed (`npm run seed` → `src/seed.ts`): baixa `exercises-ptbr-full-translation.json` de `raw.githubusercontent.com/joao-gugel/exercicios-bd-ptbr/main/exercises/`, faz upsert em lotes de 50 via `$transaction`, e remove exercícios que saíram do dataset (somente os sem `workout_exercises` associados).
 
 ## Estrutura de diretórios (atual)
