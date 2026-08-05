@@ -2,9 +2,10 @@
   "name": "ficha-treino-backend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsup src/server.ts --out-dir dist && tsup api/index.ts --out-dir dist",
+    "build": "tsup src/server.ts --format esm --out-dir dist",
     "start": "node dist/server.js",
     "lint": "eslint src/",
     "format": "prettier --write \"src/**/*.{ts,js,json}\"",
