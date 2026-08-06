@@ -64,7 +64,7 @@ src/
   contexts/
   providers/
   lib/
-    api.ts    (axios/fetch wrapper)
+    api.ts    (axios instance + chamadas tipadas)
 ```
 
 ## Verificação
@@ -154,7 +154,7 @@ export default config;
   test('populates req.user and calls next with valid token', async () => { ... });
   ```
 - **Mocking:** `jest.mock` para módulos (ex.: `next/navigation`, hooks); mocks referenciados em factories devem ser avaliados lazy (closures) para evitar TDZ do hoisting do `jest.mock`
-- **Mocks globais:** `globalThis.fetch` sobrescrito por teste, `jest.clearAllMocks()` em `beforeEach`
+- **Mocks de API:** módulo `@/lib/api` mockado via `jest.mock`, `jest.clearAllMocks()` em `beforeEach`
 - **Navegação:** `window.location` é non-configurable no jsdom (não é spy-able) — hooks que navegam recebem um `navigate` injetável (ex.: `useGoogleLogin(navigate)`) para o teste capturar a URL alvo
 
 ### Catálogo
@@ -193,16 +193,16 @@ Testes de componente do formulário de login (hook mockado).
 
 #### `src/app/auth/google/callback/page.test.tsx`
 
-Testes de integração da callback page (`fetch` e `next/navigation` mockados).
+Testes de integração da callback page (`@/lib/api` e `next/navigation` mockados).
 
 | Teste | Tipo | Cenário | Assert principal |
 |-------|------|---------|------------------|
-| exchanges the code and redirects to the dashboard on success | integration | `code`+`state` válidos, API retorna token | `fetch` POST com `{ code }`, `setSession(token)`, redirect `/dashboard` |
-| shows an error when the OAuth state does not match | integration | `state` divergente | alerta de falha, `sessionStorage` limpo, sem fetch |
+| exchanges the code and redirects to the dashboard on success | integration | `code`+`state` válidos, API retorna token | `exchangeGoogleCode` chamado com o `code`, `setSession(token)`, redirect `/dashboard` |
+| shows an error when the OAuth state does not match | integration | `state` divergente | alerta de falha, `sessionStorage` limpo, sem chamada à API |
 | shows an error when code or state is missing | integration | URL sem `code`/`state` | alerta de falha |
-| redirects to login when the user denies access | integration | `error=access_denied` | redirect `/login`, sem fetch |
-| shows an error when the backend rejects the code | integration | `res.ok === false` | alerta "Não foi possível autenticar" |
-| shows a connection error when the fetch fails | integration | `fetch` rejeita | alerta "Não foi possível conectar ao servidor" |
+| redirects to login when the user denies access | integration | `error=access_denied` | redirect `/login`, sem chamada à API |
+| shows an error when the backend rejects the code | integration | `exchangeGoogleCode` rejeita com AxiosError (com `response`) | alerta "Não foi possível autenticar" |
+| shows a connection error when the API call fails | integration | `exchangeGoogleCode` rejeita com `Error` (rede) | alerta "Não foi possível conectar ao servidor" |
 
 ## Constraints
 

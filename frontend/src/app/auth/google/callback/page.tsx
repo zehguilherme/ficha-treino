@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { setSession } from '@/lib/auth';
+import { exchangeGoogleCode } from '@/lib/api';
 
 const STATE_KEY = 'ficha_treino_google_state';
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 const GoogleCallbackPage = () => {
   const router = useRouter();
@@ -35,20 +36,16 @@ const GoogleCallbackPage = () => {
 
     const exchange = async (): Promise<void> => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/auth/google`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code }),
-        });
-        if (!res.ok) {
-          failWith('Não foi possível autenticar com o Google. Tente novamente.');
-          return;
-        }
-        const data = (await res.json()) as { token: string };
-        setSession(data.token);
+        const { token } = await exchangeGoogleCode(code);
+        setSession(token);
         router.replace('/dashboard');
-      } catch {
-        failWith('Não foi possível conectar ao servidor. Tente novamente.');
+      } catch (error) {
+        const authFailed = axios.isAxiosError(error) && error.response !== undefined;
+        failWith(
+          authFailed
+            ? 'Não foi possível autenticar com o Google. Tente novamente.'
+            : 'Não foi possível conectar ao servidor. Tente novamente.',
+        );
       }
     };
     void exchange();

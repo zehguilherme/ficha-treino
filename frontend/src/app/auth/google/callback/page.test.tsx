@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import GoogleCallbackPage from './page';
 import { setSession } from '@/lib/auth';
+import { exchangeGoogleCode } from '@/lib/api';
 
 const STATE_KEY = 'ficha_treino_google_state';
 
@@ -14,15 +15,15 @@ jest.mock('@/lib/auth', () => ({
   setSession: jest.fn(),
 }));
 
-const fetchMock = jest.fn() as unknown as jest.MockedFunction<typeof fetch>;
+jest.mock('@/lib/api', () => ({
+  exchangeGoogleCode: jest.fn(),
+}));
 
-const jsonResponse = (body: object): Response =>
-  ({ ok: true, json: async () => body }) as unknown as Response;
+const mockExchangeGoogleCode = jest.mocked(exchangeGoogleCode);
 
 beforeEach(() => {
   jest.clearAllMocks();
   mockReplace = jest.fn();
-  globalThis.fetch = fetchMock;
   window.history.replaceState({}, '', '/auth/google/callback?code=test-code&state=test-state');
   sessionStorage.setItem(STATE_KEY, 'test-state');
 });
@@ -34,20 +35,20 @@ afterEach(() => {
 describe('GoogleCallbackPage', () => {
   /**
    * Exchanges the code and redirects to the dashboard on success.
-   * Mock: fetch returns JWT token, URL has code and state.
+   * Mock: exchangeGoogleCode resolves with a JWT token, URL has code and state.
    * Assert: POST /api/auth/google with code, setSession called, redirect /dashboard, state cleared.
    */
   test('exchanges the code and redirects to the dashboard on success', async () => {
-    fetchMock.mockResolvedValue(jsonResponse({ token: 'jwt-token' }));
+    mockExchangeGoogleCode.mockResolvedValue({
+      token: 'jwt-token',
+      name: 'Test User',
+      email: 'test@example.com',
+    });
 
     render(<GoogleCallbackPage />);
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/dashboard'));
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3001/api/auth/google', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: 'test-code' }),
-    });
+    expect(mockExchangeGoogleCode).toHaveBeenCalledWith('test-code');
     expect(setSession).toHaveBeenCalledWith('jwt-token');
     expect(sessionStorage.getItem(STATE_KEY)).toBeNull();
   });
@@ -55,7 +56,7 @@ describe('GoogleCallbackPage', () => {
   /**
    * Shows an error when the OAuth state does not match.
    * Mock: URL has code and wrong state.
-   * Assert: error message displayed, no fetch called, no redirect, state cleared.
+   * Assert: error message displayed, no API call, no redirect, state cleared.
    */
   test('shows an error when the OAuth state does not match', async () => {
     window.history.replaceState({}, '', '/auth/google/callback?code=test-code&state=wrong-state');
@@ -65,7 +66,7 @@ describe('GoogleCallbackPage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Falha na autenticação com o Google. Tente novamente.',
     );
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(mockExchangeGoogleCode).not.toHaveBeenCalled();
     expect(mockReplace).not.toHaveBeenCalled();
     expect(sessionStorage.getItem(STATE_KEY)).toBeNull();
   });
@@ -88,7 +89,7 @@ describe('GoogleCallbackPage', () => {
   /**
    * Redirects to login when the user denies access.
    * Mock: URL with error=access_denied.
-   * Assert: redirect /login, no fetch called.
+   * Assert: redirect /login, no API call.
    */
   test('redirects to login when the user denies access', async () => {
     window.history.replaceState({}, '', '/auth/google/callback?error=access_denied');
@@ -96,16 +97,19 @@ describe('GoogleCallbackPage', () => {
     render(<GoogleCallbackPage />);
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/login'));
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(mockExchangeGoogleCode).not.toHaveBeenCalled();
   });
 
   /**
    * Shows an error when the backend rejects the code.
-   * Mock: fetch returns ok: false.
+   * Mock: exchangeGoogleCode rejects with an AxiosError-like error carrying a response.
    * Assert: error message "Não foi possível autenticar" displayed.
    */
   test('shows an error when the backend rejects the code', async () => {
-    fetchMock.mockResolvedValue({ ok: false } as Response);
+    mockExchangeGoogleCode.mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 401 },
+    } as unknown as Error);
 
     render(<GoogleCallbackPage />);
 
@@ -115,12 +119,12 @@ describe('GoogleCallbackPage', () => {
   });
 
   /**
-   * Shows a connection error when the fetch fails.
-   * Mock: fetch rejects with network error.
+   * Shows a connection error when the API call fails at network level.
+   * Mock: exchangeGoogleCode rejects with a plain Error (no Axios response).
    * Assert: error message "Não foi possível conectar ao servidor" displayed.
    */
-  test('shows a connection error when the fetch fails', async () => {
-    fetchMock.mockRejectedValue(new Error('network'));
+  test('shows a connection error when the API call fails', async () => {
+    mockExchangeGoogleCode.mockRejectedValue(new Error('network'));
 
     render(<GoogleCallbackPage />);
 

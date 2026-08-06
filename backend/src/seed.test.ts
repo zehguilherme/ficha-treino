@@ -1,4 +1,12 @@
+import type { AxiosResponse } from 'axios';
 import { seed } from './seed.js';
+import { http } from './lib/http.js';
+
+jest.mock('./lib/http.js', () => ({
+  http: { get: jest.fn() },
+}));
+
+const mockHttpGet = jest.mocked(http.get);
 
 function mockPrismaClient(): {
   exercise: {
@@ -18,16 +26,8 @@ function mockPrismaClient(): {
   };
 }
 
-let mockFetch: jest.Mock<Promise<Response>, [url: RequestInfo | URL, init?: RequestInit]>;
-
-function setMockFetch(data: unknown): void {
-  mockFetch = jest
-    .fn<Promise<Response>, [url: RequestInfo | URL, init?: RequestInit]>()
-    .mockResolvedValue({
-      ok: true,
-      json: jest.fn<Promise<unknown>, []>().mockResolvedValue(data),
-    } as unknown as Response);
-  globalThis.fetch = mockFetch;
+function setMockHttpGet(data: unknown): void {
+  mockHttpGet.mockResolvedValue({ data } as AxiosResponse);
 }
 
 const makeExercise = (id: string) => ({
@@ -52,11 +52,11 @@ beforeEach(() => {
  * Unit tests for the `seed` function.
  *
  * The seed orchestrates 3 operations:
- * 1. Fetch exercise dataset via HTTP
+ * 1. Fetch exercise dataset via HTTP (axios via `lib/http`)
  * 2. Batch upsert (BATCH_SIZE=50) with transactions
  * 3. Remove orphan IDs (present in DB but not in dataset)
  *
- * All tests mock fetch and PrismaClient — no real HTTP or PostgreSQL calls.
+ * All tests mock `http.get` and PrismaClient — no real HTTP or PostgreSQL calls.
  */
 describe('seed', () => {
   /**
@@ -66,7 +66,7 @@ describe('seed', () => {
    */
   test('inserts all exercises when DB is empty', async () => {
     const exercises = [makeExercise('1'), makeExercise('2'), makeExercise('3')];
-    setMockFetch(exercises);
+    setMockHttpGet(exercises);
     const db = mockPrismaClient();
     db.exercise.findMany.mockResolvedValue([]);
     db.exercise.upsert.mockResolvedValue({});
@@ -85,7 +85,7 @@ describe('seed', () => {
    */
   test('updates existing and inserts new exercises', async () => {
     const exercises = [makeExercise('1'), makeExercise('2')];
-    setMockFetch(exercises);
+    setMockHttpGet(exercises);
     const db = mockPrismaClient();
     db.exercise.findMany.mockResolvedValue([{ id: '1' }]);
     db.exercise.upsert.mockResolvedValue({});
@@ -110,7 +110,7 @@ describe('seed', () => {
    */
   test('removes exercises no longer in dataset', async () => {
     const exercises = [makeExercise('1')];
-    setMockFetch(exercises);
+    setMockHttpGet(exercises);
     const db = mockPrismaClient();
     const dbRows = [{ id: '1' }, { id: '2' }, { id: '3' }];
     db.exercise.findMany.mockImplementation((args) => {
@@ -133,14 +133,14 @@ describe('seed', () => {
   });
 
   /**
-   * Fetch mock returns HTTP 500.
+   * HTTP download returns status 500.
    * Assert: seed rejects with the handled error message.
    */
-  test('rejects when fetch fails', async () => {
-    mockFetch = jest
-      .fn<Promise<Response>, [url: RequestInfo | URL, init?: RequestInit]>()
-      .mockResolvedValue({ ok: false, status: 500 } as unknown as Response);
-    globalThis.fetch = mockFetch;
+  test('rejects when the dataset download fails', async () => {
+    mockHttpGet.mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 500 },
+    } as unknown as Error);
     const db = mockPrismaClient();
     db.exercise.findMany.mockResolvedValue([]);
 
@@ -153,7 +153,7 @@ describe('seed', () => {
    */
   test('processes in multiple batches above BATCH_SIZE', async () => {
     const exercises = Array.from({ length: 51 }, (_, i) => makeExercise(String(i + 1)));
-    setMockFetch(exercises);
+    setMockHttpGet(exercises);
     const db = mockPrismaClient();
     db.exercise.findMany.mockResolvedValue([]);
     db.exercise.upsert.mockResolvedValue({});

@@ -323,6 +323,7 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
 
 - Next.js com App Router, sem usar rotas de API (https://nextjs.org/docs)
 - TanStack Query (`@tanstack/react-query`) — estado do servidor (cache, fetching, mutations)
+- Axios — cliente HTTP (instância em `src/lib/api.ts`)
 - Context API — estado global do cliente (sessão do usuário)
 - `useState` — exclusivamente para estado local de UI (inputs, modais)
 - Estilização
@@ -338,6 +339,7 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
 
 - Node.js com Express (https://expressjs.com/en/starter/installing.html)
 - Prisma ORM com `@prisma/client`
+- Axios — cliente HTTP (instância em `src/lib/http.ts`)
 - Docker + Docker Compose para subir os containers do banco
 
 ## Arquitetura
