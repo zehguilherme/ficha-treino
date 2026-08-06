@@ -8,7 +8,7 @@
   "servers": [
     {
       "url": "http://localhost:3001",
-      "description": "Servidor de desenvolvimento"
+      "description": "Servidor da API"
     }
   ],
   "components": {

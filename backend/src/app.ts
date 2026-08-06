@@ -1,3 +1,4 @@
+import path from 'node:path';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -15,7 +16,16 @@ app.use(
 );
 app.use(express.json());
 
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const apiServers = [
+  { url: process.env.API_URL ?? 'http://localhost:3001', description: 'Servidor da API' },
+];
+
+app.use(
+  '/api/docs',
+  express.static(path.resolve(process.cwd(), 'node_modules/swagger-ui-dist'), { index: false }),
+  swaggerUi.serve,
+  swaggerUi.setup({ ...swaggerSpec, servers: apiServers }),
+);
 
 /**
  * @openapi
