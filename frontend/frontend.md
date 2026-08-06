@@ -64,7 +64,7 @@ src/
   contexts/
   providers/
   lib/
-    api.ts    (axios instance + chamadas tipadas)
+    api.ts    (axios instance + interceptors + chamadas tipadas)
 ```
 
 ## Verificação
@@ -204,11 +204,21 @@ Testes de integração da callback page (`@/lib/api` e `next/navigation` mockado
 | shows an error when the backend rejects the code | integration | `exchangeGoogleCode` rejeita com AxiosError (com `response`) | alerta "Não foi possível autenticar" |
 | shows a connection error when the API call fails | integration | `exchangeGoogleCode` rejeita com `Error` (rede) | alerta "Não foi possível conectar ao servidor" |
 
+#### `src/lib/api.test.ts`
+
+Testes dos interceptors da instância axios (injeção do JWT e limpeza de sessão no 401).
+
+| Teste | Tipo | Cenário | Assert principal |
+|-------|------|---------|------------------|
+| attaches Authorization header when a session token exists | unit | `setSession(TOKEN)` + adapter mock 200 | request carrega `Authorization: Bearer TOKEN` |
+| does not attach Authorization header without a session token | unit | sem token + adapter mock 200 | sem header `Authorization` |
+| clears the session when the API responds 401 | unit | token armazenado + adapter mock 401 | request rejeita e `localStorage` limpo |
+
 ## Constraints
 
 - **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-staged`
 - Sem rotas de API do Next.js — tudo via Express separado
-- JWT armazenado em localStorage
+- JWT armazenado em localStorage; interceptor da instância axios injeta `Authorization: Bearer <token>` em toda request e, em 401, limpa a sessão e redireciona para `/login`
 - Sem API externa de exercícios — tudo via backend local
 - SVGs na UI devem ser componentes React em arquivos separados (ex: `ArrowLeftIcon.tsx`), nunca inline no JSX. Se um SVG já existe inline, extrair para componente.
 - Componentes em `src/components/` devem usar PascalCase (ex: `Button.tsx`, `FeatureCard.tsx`). Arquivos em `src/app/` são exceção (rotas Next.js) — usar skill `component-naming-pascalcase`.
