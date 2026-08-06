@@ -1,0 +1,74 @@
+import { AxiosError } from 'axios';
+import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { api } from './api';
+import { setSession } from './auth';
+
+const TOKEN = 'jwt-token';
+
+const mockSuccessAdapter = async (config: InternalAxiosRequestConfig): Promise<AxiosResponse> => ({
+  data: {},
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config,
+});
+
+const mockUnauthorizedAdapter = async (
+  config: InternalAxiosRequestConfig,
+): Promise<AxiosResponse> => {
+  const response: AxiosResponse = {
+    data: {},
+    status: 401,
+    statusText: 'Unauthorized',
+    headers: {},
+    config,
+  };
+  throw new AxiosError(
+    'Request failed with status code 401',
+    AxiosError.ERR_BAD_REQUEST,
+    config,
+    undefined,
+    response,
+  );
+};
+
+describe('api axios instance', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  /**
+   * Request interceptor attaches the JWT when a session token is stored.
+   * Mock: setSession(TOKEN), custom adapter resolving with 200.
+   * Assert: outgoing request carries `Authorization: Bearer TOKEN`.
+   */
+  test('attaches Authorization header when a session token exists', async () => {
+    setSession(TOKEN);
+    api.defaults.adapter = mockSuccessAdapter;
+    const response = await api.get('/api/test');
+    expect(response.config.headers.Authorization).toBe(`Bearer ${TOKEN}`);
+  });
+
+  /**
+   * Request interceptor leaves the header unset when there is no session.
+   * Mock: localStorage cleared in beforeEach, custom adapter resolving with 200.
+   * Assert: outgoing request has no Authorization header.
+   */
+  test('does not attach Authorization header without a session token', async () => {
+    api.defaults.adapter = mockSuccessAdapter;
+    const response = await api.get('/api/test');
+    expect(response.config.headers.Authorization).toBeUndefined();
+  });
+
+  /**
+   * Response interceptor clears the session on 401.
+   * Mock: setSession(TOKEN), custom adapter throwing an AxiosError with status 401.
+   * Assert: request rejects and localStorage token is removed.
+   */
+  test('clears the session when the API responds 401', async () => {
+    setSession(TOKEN);
+    api.defaults.adapter = mockUnauthorizedAdapter;
+    await expect(api.get('/api/test')).rejects.toMatchObject({ response: { status: 401 } });
+    expect(localStorage.getItem('ficha_treino_token')).toBeNull();
+  });
+});

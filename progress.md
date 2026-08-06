@@ -57,3 +57,4 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 | 2026-07-30 | Foco: backend rotas de usuário + frontend páginas | Iniciado |
 | 2026-07-31 | api-003 — Google OAuth → JWT | Concluído |
 | 2026-08-02 | ui-001 — Login Google OAuth | Concluído |
+| 2026-08-06 | Interceptor axios de auth (frontend) | Concluído |
