@@ -49,6 +49,8 @@ src/
   server.ts          # só sobe o listener (porta 3001)
   app.ts             # app Express: cors, json, swagger, /api/health, rotas
   db.ts              # PrismaClient + adapter PrismaPg
+  lib/
+    http.ts          # instância axios compartilhada (chamadas HTTP externas)
   seed.ts
   swagger.ts         # spec OpenAPI (swagger-jsdoc)
   schema.sql         # snapshot do schema (4 tabelas + enum)
@@ -106,7 +108,7 @@ npm run test:coverage   # Com cobertura
 - **Estrutura:** `describe('ModuleName')` → `test('action when condition')`
 - **Idioma:** Inglês
 - **Mocking:** factories exportadas ou locais (ex.: `mockPrismaClient()` em `seed.test.ts`)
-- **Mocks globais:** `globalThis.fetch` sobrescrito por teste, `jest.clearAllMocks()` em `beforeEach`
+- **Mocks de HTTP:** wrapper `lib/http.ts` mockado via `jest.mock` (mantém `axios.isAxiosError` real), `jest.clearAllMocks()` em `beforeEach`
 
 ### Catálogo
 
@@ -154,14 +156,14 @@ Testes de integração das rotas de auth (supertest + mocks de `./db.js` e `goog
 
 #### `src/seed.test.ts`
 
-Testes unitários para a função `seed` (fetch HTTP + upsert em lote + remoção de órfãos).
+Testes unitários para a função `seed` (download HTTP via `http.get` + upsert em lote + remoção de órfãos).
 
 | Teste                                          | Tipo | Cenário                          | Assert principal                    |
 | ---------------------------------------------- | ---- | -------------------------------- | ----------------------------------- |
 | inserts all exercises when DB is empty         | unit | API retorna 3, DB vazio          | upsert chamado 3x                   |
 | updates existing and inserts new exercises     | unit | API retorna 1 e 2, DB já tem 1   | upsert chamado 2x com where correto |
 | removes exercises no longer in dataset         | unit | API retorna só 1, DB tem 1, 2, 3 | deleteMany chamado com `['2', '3']` |
-| rejects when fetch fails                       | unit | Fetch retorna 500                | seed rejeita com mensagem de erro   |
+| rejects when the dataset download fails        | unit | HTTP 500                         | seed rejeita com mensagem de erro   |
 | processes in multiple batches above BATCH_SIZE | unit | 51 exercícios (BATCH_SIZE=50)    | $transaction chamado 2x             |
 
 ## Constraints

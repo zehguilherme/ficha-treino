@@ -1,5 +1,8 @@
 import 'dotenv/config';
+import axios from 'axios';
+import type { AxiosResponse } from 'axios';
 import type { PrismaClient } from './generated/prisma/client.js';
+import { http } from './lib/http.js';
 
 interface Exercise {
   id: string;
@@ -24,15 +27,18 @@ const BATCH_SIZE = 50;
 type ExerciseRecord = Record<string, Omit<Exercise, 'id'>>;
 
 async function fetchExercises(): Promise<Exercise[]> {
-  const response = await fetch(API_URL);
+  let response: AxiosResponse<ExerciseRecord>;
 
-  if (!response.ok) {
-    throw new Error(`Falha ao baixar dataset: ${response.status}`);
+  try {
+    response = await http.get<ExerciseRecord>(API_URL);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(`Falha ao baixar dataset: ${error.response.status}`, { cause: error });
+    }
+    throw error;
   }
 
-  const data = (await response.json()) as ExerciseRecord;
-
-  return Object.entries(data).map(([id, exercise]) => ({
+  return Object.entries(response.data).map(([id, exercise]) => ({
     id,
     ...exercise,
   }));
