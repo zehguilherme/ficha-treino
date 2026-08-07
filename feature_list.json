@@ -289,7 +289,8 @@
         "Ver mensagem de erro 404 amigável",
         "Botão voltar para home"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "src/app/not-found.tsx renderiza card 404 com header/footer reutilizados (Header existente, sem alterações), mensagem 'Esse exercício não existe na sua ficha' e CTA 'Voltar para Home' (Button outline + HomeIcon) linkando para /; dot decorativos; not-found.test.tsx valida conteúdo e href; lint + format + jest verificados"
     },
     {
       "id": "ui-010",
