@@ -8,7 +8,7 @@
 - Validação: Zod (compartilhado front/back)
 - Auth: Google OAuth 2.0 → JWT (24h, sem refresh, localStorage)
 - UI: Tailwind + ShadCN HSL tokens (`design-system/colors_and_type.css`)
-- Testes: Jest (planejado)
+- Testes: Jest 30 + `@swc/jest` (implementado em frontend/ e backend/)
 
 ## Módulos
 
