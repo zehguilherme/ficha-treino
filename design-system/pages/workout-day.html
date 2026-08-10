@@ -601,6 +601,138 @@
     }
 
     .hidden { display: none; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: hsl(var(--foreground) / 0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      position: relative;
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) + 0.125rem);
+      box-shadow: 0 8px 30px hsl(var(--foreground) / 0.1);
+      max-width: 24rem;
+      width: 100%;
+      padding: 1.5rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      border-radius: 9999px;
+      color: hsl(var(--muted-foreground));
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .modal-close:hover {
+      background: hsl(var(--secondary));
+      color: hsl(var(--foreground));
+    }
+
+    .modal-close svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .modal-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 9999px;
+      background: hsl(var(--destructive) / 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: hsl(var(--destructive));
+    }
+
+    .modal h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.375rem;
+    }
+
+    .modal p {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: hsl(var(--muted-foreground));
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: hsl(var(--foreground));
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-cancel:hover {
+      background: hsl(var(--secondary));
+    }
+
+    .btn-confirm-delete {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: white;
+      background: hsl(var(--destructive));
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-confirm-delete:hover {
+      background: hsl(var(--destructive) / 0.9);
+    }
+
+    .btn-confirm-delete svg {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
   </style>
 </head>
 <body>
@@ -658,6 +790,64 @@
       </div>
     </div>
   </main>
+
+  <div class="modal-overlay" id="clearModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="clearModalTitle">
+      <button class="modal-close" onclick="closeClearModal()" aria-label="Fechar" data-od-id="btn-fechar-modal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"/>
+          <path d="m6 6 12 12"/>
+        </svg>
+      </button>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 9v4"/>
+          <path d="M12 17h.01"/>
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        </svg>
+      </div>
+      <h3 id="clearModalTitle">Limpar treino?</h3>
+      <p id="clearModalDescription">Esta ação irá desmarcar todos os exercícios de {day}. Você pode marcá-los novamente depois.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="clearModalCancel" data-od-id="btn-cancelar-limpeza">Cancelar</button>
+        <button class="btn-confirm-delete" id="clearModalConfirm" data-od-id="btn-confirmar-limpeza">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 22-1-4"/><path d="M19 14a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v1a1 1 0 0 0 1 1"/><path d="M19 14H5l-1.973 6.767A1 1 0 0 0 4 22h16a1 1 0 0 0 .973-1.233z"/><path d="m8 22 1-4"/></svg>
+          Sim, limpar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="removeModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="removeModalTitle">
+      <button class="modal-close" onclick="closeRemoveModal()" aria-label="Fechar" data-od-id="btn-fechar-modal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"/>
+          <path d="m6 6 12 12"/>
+        </svg>
+      </button>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"/>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+        </svg>
+      </div>
+      <h3 id="removeModalTitle">Remover exercício?</h3>
+      <p id="removeModalDescription"></p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="removeModalCancel" data-od-id="btn-cancelar-remocao">Cancelar</button>
+        <button class="btn-confirm-delete" id="removeModalConfirm" data-od-id="btn-confirmar-remocao">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"/>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+          </svg>
+          Sim, remover
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const days = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
@@ -814,12 +1004,30 @@
       el.classList.toggle('open');
     }
 
+    let pendingRemoveId = null;
+
     function removeExercise(id) {
-      currentIds = currentIds.filter(e => e !== id);
-      delete doneState[id];
+      pendingRemoveId = id;
+      const ex = getExercise(id);
+      document.getElementById('removeModalDescription').textContent =
+        `Deseja remover ${ex ? ex.name : 'este exercício'} deste treino?`;
+      document.getElementById('removeModal').classList.add('open');
+    }
+
+    function closeRemoveModal() {
+      pendingRemoveId = null;
+      document.getElementById('removeModal').classList.remove('open');
+    }
+
+    document.getElementById('removeModalCancel').addEventListener('click', closeRemoveModal);
+    document.getElementById('removeModalConfirm').addEventListener('click', function() {
+      if (!pendingRemoveId) return;
+      currentIds = currentIds.filter(e => e !== pendingRemoveId);
+      delete doneState[pendingRemoveId];
       renderExercises();
       updateHeaderCounter();
-    }
+      closeRemoveModal();
+    });
 
     function addExercise(id) {
       if (!currentIds.includes(id)) {
@@ -924,9 +1132,30 @@
 
     document.getElementById('btnClear').addEventListener('click', function() {
       if (currentIds.length === 0) return;
-      if (confirm(`Desmarcar todos os exercícios de ${dayDisplay}?`)) {
-        currentIds.forEach(id => { doneState[id] = false; });
-        renderExercises();
+      openClearModal();
+    });
+
+    function openClearModal() {
+      document.getElementById('clearModalDescription').textContent =
+        `Esta ação irá desmarcar todos os exercícios de ${dayDisplay}. Você pode marcá-los novamente depois.`;
+      document.getElementById('clearModal').classList.add('open');
+    }
+
+    function closeClearModal() {
+      document.getElementById('clearModal').classList.remove('open');
+    }
+
+    document.getElementById('clearModalCancel').addEventListener('click', closeClearModal);
+    document.getElementById('clearModalConfirm').addEventListener('click', function() {
+      currentIds.forEach(id => { doneState[id] = false; });
+      renderExercises();
+      closeClearModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeClearModal();
+        closeRemoveModal();
       }
     });
 
