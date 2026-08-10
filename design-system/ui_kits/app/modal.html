@@ -14,7 +14,10 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
 
 /* Modal overlay */
 .modal-overlay { display:flex; align-items:center; justify-content:center; padding:1.5rem; background:hsl(var(--foreground)/0.5); border-radius:var(--radius); min-height:20rem; }
-.modal { background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:calc(var(--radius) + 0.125rem); box-shadow:0 8px 30px hsl(var(--foreground)/0.1); max-width:24rem; width:100%; padding:1.5rem; }
+.modal { position:relative; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:calc(var(--radius) + 0.125rem); box-shadow:0 8px 30px hsl(var(--foreground)/0.1); max-width:24rem; width:100%; padding:1.5rem; }
+.modal-close { position:absolute; top:0.75rem; right:0.75rem; width:2rem; height:2rem; display:flex; align-items:center; justify-content:center; background:transparent; border:none; border-radius:9999px; color:hsl(var(--muted-foreground)); cursor:pointer; transition:background 0.15s, color 0.15s; }
+.modal-close:hover { background:hsl(var(--secondary)); color:hsl(var(--foreground)); }
+.modal-close svg { width:1rem; height:1rem; }
 .modal-icon { width:2.5rem; height:2.5rem; border-radius:9999px; background:hsl(var(--destructive)/0.1); display:flex; align-items:center; justify-content:center; margin-bottom:1rem; }
 .modal-icon svg { width:1.25rem; height:1.25rem; color:hsl(var(--destructive)); }
 .modal h3 { font-size:1rem; font-weight:600; letter-spacing:-0.01em; margin-bottom:0.375rem; }
@@ -57,6 +60,9 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
   <div class="section-title">Confirmation Modal (open state)</div>
   <div class="modal-overlay">
     <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
       <div class="modal-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
       </div>

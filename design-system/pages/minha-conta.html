@@ -191,6 +191,7 @@
     }
 
     .modal {
+      position: relative;
       background: hsl(var(--card));
       border: 1px solid hsl(var(--border));
       border-radius: calc(var(--radius) + 0.125rem);
@@ -198,6 +199,33 @@
       max-width: 24rem;
       width: 100%;
       padding: 1.5rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      border-radius: 9999px;
+      color: hsl(var(--muted-foreground));
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .modal-close:hover {
+      background: hsl(var(--secondary));
+      color: hsl(var(--foreground));
+    }
+
+    .modal-close svg {
+      width: 1rem;
+      height: 1rem;
     }
 
     .modal-icon {
@@ -408,6 +436,12 @@
 
   <div class="modal-overlay" id="deleteModal">
     <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" onclick="closeDeleteModal()" aria-label="Fechar" data-od-id="btn-fechar-modal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"/>
+          <path d="m6 6 12 12"/>
+        </svg>
+      </button>
       <div class="modal-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 9v4"/>

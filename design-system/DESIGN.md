@@ -247,9 +247,10 @@ Card hover: `border-color: hsl(var(--ring) / 0.12)`, `box-shadow: 0 1px 3px hsl(
 
 ### 7.6 Modal / Confirm Dialog
 - Overlay: fixed inset 0, bg `--foreground / 0.5`, z-index 200, centered flex
-- Modal box: `--card`, 1px `--border`, radius `calc(var(--radius) + 0.125rem)`, shadow `0 8px 30px --fg / 0.1`, max-width 24rem, padding 1.5rem
+- Modal box: `--card`, 1px `--border`, radius `calc(var(--radius) + 0.125rem)`, shadow `0 8px 30px --fg / 0.1`, max-width 24rem, padding 1.5rem, `position: relative`
 - Icon: 2.5rem circle, `--destructive / 0.1` bg, SVG `--destructive` 1.25rem
-- Dismiss: `Escape` key
+- Close button: 2rem × 2rem icon-only, absolute top-right `0.75rem`, `--muted-foreground`, hover bg `--secondary` + `--foreground`, SVG (Lucide X) 1rem, `aria-label="Fechar"`, `data-od-id="btn-fechar-modal"`
+- Dismiss: `Escape` key, close button, or Cancel button
 
 ### 7.7 Tags / Chips
 - Padding: 0.125rem 0.5rem
@@ -392,6 +393,7 @@ All icons are inline SVGs with `currentColor` stroke, 1rem–1.25rem functional 
 | Biceps-flexed (filled) | Primary muscle label | Biceps path, filled |
 | Biceps-flexed (outline) | Secondary muscle label | Biceps path, no fill |
 | Warning triangle | Modal confirm delete | Triangle with ! (Lucide alert-triangle) |
+| X (close) | Modal top-right close button | Two crossed lines (Lucide X) |
 | Google logo | Login button | 4-color Google G (brand colors: #4285F4, #34A853, #FBBC05, #EA4335) |
 | Home | 404 home button | House icon (Lucide home) |
 | Plus | Feature card | Document icon |
@@ -453,7 +455,9 @@ Use `data-od-id="kebab-case-id"` on interactive elements:
 - `btn-instrucoes-{id}`, `btn-remover-{id}`, `btn-add-{id}`
 - `check-feito-{id}`
 - `prev-{id}`, `next-{id}`, `dot-{id}-{n}`
-- `btn-limpar-treino`, `btn-excluir-conta`, `btn-cancelar-exclusao`, `btn-confirmar-exclusao`
+- `btn-limpar-treino`, `btn-cancelar-limpeza`, `btn-confirmar-limpeza`
+- `btn-cancelar-remocao`, `btn-confirmar-remocao`
+- `btn-excluir-conta`, `btn-cancelar-exclusao`, `btn-confirmar-exclusao`
 - `hero`, `features`, `feature-card-plano`, `feature-card-evolucao`, `feature-card-simplicidade`, `footer`
 
 ### Implementation notes

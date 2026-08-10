@@ -146,6 +146,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Overlay | fixed inset 0, bg `--fg / 0.5` |
 | Modal box | `--card`, border 1px `--border`, radius `--radius + 0.125rem`, shadow `0 8px 30px --fg / 0.1`, max-width 24rem, padding 1.5rem |
 | Ícone modal | 2.5rem × 2.5rem, border-radius 9999px, bg `--destructive / 0.1`, svg `--destructive` 1.25rem |
+| Close button | 2rem × 2rem, absolute top-right 0.75rem, `--muted-foreground` → hover bg `--secondary`, svg (Lucide X) 1rem, `aria-label="Fechar"`, `data-od-id="btn-fechar-modal"` |
 
 ### 4.6 Tags / Chips
 
@@ -209,6 +210,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Target outline (2 circles) | Músculo secundário | 2 concentric circles |
 | Back arrow | workout-day, conta | chevron left (polyline) |
 | Warning triangle | Modal excluir | triangle with ! |
+| X (Fechar) | Modal (top-right) | 2 crossed lines |
 | Google logo | Login | 4-color Google G |
 
 ---
