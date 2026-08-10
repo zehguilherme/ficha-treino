@@ -39,7 +39,7 @@
       "behavior": "POST /api/auth/google com ID token retorna JWT; GET /api/auth/me retorna usuário",
       "verification": "curl -X POST http://localhost:3001/api/auth/google -H 'Content-Type: application/json' -d '{\"token\":\"...\"}'",
       "status": "completed",
-      "evidence": "POST /api/auth/google valida ID token (google-auth-library, audience GOOGLE_CLIENT_ID), cria usuário + 7 treinos semanais em $transaction no 1º login, atualiza no recorrente, retorna JWT 24h (claims user_id/google_id); GET /api/auth/me protegido por requireAuth retorna name/email/google_id; 21 testes passando; swagger validado em /api/docs"
+      "evidence": "POST /api/auth/google valida ID token (google-auth-library, audience GOOGLE_CLIENT_ID), cria usuário + 7 treinos semanais em $transaction no 1º login, atualiza no recorrente, retorna JWT 24h (claims user_id/google_id); GET /api/auth/me protegido por requireAuth retorna name/email/google_id; 26 testes passando; swagger validado em /api/docs"
     },
     {
       "id": "api-004",
@@ -48,8 +48,8 @@
       "title": "Criação automática de treinos no signup",
       "behavior": "Ao criar usuário, gerar 7 treinos (um por dia da semana) sem exercícios",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts | jq '.workouts | length == 7'",
-      "status": "not_started",
-      "evidence": ""
+      "status": "completed",
+      "evidence": "Implementado dentro do api-003: routes/auth.ts cria os 7 workouts (tx.workout.createMany) no 1º login, dentro do mesmo $transaction que cria o usuário"
     },
     {
       "id": "api-005",
@@ -241,8 +241,8 @@
       "title": "Swagger/OpenAPI docs para todos os endpoints",
       "behavior": "Todas as rotas possuem annotation @openapi JSDoc; /api/docs mostra todos os endpoints",
       "verification": "curl -sf http://localhost:3001/api/docs | grep -q 'swagger-ui'",
-      "status": "not_started",
-      "evidence": ""
+      "status": "completed",
+      "evidence": "src/swagger.ts (spec swagger-jsdoc + swagger-ui-express) servido em /api/docs; annotations @openapi em app.ts (health) e routes/auth.ts (google + me); fixes de deploy Vercel para servir assets do Swagger"
     },
     {
       "id": "tool-003",

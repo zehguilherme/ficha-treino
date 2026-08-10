@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-02: ui-001 (Login Google OAuth) concluído — `LoginPage`, `LoginForm`, `useGoogleLogin`, callback page.
+2026-08-10: docs sync — AGENTS.md, feature_list.json, progress.md, session-handoff.md alinhados ao estado atual (confirm modals no design-system, README stub).
 
 ## O que foi feito
 
@@ -11,10 +11,13 @@
 - `frontend/src/hooks/useGoogleLogin.ts`: hook com URL OAuth + state anti-CSRF
 - `frontend/src/app/auth/google/callback/page.tsx`: callback do Google OAuth
 - `frontend/src/lib/auth.ts`: helpers de sessão (setSession/getSession/clearSession)
+- `frontend/src/lib/api.ts`: instância axios + interceptors (injeção do JWT, limpeza de sessão no 401)
 - `frontend/src/lib/exerciseImage.ts`: helper para URLs de imagens via CDN
-- Testes: LoginForm, useGoogleLogin, callback page, auth helpers
-- `feature_list.json`: ui-001 marcado como `passes: true`
-- `progress.md`: histórico atualizado com api-003 e ui-001
+- `frontend/src/app/not-found.tsx`: página 404 amigável
+- `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
+- Testes: LoginForm, useGoogleLogin, callback page, auth helpers, api interceptors, not-found
+- `feature_list.json`: ui-001, ui-009 `passes: true`; api-004 e tool-002 `completed`; api-003 com 26 testes
+- `progress.md`: histórico atualizado até 2026-08-10
 
 ## Feature ativa
 
@@ -23,17 +26,16 @@
 ## Próximos passos
 
 ### Backend
-1. api-004: Criação automática de treinos no signup (já feito em api-003, verificar)
-2. api-005: CRUD de treinos
-3. api-006: Busca de exercícios
-4. api-007: Marcar/desmarcar exercícios
-5. api-008: Excluir conta
+1. api-005: CRUD de treinos (api-004 já feito dentro do api-003)
+2. api-006: Busca de exercícios
+3. api-007: Marcar/desmarcar exercícios
+4. api-008: Excluir conta
 
 ### Frontend
-6. ui-002: Dashboard
-7. ui-003: Workout day
-8. ui-004: Search UI
-9. ui-005: Checkbox + carrossel
+5. ui-002: Dashboard
+6. ui-003: Workout day
+7. ui-004: Search UI
+8. ui-005: Checkbox + carrossel
 
 ## Branch
 
