@@ -10,7 +10,7 @@ export const FeatureCard = ({ title, description, icon }: FeatureCardProps) => {
       <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-4">
         {icon}
       </div>
-      <h3 className="text-[0.9375rem] font-semibold mb-1.5">{title}</h3>
+      <h2 className="text-[0.9375rem] font-semibold mb-1.5">{title}</h2>
       <p className="text-[0.8125rem] text-muted-foreground leading-[1.5]">{description}</p>
     </div>
   );

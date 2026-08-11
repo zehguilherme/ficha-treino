@@ -11,6 +11,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'Ficha de Treino - Seu treino organizado',
+  description:
+    'Organize seus treinos, acompanhe cada exercício e evolua com consistência. O planejamento que separa quem sonha de quem conquista.',
 };
 
 const RootLayout = ({
