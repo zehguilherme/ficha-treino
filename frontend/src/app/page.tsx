@@ -40,6 +40,8 @@ const HomePage = () => {
           alt="Academia organizada"
           sizes="100vw"
           priority
+          fetchPriority="high"
+          quality={60}
         />
         <div className="absolute inset-0 bg-gradient-to-br from-foreground/75 to-foreground/45 z-[1]" />
         <div className="relative z-10 max-w-3xl mx-auto py-12 px-6 sm:py-16 sm:px-8 text-center text-white">
