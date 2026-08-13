@@ -6,18 +6,19 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 
 ## Páginas
 
-| Rota                 | Componente       | Descrição                          |
-| -------------------- | ---------------- | ---------------------------------- |
-| `/`                       | `HomePage`               | Landing page pública com hero + features |
-| `/login`                  | `LoginPage`              | Login com Google OAuth             |
-| `/auth/google/callback`   | `GoogleCallbackPage`     | Callback do OAuth Google           |
-| `/dashboard`              | `DashboardPage`          | Grid semanal com 7 cards de treino |
-| `/workout/[weekDay]`      | `WorkoutDayPage`         | Exercícios do dia + search         |
-| `/account`                | `AccountPage`            | Dados do perfil + excluir conta    |
+| Rota                    | Componente           | Descrição                                |
+| ----------------------- | -------------------- | ---------------------------------------- |
+| `/`                     | `HomePage`           | Landing page pública com hero + features |
+| `/login`                | `LoginPage`          | Login com Google OAuth                   |
+| `/auth/google/callback` | `GoogleCallbackPage` | Callback do OAuth Google                 |
+| `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards de treino       |
+| `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + search               |
+| `/account`              | `AccountPage`        | Dados do perfil + excluir conta          |
 
-## Shared
+## Validação
 
-Schemas Zod compartilhados com backend via `shared/` (validação front/back idêntica).
+Schemas Zod próprios do frontend validam respostas na fronteira HTTP. O Swagger documenta o
+contrato público; schemas equivalentes no backend permanecem independentes.
 
 ## Imagens
 
@@ -146,6 +147,7 @@ export default config;
   3. `Assert:` o que é verificado
 
   Exemplo:
+
   ```ts
   /**
    * Happy path: valid token reaches the handler.
@@ -153,6 +155,7 @@ export default config;
    */
   test('populates req.user and calls next with valid token', async () => { ... });
   ```
+
 - **Mocking:** `jest.mock` para módulos (ex.: `next/navigation`, hooks); mocks referenciados em factories devem ser avaliados lazy (closures) para evitar TDZ do hoisting do `jest.mock`
 - **Mocks de API:** módulo `@/lib/api` mockado via `jest.mock`, `jest.clearAllMocks()` em `beforeEach`
 - **Navegação:** `window.location` é non-configurable no jsdom (não é spy-able) — hooks que navegam recebem um `navigate` injetável (ex.: `useGoogleLogin(navigate)`) para o teste capturar a URL alvo
@@ -163,56 +166,56 @@ export default config;
 
 Testes unitários dos helpers de sessão (`setSession`/`getSession`/`clearSession` com `localStorage`).
 
-| Teste | Tipo | Cenário | Assert principal |
-|-------|------|---------|------------------|
-| setSession stores the token in localStorage | unit | chama `setSession('jwt-token')` | `localStorage` contém o token |
-| getSession returns null when no token is stored | unit | localStorage vazio | retorna `null` |
-| getSession returns the stored token | unit | token armazenado | retorna o token |
-| clearSession removes the stored token | unit | chama `clearSession()` | `getSession()` retorna `null` |
+| Teste                                           | Tipo | Cenário                         | Assert principal              |
+| ----------------------------------------------- | ---- | ------------------------------- | ----------------------------- |
+| setSession stores the token in localStorage     | unit | chama `setSession('jwt-token')` | `localStorage` contém o token |
+| getSession returns null when no token is stored | unit | localStorage vazio              | retorna `null`                |
+| getSession returns the stored token             | unit | token armazenado                | retorna o token               |
+| clearSession removes the stored token           | unit | chama `clearSession()`          | `getSession()` retorna `null` |
 
 #### `src/hooks/useGoogleLogin.test.ts`
 
 Testes unitários do hook de login Google (URL OAuth + state anti-CSRF + redirect).
 
-| Teste | Tipo | Cenário | Assert principal |
-|-------|------|---------|------------------|
-| builds the Google OAuth URL with all required params | unit | `buildAuthUrl(clientId, redirectUri, state)` | params `client_id`, `redirect_uri`, `response_type=code`, `scope`, `prompt=select_account`, `state` |
-| returns error when the Google client id is not configured | unit | sem `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | `status === 'error'` + mensagem PT-BR, sem state |
-| stores the OAuth state and redirects to Google | unit | clientId configurado | `navigate` recebe URL do Google; `sessionStorage` guarda o mesmo `state` da URL |
+| Teste                                                     | Tipo | Cenário                                      | Assert principal                                                                                    |
+| --------------------------------------------------------- | ---- | -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| builds the Google OAuth URL with all required params      | unit | `buildAuthUrl(clientId, redirectUri, state)` | params `client_id`, `redirect_uri`, `response_type=code`, `scope`, `prompt=select_account`, `state` |
+| returns error when the Google client id is not configured | unit | sem `NEXT_PUBLIC_GOOGLE_CLIENT_ID`           | `status === 'error'` + mensagem PT-BR, sem state                                                    |
+| stores the OAuth state and redirects to Google            | unit | clientId configurado                         | `navigate` recebe URL do Google; `sessionStorage` guarda o mesmo `state` da URL                     |
 
 #### `src/components/auth/LoginForm.test.tsx`
 
 Testes de componente do formulário de login (hook mockado).
 
-| Teste | Tipo | Cenário | Assert principal |
-|-------|------|---------|------------------|
-| renders the Google login button | component | status `idle` | botão "Entrar com Google" presente |
-| starts the Google login flow on click | component | clique no botão | `startLogin` chamado 1x |
-| shows loading state while logging in | component | status `loading` | botão desabilitado + `aria-busy` + "Entrando..." |
-| shows the error message when login fails | component | status `error` | mensagem em `role="alert"` |
+| Teste                                    | Tipo      | Cenário          | Assert principal                                 |
+| ---------------------------------------- | --------- | ---------------- | ------------------------------------------------ |
+| renders the Google login button          | component | status `idle`    | botão "Entrar com Google" presente               |
+| starts the Google login flow on click    | component | clique no botão  | `startLogin` chamado 1x                          |
+| shows loading state while logging in     | component | status `loading` | botão desabilitado + `aria-busy` + "Entrando..." |
+| shows the error message when login fails | component | status `error`   | mensagem em `role="alert"`                       |
 
 #### `src/app/auth/google/callback/page.test.tsx`
 
 Testes de integração da callback page (`@/lib/api` e `next/navigation` mockados).
 
-| Teste | Tipo | Cenário | Assert principal |
-|-------|------|---------|------------------|
-| exchanges the code and redirects to the dashboard on success | integration | `code`+`state` válidos, API retorna token | `exchangeGoogleCode` chamado com o `code`, `setSession(token)`, redirect `/dashboard` |
-| shows an error when the OAuth state does not match | integration | `state` divergente | alerta de falha, `sessionStorage` limpo, sem chamada à API |
-| shows an error when code or state is missing | integration | URL sem `code`/`state` | alerta de falha |
-| redirects to login when the user denies access | integration | `error=access_denied` | redirect `/login`, sem chamada à API |
-| shows an error when the backend rejects the code | integration | `exchangeGoogleCode` rejeita com AxiosError (com `response`) | alerta "Não foi possível autenticar" |
-| shows a connection error when the API call fails | integration | `exchangeGoogleCode` rejeita com `Error` (rede) | alerta "Não foi possível conectar ao servidor" |
+| Teste                                                        | Tipo        | Cenário                                                      | Assert principal                                                                      |
+| ------------------------------------------------------------ | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| exchanges the code and redirects to the dashboard on success | integration | `code`+`state` válidos, API retorna token                    | `exchangeGoogleCode` chamado com o `code`, `setSession(token)`, redirect `/dashboard` |
+| shows an error when the OAuth state does not match           | integration | `state` divergente                                           | alerta de falha, `sessionStorage` limpo, sem chamada à API                            |
+| shows an error when code or state is missing                 | integration | URL sem `code`/`state`                                       | alerta de falha                                                                       |
+| redirects to login when the user denies access               | integration | `error=access_denied`                                        | redirect `/login`, sem chamada à API                                                  |
+| shows an error when the backend rejects the code             | integration | `exchangeGoogleCode` rejeita com AxiosError (com `response`) | alerta "Não foi possível autenticar"                                                  |
+| shows a connection error when the API call fails             | integration | `exchangeGoogleCode` rejeita com `Error` (rede)              | alerta "Não foi possível conectar ao servidor"                                        |
 
 #### `src/lib/api.test.ts`
 
 Testes dos interceptors da instância axios (injeção do JWT e limpeza de sessão no 401).
 
-| Teste | Tipo | Cenário | Assert principal |
-|-------|------|---------|------------------|
-| attaches Authorization header when a session token exists | unit | `setSession(TOKEN)` + adapter mock 200 | request carrega `Authorization: Bearer TOKEN` |
-| does not attach Authorization header without a session token | unit | sem token + adapter mock 200 | sem header `Authorization` |
-| clears the session when the API responds 401 | unit | token armazenado + adapter mock 401 | request rejeita e `localStorage` limpo |
+| Teste                                                        | Tipo | Cenário                                | Assert principal                              |
+| ------------------------------------------------------------ | ---- | -------------------------------------- | --------------------------------------------- |
+| attaches Authorization header when a session token exists    | unit | `setSession(TOKEN)` + adapter mock 200 | request carrega `Authorization: Bearer TOKEN` |
+| does not attach Authorization header without a session token | unit | sem token + adapter mock 200           | sem header `Authorization`                    |
+| clears the session when the API responds 401                 | unit | token armazenado + adapter mock 401    | request rejeita e `localStorage` limpo        |
 
 ## Constraints
 

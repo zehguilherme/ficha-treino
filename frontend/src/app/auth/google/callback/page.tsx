@@ -5,13 +5,14 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
-import { setSession } from '@/lib/auth';
+import { useAuth } from '@/contexts/AuthContext';
 import { exchangeGoogleCode } from '@/lib/api';
 
 const STATE_KEY = 'ficha_treino_google_state';
 
 const GoogleCallbackPage = () => {
   const router = useRouter();
+  const { login } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const GoogleCallbackPage = () => {
     const exchange = async (): Promise<void> => {
       try {
         const { token } = await exchangeGoogleCode(code);
-        setSession(token);
+        login(token);
         router.replace('/dashboard');
       } catch (error) {
         const authFailed = axios.isAxiosError(error) && error.response !== undefined;
@@ -49,7 +50,7 @@ const GoogleCallbackPage = () => {
       }
     };
     void exchange();
-  }, [router]);
+  }, [login, router]);
 
   return (
     <main className="flex-1 flex items-center justify-center px-4 py-8 bg-background">

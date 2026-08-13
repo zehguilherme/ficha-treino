@@ -44,6 +44,8 @@ Seed (`npm run seed` → `src/seed.ts`): baixa `exercises-ptbr-full-translation.
 
 ## Estrutura de diretórios (atual)
 
+Nota ESM/NodeNext: os arquivos fonte continuam sendo `.ts`, mas imports relativos no backend usam sufixo `.js` porque o Node executa o JavaScript emitido no build. Não trocar esses imports para `.ts`.
+
 ```
 src/
   server.ts          # só sobe o listener (porta 3001)
@@ -63,7 +65,8 @@ src/
   middleware/
     auth.ts          # requireAuth, signJwt, verifyJwt
   validators/
-    auth.ts          # schemas Zod
+    auth.ts          # schemas Zod de entrada
+    responses.ts     # schemas Zod de resposta
   *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth)
 ```
 
@@ -170,7 +173,7 @@ Testes unitários para a função `seed` (download HTTP via `http.get` + upsert 
 
 - **Nunca** usar tipo `any` — toda variável, parâmetro e retorno de função deve ter tipo explícito — usar skill `type-safety-staged`
 - Prisma ORM — usar `@prisma/client` para todas as queries
-- Zod schemas compartilhados com frontend via `shared/`
+- Schemas Zod próprios do backend; contratos HTTP equivalentes no frontend são independentes
 - JWT gerado e validado no backend, sem refresh
 - Rotas de gerenciamento exigem autenticação (exceto `/api/auth/google` e `/api/health`)
 - **Nunca** expor nomes de variáveis de ambiente, secrets, tokens, connection strings ou stack traces em respostas HTTP ou `console.*` em código client-facing. Erros devem ser genéricos no cliente e detalhados apenas no server-side (logs do servidor)

@@ -329,9 +329,9 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
 - Estilização
   - Tailwind CSS (https://tailwindcss.com/docs/installation/framework-guides/nextjs)
   - ShadCN (https://ui.shadcn.com/docs/installation)
-- TypeScript (compartilhado)
-- Zod (compartilhado)
-- Jest (compartilhado)
+- TypeScript
+- Zod — schemas próprios no frontend e backend, mesmo quando representam o mesmo contrato HTTP
+- Jest
 - @tanstack/react-query
 - @tanstack/react-query-devtools (dev)
 

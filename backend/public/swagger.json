@@ -63,6 +63,95 @@
         }
       }
     },
+    "/api/workouts": {
+      "get": {
+        "tags": [
+          "Workouts"
+        ],
+        "summary": "Lista os 7 treinos semanais do usuário autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Treinos do usuário autenticado com contagem e nomes de exercícios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "workouts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "weekDay": {
+                            "type": "string",
+                            "enum": [
+                              "DOMINGO",
+                              "SEGUNDA",
+                              "TERÇA",
+                              "QUARTA",
+                              "QUINTA",
+                              "SEXTA",
+                              "SABADO"
+                            ]
+                          },
+                          "exerciseCount": {
+                            "type": "integer"
+                          },
+                          "exerciseNames": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente, inválido ou expirado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário autenticado não encontrado no banco",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/google": {
       "post": {
         "tags": [

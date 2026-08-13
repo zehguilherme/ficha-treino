@@ -1,18 +1,18 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import GoogleCallbackPage from './page';
-import { setSession } from '@/lib/auth';
 import { exchangeGoogleCode } from '@/lib/api';
 
 const STATE_KEY = 'ficha_treino_google_state';
 
 let mockReplace: jest.Mock;
+let mockLogin: jest.Mock;
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ replace: mockReplace }),
 }));
 
-jest.mock('@/lib/auth', () => ({
-  setSession: jest.fn(),
+jest.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({ login: mockLogin }),
 }));
 
 jest.mock('@/lib/api', () => ({
@@ -24,6 +24,7 @@ const mockExchangeGoogleCode = jest.mocked(exchangeGoogleCode);
 beforeEach(() => {
   jest.clearAllMocks();
   mockReplace = jest.fn();
+  mockLogin = jest.fn();
   window.history.replaceState({}, '', '/auth/google/callback?code=test-code&state=test-state');
   sessionStorage.setItem(STATE_KEY, 'test-state');
 });
@@ -36,7 +37,7 @@ describe('GoogleCallbackPage', () => {
   /**
    * Exchanges the code and redirects to the dashboard on success.
    * Mock: exchangeGoogleCode resolves with a JWT token, URL has code and state.
-   * Assert: POST /api/auth/google with code, setSession called, redirect /dashboard, state cleared.
+   * Assert: POST /api/auth/google with code, context login called, redirect /dashboard, state cleared.
    */
   test('exchanges the code and redirects to the dashboard on success', async () => {
     mockExchangeGoogleCode.mockResolvedValue({
@@ -49,7 +50,7 @@ describe('GoogleCallbackPage', () => {
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/dashboard'));
     expect(mockExchangeGoogleCode).toHaveBeenCalledWith('test-code');
-    expect(setSession).toHaveBeenCalledWith('jwt-token');
+    expect(mockLogin).toHaveBeenCalledWith('jwt-token');
     expect(sessionStorage.getItem(STATE_KEY)).toBeNull();
   });
 
