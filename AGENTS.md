@@ -5,7 +5,7 @@
 - Frontend: Next.js App Router, TanStack Query + Context API (client global state), `useState` só para UI local
 - Backend: Express + Prisma ORM (`@prisma/client`)
 - DB: PostgreSQL via Docker Compose, seed único do dataset `exercises-ptbr-full-translation.json`
-- Validação: Zod (compartilhado front/back)
+- Validação: Zod com schemas próprios em cada módulo
 - Auth: Google OAuth 2.0 → JWT (24h, sem refresh, localStorage)
 - UI: Tailwind + ShadCN HSL tokens (`design-system/colors_and_type.css`)
 - Testes: Jest 30 + `@swc/jest` (implementado em frontend/ e backend/)

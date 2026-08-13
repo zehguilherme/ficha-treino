@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { api } from './api';
+import { api, getCurrentUser, getWorkouts } from './api';
 import { setSession } from './auth';
 
 const TOKEN = 'jwt-token';
@@ -31,6 +31,16 @@ const mockUnauthorizedAdapter = async (
     response,
   );
 };
+
+const mockInvalidPayloadAdapter = async (
+  config: InternalAxiosRequestConfig,
+): Promise<AxiosResponse> => ({
+  data: { unexpected: true },
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config,
+});
 
 describe('api axios instance', () => {
   beforeEach(() => {
@@ -70,5 +80,17 @@ describe('api axios instance', () => {
     api.defaults.adapter = mockUnauthorizedAdapter;
     await expect(api.get('/api/test')).rejects.toMatchObject({ response: { status: 401 } });
     expect(localStorage.getItem('ficha_treino_token')).toBeNull();
+  });
+
+  /**
+   * API trust boundary receives payloads that do not match the documented contracts.
+   * Mock: custom adapter resolves with an unrelated object for both endpoints.
+   * Assert: current-user and workouts requests reject instead of leaking invalid data.
+   */
+  test('rejects invalid API response payloads', async () => {
+    api.defaults.adapter = mockInvalidPayloadAdapter;
+
+    await expect(getCurrentUser()).rejects.toBeDefined();
+    await expect(getWorkouts()).rejects.toBeDefined();
   });
 });

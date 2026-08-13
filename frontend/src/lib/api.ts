@@ -1,5 +1,13 @@
 import axios, { type AxiosError } from 'axios';
 import { clearSession, getSession } from './auth';
+import {
+  currentUserResponseSchema,
+  googleAuthResponseSchema,
+  workoutsResponseSchema,
+  type CurrentUser,
+  type GoogleAuthResponse,
+  type WorkoutsResponse,
+} from '@/schemas/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -18,17 +26,17 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       clearSession();
-      window.location.href = '/login';
+      window.location.replace(new URL('/login', window.location.origin).toString());
     }
     return Promise.reject(error);
   },
 );
 
-export interface GoogleAuthResponse {
-  token: string;
-  name: string;
-  email: string;
-}
+export const exchangeGoogleCode = async (code: string): Promise<GoogleAuthResponse> =>
+  googleAuthResponseSchema.parse((await api.post('/api/auth/google', { code })).data);
 
-export const exchangeGoogleCode = (code: string): Promise<GoogleAuthResponse> =>
-  api.post<GoogleAuthResponse>('/api/auth/google', { code }).then((response) => response.data);
+export const getCurrentUser = async (): Promise<CurrentUser> =>
+  currentUserResponseSchema.parse((await api.get('/api/auth/me')).data);
+
+export const getWorkouts = async (): Promise<WorkoutsResponse> =>
+  workoutsResponseSchema.parse((await api.get('/api/workouts')).data);

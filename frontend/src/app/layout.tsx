@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,7 +24,7 @@ const RootLayout = ({
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
-        {children}
+        <QueryProvider>{children}</QueryProvider>
         <Analytics />
       </body>
     </html>

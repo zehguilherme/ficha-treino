@@ -1,13 +1,11 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { Button } from '@/components/ui/Button';
+import { HomeCta } from '@/components/layout/HomeCta';
 import { FeatureCard } from '@/components/ui/FeatureCard';
 import { DocumentIcon } from '@/components/ui/DocumentIcon';
 import { ChartIcon } from '@/components/ui/ChartIcon';
 import { ClockIcon } from '@/components/ui/ClockIcon';
-import { ArrowRightIcon } from '@/components/ui/ArrowRightIcon';
 
 const features = [
   {
@@ -59,15 +57,7 @@ const HomePage = () => {
             Organize seus treinos, acompanhe cada exercício e evolua com consistência. O
             planejamento que separa quem sonha de quem conquista.
           </p>
-          <Button
-            asChild
-            className="group bg-background text-foreground font-semibold rounded-[calc(var(--radius)+0.125rem)] px-8 py-3.5 hover:bg-background/90 hover:-translate-y-px hover:shadow-[0_4px_20px_hsl(222.2,84%,4.9%/0.2)] text-[0.9375rem]"
-          >
-            <Link href="/login">
-              Começar agora
-              <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-[3px]" />
-            </Link>
-          </Button>
+          <HomeCta />
         </div>
       </section>
 

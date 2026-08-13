@@ -5,6 +5,7 @@ import { prisma } from '../db.js';
 import { requireAuth, signJwt } from '../middleware/auth.js';
 import { WeekDay, type User } from '../generated/prisma/client.js';
 import { googleAuthBodySchema } from '../validators/auth.js';
+import { currentUserResponseSchema, googleAuthResponseSchema } from '../validators/responses.js';
 
 const WEEK_DAYS = [
   WeekDay.DOMINGO,
@@ -152,11 +153,13 @@ authRouter.post('/google', async (req, res) => {
     });
   }
 
-  res.json({
-    token: signJwt({ user_id: user.id, google_id: user.googleId }),
-    name: user.name,
-    email: user.email,
-  });
+  res.json(
+    googleAuthResponseSchema.parse({
+      token: signJwt({ user_id: user.id, google_id: user.googleId }),
+      name: user.name,
+      email: user.email,
+    }),
+  );
 });
 
 /**
@@ -213,5 +216,11 @@ authRouter.get('/me', requireAuth, async (req, res) => {
     return;
   }
 
-  res.json({ name: user.name, email: user.email, google_id: user.googleId });
+  res.json(
+    currentUserResponseSchema.parse({
+      name: user.name,
+      email: user.email,
+      google_id: user.googleId,
+    }),
+  );
 });

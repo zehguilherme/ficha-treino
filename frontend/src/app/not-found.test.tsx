@@ -1,5 +1,11 @@
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ replace: jest.fn() }),
+  usePathname: () => '/',
+}));
+
 import { render, screen } from '@testing-library/react';
 import NotFoundPage from './not-found';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 describe('NotFoundPage', () => {
   /**
@@ -8,7 +14,11 @@ describe('NotFoundPage', () => {
    * Assert: "404" heading, friendly message and link to home present.
    */
   test('renders the 404 card with home link', () => {
-    render(<NotFoundPage />);
+    render(
+      <QueryProvider>
+        <NotFoundPage />
+      </QueryProvider>,
+    );
 
     expect(screen.getByText('404')).toBeInTheDocument();
     expect(screen.getByText('Esse exercício não existe na sua ficha')).toBeInTheDocument();

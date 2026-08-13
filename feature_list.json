@@ -8,7 +8,7 @@
       "title": "Docker Compose + PostgreSQL",
       "behavior": "docker compose up -d sobe PostgreSQL, health check responde na API",
       "verification": "docker compose up -d --wait && curl -sf http://localhost:3001/api/health",
-"status": "passing",
+      "status": "passing",
       "evidence": "docker compose up -d --wait sobe Postgres com health check; curl localhost:3001/api/health retorna {\"status\":\"ok\"}"
     },
     {
@@ -133,7 +133,8 @@
         "Cada card exibe nome do dia e contagem de exercícios",
         "Clicar em um card navega para /workout/[weekDay]"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "Dashboard client consome a sessão pelo AuthContext e habilita TanStack Query somente quando autenticado; 7 cards semanais, preview limitado e overflow explícito Mais N exercícios; testes, typecheck, lint e build verificados"
     },
     {
       "id": "ui-003",
@@ -303,7 +304,8 @@
         "Logado: clicar no logo navega para /dashboard",
         "Navegação por teclado funciona (Tab + Enter)"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "Header compartilhado consome AuthContext, alterna link público/dashboard pela presença do JWT, mantém fallback U quando o perfil falha e usa DropdownMenu shadcn/Radix com foco e teclado validados; testes, typecheck, lint e build verificados"
     },
     {
       "id": "ui-011",
