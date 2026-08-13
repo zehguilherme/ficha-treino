@@ -38,6 +38,41 @@ describe('Header', () => {
   });
 
   /**
+   * An anonymous user visits the public header.
+   * Mock: no session is stored.
+   * Assert: the logo and title link to the public landing page.
+   */
+  test('links anonymous users to the landing page', async () => {
+    render(<Header />, { wrapper: Wrapper });
+
+    expect(await screen.findByRole('link', { name: 'Ficha de Treino' })).toHaveAttribute(
+      'href',
+      '/',
+    );
+  });
+
+  /**
+   * An authenticated user visits the header.
+   * Mock: a JWT and a valid user profile are available.
+   * Assert: the logo and title link to the authenticated dashboard.
+   */
+  test('links authenticated users to the dashboard', async () => {
+    setSession('jwt-token');
+    mockedGetCurrentUser.mockResolvedValue({
+      name: 'João Teste',
+      email: 'joao@teste.com',
+      google_id: 'google-123',
+    });
+
+    render(<Header />, { wrapper: Wrapper });
+
+    expect(await screen.findByRole('link', { name: 'Ficha de Treino' })).toHaveAttribute(
+      'href',
+      '/dashboard',
+    );
+  });
+
+  /**
    * A JWT exists but loading the user profile fails temporarily.
    * Mock: getCurrentUser rejects with a network error.
    * Assert: the authenticated menu remains available with fallback initials.
