@@ -67,3 +67,5 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 2026-08-14 — Documentação sincronizada com o backend atual: autenticação, seed, criação dos 7 treinos e `GET /api/workouts` implementados; rota por dia e demais operações ainda pendentes. Enum oficial usa `TERÇA`; treinos vazios são válidos.
 
 Estado do banco verificado em 2026-08-14: container PostgreSQL saudável e schema atualizado; 2 migrations aplicadas.
+
+2026-08-14 — Documentação sincronizada com o fluxo OAuth2 atual, URLs CDN, modelo `exercise_id` (`VARCHAR(100)`), estrutura do projeto e estado atual da implementação.
