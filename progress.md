@@ -10,12 +10,10 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 
 ### Backend (rotas de usuário)
 
-1. api-004: Criação automática de treinos no signup
-2. api-005: CRUD de treinos
-3. api-006: Busca de exercícios
-4. api-007: Marcar/desmarcar exercícios
-5. api-008: Excluir conta
-6. tool-002: Swagger/OpenAPI docs para endpoints de usuário
+1. api-005: concluir `GET /api/workouts/:weekDay` e operações de adição/remoção
+2. api-006: Busca de exercícios
+3. api-007: Marcar/desmarcar exercícios
+4. api-008: Excluir conta
 
 ### Frontend (páginas de usuário)
 
@@ -65,3 +63,7 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 2026-08-12 — ui-002 + ui-010 — Dashboard semanal e Header compartilhado implementados; 7 suítes/24 testes, typecheck, build e PascalCase verificados; lint sem erros (warning preexistente em api.ts).
 
 2026-08-13 — ui-002 + ui-010 — Sessão centralizada em AuthContext, Header migrado para DropdownMenu shadcn/Radix e contratos HTTP validados por schemas Zod independentes no frontend/backend; 9 suítes/30 testes frontend e 6 suítes/31 testes backend, lint, format, typecheck, builds, PascalCase e Swagger verificados.
+
+2026-08-14 — Documentação sincronizada com o backend atual: autenticação, seed, criação dos 7 treinos e `GET /api/workouts` implementados; rota por dia e demais operações ainda pendentes. Enum oficial usa `TERÇA`; treinos vazios são válidos.
+
+Estado do banco verificado em 2026-08-14: container PostgreSQL saudável e schema atualizado; 2 migrations aplicadas.

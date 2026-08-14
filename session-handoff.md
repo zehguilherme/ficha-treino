@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-10: docs sync — AGENTS.md, feature_list.json, progress.md, session-handoff.md alinhados ao estado atual (confirm modals no design-system, README stub).
+2026-08-14: docs sync — documentação alinhada ao backend atual; `GET /api/workouts` implementado, rota por dia ainda pendente, `TERÇA` é o enum oficial, treinos vazios são válidos e PostgreSQL/migrations verificados.
 
 ## O que foi feito
 
@@ -16,7 +16,7 @@
 - `frontend/src/app/not-found.tsx`: página 404 amigável
 - `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
 - Testes: LoginForm, useGoogleLogin, callback page, auth helpers, api interceptors, not-found
-- `feature_list.json`: ui-001, ui-009 `passes: true`; api-004 e tool-002 `completed`; api-003 com 26 testes
+- `feature_list.json`: ui-001, ui-009 `passes: true`; api-003 e api-004 concluídos; `GET /api/workouts` implementado dentro de api-005; api-006, api-007 e api-008 pendentes
 - `progress.md`: histórico atualizado até 2026-08-10
 
 ## Feature ativa
@@ -26,7 +26,7 @@
 ## Próximos passos
 
 ### Backend
-1. api-005: CRUD de treinos (api-004 já feito dentro do api-003)
+1. api-005: concluir `GET /api/workouts/:weekDay` e CRUD de exercícios do treino
 2. api-006: Busca de exercícios
 3. api-007: Marcar/desmarcar exercícios
 4. api-008: Excluir conta
