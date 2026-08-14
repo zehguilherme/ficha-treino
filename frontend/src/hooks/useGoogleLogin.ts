@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export type LoginStatus = 'idle' | 'loading' | 'error';
 
@@ -25,6 +25,17 @@ const navigateTo = (url: string): void => {
 export const useGoogleLogin = (navigate: (url: string) => void = navigateTo) => {
   const [status, setStatus] = useState<LoginStatus>('idle');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const resetOnRestore = (event: PageTransitionEvent): void => {
+      if (!event.persisted) return;
+      setStatus('idle');
+      setError(null);
+    };
+
+    window.addEventListener('pageshow', resetOnRestore);
+    return () => window.removeEventListener('pageshow', resetOnRestore);
+  }, []);
 
   const startLogin = useCallback(() => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;

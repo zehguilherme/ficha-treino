@@ -75,4 +75,29 @@ describe('useGoogleLogin', () => {
     expect(url.searchParams.get('redirect_uri')).toBe('http://localhost:3000/auth/google/callback');
     expect(sessionStorage.getItem(STATE_KEY)).toBe(url.searchParams.get('state'));
   });
+
+  /**
+   * Restores the login button when the page returns from browser history.
+   * Mock: an active login flow followed by a persisted pageshow event.
+   * Assert: the hook returns to idle and clears any error.
+   */
+  test('resets the login state when the page is restored from history', () => {
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID = CLIENT_ID;
+    const navigate = jest.fn<(url: string) => void, [url: string]>();
+    const { result } = renderHook(() => useGoogleLogin(navigate));
+
+    act(() => {
+      result.current.startLogin();
+    });
+
+    const event = new Event('pageshow');
+    Object.defineProperty(event, 'persisted', { value: true });
+
+    act(() => {
+      window.dispatchEvent(event);
+    });
+
+    expect(result.current.status).toBe('idle');
+    expect(result.current.error).toBeNull();
+  });
 });
