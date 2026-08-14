@@ -275,8 +275,8 @@ O script de seed faz download do arquivo [`exercises-ptbr-full-translation.json`
 Servidas via CDN (jsDelivr):
 
 ```
-https://cdn.jsdelivr.net/gh/yohonas/free-exercise-db@main/exercises/{exercise_id}/0.jpg
-https://cdn.jsdelivr.net/gh/yohonas/free-exercise-db@main/exercises/{exercise_id}/1.jpg
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{exercise_id}/0.jpg
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{exercise_id}/1.jpg
 ```
 
 Cada exercício possui duas imagens no formato JPG.
@@ -284,10 +284,13 @@ Cada exercício possui duas imagens no formato JPG.
 # Fluxos de autenticação
 
 1. Usuário clica "Entrar com Google" → Google OAuth 2.0 + OpenID Connect
-2. Frontend recebe o ID Token e envia para a API
-3. API valida o token, procura usuário pelo `google_id`
-4. Se existe → gera JWT. Se não → cria usuário → gera JWT
-5. Frontend armazena o JWT no localStorage
+2. Frontend redireciona para o Google e recebe um authorization code no callback
+3. Frontend envia o `code` para `POST /api/auth/google`
+4. API troca o code por um ID Token, valida o token e procura usuário pelo `google_id`
+5. Se existe → atualiza seus dados e gera JWT. Se não → cria usuário, os sete treinos e gera JWT
+6. Frontend armazena o JWT no localStorage
+
+Como compatibilidade, `POST /api/auth/google` também aceita diretamente um ID Token no campo `token`.
 
 O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o login. O frontend verifica a expiração e redireciona para o login quando necessário.
 
@@ -316,8 +319,8 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
 
 - JWT (gerado e validado pelo backend, armazenado no localStorage do frontend)
 - Validade: 24 horas, sem refresh token (https://jwt.io)
-- `@react-oauth/google` (frontend) — Google Sign-In
-- `google-auth-library` (backend) — validação do ID Token
+- OAuth 2.0 do Google com callback no frontend — obtenção do authorization code
+- `google-auth-library` (backend) — troca do code e validação do ID Token
 
 ## Front-end
 
@@ -350,3 +353,32 @@ O JWT expira em 24h, sem refresh token. Após expirar, o usuário deve refazer o
   - Controller: rotas Express
 
 # Estrutura esperada do projeto
+
+```text
+backend/
+  prisma/              # schema e migrations
+  src/                 # API Express, Prisma, autenticação e seed
+frontend/
+  src/app/             # páginas e rotas do Next.js
+  src/components/      # componentes de interface
+  src/contexts/        # estado global do cliente
+  src/hooks/           # hooks de autenticação e dados
+design-system/         # tokens, componentes e previews
+specification.md       # requisitos funcionais e modelo conceitual
+```
+
+# Estado atual da implementação
+
+Implementado:
+
+- autenticação Google OAuth 2.0 com emissão de JWT de 24 horas;
+- atualização dos dados do usuário no login recorrente;
+- criação automática dos sete treinos no primeiro login;
+- seed dos exercícios e `GET /api/workouts` com resumo dos treinos.
+
+Ainda pendente:
+
+- consulta de um treino por dia;
+- adição, remoção e busca de exercícios;
+- marcação e limpeza dos exercícios;
+- exclusão da conta.

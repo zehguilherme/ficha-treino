@@ -50,8 +50,8 @@ CREATE TABLE WORKOUTS(
 -- PRISMA:   @@map("exercises")
 -- PRISMA: }
 CREATE TABLE EXERCISES(
-	-- PRISMA: id String @id @db.VarChar(50)
-	ID VARCHAR(50),
+	-- PRISMA: id String @id @db.VarChar(100)
+	ID VARCHAR(100),
 	-- PRISMA: name String @db.VarChar(255)
 	NAME VARCHAR(255) NOT NULL,
 	-- PRISMA: force String? @db.VarChar(10)
@@ -68,8 +68,8 @@ CREATE TABLE EXERCISES(
 	SECONDARY_MUSCLES TEXT[],
 	-- PRISMA: instructions String[]
 	INSTRUCTIONS TEXT[] NOT NULL,
-	-- PRISMA: category String @db.VarChar(20)
-	CATEGORY VARCHAR(20) NOT NULL,
+	-- PRISMA: category String @db.VarChar(30)
+	CATEGORY VARCHAR(30) NOT NULL,
 	-- PRISMA: images String[]
 	IMAGES TEXT[] NOT NULL,
 	-- PRISMA: createdAt DateTime @default(now()) @map("created_at")
@@ -88,7 +88,7 @@ CREATE TABLE WORKOUT_EXERCISES(
 	-- PRISMA: workoutId Int @map("workout_id")
 	WORKOUT_ID INTEGER NOT NULL,
 	-- PRISMA: exerciseId String @map("exercise_id")
-	EXERCISE_ID VARCHAR(50) NOT NULL,
+	EXERCISE_ID VARCHAR(100) NOT NULL,
 	-- PRISMA: done Boolean @default(false)
 	DONE BOOLEAN DEFAULT FALSE NOT NULL,
 	-- PRISMA: createdAt DateTime @default(now()) @map("created_at")
@@ -227,7 +227,7 @@ CREATE TRIGGER trg_exercises_updated_at
 -- }
 --
 -- model Exercise {
---   id               String             @id @db.VarChar(50)
+--   id               String             @id @db.VarChar(100)
 --   name             String             @db.VarChar(255)
 --   force            String?            @db.VarChar(10)
 --   level            String             @db.VarChar(20)
@@ -236,7 +236,7 @@ CREATE TRIGGER trg_exercises_updated_at
 --   primaryMuscles   String[]           @map("primary_muscles")
 --   secondaryMuscles String[]           @map("secondary_muscles")
 --   instructions     String[]
---   category         String             @db.VarChar(20)
+--   category         String             @db.VarChar(30)
 --   images           String[]
 --   createdAt        DateTime           @default(now()) @map("created_at")
 --   updatedAt        DateTime           @updatedAt @map("updated_at")
