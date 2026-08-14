@@ -3,12 +3,6 @@ import type { ReactNode } from 'react';
 import { LoginGate } from './LoginGate';
 import { useAuth } from '@/contexts/AuthContext';
 
-const mockReplace = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({ replace: mockReplace }),
-}));
-
 jest.mock('@/contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
@@ -61,6 +55,7 @@ describe('LoginGate', () => {
    * Assert: the user is redirected to the dashboard and login content is hidden.
    */
   test('redirects authenticated users to the dashboard', async () => {
+    const navigate = jest.fn<(url: string) => void, [url: string]>();
     mockedUseAuth.mockReturnValue({
       status: 'authenticated',
       user: undefined,
@@ -70,12 +65,12 @@ describe('LoginGate', () => {
     });
 
     render(
-      <LoginGate>
+      <LoginGate navigate={navigate}>
         <Child>Entrar</Child>
       </LoginGate>,
     );
 
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/dashboard'));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/dashboard'));
     expect(screen.queryByText('Entrar')).not.toBeInTheDocument();
   });
 

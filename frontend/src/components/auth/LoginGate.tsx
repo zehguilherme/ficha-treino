@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { Spinner } from '@/components/ui/Spinner';
@@ -8,15 +7,22 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface LoginGateProps {
   children: ReactNode;
+  navigate?: (url: string) => void;
 }
 
-export const LoginGate = ({ children }: LoginGateProps): React.JSX.Element => {
-  const router = useRouter();
+const navigateToDashboard = (url: string): void => {
+  window.location.replace(url);
+};
+
+export const LoginGate = ({
+  children,
+  navigate = navigateToDashboard,
+}: LoginGateProps): React.JSX.Element => {
   const { status } = useAuth();
 
   useEffect(() => {
-    if (status === 'authenticated') router.replace('/dashboard');
-  }, [router, status]);
+    if (status === 'authenticated') navigate('/dashboard');
+  }, [navigate, status]);
 
   if (status !== 'anonymous') {
     return (
