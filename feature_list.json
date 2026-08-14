@@ -58,8 +58,8 @@
       "title": "CRUD de treinos e exercícios do treino",
       "behavior": "GET /api/workouts/:weekDay retorna exercícios do dia; POST adiciona; DELETE remove",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts/SEGUNDA",
-      "status": "not_started",
-      "evidence": ""
+      "status": "in_progress",
+      "evidence": "GET /api/workouts implementado com autenticação JWT, filtro por user_id, ordenação semanal, contagem e nomes de exercícios; GET /api/workouts/:weekDay e POST/DELETE de exercícios ainda pendentes."
     },
     {
       "id": "api-006",
@@ -239,11 +239,11 @@
       "id": "tool-002",
       "type": "tooling",
       "area": "backend",
-      "title": "Swagger/OpenAPI docs para todos os endpoints",
-      "behavior": "Todas as rotas possuem annotation @openapi JSDoc; /api/docs mostra todos os endpoints",
+      "title": "Swagger/OpenAPI docs para endpoints implementados",
+      "behavior": "Todos os endpoints implementados possuem annotation @openapi JSDoc; /api/docs mostra os endpoints disponíveis",
       "verification": "curl -sf http://localhost:3001/api/docs | grep -q 'swagger-ui'",
       "status": "completed",
-      "evidence": "src/swagger.ts (spec swagger-jsdoc + swagger-ui-express) servido em /api/docs; annotations @openapi em app.ts (health) e routes/auth.ts (google + me); fixes de deploy Vercel para servir assets do Swagger"
+      "evidence": "src/swagger.ts (spec swagger-jsdoc + swagger-ui-express) servido em /api/docs; annotations @openapi em app.ts (health), routes/auth.ts e routes/workouts.ts; endpoints futuros serão documentados ao serem implementados"
     },
     {
       "id": "tool-003",

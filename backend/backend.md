@@ -14,8 +14,8 @@ API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`)
 | ------ | ---------------------------------------------- | ---- | ------------------------------------------------------------------------------------ |
 | POST   | `/api/auth/google`                             | Não  | Login com `code` OAuth2 ou `token` do Google; no 1º login cria os 7 treinos semanais |
 | GET    | `/api/auth/me`                                 | Sim  | Retorna usuário atual                                                                |
-| GET    | `/api/workouts`                                | Sim  | Lista treinos do usuário                                                             |
-| GET    | `/api/workouts/:weekDay`                       | Sim  | Exercícios de um dia                                                                 |
+| GET    | `/api/workouts`                                | Sim  | Lista os 7 treinos do usuário com contagem e nomes dos exercícios                    |
+| GET    | `/api/workouts/:weekDay`                       | Sim  | Exercícios de um dia (planejado)                                                     |
 | POST   | `/api/workouts/:weekDay/exercises`             | Sim  | Adiciona exercício                                                                   |
 | DELETE | `/api/workouts/:weekDay/exercises/:exerciseId` | Sim  | Remove exercício                                                                     |
 | PATCH  | `/api/workout-exercises/:id`                   | Sim  | Marca/desmarca como concluído                                                        |
@@ -59,7 +59,7 @@ src/
   generated/prisma/  # Prisma Client gerado (não editar)
   routes/
     auth.ts
-    workouts.ts      # planejado
+    workouts.ts      # GET /api/workouts implementado; demais rotas planejadas
     exercises.ts     # planejado
     account.ts       # planejado
   middleware/
@@ -70,7 +70,11 @@ src/
   *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth)
 ```
 
-Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `middleware/auth.ts`, `validators/auth.ts`. Rotas de workouts/exercises/account ainda **planejadas**.
+Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`), `middleware/auth.ts`, `validators/auth.ts` e `validators/responses.ts`. A rota de workouts por dia, busca de exercícios, alterações de treinos e conta ainda estão planejadas.
+
+Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERÇA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
+
+Estado verificado em 2026-08-14: o container `ficha-treino-db` está ativo e saudável há aproximadamente 4 horas, expondo a porta local 5432. `npx prisma migrate status` encontrou as 2 migrations versionadas e informou que o schema do banco está atualizado.
 
 ## Verificação
 

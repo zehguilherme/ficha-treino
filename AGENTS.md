@@ -21,12 +21,14 @@
 ## Estado atual
 
 - `frontend/` inicializado com Next.js 16 (App Router, Tailwind, TypeScript, ESLint) — página inicial "Ficha de Treino"
-- `backend/` inicializado com Express + TypeScript, Docker Compose + PostgreSQL, health check
+- `backend/` inicializado com Express + TypeScript, Docker Compose + PostgreSQL, health check, autenticação Google/JWT, seed de exercícios e `GET /api/workouts`
 - `specification.md` = RF, RNF, modelo conceitual, regras de negócio
 - `design-system/` = tokens ShadCN, componentes HTML/CSS, previews (`preview/`)
 - `docs/superpowers/specs/` = ADRs de arquitetura
 - `.github/dependabot.yml` configurado para npm
 - Swagger/OpenAPI já configurado (`src/swagger.ts`, `/api/docs`)
+- Backend implementado atualmente: auth, criação automática dos 7 treinos e listagem resumida em `GET /api/workouts`; a rota por dia e demais operações de treino ainda estão pendentes
+- Cada usuário possui exatamente um treino por dia (`DOMINGO`, `SEGUNDA`, `TERÇA`, `QUARTA`, `QUINTA`, `SEXTA`, `SABADO`); treinos podem estar vazios
 
 ## Feature ativa
 
