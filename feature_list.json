@@ -59,7 +59,7 @@
       "behavior": "GET /api/workouts/:weekDay retorna exercícios do dia; POST adiciona; DELETE remove",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts/SEGUNDA",
       "status": "in_progress",
-      "evidence": "GET /api/workouts implementado com autenticação JWT, filtro por user_id, ordenação semanal, contagem e nomes de exercícios; GET /api/workouts/:weekDay e POST/DELETE de exercícios ainda pendentes."
+      "evidence": "GET /api/workouts e GET /api/workouts/:weekDay implementados com autenticação JWT e filtro por user_id; a rota diária retorna exercícios completos ordenados por nome, done e ID da associação; POST/DELETE de exercícios ainda pendentes."
     },
     {
       "id": "api-006",

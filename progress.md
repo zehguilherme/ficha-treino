@@ -64,8 +64,10 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 
 2026-08-13 — ui-002 + ui-010 — Sessão centralizada em AuthContext, Header migrado para DropdownMenu shadcn/Radix e contratos HTTP validados por schemas Zod independentes no frontend/backend; 9 suítes/30 testes frontend e 6 suítes/31 testes backend, lint, format, typecheck, builds, PascalCase e Swagger verificados.
 
-2026-08-14 — Documentação sincronizada com o backend atual: autenticação, seed, criação dos 7 treinos e `GET /api/workouts` implementados; rota por dia e demais operações ainda pendentes. Enum oficial usa `TERÇA`; treinos vazios são válidos.
+2026-08-14 — Documentação sincronizada com o backend atual: autenticação, seed, criação dos 7 treinos e `GET /api/workouts` implementados; rota por dia e demais operações ainda pendentes. Enum oficial usa `TERCA`; treinos vazios são válidos.
 
 Estado do banco verificado em 2026-08-14: container PostgreSQL saudável e schema atualizado; 2 migrations aplicadas.
 
 2026-08-14 — Documentação sincronizada com o fluxo OAuth2 atual, URLs CDN, modelo `exercise_id` (`VARCHAR(100)`), estrutura do projeto e estado atual da implementação.
+
+2026-08-14 — api-005 — `GET /api/workouts/:weekDay` implementado com `TERCA` oficial, resposta completa dos exercícios, ordenação alfabética, filtro de ownership e documentação Swagger; POST/DELETE de exercícios continuam pendentes.

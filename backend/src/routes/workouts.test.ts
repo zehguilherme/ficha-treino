@@ -16,12 +16,39 @@ type WorkoutWithCount = {
   };
 };
 
+type ExerciseDetails = {
+  id: string;
+  name: string;
+  force: string | null;
+  level: string;
+  mechanic: string | null;
+  equipment: string | null;
+  primaryMuscles: string[];
+  secondaryMuscles: string[];
+  instructions: string[];
+  category: string;
+  images: string[];
+};
+
+type WorkoutExerciseDetails = {
+  id: number;
+  done: boolean;
+  exercise: ExerciseDetails;
+};
+
+type WorkoutDetails = {
+  id: number;
+  weekDay: string;
+  exercises: WorkoutExerciseDetails[];
+};
+
 type MockPrisma = {
   user: {
     findUnique: jest.Mock<Promise<User | null>, [args: object]>;
   };
   workout: {
     findMany: jest.Mock<Promise<WorkoutWithCount[]>, [args: object]>;
+    findUnique: jest.Mock<Promise<WorkoutDetails | null>, [args: object]>;
   };
 };
 
@@ -32,6 +59,7 @@ jest.mock('../db.js', () => ({
     },
     workout: {
       findMany: jest.fn<Promise<WorkoutWithCount[]>, [args: object]>(),
+      findUnique: jest.fn<Promise<WorkoutDetails | null>, [args: object]>(),
     },
   },
 }));
@@ -105,7 +133,7 @@ describe('workouts routes', () => {
       },
       {
         id: 3,
-        weekDay: 'TERÇA',
+        weekDay: 'TERCA',
         exercises: [{ exercise: { name: 'Puxada frontal' } }],
         _count: { exercises: 1 },
       },
@@ -127,7 +155,7 @@ describe('workouts routes', () => {
           exerciseCount: 1,
           exerciseNames: ['Supino reto com barra'],
         },
-        { id: 3, weekDay: 'TERÇA', exerciseCount: 1, exerciseNames: ['Puxada frontal'] },
+        { id: 3, weekDay: 'TERCA', exerciseCount: 1, exerciseNames: ['Puxada frontal'] },
         {
           id: 4,
           weekDay: 'QUARTA',
@@ -216,5 +244,182 @@ describe('workouts routes', () => {
     expect(response.body).toEqual({ error: 'Usuário não encontrado' });
     expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: 999 } });
     expect(prisma.workout.findMany).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Valid JWT and a populated workout for the requested weekday.
+   * Mock: Prisma returns the workout with complete exercise data and the association state.
+   * Assert: 200, `{ workout }` envelope, full exercise fields, and alphabetical Prisma ordering.
+   */
+  test('GET /api/workouts/:weekDay returns the complete sorted workout', async () => {
+    prisma.workout.findUnique.mockResolvedValue({
+      id: 2,
+      weekDay: 'SEGUNDA',
+      exercises: [
+        {
+          id: 45,
+          done: false,
+          exercise: {
+            id: 'barbell-bench-press',
+            name: 'Supino reto',
+            force: 'push',
+            level: 'intermediate',
+            mechanic: 'compound',
+            equipment: 'barbell',
+            primaryMuscles: ['peito'],
+            secondaryMuscles: ['tríceps'],
+            instructions: ['Deite-se no banco.'],
+            category: 'strength',
+            images: ['0.jpg', '1.jpg'],
+          },
+        },
+      ],
+    });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/workouts/SEGUNDA')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      workout: {
+        id: 2,
+        weekDay: 'SEGUNDA',
+        exercises: [
+          {
+            id: 45,
+            done: false,
+            exercise: {
+              id: 'barbell-bench-press',
+              name: 'Supino reto',
+              force: 'push',
+              level: 'intermediate',
+              mechanic: 'compound',
+              equipment: 'barbell',
+              primaryMuscles: ['peito'],
+              secondaryMuscles: ['tríceps'],
+              instructions: ['Deite-se no banco.'],
+              category: 'strength',
+              images: ['0.jpg', '1.jpg'],
+            },
+          },
+        ],
+      },
+    });
+    expect(prisma.workout.findUnique).toHaveBeenCalledWith({
+      where: { userId_weekDay: { userId: 1, weekDay: 'SEGUNDA' } },
+      select: {
+        id: true,
+        weekDay: true,
+        exercises: {
+          select: {
+            id: true,
+            done: true,
+            exercise: {
+              select: {
+                id: true,
+                name: true,
+                force: true,
+                level: true,
+                mechanic: true,
+                equipment: true,
+                primaryMuscles: true,
+                secondaryMuscles: true,
+                instructions: true,
+                category: true,
+                images: true,
+              },
+            },
+          },
+          orderBy: { exercise: { name: 'asc' } },
+        },
+      },
+    });
+  });
+
+  /**
+   * Valid JWT and a workout with no exercise associations.
+   * Mock: Prisma returns an existing empty workout.
+   * Assert: 200 with an empty exercises array.
+   */
+  test('GET /api/workouts/:weekDay returns an empty workout', async () => {
+    prisma.workout.findUnique.mockResolvedValue({ id: 3, weekDay: 'TERCA', exercises: [] });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/workouts/TERCA')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      workout: { id: 3, weekDay: 'TERCA', exercises: [] },
+    });
+  });
+
+  /**
+   * Invalid weekday path parameter.
+   * Mock: none; invalid input must be rejected before the database query.
+   * Assert: 404 with the generic workout-not-found error.
+   */
+  test('GET /api/workouts/:weekDay returns 404 for an invalid weekday', async () => {
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/workouts/INVALIDO')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ error: 'Treino não encontrado' });
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Accented weekday spelling.
+   * Mock: none; `TERÇA` is not part of the official WeekDay enum.
+   * Assert: 404 without a database query.
+   */
+  test('GET /api/workouts/:weekDay returns 404 for TERÇA with accent', async () => {
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/workouts/TERÇA')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ error: 'Treino não encontrado' });
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Valid JWT but no workout matching the authenticated user and weekday.
+   * Mock: Prisma returns null for the ownership-filtered query.
+   * Assert: 404 with no disclosure of another user's workout.
+   */
+  test('GET /api/workouts/:weekDay returns 404 for a missing or foreign workout', async () => {
+    prisma.workout.findUnique.mockResolvedValue(null);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/workouts/QUARTA')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ error: 'Treino não encontrado' });
+    expect(prisma.workout.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { userId_weekDay: { userId: 1, weekDay: 'QUARTA' } },
+      }),
+    );
+  });
+
+  /**
+   * No Authorization header.
+   * Mock: none; authentication middleware rejects before the workout query.
+   * Assert: 401 and no Prisma lookup.
+   */
+  test('GET /api/workouts/:weekDay returns 401 without token', async () => {
+    const response = await request(app).get('/api/workouts/SEGUNDA');
+
+    expect(response.status).toBe(401);
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
   });
 });

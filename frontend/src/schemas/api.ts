@@ -15,7 +15,7 @@ export const currentUserResponseSchema = z.object({
 export const weekDaySchema = z.enum([
   'DOMINGO',
   'SEGUNDA',
-  'TERÇA',
+  'TERCA',
   'QUARTA',
   'QUINTA',
   'SEXTA',
@@ -33,7 +33,36 @@ export const workoutsResponseSchema = z.object({
   workouts: z.array(workoutSummarySchema),
 });
 
+export const exerciseDetailsSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  force: z.string().nullable(),
+  level: z.string(),
+  mechanic: z.string().nullable(),
+  equipment: z.string().nullable(),
+  primaryMuscles: z.array(z.string()),
+  secondaryMuscles: z.array(z.string()),
+  instructions: z.array(z.string()),
+  category: z.string(),
+  images: z.array(z.string()),
+});
+
+export const workoutExerciseSchema = z.object({
+  id: z.number().int(),
+  done: z.boolean(),
+  exercise: exerciseDetailsSchema,
+});
+
+export const workoutResponseSchema = z.object({
+  workout: z.object({
+    id: z.number().int(),
+    weekDay: weekDaySchema,
+    exercises: z.array(workoutExerciseSchema),
+  }),
+});
+
 export type GoogleAuthResponse = z.infer<typeof googleAuthResponseSchema>;
 export type CurrentUser = z.infer<typeof currentUserResponseSchema>;
 export type WeekDay = z.infer<typeof weekDaySchema>;
 export type WorkoutsResponse = z.infer<typeof workoutsResponseSchema>;
+export type WorkoutResponse = z.infer<typeof workoutResponseSchema>;

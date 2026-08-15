@@ -10,7 +10,7 @@ import { currentUserResponseSchema, googleAuthResponseSchema } from '../validato
 const WEEK_DAYS = [
   WeekDay.DOMINGO,
   WeekDay.SEGUNDA,
-  WeekDay.TERÇA,
+  WeekDay.TERCA,
   WeekDay.QUARTA,
   WeekDay.QUINTA,
   WeekDay.SEXTA,

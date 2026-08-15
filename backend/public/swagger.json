@@ -95,7 +95,7 @@
                             "enum": [
                               "DOMINGO",
                               "SEGUNDA",
-                              "TERÇA",
+                              "TERCA",
                               "QUARTA",
                               "QUINTA",
                               "SEXTA",
@@ -148,6 +148,146 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/workouts/{weekDay}": {
+      "get": {
+        "tags": [
+          "Workouts"
+        ],
+        "summary": "Lista os exercícios de um treino diário do usuário autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "weekDay",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DOMINGO",
+                "SEGUNDA",
+                "TERCA",
+                "QUARTA",
+                "QUINTA",
+                "SEXTA",
+                "SABADO"
+              ]
+            },
+            "description": "Dia da semana oficial do treino"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Treino diário com exercícios completos ordenados por nome",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "workout": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "weekDay": {
+                          "type": "string",
+                          "enum": [
+                            "DOMINGO",
+                            "SEGUNDA",
+                            "TERCA",
+                            "QUARTA",
+                            "QUINTA",
+                            "SEXTA",
+                            "SABADO"
+                          ]
+                        },
+                        "exercises": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "done": {
+                                "type": "boolean"
+                              },
+                              "exercise": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "force": {
+                                    "type": "string",
+                                    "nullable": true
+                                  },
+                                  "level": {
+                                    "type": "string"
+                                  },
+                                  "mechanic": {
+                                    "type": "string",
+                                    "nullable": true
+                                  },
+                                  "equipment": {
+                                    "type": "string",
+                                    "nullable": true
+                                  },
+                                  "primaryMuscles": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "secondaryMuscles": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "instructions": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "category": {
+                                    "type": "string"
+                                  },
+                                  "images": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente, inválido ou expirado"
+          },
+          "404": {
+            "description": "Dia inválido, treino inexistente ou treino de outro usuário"
           }
         }
       }

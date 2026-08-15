@@ -59,7 +59,7 @@ src/
   generated/prisma/  # Prisma Client gerado (não editar)
   routes/
     auth.ts
-    workouts.ts      # GET /api/workouts implementado; demais rotas planejadas
+    workouts.ts      # GET /api/workouts e GET /api/workouts/:weekDay implementados; demais rotas planejadas
     exercises.ts     # planejado
     account.ts       # planejado
   middleware/
@@ -70,9 +70,9 @@ src/
   *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth)
 ```
 
-Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`), `middleware/auth.ts`, `validators/auth.ts` e `validators/responses.ts`. A rota de workouts por dia, busca de exercícios, alterações de treinos e conta ainda estão planejadas.
+Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts` e `GET /api/workouts/:weekDay`), `middleware/auth.ts`, `validators/auth.ts` e `validators/responses.ts`. A busca de exercícios, alterações de treinos e conta ainda estão planejadas.
 
-Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERÇA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
+Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
 
 Estado verificado em 2026-08-14: o container `ficha-treino-db` está ativo e saudável há aproximadamente 4 horas, expondo a porta local 5432. `npx prisma migrate status` encontrou as 2 migrations versionadas e informou que o schema do banco está atualizado.
 

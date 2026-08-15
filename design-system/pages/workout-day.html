@@ -578,21 +578,36 @@
     }
 
     .empty-workout {
+      min-height: 16rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed hsl(var(--border));
+      border-radius: calc(var(--radius) + 0.125rem);
+      padding: 0 1.5rem;
       text-align: center;
-      padding: 3rem 1.5rem;
-      color: hsl(var(--muted-foreground));
     }
 
     .empty-workout svg {
-      width: 2.5rem;
-      height: 2.5rem;
-      margin: 0 auto 0.75rem;
-      opacity: 0.4;
+      width: 2rem;
+      height: 2rem;
+      margin-bottom: 0.75rem;
+      color: hsl(var(--muted-foreground));
     }
 
     .empty-workout p {
       font-size: 0.875rem;
       line-height: 1.5;
+    }
+
+    .empty-workout p:first-of-type {
+      font-weight: 500;
+    }
+
+    .empty-workout p + p {
+      margin-top: 0.25rem;
+      color: hsl(var(--muted-foreground));
     }
 
     @media (max-width: 640px) {
@@ -786,7 +801,8 @@
           <circle cx="5" cy="12" r="1" />
           <circle cx="19" cy="12" r="1" />
         </svg>
-        <p>Nenhum exercício neste treino.<br>Use a busca acima para adicionar exercícios.</p>
+        <p>Nenhum exercício neste treino.</p>
+        <p>Use a busca acima para adicionar exercícios.</p>
       </div>
     </div>
   </main>

@@ -3,9 +3,11 @@ import { clearSession, getSession } from './auth';
 import {
   currentUserResponseSchema,
   googleAuthResponseSchema,
+  workoutResponseSchema,
   workoutsResponseSchema,
   type CurrentUser,
   type GoogleAuthResponse,
+  type WorkoutResponse,
   type WorkoutsResponse,
 } from '@/schemas/api';
 
@@ -40,3 +42,6 @@ export const getCurrentUser = async (): Promise<CurrentUser> =>
 
 export const getWorkouts = async (): Promise<WorkoutsResponse> =>
   workoutsResponseSchema.parse((await api.get('/api/workouts')).data);
+
+export const getWorkout = async (weekDay: string): Promise<WorkoutResponse> =>
+  workoutResponseSchema.parse((await api.get(`/api/workouts/${encodeURIComponent(weekDay)}`)).data);
