@@ -26,7 +26,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "google-auth-library": "^11.0.1",
+    "google-auth-library": "^11.0.2",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
     "swagger-jsdoc": "^6.3.0",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@swc/core": "^1.15.47",
+    "@swc/core": "^1.16.0",
     "@swc/jest": "^0.2.39",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
