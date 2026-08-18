@@ -31,6 +31,16 @@
   --background: 0 0% 100%;
 }
 
+input[type='search'][data-custom-clear='true']::-webkit-search-cancel-button {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type='search'][data-custom-clear='true']::-ms-clear {
+  display: none;
+}
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

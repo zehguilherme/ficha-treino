@@ -378,7 +378,6 @@ Implementado:
 
 Ainda pendente:
 
-- consulta de um treino por dia;
-- adição, remoção e busca de exercícios;
+- adição e remoção de exercícios;
 - marcação e limpeza dos exercícios;
 - exclusão da conta.

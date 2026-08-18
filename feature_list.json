@@ -59,17 +59,17 @@
       "behavior": "GET /api/workouts/:weekDay retorna exercícios do dia; POST adiciona; DELETE remove",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts/SEGUNDA",
       "status": "in_progress",
-      "evidence": "GET /api/workouts e GET /api/workouts/:weekDay implementados com autenticação JWT e filtro por user_id; a rota diária retorna exercícios completos ordenados por nome, done e ID da associação; POST/DELETE de exercícios ainda pendentes."
+      "evidence": "GET /api/workouts e GET /api/workouts/:weekDay implementados com autenticação JWT e filtro por user_id; a rota diária retorna exercícios completos ordenados por nome, done e ID da associação; somente POST/DELETE de exercícios ainda estão pendentes."
     },
     {
       "id": "api-006",
       "type": "api",
       "area": "exercises",
       "title": "Busca de exercícios",
-      "behavior": "GET /api/exercises?q=supino retorna resultados filtrados por nome",
-      "verification": "curl -H 'Authorization: Bearer $JWT' 'http://localhost:3001/api/exercises?q=supino' | jq '.items | length > 0'",
-      "status": "not_started",
-      "evidence": ""
+      "behavior": "GET /api/exercises?q=supino&limit=20&offset=0 retorna resultados filtrados por nome, ignorando maiúsculas, minúsculas e acentos",
+      "verification": "curl -H 'Authorization: Bearer $JWT' 'http://localhost:3001/api/exercises?q=triceps' | jq '.items | length > 0'",
+      "status": "completed",
+      "evidence": "Rota autenticada implementada com paginação, total pré-paginação, ordenação determinística e PostgreSQL unaccent; testes cobrem query acentuada/não acentuada, query vazia, paginação inválida e 401."
     },
     {
       "id": "api-007",
@@ -158,8 +158,9 @@
       "description": "Busca de exercícios com debounce",
       "steps": [
         "Na página workout day, digitar no search input",
-        "Resultados aparecem com debounce",
-        "Clicar em um resultado adiciona ao treino",
+        "Resultados aparecem após debounce de 1000 ms, ignorando acentos na busca",
+        "Clicar em 'Carregar mais exercícios' exibe a próxima página até carregar todos os resultados",
+        "Busca da issue 71 implementada; adição ao treino depende da API futura de exercícios",
         "Campo de busca tem ícone de lupa"
       ],
       "passes": false

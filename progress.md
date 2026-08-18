@@ -10,17 +10,16 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 
 ### Backend (rotas de usuário)
 
-1. api-005: concluir `GET /api/workouts/:weekDay` e operações de adição/remoção
-2. api-006: Busca de exercícios
-3. api-007: Marcar/desmarcar exercícios
-4. api-008: Excluir conta
+1. api-005: concluir operações de adição/remoção de exercícios; `GET /api/workouts/:weekDay` implementado
+2. api-007: Marcar/desmarcar exercícios
+3. api-008: Excluir conta
 
 ### Frontend (páginas de usuário)
 
 7. ui-001: Tela de login
 8. ui-002: Dashboard
 9. ui-003: Workout day
-10. ui-004: Search UI
+10. ui-004: Search UI — busca da issue 71 implementada com debounce de 1000 ms, paginação manual, campo sticky e carrossel; adição depende da API futura de exercícios
 11. ui-005: Checkbox + carrossel
 12. ui-006: Limpar treino
 13. ui-007: Minha conta
@@ -71,3 +70,5 @@ Estado do banco verificado em 2026-08-14: container PostgreSQL saudável e schem
 2026-08-14 — Documentação sincronizada com o fluxo OAuth2 atual, URLs CDN, modelo `exercise_id` (`VARCHAR(100)`), estrutura do projeto e estado atual da implementação.
 
 2026-08-14 — api-005 — `GET /api/workouts/:weekDay` implementado com `TERCA` oficial, resposta completa dos exercícios, ordenação alfabética, filtro de ownership e documentação Swagger; POST/DELETE de exercícios continuam pendentes.
+
+2026-08-15 — api-006 + busca inicial do ui-004 — `GET /api/exercises` implementado com paginação, total filtrado, busca accent-insensitive via PostgreSQL `unaccent`, contrato Zod, Swagger e cliente frontend com debounce de 1000 ms, paginação manual, campo sticky e carrossel de imagens; adição de exercícios continua dependente de api-005.

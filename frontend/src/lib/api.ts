@@ -2,10 +2,12 @@ import axios, { type AxiosError } from 'axios';
 import { clearSession, getSession } from './auth';
 import {
   currentUserResponseSchema,
+  exercisesResponseSchema,
   googleAuthResponseSchema,
   workoutResponseSchema,
   workoutsResponseSchema,
   type CurrentUser,
+  type ExercisesResponse,
   type GoogleAuthResponse,
   type WorkoutResponse,
   type WorkoutsResponse,
@@ -33,6 +35,21 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+export const getExercises = async (
+  query: string,
+  limit = 20,
+  offset = 0,
+  signal?: AbortSignal,
+): Promise<ExercisesResponse> =>
+  exercisesResponseSchema.parse(
+    (
+      await api.get('/api/exercises', {
+        params: { q: query, limit, offset },
+        signal,
+      })
+    ).data,
+  );
 
 export const exchangeGoogleCode = async (code: string): Promise<GoogleAuthResponse> =>
   googleAuthResponseSchema.parse((await api.post('/api/auth/google', { code })).data);

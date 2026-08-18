@@ -37,6 +37,11 @@ export const exerciseDetailsSchema = z.object({
   images: z.array(z.string()),
 });
 
+export const exercisesResponseSchema = z.object({
+  items: z.array(exerciseDetailsSchema),
+  total: z.number().int().nonnegative(),
+});
+
 export const workoutExerciseResponseSchema = z.object({
   id: z.number().int(),
   done: z.boolean(),
@@ -52,4 +57,5 @@ export const workoutResponseSchema = z.object({
 });
 
 export type WorkoutSummary = z.infer<typeof workoutSummarySchema>;
+export type ExerciseDetails = z.infer<typeof exerciseDetailsSchema>;
 export type WorkoutResponse = z.infer<typeof workoutResponseSchema>;

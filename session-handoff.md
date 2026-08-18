@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-14: docs sync — documentação alinhada ao backend atual; `GET /api/workouts` implementado, rota por dia ainda pendente, `TERÇA` é o enum oficial, treinos vazios são válidos e PostgreSQL/migrations verificados.
+2026-08-15: busca de exercícios implementada; `GET /api/workouts`, `GET /api/workouts/:weekDay` e `GET /api/exercises` documentados, `TERCA` é o enum oficial, busca ignora acentos e adição de exercícios depende da API futura de mutações.
 
 ## O que foi feito
 
@@ -16,8 +16,8 @@
 - `frontend/src/app/not-found.tsx`: página 404 amigável
 - `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
 - Testes: LoginForm, useGoogleLogin, callback page, auth helpers, api interceptors, not-found
-- `feature_list.json`: ui-001, ui-009 `passes: true`; api-003 e api-004 concluídos; `GET /api/workouts` implementado dentro de api-005; api-006, api-007 e api-008 pendentes
-- `progress.md`: histórico atualizado até 2026-08-10
+- `feature_list.json`: ui-001, ui-009 `passes: true`; api-003, api-004 e api-006 concluídos; `GET /api/workouts` implementado dentro de api-005; api-007 e api-008 pendentes
+- `progress.md`: histórico atualizado até 2026-08-15
 
 ## Feature ativa
 
@@ -26,15 +26,16 @@
 ## Próximos passos
 
 ### Backend
-1. api-005: concluir `GET /api/workouts/:weekDay` e CRUD de exercícios do treino
-2. api-006: Busca de exercícios
-3. api-007: Marcar/desmarcar exercícios
-4. api-008: Excluir conta
+
+1. api-005: concluir POST/DELETE de exercícios do treino; `GET /api/workouts/:weekDay` implementado
+2. api-007: Marcar/desmarcar exercícios
+3. api-008: Excluir conta
 
 ### Frontend
+
 5. ui-002: Dashboard
 6. ui-003: Workout day
-7. ui-004: Search UI
+7. ui-004: Search UI — busca da issue 71 implementada com debounce de 1000 ms, paginação manual, campo sticky e carrossel; adição ao treino continua dependente da API futura
 8. ui-005: Checkbox + carrossel
 
 ## Branch

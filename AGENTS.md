@@ -27,8 +27,8 @@
 - `docs/superpowers/specs/` = ADRs de arquitetura
 - `.github/dependabot.yml` configurado para npm
 - Swagger/OpenAPI já configurado (`src/swagger.ts`, `/api/docs`)
-- Backend implementado atualmente: auth, criação automática dos 7 treinos e listagem resumida em `GET /api/workouts`; a rota por dia e demais operações de treino ainda estão pendentes
-- Cada usuário possui exatamente um treino por dia (`DOMINGO`, `SEGUNDA`, `TERÇA`, `QUARTA`, `QUINTA`, `SEXTA`, `SABADO`); treinos podem estar vazios
+- Backend implementado atualmente: auth, criação automática dos 7 treinos, listagem resumida em `GET /api/workouts`, consulta diária em `GET /api/workouts/:weekDay` e busca autenticada em `GET /api/exercises`; operações de mutação de treino e conta ainda estão pendentes
+- Cada usuário possui exatamente um treino por dia (`DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA`, `SABADO`); treinos podem estar vazios
 
 ## Feature ativa
 

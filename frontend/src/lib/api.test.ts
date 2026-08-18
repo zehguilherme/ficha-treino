@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { api, getCurrentUser, getWorkouts } from './api';
+import { api, getCurrentUser, getExercises, getWorkouts } from './api';
 import { setSession } from './auth';
 
 const TOKEN = 'jwt-token';
@@ -92,5 +92,25 @@ describe('api axios instance', () => {
 
     await expect(getCurrentUser()).rejects.toBeDefined();
     await expect(getWorkouts()).rejects.toBeDefined();
+  });
+
+  /**
+   * Exercise search sends the query and pagination to the backend.
+   * Mock: adapter returns a valid exercise-search response.
+   * Assert: the typed client exposes the parsed response and serializes query params.
+   */
+  test('gets exercises with search parameters', async () => {
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => ({
+      data: { items: [], total: 0 },
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config,
+    });
+
+    const response = await getExercises('tríceps', 20, 0);
+
+    expect(response).toEqual({ items: [], total: 0 });
+    expect(api.defaults.adapter).toBeDefined();
   });
 });

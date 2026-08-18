@@ -292,6 +292,146 @@
         }
       }
     },
+    "/api/exercises": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "summary": "Busca exercícios por nome",
+        "description": "A busca ignora diferenças entre maiúsculas, minúsculas e acentos.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Termo de busca; vazio retorna o catálogo a partir do primeiro exercício"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exercícios correspondentes à busca e total antes da paginação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "total"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name",
+                          "level",
+                          "primaryMuscles",
+                          "secondaryMuscles",
+                          "instructions",
+                          "category",
+                          "images"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "force": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "level": {
+                            "type": "string"
+                          },
+                          "mechanic": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "equipment": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "primaryMuscles": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "secondaryMuscles": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "instructions": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "images": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parâmetros de paginação inválidos"
+          },
+          "401": {
+            "description": "Token JWT ausente, inválido ou expirado"
+          }
+        }
+      }
+    },
     "/api/auth/google": {
       "post": {
         "tags": [

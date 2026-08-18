@@ -31,9 +31,11 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 
 ## Estado
 
-- **TanStack Query**: cache de exercícios, treinos, mutações (marcar done, adicionar/remover)
+- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações (marcar done, adicionar/remover)
 - **Context API**: sessão do usuário (login/logout)
-- **`useState`**: input search, modal, carrossel
+- **`useState`**: input search, debounce, modal, carrossel
+
+A página de treino consulta `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. A adição ao treino permanece dependente da rota `POST /api/workouts/:weekDay/exercises`.
 
 ## Estrutura (planejada)
 

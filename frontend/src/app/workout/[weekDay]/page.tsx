@@ -1,9 +1,10 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import {
   Carousel,
@@ -25,7 +26,7 @@ import {
   TrashIcon,
 } from '@/components/ui/WorkoutIcons';
 import { useAuth } from '@/contexts/AuthContext';
-import { getWorkout } from '@/lib/api';
+import { getExercises, getWorkout } from '@/lib/api';
 import { getExerciseImageUrl } from '@/lib/exerciseImage';
 import type { WeekDay } from '@/schemas/api';
 
@@ -38,6 +39,8 @@ const DAY_NAMES: Record<WeekDay, string> = {
   SEXTA: 'Sexta-feira',
   SABADO: 'Sábado',
 };
+
+const EXERCISES_PAGE_SIZE = 20;
 
 const getWeekDay = (value: string | string[] | undefined): WeekDay | null => {
   const candidate = Array.isArray(value) ? value[0] : value;
@@ -52,12 +55,35 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const { status } = useAuth();
   const weekDay = getWeekDay(params.weekDay);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [openInstructions, setOpenInstructions] = useState<number | null>(null);
+  const normalizedSearch = debouncedSearch.trim();
   const workout = useQuery({
     queryKey: ['workout', weekDay],
     queryFn: () => getWorkout(weekDay ?? ''),
     enabled: status === 'authenticated' && weekDay !== null,
   });
+  const searchResults = useInfiniteQuery({
+    queryKey: ['exercises', normalizedSearch],
+    queryFn: ({ pageParam, signal }) =>
+      getExercises(normalizedSearch, EXERCISES_PAGE_SIZE, pageParam, signal),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const nextOffset = allPages.length * EXERCISES_PAGE_SIZE;
+      return nextOffset < lastPage.total ? nextOffset : undefined;
+    },
+    enabled: status === 'authenticated' && normalizedSearch.length > 0,
+  });
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedSearch(search), 1000);
+    return () => window.clearTimeout(timeout);
+  }, [search]);
+
+  const clearSearch = (): void => {
+    setSearch('');
+    setDebouncedSearch('');
+  };
 
   if (status !== 'authenticated') return <main className="flex-1 bg-background" />;
   if (!weekDay) return <main className="flex-1 bg-background p-8">Treino não encontrado</main>;
@@ -114,20 +140,108 @@ const WorkoutDayPage = (): React.JSX.Element => {
               Limpar treino
             </Button>
           </div>
-          <div className="relative mb-6">
-            <SearchIcon
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden="true"
-            />
+          <div className="sticky top-14 z-10 mb-6 bg-background py-3">
             <Input
+              type="search"
               aria-label="Buscar exercícios"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Buscar exercícios para adicionar..."
-              className="pl-9"
+              leadingIcon={
+                <SearchIcon
+                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden="true"
+                />
+              }
+              onClear={clearSearch}
+              clearLabel="Limpar busca"
             />
           </div>
-          {exercises.length === 0 ? (
+          {normalizedSearch ? (
+            searchResults.isPending ? (
+              <p role="status" className="py-12 text-center text-sm text-muted-foreground">
+                Buscando exercícios...
+              </p>
+            ) : searchResults.isError ? (
+              <p role="alert" className="py-12 text-center text-sm text-destructive">
+                Não foi possível buscar exercícios.
+              </p>
+            ) : searchResults.data.pages.flatMap(({ items }) => items).length === 0 ? (
+              <p className="py-12 text-center text-sm text-muted-foreground">
+                Nenhum exercício encontrado.
+              </p>
+            ) : (
+              <>
+                <ul className="flex flex-col gap-3" aria-label="Resultados da busca">
+                  {searchResults.data.pages
+                    .flatMap(({ items }) => items)
+                    .map((exercise) => (
+                      <li key={exercise.id} className="rounded-lg border border-border bg-card p-4">
+                        <Carousel
+                          aria-label={`Imagens de ${exercise.name}`}
+                          className="group overflow-hidden rounded-md bg-secondary"
+                          opts={{ loop: false }}
+                        >
+                          <CarouselContent>
+                            {[0, 1].map((imageIndex) => (
+                              <CarouselItem key={imageIndex}>
+                                <Image
+                                  src={getExerciseImageUrl(exercise.id, imageIndex as 0 | 1)}
+                                  alt={`${exercise.name} — imagem ${imageIndex + 1}`}
+                                  className="block h-auto w-full object-contain"
+                                  width={600}
+                                  height={400}
+                                  sizes="(max-width: 640px) 100vw, 600px"
+                                  loading="lazy"
+                                />
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100" />
+                          <CarouselNext className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100" />
+                          <CarouselDots count={2} />
+                        </Carousel>
+                        <div className="mt-3 flex items-center justify-between gap-4">
+                          <div className="min-w-0">
+                            <h3 className="truncate text-sm font-semibold">{exercise.name}</h3>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              {[exercise.category, exercise.equipment]
+                                .filter(Boolean)
+                                .map((tag) => formatLabel(tag ?? ''))
+                                .join(' · ')}
+                            </p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled
+                            aria-label={'Adicionar ' + exercise.name}
+                          >
+                            Adicionar
+                          </Button>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+                {searchResults.hasNextPage ? (
+                  <div className="mt-6 flex justify-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => void searchResults.fetchNextPage()}
+                      disabled={searchResults.isFetchingNextPage}
+                      aria-busy={searchResults.isFetchingNextPage}
+                    >
+                      {searchResults.isFetchingNextPage
+                        ? 'Carregando exercícios...'
+                        : 'Carregar mais exercícios'}
+                    </Button>
+                  </div>
+                ) : null}
+              </>
+            )
+          ) : exercises.length === 0 ? (
             <div className="flex min-h-64 flex-col items-center justify-center rounded-lg border border-dashed border-border px-6 text-center">
               <DumbbellIcon className="mb-3 size-8 text-muted-foreground" aria-hidden="true" />
               <p className="text-sm font-medium">Nenhum exercício neste treino.</p>
@@ -150,16 +264,20 @@ const WorkoutDayPage = (): React.JSX.Element => {
                   >
                     <div className="p-5">
                       <Carousel
-                        className="group mb-4 aspect-video overflow-hidden rounded-[var(--radius)] bg-secondary"
+                        aria-label={`Imagens de ${exercise.name}`}
+                        className="group mb-4 overflow-hidden rounded-[var(--radius)] bg-secondary"
                         opts={{ loop: false }}
                       >
-                        <CarouselContent className="h-full">
+                        <CarouselContent>
                           {[0, 1].map((imageIndex) => (
-                            <CarouselItem key={imageIndex} className="h-full">
-                              <img
+                            <CarouselItem key={imageIndex}>
+                              <Image
                                 src={getExerciseImageUrl(exercise.id, imageIndex as 0 | 1)}
                                 alt={`${exercise.name} — imagem ${imageIndex + 1}`}
-                                className="size-full object-cover"
+                                className="block h-auto w-full object-contain"
+                                width={600}
+                                height={400}
+                                sizes="(max-width: 640px) 100vw, 600px"
                                 loading="lazy"
                               />
                             </CarouselItem>

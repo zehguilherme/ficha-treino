@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import { prisma } from './db.js';
 import { swaggerSpec } from './swagger.js';
 import { authRouter } from './routes/auth.js';
+import { exercisesRouter } from './routes/exercises.js';
 import { workoutsRouter } from './routes/workouts.js';
 
 export const app = express();
@@ -66,6 +67,7 @@ app.get('/api/health', async (_req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/exercises', exercisesRouter);
 app.use('/api/workouts', workoutsRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Express error handler requires 4 params
