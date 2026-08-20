@@ -59,7 +59,7 @@
       "behavior": "GET /api/workouts/:weekDay retorna exercícios do dia; POST adiciona; DELETE remove",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts/SEGUNDA",
       "status": "in_progress",
-      "evidence": "GET /api/workouts e GET /api/workouts/:weekDay implementados com autenticação JWT e filtro por user_id; a rota diária retorna exercícios completos ordenados por nome, done e ID da associação; somente POST/DELETE de exercícios ainda estão pendentes."
+      "evidence": "GET /api/workouts, GET /api/workouts/:weekDay e POST /api/workouts/:weekDay/exercises implementados com autenticação JWT e filtro por user_id; a rota diária retorna exercícios completos ordenados por nome, done e ID da associação; DELETE de exercícios continua pendente."
     },
     {
       "id": "api-006",
@@ -160,7 +160,7 @@
         "Na página workout day, digitar no search input",
         "Resultados aparecem após debounce de 1000 ms, ignorando acentos na busca",
         "Clicar em 'Carregar mais exercícios' exibe a próxima página até carregar todos os resultados",
-        "Busca da issue 71 implementada; adição ao treino depende da API futura de exercícios",
+        "Busca da issue 71 implementada; adição ao treino integrada à rota POST de exercícios",
         "Campo de busca tem ícone de lupa"
       ],
       "passes": false

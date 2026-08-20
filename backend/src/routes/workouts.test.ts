@@ -1,7 +1,8 @@
 import request from 'supertest';
 import { app } from '../app.js';
 import { signJwt } from '../middleware/auth.js';
-import type { User } from '../generated/prisma/client.js';
+import { Prisma } from '../generated/prisma/client.js';
+import type { Exercise, User } from '../generated/prisma/client.js';
 
 type WorkoutWithCount = {
   id: number;
@@ -42,6 +43,12 @@ type WorkoutDetails = {
   exercises: WorkoutExerciseDetails[];
 };
 
+type CreatedWorkoutExercise = {
+  id: number;
+  exerciseId: string;
+  done: boolean;
+};
+
 type MockPrisma = {
   user: {
     findUnique: jest.Mock<Promise<User | null>, [args: object]>;
@@ -49,6 +56,12 @@ type MockPrisma = {
   workout: {
     findMany: jest.Mock<Promise<WorkoutWithCount[]>, [args: object]>;
     findUnique: jest.Mock<Promise<WorkoutDetails | null>, [args: object]>;
+  };
+  exercise: {
+    findUnique: jest.Mock<Promise<Pick<Exercise, 'id'> | null>, [args: object]>;
+  };
+  workoutExercise: {
+    create: jest.Mock<Promise<CreatedWorkoutExercise>, [args: object]>;
   };
 };
 
@@ -60,6 +73,12 @@ jest.mock('../db.js', () => ({
     workout: {
       findMany: jest.fn<Promise<WorkoutWithCount[]>, [args: object]>(),
       findUnique: jest.fn<Promise<WorkoutDetails | null>, [args: object]>(),
+    },
+    exercise: {
+      findUnique: jest.fn<Promise<Pick<Exercise, 'id'> | null>, [args: object]>(),
+    },
+    workoutExercise: {
+      create: jest.fn<Promise<CreatedWorkoutExercise>, [args: object]>(),
     },
   },
 }));
@@ -418,6 +437,114 @@ describe('workouts routes', () => {
    */
   test('GET /api/workouts/:weekDay returns 401 without token', async () => {
     const response = await request(app).get('/api/workouts/SEGUNDA');
+
+    expect(response.status).toBe(401);
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/exercises creates an incomplete workout exercise', async () => {
+    prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
+    prisma.exercise.findUnique.mockResolvedValue({ id: 'barbell-bench-press' });
+    prisma.workoutExercise.create.mockResolvedValue({
+      id: 45,
+      exerciseId: 'barbell-bench-press',
+      done: false,
+    });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ exerciseId: 'barbell-bench-press' });
+
+    expect(response.status).toBe(201);
+    expect(response.body).toEqual({ id: 45, exerciseId: 'barbell-bench-press', done: false });
+    expect(prisma.workout.findUnique).toHaveBeenCalledWith({
+      where: { userId_weekDay: { userId: 1, weekDay: 'SEGUNDA' } },
+      select: { id: true },
+    });
+    expect(prisma.exercise.findUnique).toHaveBeenCalledWith({
+      where: { id: 'barbell-bench-press' },
+      select: { id: true },
+    });
+    expect(prisma.workoutExercise.create).toHaveBeenCalledWith({
+      data: { workoutId: 2, exerciseId: 'barbell-bench-press', done: false },
+      select: { id: true, exerciseId: true, done: true },
+    });
+  });
+
+  test('POST /api/workouts/:weekDay/exercises returns 400 for an invalid body', async () => {
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/exercises returns 404 for an invalid weekday', async () => {
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/INVALIDO/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ exerciseId: 'barbell-bench-press' });
+
+    expect(response.status).toBe(404);
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/exercises returns 404 when the workout is missing', async () => {
+    prisma.workout.findUnique.mockResolvedValue(null);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ exerciseId: 'barbell-bench-press' });
+
+    expect(response.status).toBe(404);
+    expect(prisma.exercise.findUnique).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/exercises returns 404 when the exercise is missing', async () => {
+    prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
+    prisma.exercise.findUnique.mockResolvedValue(null);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ exerciseId: 'missing-exercise' });
+
+    expect(response.status).toBe(404);
+    expect(prisma.workoutExercise.create).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/exercises returns 409 for a duplicate exercise', async () => {
+    prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
+    prisma.exercise.findUnique.mockResolvedValue({ id: 'barbell-bench-press' });
+    prisma.workoutExercise.create.mockRejectedValue(
+      new Prisma.PrismaClientKnownRequestError('Duplicate association', {
+        code: 'P2002',
+        clientVersion: '7.9.0',
+      }),
+    );
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ exerciseId: 'barbell-bench-press' });
+
+    expect(response.status).toBe(409);
+  });
+
+  test('POST /api/workouts/:weekDay/exercises returns 401 without token', async () => {
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/exercises')
+      .send({ exerciseId: 'barbell-bench-press' });
 
     expect(response.status).toBe(401);
     expect(prisma.workout.findUnique).not.toHaveBeenCalled();

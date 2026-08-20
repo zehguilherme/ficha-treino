@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { api, getCurrentUser, getExercises, getWorkouts } from './api';
+import { api, addWorkoutExercise, getCurrentUser, getExercises, getWorkouts } from './api';
 import { setSession } from './auth';
 
 const TOKEN = 'jwt-token';
@@ -112,5 +112,31 @@ describe('api axios instance', () => {
 
     expect(response).toEqual({ items: [], total: 0 });
     expect(api.defaults.adapter).toBeDefined();
+  });
+
+  /**
+   * Add-exercise client posts the selected catalog item to the current weekday.
+   * Mock: adapter returns the documented association payload.
+   * Assert: URL, method, body and parsed response match the backend contract.
+   */
+  test('adds an exercise to a workout', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { id: 46, exerciseId: 'triceps-pushdown', done: false },
+        status: 201,
+        statusText: 'Created',
+        headers: {},
+        config,
+      };
+    };
+
+    const response = await addWorkoutExercise('TERCA', 'triceps-pushdown');
+
+    expect(response).toEqual({ id: 46, exerciseId: 'triceps-pushdown', done: false });
+    expect(requestConfig?.method).toBe('post');
+    expect(requestConfig?.url).toBe('/api/workouts/TERCA/exercises');
+    expect(requestConfig?.data).toBe(JSON.stringify({ exerciseId: 'triceps-pushdown' }));
   });
 });

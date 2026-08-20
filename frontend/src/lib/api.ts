@@ -2,11 +2,13 @@ import axios, { type AxiosError } from 'axios';
 import { clearSession, getSession } from './auth';
 import {
   currentUserResponseSchema,
+  addWorkoutExerciseResponseSchema,
   exercisesResponseSchema,
   googleAuthResponseSchema,
   workoutResponseSchema,
   workoutsResponseSchema,
   type CurrentUser,
+  type AddWorkoutExerciseResponse,
   type ExercisesResponse,
   type GoogleAuthResponse,
   type WorkoutResponse,
@@ -62,3 +64,11 @@ export const getWorkouts = async (): Promise<WorkoutsResponse> =>
 
 export const getWorkout = async (weekDay: string): Promise<WorkoutResponse> =>
   workoutResponseSchema.parse((await api.get(`/api/workouts/${encodeURIComponent(weekDay)}`)).data);
+
+export const addWorkoutExercise = async (
+  weekDay: string,
+  exerciseId: string,
+): Promise<AddWorkoutExerciseResponse> =>
+  addWorkoutExerciseResponseSchema.parse(
+    (await api.post(`/api/workouts/${encodeURIComponent(weekDay)}/exercises`, { exerciseId })).data,
+  );

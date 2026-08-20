@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-15: busca de exercícios implementada; `GET /api/workouts`, `GET /api/workouts/:weekDay` e `GET /api/exercises` documentados, `TERCA` é o enum oficial, busca ignora acentos e adição de exercícios depende da API futura de mutações.
+2026-08-19: busca e adição de exercícios implementadas; `GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises` e `GET /api/exercises` documentados, `TERCA` é o enum oficial e a busca ignora acentos.
 
 ## O que foi feito
 
@@ -16,8 +16,8 @@
 - `frontend/src/app/not-found.tsx`: página 404 amigável
 - `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
 - Testes: LoginForm, useGoogleLogin, callback page, auth helpers, api interceptors, not-found
-- `feature_list.json`: ui-001, ui-009 `passes: true`; api-003, api-004 e api-006 concluídos; `GET /api/workouts` implementado dentro de api-005; api-007 e api-008 pendentes
-- `progress.md`: histórico atualizado até 2026-08-15
+- `feature_list.json`: ui-001, ui-009 e ui-010 `passes: true`; api-003, api-004 e api-006 concluídos; api-005 tem GET e POST implementados, com DELETE pendente; api-007 e api-008 continuam pendentes
+- `progress.md`: histórico atualizado até 2026-08-19
 
 ## Feature ativa
 
@@ -27,7 +27,7 @@
 
 ### Backend
 
-1. api-005: concluir POST/DELETE de exercícios do treino; `GET /api/workouts/:weekDay` implementado
+1. api-005: implementar DELETE de exercícios do treino; GET e POST já implementados
 2. api-007: Marcar/desmarcar exercícios
 3. api-008: Excluir conta
 
@@ -35,7 +35,7 @@
 
 5. ui-002: Dashboard
 6. ui-003: Workout day
-7. ui-004: Search UI — busca da issue 71 implementada com debounce de 1000 ms, paginação manual, campo sticky e carrossel; adição ao treino continua dependente da API futura
+7. ui-004: Search UI — busca da issue 71 implementada com debounce de 1000 ms, paginação manual, campo sticky, carrossel e adição integrada ao treino
 8. ui-005: Checkbox + carrossel
 
 ## Branch

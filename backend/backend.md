@@ -59,7 +59,7 @@ src/
   generated/prisma/  # Prisma Client gerado (não editar)
   routes/
     auth.ts
-    workouts.ts      # GET /api/workouts e GET /api/workouts/:weekDay implementados; mutações planejadas
+    workouts.ts      # GET, POST de adição implementados; DELETE, PATCH e clear planejados
     exercises.ts     # GET /api/exercises implementado
     account.ts       # planejado
   middleware/
@@ -70,7 +70,7 @@ src/
   *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises)
 ```
 
-Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts` e `GET /api/workouts/:weekDay`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts` e `validators/responses.ts`. As alterações de treinos e conta ainda estão planejadas.
+Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay` e `POST /api/workouts/:weekDay/exercises`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. A adição de exercícios valida o corpo com Zod, restringe o treino ao usuário autenticado, cria a associação com `done=false` e responde 400/401/404/409 conforme o caso; a rota também está documentada no Swagger. Remoção, marcação/limpeza e conta ainda estão planejadas.
 
 Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
 

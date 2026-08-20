@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { prisma } from '../db.js';
-import { WeekDay } from '../generated/prisma/client.js';
+import { Prisma, WeekDay } from '../generated/prisma/client.js';
 import { requireAuth } from '../middleware/auth.js';
 import {
   workoutResponseSchema,
   workoutsResponseSchema,
   type WorkoutSummary,
 } from '../validators/responses.js';
+import { addWorkoutExerciseBodySchema } from '../validators/workouts.js';
 
 const WEEK_DAY_ORDER = [
   WeekDay.DOMINGO,
@@ -261,4 +262,118 @@ workoutsRouter.get('/:weekDay', requireAuth, async (req, res) => {
   }
 
   res.json(workoutResponseSchema.parse({ workout }));
+});
+
+/**
+ * @openapi
+ * /api/workouts/{weekDay}/exercises:
+ *   post:
+ *     tags: [Workouts]
+ *     summary: Adiciona um exercício ao treino diário do usuário autenticado
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: weekDay
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SABADO]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [exerciseId]
+ *             properties:
+ *               exerciseId:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Associação criada com done inicialmente falso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: [id, exerciseId, done]
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 exerciseId:
+ *                   type: string
+ *                 done:
+ *                   type: boolean
+ *       400:
+ *         description: Corpo da requisição inválido
+ *       401:
+ *         description: Token JWT ausente, inválido ou expirado
+ *       404:
+ *         description: Dia, treino ou exercício não encontrado
+ *       409:
+ *         description: Exercício já existe no treino
+ */
+workoutsRouter.post('/:weekDay/exercises', requireAuth, async (req, res) => {
+  const claims = req.user;
+  if (!claims) {
+    res.status(401).json({ error: 'Token inválido ou expirado' });
+    return;
+  }
+
+  const weekDay = Object.values(WeekDay).find((value) => value === req.params.weekDay);
+  if (!weekDay) {
+    res.status(404).json({ error: 'Treino não encontrado' });
+    return;
+  }
+
+  const bodyResult = addWorkoutExerciseBodySchema.safeParse(req.body);
+  if (!bodyResult.success) {
+    res.status(400).json({ error: 'Dados do exercício inválidos' });
+    return;
+  }
+
+  const workout = await prisma.workout.findUnique({
+    where: {
+      userId_weekDay: {
+        userId: claims.user_id,
+        weekDay,
+      },
+    },
+    select: { id: true },
+  });
+
+  if (!workout) {
+    res.status(404).json({ error: 'Treino não encontrado' });
+    return;
+  }
+
+  const exercise = await prisma.exercise.findUnique({
+    where: { id: bodyResult.data.exerciseId },
+    select: { id: true },
+  });
+
+  if (!exercise) {
+    res.status(404).json({ error: 'Exercício não encontrado' });
+    return;
+  }
+
+  try {
+    const workoutExercise = await prisma.workoutExercise.create({
+      data: {
+        workoutId: workout.id,
+        exerciseId: exercise.id,
+        done: false,
+      },
+      select: { id: true, exerciseId: true, done: true },
+    });
+
+    res.status(201).json(workoutExercise);
+  } catch (error: unknown) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json({ error: 'Exercício já está no treino' });
+      return;
+    }
+
+    throw error;
+  }
 });

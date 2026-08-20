@@ -16,6 +16,21 @@ const SearchIcon = (props: IconProps): React.JSX.Element => (
     <path d="M21 21l-4.35-4.35" />
   </svg>
 );
+const AlertTriangleIcon = (props: IconProps): React.JSX.Element => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+    <path d="M12 9v4" />
+    <path d="M12 17h.01" />
+  </svg>
+);
 const XIcon = (props: IconProps): React.JSX.Element => (
   <svg
     viewBox="0 0 24 24"
@@ -70,4 +85,13 @@ const TrashIcon = (props: IconProps): React.JSX.Element => (
   </svg>
 );
 
-export { ArrowLeftIcon, BrushIcon, ChevronDownIcon, SearchIcon, TargetIcon, TrashIcon, XIcon };
+export {
+  AlertTriangleIcon,
+  ArrowLeftIcon,
+  BrushIcon,
+  ChevronDownIcon,
+  SearchIcon,
+  TargetIcon,
+  TrashIcon,
+  XIcon,
+};

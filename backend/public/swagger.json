@@ -292,6 +292,96 @@
         }
       }
     },
+    "/api/workouts/{weekDay}/exercises": {
+      "post": {
+        "tags": [
+          "Workouts"
+        ],
+        "summary": "Adiciona um exercício ao treino diário do usuário autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "weekDay",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DOMINGO",
+                "SEGUNDA",
+                "TERCA",
+                "QUARTA",
+                "QUINTA",
+                "SEXTA",
+                "SABADO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "exerciseId"
+                ],
+                "properties": {
+                  "exerciseId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Associação criada com done inicialmente falso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "exerciseId",
+                    "done"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "exerciseId": {
+                      "type": "string"
+                    },
+                    "done": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Corpo da requisição inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente, inválido ou expirado"
+          },
+          "404": {
+            "description": "Dia, treino ou exercício não encontrado"
+          },
+          "409": {
+            "description": "Exercício já existe no treino"
+          }
+        }
+      }
+    },
     "/api/exercises": {
       "get": {
         "tags": [
