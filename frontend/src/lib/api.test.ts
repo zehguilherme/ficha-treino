@@ -1,6 +1,13 @@
 import { AxiosError } from 'axios';
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { api, addWorkoutExercise, getCurrentUser, getExercises, getWorkouts } from './api';
+import {
+  api,
+  addWorkoutExercise,
+  getCurrentUser,
+  getExercises,
+  getWorkouts,
+  removeWorkoutExercise,
+} from './api';
 import { setSession } from './auth';
 
 const TOKEN = 'jwt-token';
@@ -138,5 +145,30 @@ describe('api axios instance', () => {
     expect(requestConfig?.method).toBe('post');
     expect(requestConfig?.url).toBe('/api/workouts/TERCA/exercises');
     expect(requestConfig?.data).toBe(JSON.stringify({ exerciseId: 'triceps-pushdown' }));
+  });
+
+  /**
+   * Remove-exercise client deletes the catalog association from the current weekday.
+   * Mock: adapter returns the documented deletion payload.
+   * Assert: URL, method and parsed response match the backend contract.
+   */
+  test('removes an exercise from a workout', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { deleted: true },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      };
+    };
+
+    const response = await removeWorkoutExercise('TERCA', 'barbell-bench-press');
+
+    expect(response).toEqual({ deleted: true });
+    expect(requestConfig?.method).toBe('delete');
+    expect(requestConfig?.url).toBe('/api/workouts/TERCA/exercises/barbell-bench-press');
   });
 });

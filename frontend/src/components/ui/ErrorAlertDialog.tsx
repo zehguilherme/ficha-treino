@@ -41,7 +41,7 @@ const ErrorAlertDialog = ({
         <AlertDialogDescription>{message}</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>Fechar</AlertDialogCancel>
+        <AlertDialogCancel className="w-full sm:w-auto">Fechar</AlertDialogCancel>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

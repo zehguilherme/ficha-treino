@@ -10,23 +10,23 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/AlertDialog';
-import { AlertTriangleIcon, XIcon } from '@/components/ui/WorkoutIcons';
+import { TrashIcon, XIcon } from '@/components/ui/WorkoutIcons';
 
-interface ClearWorkoutDialogProps {
+interface RemoveWorkoutExerciseDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  dayName: string;
+  exerciseName: string;
   isPending: boolean;
   onConfirm: () => void;
 }
 
-const ClearWorkoutDialog = ({
+const RemoveWorkoutExerciseDialog = ({
   open,
   onOpenChange,
-  dayName,
+  exerciseName,
   isPending,
   onConfirm,
-}: ClearWorkoutDialogProps): React.JSX.Element => (
+}: RemoveWorkoutExerciseDialogProps): React.JSX.Element => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent>
       <AlertDialogCancel
@@ -41,12 +41,12 @@ const ClearWorkoutDialog = ({
           data-slot="alert-dialog-icon"
           className="mb-2 flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive"
         >
-          <AlertTriangleIcon className="size-5" aria-hidden="true" />
+          <TrashIcon className="size-5" aria-hidden="true" />
         </div>
-        <AlertDialogTitle>Limpar treino?</AlertDialogTitle>
+        <AlertDialogTitle>Remover exercício?</AlertDialogTitle>
         <AlertDialogDescription>
-          Esta ação irá desmarcar todos os exercícios de {dayName}. Você pode marcá-los novamente
-          depois.
+          O exercício <span className="font-medium text-foreground">{exerciseName}</span> será
+          removido deste treino.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
@@ -58,7 +58,7 @@ const ClearWorkoutDialog = ({
             onConfirm();
           }}
         >
-          {isPending ? 'Limpando...' : 'Sim, limpar'}
+          {isPending ? 'Removendo...' : 'Sim, remover'}
         </AlertDialogAction>
         <AlertDialogCancel className="w-full sm:w-auto" disabled={isPending}>
           Cancelar
@@ -68,4 +68,4 @@ const ClearWorkoutDialog = ({
   </AlertDialog>
 );
 
-export { ClearWorkoutDialog };
+export { RemoveWorkoutExerciseDialog };

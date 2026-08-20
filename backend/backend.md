@@ -59,7 +59,7 @@ src/
   generated/prisma/  # Prisma Client gerado (não editar)
   routes/
     auth.ts
-    workouts.ts      # GET, POST de adição e clear implementados; DELETE planejado
+    workouts.ts      # GET, POST, DELETE e clear implementados
     workoutExercises.ts # PATCH de conclusão implementado
     exercises.ts     # GET /api/exercises implementado
     account.ts       # planejado
@@ -71,13 +71,13 @@ src/
   *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises, routes/workouts)
 ```
 
-Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises` e `POST /api/workouts/:weekDay/clear`), `routes/workoutExercises.ts` (`PATCH /api/workout-exercises/:id`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. As rotas de conclusão validam autenticação e ownership, alternam `done`, limpam as marcações do treino e estão documentadas no Swagger. Remoção de exercícios e conta ainda estão planejadas.
+Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises`, `DELETE /api/workouts/:weekDay/exercises/:exerciseId` e `POST /api/workouts/:weekDay/clear`), `routes/workoutExercises.ts` (`PATCH /api/workout-exercises/:id`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. As rotas de conclusão e remoção validam autenticação e ownership, alternam `done`, limpam marcações e removem associações do treino, todas documentadas no Swagger. A exclusão de conta ainda está planejada.
 
 Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
 
 A busca de exercícios usa a extensão PostgreSQL `unaccent` para que consultas com e sem acentos produzam os mesmos resultados. A rota retorna no máximo 100 itens por página, ordenados por nome e ID, e `total` representa o total filtrado antes da paginação.
 
-Estado verificado em 2026-08-20: a migration da extensão `unaccent` foi adicionada após as migrations versionadas existentes. O container PostgreSQL deve aplicar as 4 migrations antes da validação manual da busca. As rotas de marcação e limpeza possuem testes e annotations Swagger; remoção de exercícios e conta continuam planejadas.
+Estado verificado em 2026-08-20: a migration da extensão `unaccent` foi adicionada após as migrations versionadas existentes. O container PostgreSQL deve aplicar as 4 migrations antes da validação manual da busca. As rotas de marcação, limpeza e remoção possuem testes e annotations Swagger; exclusão de conta continua planejada.
 
 ## Verificação
 
@@ -183,6 +183,7 @@ Testes de integração das rotas de treinos, adição, marcação e limpeza, com
 - `GET /api/workouts` lista os sete treinos do usuário;
 - `GET /api/workouts/:weekDay` retorna exercícios completos ordenados;
 - `POST /api/workouts/:weekDay/exercises` valida exercício, duplicidade e ownership;
+- `DELETE /api/workouts/:weekDay/exercises/:exerciseId` remove associação existente e rejeita associações ausentes ou de outro usuário;
 - `PATCH /api/workout-exercises/:id` alterna `done` e rejeita associações de outro usuário;
 - `POST /api/workouts/:weekDay/clear` desmarca todas as associações do treino.
 

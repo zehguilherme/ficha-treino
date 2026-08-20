@@ -58,6 +58,10 @@ type WorkoutExerciseRecord = {
   };
 };
 
+type DeletedWorkoutExercise = {
+  id: number;
+};
+
 type MockPrisma = {
   user: {
     findUnique: jest.Mock<Promise<User | null>, [args: object]>;
@@ -74,6 +78,8 @@ type MockPrisma = {
     findUnique: jest.Mock<Promise<WorkoutExerciseRecord | null>, [args: object]>;
     update: jest.Mock<Promise<CreatedWorkoutExercise>, [args: object]>;
     updateMany: jest.Mock<Promise<{ count: number }>, [args: object]>;
+    findFirst: jest.Mock<Promise<DeletedWorkoutExercise | null>, [args: object]>;
+    delete: jest.Mock<Promise<DeletedWorkoutExercise>, [args: object]>;
   };
 };
 
@@ -94,6 +100,8 @@ jest.mock('../db.js', () => ({
       findUnique: jest.fn<Promise<WorkoutExerciseRecord | null>, [args: object]>(),
       update: jest.fn<Promise<CreatedWorkoutExercise>, [args: object]>(),
       updateMany: jest.fn<Promise<{ count: number }>, [args: object]>(),
+      findFirst: jest.fn<Promise<DeletedWorkoutExercise | null>, [args: object]>(),
+      delete: jest.fn<Promise<DeletedWorkoutExercise>, [args: object]>(),
     },
   },
 }));
@@ -700,5 +708,78 @@ describe('workouts routes', () => {
 
     expect(response.status).toBe(401);
     expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+  });
+
+  test('DELETE /api/workouts/:weekDay/exercises/:exerciseId removes an owned association', async () => {
+    prisma.workoutExercise.findFirst.mockResolvedValue({
+      id: 45,
+    });
+    prisma.workoutExercise.delete.mockResolvedValue({ id: 45 });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .delete('/api/workouts/SEGUNDA/exercises/bench-press')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ deleted: true });
+    expect(prisma.workoutExercise.findFirst).toHaveBeenCalledWith({
+      where: {
+        exerciseId: 'bench-press',
+        workout: { userId: 1, weekDay: 'SEGUNDA' },
+      },
+      select: { id: true },
+    });
+    expect(prisma.workoutExercise.delete).toHaveBeenCalledWith({ where: { id: 45 } });
+  });
+
+  test('DELETE /api/workouts/:weekDay/exercises/:exerciseId returns 404 when the association is missing', async () => {
+    prisma.workoutExercise.findFirst.mockResolvedValue(null);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .delete('/api/workouts/SEGUNDA/exercises/missing-exercise')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ error: 'Exercício do treino não encontrado' });
+    expect(prisma.workoutExercise.delete).not.toHaveBeenCalled();
+  });
+
+  test('DELETE /api/workouts/:weekDay/exercises/:exerciseId returns 404 for another user workout', async () => {
+    prisma.workoutExercise.findFirst.mockResolvedValue(null);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .delete('/api/workouts/SEGUNDA/exercises/bench-press')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(prisma.workoutExercise.delete).not.toHaveBeenCalled();
+    expect(prisma.workoutExercise.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { exerciseId: 'bench-press', workout: { userId: 1, weekDay: 'SEGUNDA' } },
+      }),
+    );
+  });
+
+  test('DELETE /api/workouts/:weekDay/exercises/:exerciseId returns 404 for an invalid weekday', async () => {
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .delete('/api/workouts/:weekDay/exercises/aaaaaa')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ error: 'Treino não encontrado' });
+    expect(prisma.workoutExercise.findFirst).not.toHaveBeenCalled();
+    expect(prisma.workoutExercise.delete).not.toHaveBeenCalled();
+  });
+
+  test('DELETE /api/workouts/:weekDay/exercises/:exerciseId returns 401 without token', async () => {
+    const response = await request(app).delete('/api/workouts/SEGUNDA/exercises/bench-press');
+
+    expect(response.status).toBe(401);
+    expect(prisma.workoutExercise.findFirst).not.toHaveBeenCalled();
+    expect(prisma.workoutExercise.delete).not.toHaveBeenCalled();
   });
 });

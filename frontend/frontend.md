@@ -13,7 +13,7 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 | `/auth/google/callback` | `GoogleCallbackPage` | Callback do OAuth Google                 |
 | `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards de treino       |
 | `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + search               |
-| `/account`              | `AccountPage`        | Dados do perfil + excluir conta          |
+| `/account`              | `AccountPage` (planejada) | Dados do perfil + excluir conta       |
 
 ## Validação
 
@@ -31,11 +31,11 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 
 ## Estado
 
-- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar e limpar exercícios; remoção ainda está pendente
+- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios
 - **Context API**: sessão do usuário (login/logout)
 - **`useState`**: input search, debounce, modal, carrossel
 
-A página de treino consulta `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id` e `POST /api/workouts/:weekDay/clear` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmação acessível para limpeza. A remoção de exercícios ainda depende do endpoint DELETE no backend.
+A página de treino consulta `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis.
 
 ## Estrutura (planejada)
 
@@ -48,7 +48,7 @@ src/
     login/page.tsx
     dashboard/page.tsx
     workout/[weekDay]/page.tsx
-    account/page.tsx
+    account/page.tsx       (planejada)
   components/
     ui/                   (ShadCN)
       Button.tsx

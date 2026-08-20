@@ -377,9 +377,9 @@ Implementado:
 - seed dos exercícios, `GET /api/workouts` com resumo dos treinos, `GET /api/workouts/:weekDay` com os exercícios completos do dia e `POST /api/workouts/:weekDay/exercises` para adicionar exercícios ao treino autenticado;
 - `GET /api/exercises` com paginação e busca sem distinção de acentos;
 - `PATCH /api/workout-exercises/:id` para alternar a conclusão e `POST /api/workouts/:weekDay/clear` para desmarcar o treino;
-- dashboard semanal e página de treino com busca via debounce, paginação manual, adição, marcação e limpeza integradas.
+- `DELETE /api/workouts/:weekDay/exercises/:exerciseId` para remover somente a associação do exercício ao treino autenticado;
+- dashboard semanal e página de treino com busca via debounce, paginação manual, adição, marcação, limpeza e remoção integradas.
 
 Ainda pendente:
 
-- remoção de exercícios;
 - exclusão da conta.

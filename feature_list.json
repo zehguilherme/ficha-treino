@@ -58,8 +58,8 @@
       "title": "CRUD de treinos e exercícios do treino",
       "behavior": "GET /api/workouts/:weekDay retorna exercícios do dia; POST adiciona; DELETE remove",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts/SEGUNDA",
-      "status": "in_progress",
-      "evidence": "GET /api/workouts, GET /api/workouts/:weekDay e POST /api/workouts/:weekDay/exercises implementados com autenticação JWT e filtro por user_id; a rota diária retorna exercícios completos ordenados por nome, done e ID da associação; DELETE de exercícios continua pendente."
+      "status": "completed",
+      "evidence": "GET /api/workouts, GET /api/workouts/:weekDay, POST /api/workouts/:weekDay/exercises e DELETE /api/workouts/:weekDay/exercises/:exerciseId implementados com autenticação JWT e filtro por user_id; a remoção exclui somente a associação do treino, rejeita associações ausentes ou de outro usuário com 404 e possui testes e documentação Swagger."
     },
     {
       "id": "api-006",
@@ -141,7 +141,7 @@
       "type": "ui",
       "area": "workouts",
       "category": "functional",
-      "description": "Workout day com lista de exercícios",
+      "description": "Workout day com lista, conclusão e remoção de exercícios",
       "steps": [
         "Navegar para /workout/[weekDay]",
         "Ver lista de exercícios em ordem alfabética",
@@ -149,7 +149,7 @@
         "Header com contador done/total"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética com metadados, instruções expansíveis, imagens e contador done/total; testes da página, typecheck, lint e build verificados"
+      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética com metadados, instruções expansíveis, imagens e contador done/total; integra confirmação acessível e DELETE para remoção, com atualização dos caches e tratamento de erro; testes da página, typecheck, lint e build verificados"
     },
     {
       "id": "ui-004",

@@ -3,6 +3,7 @@ jest.mock('@/lib/api', () => ({
   clearWorkout: jest.fn(),
   getWorkout: jest.fn(),
   getExercises: jest.fn(),
+  removeWorkoutExercise: jest.fn(),
   toggleWorkoutExercise: jest.fn(),
 }));
 
@@ -30,6 +31,7 @@ import {
   clearWorkout,
   getExercises,
   getWorkout,
+  removeWorkoutExercise,
   toggleWorkoutExercise,
 } from '@/lib/api';
 import type { ExercisesResponse } from '@/schemas/api';
@@ -42,6 +44,7 @@ const mockedAddWorkoutExercise = jest.mocked(addWorkoutExercise);
 const mockedClearWorkout = jest.mocked(clearWorkout);
 const mockedToast = jest.mocked(toast);
 const mockedToggleWorkoutExercise = jest.mocked(toggleWorkoutExercise);
+const mockedRemoveWorkoutExercise = jest.mocked(removeWorkoutExercise);
 
 const workout = {
   workout: {
@@ -90,6 +93,7 @@ describe('WorkoutDayPage', () => {
       done: false,
     });
     mockedClearWorkout.mockResolvedValue({ cleared: 1 });
+    mockedRemoveWorkoutExercise.mockResolvedValue({ deleted: true });
     mockedToggleWorkoutExercise.mockResolvedValue({
       id: 45,
       exerciseId: 'barbell-bench-press',
@@ -124,27 +128,25 @@ describe('WorkoutDayPage', () => {
     expect(secondaryMuscleLabel.querySelector('svg')).toHaveAttribute('fill', 'none');
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeInTheDocument();
     const instructionsButton = screen.getByRole('button', { name: 'Instruções: Supino reto' });
-    expect(instructionsButton).toHaveClass('h-7');
-    expect(instructionsButton).toHaveClass('max-[360px]:w-full');
+    expect(instructionsButton).toHaveClass('h-9', 'px-4', 'py-2', 'text-sm');
+    expect(instructionsButton).toHaveClass('max-[640px]:col-span-1', 'max-[640px]:w-full');
     expect(instructionsButton.parentElement).toHaveClass('gap-2');
     expect(instructionsButton.parentElement).toHaveClass(
-      'max-[360px]:flex-col',
-      'max-[360px]:items-stretch',
+      'max-[640px]:grid',
+      'max-[640px]:grid-cols-1',
+      'max-[640px]:gap-y-2',
     );
     expect(instructionsButton).toHaveClass('gap-1', 'sm:gap-2');
     expect(instructionsButton).toHaveAttribute('aria-expanded', 'false');
     const removeButton = screen.getByRole('button', { name: 'Remover Supino reto' });
-    expect(removeButton).toBeDisabled();
-    expect(removeButton).toHaveClass('h-7');
+    expect(removeButton).toBeEnabled();
+    expect(removeButton).toHaveClass('h-9', 'px-4', 'py-2', 'text-sm');
     expect(removeButton).toHaveClass(
       'ml-auto',
       'gap-1.5',
-      'px-2',
-      'sm:px-3',
-      'max-[360px]:ml-0',
-      'max-[360px]:w-full',
-      'py-1.5',
-      'text-[0.8125rem]',
+      'max-[640px]:col-span-1',
+      'max-[640px]:ml-0',
+      'max-[640px]:w-full',
       'bg-destructive',
       'text-primary-foreground',
       'hover:bg-destructive/90',
@@ -176,6 +178,17 @@ describe('WorkoutDayPage', () => {
       'type',
       'search',
     );
+    expect(
+      screen.getByRole('heading', { name: 'Terça-feira', level: 2 }).parentElement,
+    ).toHaveClass('mb-4');
+    expect(
+      screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
+        ?.parentElement,
+    ).toHaveClass('sticky', 'top-14', 'mb-6');
+    expect(
+      screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
+        ?.parentElement,
+    ).toHaveClass('py-3');
     expect(
       screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
         ?.parentElement,
@@ -259,6 +272,58 @@ describe('WorkoutDayPage', () => {
     resolveClear({ cleared: 1 });
     expect(await screen.findByText('0 / 1')).toBeInTheDocument();
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).not.toBeChecked();
+  });
+
+  /**
+   * User confirms removing an exercise from the workout.
+   * Mock: DELETE remains pending, then resolves successfully.
+   * Assert: confirmation, pending state, API variables, visible removal and counter update.
+   */
+  test('removes an exercise after confirmation', async () => {
+    mockedGetWorkout.mockResolvedValueOnce(workout).mockResolvedValue({
+      workout: { ...workout.workout, exercises: [] },
+    });
+    let resolveRemove: (response: { deleted: true }) => void = () => undefined;
+    mockedRemoveWorkoutExercise.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveRemove = resolve;
+      }),
+    );
+    const user = userEvent.setup();
+
+    renderPage();
+    await user.click(await screen.findByRole('button', { name: 'Remover Supino reto' }));
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent('Supino reto');
+
+    await user.click(screen.getByRole('button', { name: 'Sim, remover' }));
+
+    expect(mockedRemoveWorkoutExercise).toHaveBeenCalledWith('TERCA', 'barbell-bench-press');
+    expect(screen.getByRole('button', { name: 'Removendo...' })).toBeDisabled();
+
+    resolveRemove({ deleted: true });
+    expect(await screen.findByText('0 / 0')).toBeInTheDocument();
+    expect(screen.queryByText('Supino reto')).not.toBeInTheDocument();
+  });
+
+  /**
+   * User encounters a failed remove request.
+   * Mock: DELETE rejects with a generic error.
+   * Assert: error dialog appears and the current exercise remains visible.
+   */
+  test('keeps the exercise visible when removal fails', async () => {
+    mockedRemoveWorkoutExercise.mockRejectedValue(new Error('Network error'));
+    const user = userEvent.setup();
+
+    renderPage();
+    await user.click(await screen.findByRole('button', { name: 'Remover Supino reto' }));
+    await user.click(screen.getByRole('button', { name: 'Sim, remover' }));
+
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
+      'Não foi possível remover o exercício.',
+    );
+    expect(
+      within(screen.getByRole('article', { hidden: true })).getByText('Supino reto'),
+    ).toBeInTheDocument();
   });
 
   /**
@@ -508,6 +573,7 @@ describe('WorkoutDayPage', () => {
     });
 
     const addButton = await screen.findByRole('button', { name: 'Adicionar Tríceps na polia' });
+    expect(addButton).toHaveClass('h-9', 'px-4', 'py-2', 'text-sm');
     await user.click(addButton);
 
     expect(mockedAddWorkoutExercise).toHaveBeenCalledWith('TERCA', 'triceps-pushdown');

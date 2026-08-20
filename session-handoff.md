@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-20: marcação e limpeza de exercícios integradas ao frontend; `PATCH /api/workout-exercises/:id` e `POST /api/workouts/:weekDay/clear` implementados e documentados, com atualização de cache, loading, erros e AlertDialog acessível.
+2026-08-20: marcação, limpeza e remoção de exercícios integradas ao frontend; `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` implementados e documentados, com atualização de cache, loading, erros e confirmações acessíveis.
 
 ## O que foi feito
 
@@ -15,8 +15,8 @@
 - `frontend/src/lib/exerciseImage.ts`: helper para URLs de imagens via CDN
 - `frontend/src/app/not-found.tsx`: página 404 amigável
 - `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
-- Testes: autenticação, dashboard, página de treino, busca, adição, marcação, limpeza, interceptors e not-found
-- `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-006 e api-007 concluídos; api-005 permanece em andamento pela remoção e api-008 não iniciado
+- Testes: autenticação, dashboard, página de treino, busca, adição, marcação, limpeza, remoção, interceptors e not-found
+- `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-005, api-006 e api-007 concluídos; api-008 não iniciado
 - `progress.md`: histórico atualizado até 2026-08-20
 
 ## Feature ativa
@@ -27,8 +27,7 @@
 
 ### Backend
 
-1. api-005: implementar DELETE de exercícios do treino; GET, POST, PATCH e clear já implementados
-2. api-008: Excluir conta
+1. api-008: Excluir conta
 
 ### Frontend
 

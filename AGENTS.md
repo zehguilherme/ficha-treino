@@ -20,14 +20,14 @@
 
 ## Estado atual
 
-- `frontend/` implementado com Next.js 16 (App Router, Tailwind, TypeScript, ESLint), landing, login OAuth, dashboard semanal, página de treino, busca, adição, marcação, limpeza e página 404
-- `backend/` implementado com Express + TypeScript, Docker Compose + PostgreSQL, health check, autenticação Google/JWT, seed de exercícios, rotas de treinos, busca, adição, marcação e limpeza
+- `frontend/` implementado com Next.js 16 (App Router, Tailwind, TypeScript, ESLint), landing, login OAuth, dashboard semanal, página de treino, busca, adição, marcação, limpeza, remoção e página 404
+- `backend/` implementado com Express + TypeScript, Docker Compose + PostgreSQL, health check, autenticação Google/JWT, seed de exercícios, rotas de treinos, busca, adição, marcação, limpeza e remoção
 - `specification.md` = RF, RNF, modelo conceitual, regras de negócio
 - `design-system/` = tokens ShadCN, componentes HTML/CSS, previews (`preview/`)
 - `docs/superpowers/specs/` = ADRs de arquitetura
 - `.github/dependabot.yml` configurado para npm
 - Swagger/OpenAPI já configurado (`src/swagger.ts`, `/api/docs`)
-- Backend implementado atualmente: auth, criação automática dos 7 treinos, listagem resumida em `GET /api/workouts`, consulta diária em `GET /api/workouts/:weekDay`, adição autenticada em `POST /api/workouts/:weekDay/exercises`, busca autenticada em `GET /api/exercises`, alternância em `PATCH /api/workout-exercises/:id` e limpeza em `POST /api/workouts/:weekDay/clear`; remoção e conta ainda estão pendentes
+- Backend implementado atualmente: auth, criação automática dos 7 treinos, listagem resumida em `GET /api/workouts`, consulta diária em `GET /api/workouts/:weekDay`, adição autenticada em `POST /api/workouts/:weekDay/exercises`, busca autenticada em `GET /api/exercises`, alternância em `PATCH /api/workout-exercises/:id`, limpeza em `POST /api/workouts/:weekDay/clear` e remoção em `DELETE /api/workouts/:weekDay/exercises/:exerciseId`; apenas a exclusão de conta continua pendente
 - Cada usuário possui exatamente um treino por dia (`DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA`, `SABADO`); treinos podem estar vazios
 
 ## Feature ativa

@@ -380,6 +380,78 @@ workoutsRouter.post('/:weekDay/exercises', requireAuth, async (req, res) => {
 
 /**
  * @openapi
+ * /api/workouts/{weekDay}/exercises/{exerciseId}:
+ *   delete:
+ *     tags: [Workouts]
+ *     summary: Remove um exercício do treino diário do usuário autenticado
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: weekDay
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SABADO]
+ *       - in: path
+ *         name: exerciseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Identificador do exercício no catálogo
+ *     responses:
+ *       200:
+ *         description: Exercício removido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: [deleted]
+ *               properties:
+ *                 deleted:
+ *                   type: boolean
+ *                   example: true
+ *       401:
+ *         description: Token JWT ausente, inválido ou expirado
+ *       404:
+ *         description: Dia inválido, associação inexistente ou pertencente a outro usuário
+ */
+workoutsRouter.delete('/:weekDay/exercises/:exerciseId', requireAuth, async (req, res) => {
+  const claims = req.user;
+  if (!claims) {
+    res.status(401).json({ error: 'Token inválido ou expirado' });
+    return;
+  }
+
+  const weekDay = Object.values(WeekDay).find((value) => value === req.params.weekDay);
+  if (!weekDay) {
+    res.status(404).json({ error: 'Treino não encontrado' });
+    return;
+  }
+
+  const exerciseId = Array.isArray(req.params.exerciseId)
+    ? req.params.exerciseId[0]
+    : req.params.exerciseId;
+
+  const workoutExercise = await prisma.workoutExercise.findFirst({
+    where: {
+      exerciseId,
+      workout: { userId: claims.user_id, weekDay },
+    },
+    select: { id: true },
+  });
+
+  if (!workoutExercise) {
+    res.status(404).json({ error: 'Exercício do treino não encontrado' });
+    return;
+  }
+
+  await prisma.workoutExercise.delete({ where: { id: workoutExercise.id } });
+  res.json({ deleted: true });
+});
+
+/**
+ * @openapi
  * /api/workouts/{weekDay}/clear:
  *   post:
  *     tags: [Workouts]

@@ -10,8 +10,7 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 
 ### Backend (rotas de usuário)
 
-1. api-005: implementar remoção de exercícios; GET e POST de exercícios já implementados
-2. api-008: Excluir conta
+1. api-008: Excluir conta
 
 ### Frontend (páginas de usuário)
 
@@ -60,14 +59,18 @@ Estado do banco verificado em 2026-08-14: container PostgreSQL saudável e schem
 
 2026-08-14 — Documentação sincronizada com o fluxo OAuth2 atual, URLs CDN, modelo `exercise_id` (`VARCHAR(100)`), estrutura do projeto e estado atual da implementação.
 
-2026-08-14 — api-005 — `GET /api/workouts/:weekDay` implementado com `TERCA` oficial, resposta completa dos exercícios, ordenação alfabética, filtro de ownership e documentação Swagger; POST/DELETE de exercícios continuam pendentes.
+2026-08-14 — api-005 — `GET /api/workouts/:weekDay` implementado com `TERCA` oficial, resposta completa dos exercícios, ordenação alfabética, filtro de ownership e documentação Swagger.
 
 2026-08-15 — api-006 + busca inicial do ui-004 — `GET /api/exercises` implementado com paginação, total filtrado, busca accent-insensitive via PostgreSQL `unaccent`, contrato Zod, Swagger e cliente frontend com debounce de 1000 ms, paginação manual, campo sticky e carrossel de imagens; adição de exercícios continua dependente de api-005.
 
-2026-08-18 — api-005 — `POST /api/workouts/:weekDay/exercises` implementado com validação Zod, ownership por usuário, respostas 400/401/404/409, criação com `done=false`, testes e documentação Swagger; DELETE continua pendente.
+2026-08-18 — api-005 — `POST /api/workouts/:weekDay/exercises` implementado com validação Zod, ownership por usuário, respostas 400/401/404/409, criação com `done=false`, testes e documentação Swagger.
 
-Estado atual em 2026-08-20: `api-005` permanece em andamento apenas pela remoção de exercícios; `api-008` (exclusão de conta) continua pendente. A busca, adição, marcação e limpeza de exercícios estão implementadas no backend e integradas à página de treino no frontend.
+Estado atual em 2026-08-20: `api-005` está concluída; `api-008` (exclusão de conta) continua pendente. A busca, adição, marcação e limpeza de exercícios estão implementadas no backend e integradas à página de treino no frontend.
 
 2026-08-20 — api-007 — `PATCH /api/workout-exercises/:id` alterna `done` com autenticação e ownership; `POST /api/workouts/:weekDay/clear` desmarca todas as associações do treino, com testes, Swagger e documentação atualizados.
 
-2026-08-20 — ui-005 + ui-006 — página de treino integra marcação via PATCH e limpeza via POST com AlertDialog acessível, loading, tratamento de erros, atualização do cache e refetch dos resumos; testes frontend, lint, format e typecheck verificados. Remoção de exercícios continua dependente do endpoint DELETE.
+2026-08-20 — ui-005 + ui-006 — página de treino integra marcação via PATCH e limpeza via POST com AlertDialog acessível, loading, tratamento de erros, atualização do cache e refetch dos resumos; testes frontend, lint, format e typecheck verificados.
+
+2026-08-20 — api-005 — `DELETE /api/workouts/:weekDay/exercises/:exerciseId` remove a associação do exercício ao treino autenticado com filtro de ownership, respostas 200/401/404, testes de sucesso e falhas de autorização, annotation Swagger e spec regenerada.
+
+2026-08-20 — ui-003 + issue #157 — página de treino integra remoção de exercícios com confirmação acessível, Escape, loading, erro genérico, atualização do contador e invalidação dos caches; testes frontend, lint, format, PascalCase e typecheck verificados.

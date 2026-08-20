@@ -6,6 +6,7 @@ import {
   currentUserResponseSchema,
   exercisesResponseSchema,
   googleAuthResponseSchema,
+  removeWorkoutExerciseResponseSchema,
   workoutResponseSchema,
   workoutsResponseSchema,
   type CurrentUser,
@@ -16,6 +17,7 @@ import {
   type WorkoutResponse,
   type WorkoutsResponse,
   type ToggleWorkoutExerciseResponse,
+  type RemoveWorkoutExerciseResponse,
   toggleWorkoutExerciseResponseSchema,
 } from '@/schemas/api';
 
@@ -87,4 +89,16 @@ export const toggleWorkoutExercise = async (
 export const clearWorkout = async (weekDay: string): Promise<ClearWorkoutResponse> =>
   clearWorkoutResponseSchema.parse(
     (await api.post(`/api/workouts/${encodeURIComponent(weekDay)}/clear`)).data,
+  );
+
+export const removeWorkoutExercise = async (
+  weekDay: string,
+  exerciseId: string,
+): Promise<RemoveWorkoutExerciseResponse> =>
+  removeWorkoutExerciseResponseSchema.parse(
+    (
+      await api.delete(
+        `/api/workouts/${encodeURIComponent(weekDay)}/exercises/${encodeURIComponent(exerciseId)}`,
+      )
+    ).data,
   );

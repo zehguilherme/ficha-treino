@@ -12,6 +12,7 @@ import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { ExerciseImageCarousel } from '@/components/exercise/ExerciseImageCarousel';
 import { Input } from '@/components/ui/Input';
 import { ClearWorkoutDialog } from '@/components/workout/ClearWorkoutDialog';
+import { RemoveWorkoutExerciseDialog } from '@/components/workout/RemoveWorkoutExerciseDialog';
 import {
   ArrowLeftIcon,
   BrushIcon,
@@ -26,6 +27,7 @@ import {
   clearWorkout,
   getExercises,
   getWorkout,
+  removeWorkoutExercise,
   toggleWorkoutExercise,
 } from '@/lib/api';
 import type { WeekDay, WorkoutResponse } from '@/schemas/api';
@@ -69,6 +71,10 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [openInstructions, setOpenInstructions] = useState<number | null>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [removeExercise, setRemoveExercise] = useState<{
+    exerciseId: string;
+    exerciseName: string;
+  } | null>(null);
   const [dismissedError, setDismissedError] = useState<unknown>(null);
   const [isRetryingWorkout, setIsRetryingWorkout] = useState(false);
   const normalizedSearch = debouncedSearch.trim();
@@ -154,6 +160,34 @@ const WorkoutDayPage = (): React.JSX.Element => {
       toast.success('Treino limpo.');
     },
   });
+  const removeWorkoutExerciseMutation = useMutation({
+    mutationFn: ({
+      selectedWeekDay,
+      exerciseId,
+    }: {
+      selectedWeekDay: WeekDay;
+      exerciseId: string;
+    }) => removeWorkoutExercise(selectedWeekDay, exerciseId),
+    onMutate: () => setDismissedError(null),
+    onSuccess: (_response, { exerciseId }) => {
+      queryClient.setQueryData<WorkoutResponse>(['workout', weekDay], (current) =>
+        current
+          ? {
+              workout: {
+                ...current.workout,
+                exercises: current.workout.exercises.filter(
+                  (workoutExercise) => workoutExercise.exercise.id !== exerciseId,
+                ),
+              },
+            }
+          : current,
+      );
+      void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
+      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      setRemoveExercise(null);
+      toast.success('Exercício removido do treino.');
+    },
+  });
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebouncedSearch(search), 1000);
@@ -192,7 +226,12 @@ const WorkoutDayPage = (): React.JSX.Element => {
                 key: clearWorkoutMutation.error ?? 'clear-workout-error',
                 message: 'Não foi possível limpar o treino.',
               }
-            : null;
+            : removeWorkoutExerciseMutation.isError
+              ? {
+                  key: removeWorkoutExerciseMutation.error ?? 'remove-exercise-error',
+                  message: 'Não foi possível remover o exercício.',
+                }
+              : null;
   const errorMessage =
     activeError && activeError.key !== dismissedError ? activeError.message : null;
   const exercises = workout.data?.workout.exercises ?? [];
@@ -291,10 +330,26 @@ const WorkoutDayPage = (): React.JSX.Element => {
           if (weekDay) clearWorkoutMutation.mutate(weekDay);
         }}
       />
+      <RemoveWorkoutExerciseDialog
+        open={removeExercise !== null}
+        onOpenChange={(open) => {
+          if (!open && !removeWorkoutExerciseMutation.isPending) setRemoveExercise(null);
+        }}
+        exerciseName={removeExercise?.exerciseName ?? ''}
+        isPending={removeWorkoutExerciseMutation.isPending}
+        onConfirm={() => {
+          if (weekDay && removeExercise) {
+            removeWorkoutExerciseMutation.mutate({
+              selectedWeekDay: weekDay,
+              exerciseId: removeExercise.exerciseId,
+            });
+          }
+        }}
+      />
       {workoutHeader}
       <main className="flex-1 bg-background px-4 py-8 sm:px-6">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="mb-4 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold tracking-tight">{dayName}</h2>
             <Button
               variant="outline"
@@ -383,7 +438,8 @@ const WorkoutDayPage = (): React.JSX.Element => {
                             <Button
                               type="button"
                               variant="outline"
-                              size="sm"
+                              size="lg"
+                              className="h-9"
                               disabled={addExercise.isPending}
                               aria-busy={addExercise.isPending}
                               aria-label={'Adicionar ' + exercise.name}
@@ -480,11 +536,15 @@ const WorkoutDayPage = (): React.JSX.Element => {
                           ) : null}
                         </div>
                       </div>
-                      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3 max-[360px]:flex-col max-[360px]:items-stretch">
-                        <label className="flex items-center gap-2 text-sm text-muted-foreground max-[360px]:self-start">
+                      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3 max-[640px]:grid max-[640px]:grid-cols-1 max-[640px]:gap-y-2">
+                        <label className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Checkbox
                             checked={done}
-                            disabled={toggleExercise.isPending || clearWorkoutMutation.isPending}
+                            disabled={
+                              toggleExercise.isPending ||
+                              clearWorkoutMutation.isPending ||
+                              removeWorkoutExerciseMutation.isPending
+                            }
                             aria-label={`Feito: ${exercise.name}`}
                             onCheckedChange={() => toggleExercise.mutate(id)}
                           />
@@ -492,8 +552,8 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         </label>
                         <Button
                           variant="ghost"
-                          size="sm"
-                          className="h-7 gap-1 sm:gap-2 max-[360px]:w-full"
+                          size="lg"
+                          className="h-9 gap-1 max-[640px]:col-span-1 max-[640px]:w-full sm:gap-2"
                           onClick={() => setOpenInstructions(instructionsOpen ? null : id)}
                           aria-expanded={instructionsOpen}
                           aria-label={`Instruções: ${exercise.name}`}
@@ -505,12 +565,23 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         </Button>
                         <Button
                           variant="default"
-                          disabled
+                          size="lg"
+                          disabled={
+                            removeWorkoutExerciseMutation.isPending ||
+                            clearWorkoutMutation.isPending
+                          }
+                          aria-busy={removeWorkoutExerciseMutation.isPending}
                           aria-label={`Remover ${exercise.name}`}
-                          className="ml-auto h-7 gap-1.5 bg-destructive px-2 py-1.5 text-[0.8125rem] font-medium tracking-[0.02em] text-primary-foreground hover:bg-destructive/90 sm:px-3 max-[360px]:ml-0 max-[360px]:w-full"
+                          onClick={() =>
+                            setRemoveExercise({
+                              exerciseId: exercise.id,
+                              exerciseName: exercise.name,
+                            })
+                          }
+                          className="ml-auto h-9 gap-1.5 bg-destructive text-primary-foreground hover:bg-destructive/90 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
                         >
                           <TrashIcon className="size-3.5" />
-                          Remover
+                          {removeWorkoutExerciseMutation.isPending ? 'Removendo...' : 'Remover'}
                         </Button>
                       </div>
                       {instructionsOpen ? (
