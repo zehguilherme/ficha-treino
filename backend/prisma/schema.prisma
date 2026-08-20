@@ -12,7 +12,7 @@ datasource db {
 enum WeekDay {
   DOMINGO
   SEGUNDA
-  TERÇA
+  TERCA
   QUARTA
   QUINTA
   SEXTA

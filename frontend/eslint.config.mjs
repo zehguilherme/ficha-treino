@@ -38,6 +38,7 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-unsafe-member-access": "error",
       "@typescript-eslint/no-unsafe-return": "error",
       "no-console": "error",
+      "@next/next/no-img-element": "error",
       "no-restricted-syntax": [
         "error",
         {

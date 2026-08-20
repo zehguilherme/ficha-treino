@@ -94,7 +94,7 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 | Search input | 0.875rem | 400 | normal | `.search-input` |
 | Search result | 0.875rem | 500 | normal | `.search-result-name` |
 | UI button | 0.8125rem | 500 | 0.02em | `.btn-clear`, `.btn-remove`, `.btn-add`, `.menu-item` |
-| Small label | 0.75rem | 400/500 | 0.02em | `.profile-label`, `.exercise-meta`, `.day-badge`, `.instructions-toggle` |
+| Small label | 0.75rem | 400/500 | 0.02em | `.profile-label`, `.exercise-meta`, `.day-badge` |
 | Tag / badge | 0.6875rem | 500 | 0.06em uppercase | `.tag`, `.carousel-counter`, `.search-results-title` |
 | Eyebrow | 0.75rem | 500–600 | 0.08–0.12em uppercase | `.hero-eyebrow` |
 
@@ -191,17 +191,17 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 | Variant | Padding | Border | Background | Text | Hover |
 |---------|---------|--------|------------|------|-------|
 | Back (icon) | — | 1px `--border` | `--card` | `--foreground` | `--secondary` |
-| Destructive (remove) | 0.375rem 0.75rem | none | `--destructive` | white | `--destructive / 0.9` |
+| Destructive (remove) | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
 | Destructive outline (danger) | 0.375rem 0.75rem | 1px `--destructive / 0.3` | none | `--destructive` | `--destructive / 0.05` |
 | Clear | 0.375rem 0.75rem | 1px `--border` | none | `--muted-fg` | `--destructive`, border `--destructive / 0.3` |
-| Add (solid) | 0.375rem 0.75rem | none | `--foreground` | `--primary-fg` | opacity 0.85 |
+| Add (solid) | 0.5rem 1rem | none | `--foreground` | `--primary-fg` | opacity 0.85 |
 | Cancel (modal) | 0.5rem 1rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
 | Confirm delete | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
 | Delete account | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
 | Login header | 0.375rem 0.75rem | 1px `--border` | none | `--foreground` | `--secondary` |
 | Google (full) | 0.625rem 1rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
 | Hero CTA | 0.75rem 2rem | none | `--primary` | `--primary-fg` | opacity 0.9 |
-| Instructions toggle | 0.25rem 0.5rem | 1px `--border` | none | `--muted-fg` | `--secondary` |
+| Instructions toggle | 0.5rem 1rem | 1px `--border` | none | `--muted-fg` | `--secondary` |
 | Home (404) | 0.5rem 1.25rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
 
 All buttons: `font-size: 0.8125rem`, `font-weight: 500`, `letter-spacing: 0.02em`, `text-transform: uppercase`, `border-radius: var(--radius)`, `transition: all 0.15s`.

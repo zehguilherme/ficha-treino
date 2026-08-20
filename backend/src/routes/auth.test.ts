@@ -150,7 +150,7 @@ describe('auth routes', () => {
     expect(createManyData.map((workout) => workout.weekDay)).toEqual([
       'DOMINGO',
       'SEGUNDA',
-      'TERÇA',
+      'TERCA',
       'QUARTA',
       'QUINTA',
       'SEXTA',

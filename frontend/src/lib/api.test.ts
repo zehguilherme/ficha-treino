@@ -1,6 +1,13 @@
 import { AxiosError } from 'axios';
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { api, getCurrentUser, getWorkouts } from './api';
+import {
+  api,
+  addWorkoutExercise,
+  getCurrentUser,
+  getExercises,
+  getWorkouts,
+  removeWorkoutExercise,
+} from './api';
 import { setSession } from './auth';
 
 const TOKEN = 'jwt-token';
@@ -92,5 +99,76 @@ describe('api axios instance', () => {
 
     await expect(getCurrentUser()).rejects.toBeDefined();
     await expect(getWorkouts()).rejects.toBeDefined();
+  });
+
+  /**
+   * Exercise search sends the query and pagination to the backend.
+   * Mock: adapter returns a valid exercise-search response.
+   * Assert: the typed client exposes the parsed response and serializes query params.
+   */
+  test('gets exercises with search parameters', async () => {
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => ({
+      data: { items: [], total: 0 },
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config,
+    });
+
+    const response = await getExercises('tríceps', 20, 0);
+
+    expect(response).toEqual({ items: [], total: 0 });
+    expect(api.defaults.adapter).toBeDefined();
+  });
+
+  /**
+   * Add-exercise client posts the selected catalog item to the current weekday.
+   * Mock: adapter returns the documented association payload.
+   * Assert: URL, method, body and parsed response match the backend contract.
+   */
+  test('adds an exercise to a workout', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { id: 46, exerciseId: 'triceps-pushdown', done: false },
+        status: 201,
+        statusText: 'Created',
+        headers: {},
+        config,
+      };
+    };
+
+    const response = await addWorkoutExercise('TERCA', 'triceps-pushdown');
+
+    expect(response).toEqual({ id: 46, exerciseId: 'triceps-pushdown', done: false });
+    expect(requestConfig?.method).toBe('post');
+    expect(requestConfig?.url).toBe('/api/workouts/TERCA/exercises');
+    expect(requestConfig?.data).toBe(JSON.stringify({ exerciseId: 'triceps-pushdown' }));
+  });
+
+  /**
+   * Remove-exercise client deletes the catalog association from the current weekday.
+   * Mock: adapter returns the documented deletion payload.
+   * Assert: URL, method and parsed response match the backend contract.
+   */
+  test('removes an exercise from a workout', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { deleted: true },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      };
+    };
+
+    const response = await removeWorkoutExercise('TERCA', 'barbell-bench-press');
+
+    expect(response).toEqual({ deleted: true });
+    expect(requestConfig?.method).toBe('delete');
+    expect(requestConfig?.url).toBe('/api/workouts/TERCA/exercises/barbell-bench-press');
   });
 });

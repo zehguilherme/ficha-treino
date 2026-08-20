@@ -5,7 +5,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 font-medium tracking-[0.02em] rounded-[var(--radius)] transition-all duration-150 text-[0.8125rem] outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex items-center justify-center gap-2 font-medium tracking-[0.02em] rounded-[var(--radius)] transition-all duration-150 text-[0.8125rem] outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -33,10 +33,27 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, disabled = false, onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
+    const childProps = asChild
+      ? disabled
+        ? {
+            'aria-disabled': true,
+            onClick: (event: React.MouseEvent<HTMLElement>): void => {
+              event.preventDefault();
+              event.stopPropagation();
+            },
+          }
+        : { onClick }
+      : { disabled, onClick };
+
     return (
-      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+        {...childProps}
+      />
     );
   },
 );

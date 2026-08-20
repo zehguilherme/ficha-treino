@@ -13,7 +13,7 @@ import type { WeekDay } from '@/schemas/api';
 const DAY_NAMES: Record<WeekDay, string> = {
   DOMINGO: 'Domingo',
   SEGUNDA: 'Segunda-feira',
-  TERÇA: 'Terça-feira',
+  TERCA: 'Terça-feira',
   QUARTA: 'Quarta-feira',
   QUINTA: 'Quinta-feira',
   SEXTA: 'Sexta-feira',

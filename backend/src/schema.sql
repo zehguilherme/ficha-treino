@@ -10,8 +10,8 @@
 -- ============================================================
 
 -- ENUM
--- PRISMA: enum WeekDay { DOMINGO SEGUNDA TERÇA QUARTA QUINTA SEXTA SABADO }
-CREATE TYPE WEEK_DAY AS ENUM('DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO');
+-- PRISMA: enum WeekDay { DOMINGO SEGUNDA TERCA QUARTA QUINTA SEXTA SABADO }
+CREATE TYPE WEEK_DAY AS ENUM('DOMINGO', 'SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO');
 
 -- USERS
 -- PRISMA: model User {
@@ -196,7 +196,7 @@ CREATE TRIGGER trg_exercises_updated_at
 -- enum WeekDay {
 --   DOMINGO
 --   SEGUNDA
---   TERÇA
+--   TERCA
 --   QUARTA
 --   QUINTA
 --   SEXTA

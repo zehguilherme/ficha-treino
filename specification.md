@@ -227,7 +227,7 @@ Workouts
 ──────────────
 id                   SERIAL (PK)
 user_id              INTEGER NOT NULL (FK → Users.id)
-week_day             ENUM (DOMINGO, SEGUNDA, TERÇA, QUARTA, QUINTA, SEXTA, SABADO) NOT NULL
+week_day             ENUM (DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SABADO) NOT NULL
 
 UNIQUE (user_id, week_day)
 
@@ -374,11 +374,12 @@ Implementado:
 - autenticação Google OAuth 2.0 com emissão de JWT de 24 horas;
 - atualização dos dados do usuário no login recorrente;
 - criação automática dos sete treinos no primeiro login;
-- seed dos exercícios e `GET /api/workouts` com resumo dos treinos.
+- seed dos exercícios, `GET /api/workouts` com resumo dos treinos, `GET /api/workouts/:weekDay` com os exercícios completos do dia e `POST /api/workouts/:weekDay/exercises` para adicionar exercícios ao treino autenticado;
+- `GET /api/exercises` com paginação e busca sem distinção de acentos;
+- `PATCH /api/workout-exercises/:id` para alternar a conclusão e `POST /api/workouts/:weekDay/clear` para desmarcar o treino;
+- `DELETE /api/workouts/:weekDay/exercises/:exerciseId` para remover somente a associação do exercício ao treino autenticado;
+- dashboard semanal e página de treino com busca via debounce, paginação manual, adição, marcação, limpeza e remoção integradas.
 
 Ainda pendente:
 
-- consulta de um treino por dia;
-- adição, remoção e busca de exercícios;
-- marcação e limpeza dos exercícios;
 - exclusão da conta.

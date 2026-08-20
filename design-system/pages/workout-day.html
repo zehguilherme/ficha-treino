@@ -456,15 +456,16 @@
       margin-left: auto;
       display: inline-flex;
       align-items: center;
+      height: 2.25rem;
       gap: 0.375rem;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 500;
       letter-spacing: 0.02em;
       color: white;
       background: hsl(var(--destructive));
       border: none;
       border-radius: var(--radius);
-      padding: 0.375rem 0.75rem;
+      padding: 0.5rem 1rem;
       cursor: pointer;
       transition: background 0.15s;
     }
@@ -499,15 +500,16 @@
     .instructions-toggle {
       display: inline-flex;
       align-items: center;
+      height: 2.25rem;
       gap: 0.2rem;
-      font-size: 0.75rem;
+      font-size: 0.875rem;
       font-weight: 500;
       color: hsl(var(--muted-foreground));
       background: none;
       border: 1px solid hsl(var(--border));
       border-radius: 0.375rem;
       cursor: pointer;
-      padding: 0.25rem 0.5rem;
+      padding: 0.5rem 1rem;
       transition: background 0.15s;
     }
 
@@ -578,16 +580,22 @@
     }
 
     .empty-workout {
+      min-height: 16rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed hsl(var(--border));
+      border-radius: calc(var(--radius) + 0.125rem);
+      padding: 0 1.5rem;
       text-align: center;
-      padding: 3rem 1.5rem;
-      color: hsl(var(--muted-foreground));
     }
 
     .empty-workout svg {
-      width: 2.5rem;
-      height: 2.5rem;
-      margin: 0 auto 0.75rem;
-      opacity: 0.4;
+      width: 2rem;
+      height: 2rem;
+      margin-bottom: 0.75rem;
+      color: hsl(var(--muted-foreground));
     }
 
     .empty-workout p {
@@ -595,9 +603,26 @@
       line-height: 1.5;
     }
 
+    .empty-workout p:first-of-type {
+      font-weight: 500;
+    }
+
+    .empty-workout p + p {
+      margin-top: 0.25rem;
+      color: hsl(var(--muted-foreground));
+    }
+
     @media (max-width: 640px) {
       .container { padding: 1.5rem 1rem; }
       .exercise-carousel { aspect-ratio: 4 / 3; }
+      .exercise-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 0.5rem;
+      }
+      .instructions-toggle { gap: 0.125rem; }
+      .instructions-toggle,
+      .btn-remove-exercise { grid-column: 1; width: 100%; margin-left: 0; }
     }
 
     .hidden { display: none; }
@@ -786,7 +811,8 @@
           <circle cx="5" cy="12" r="1" />
           <circle cx="19" cy="12" r="1" />
         </svg>
-        <p>Nenhum exercício neste treino.<br>Use a busca acima para adicionar exercícios.</p>
+        <p>Nenhum exercício neste treino.</p>
+        <p>Use a busca acima para adicionar exercícios.</p>
       </div>
     </div>
   </main>

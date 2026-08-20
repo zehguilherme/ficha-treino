@@ -52,7 +52,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Search results | 0.875rem | 500 | normal | `.search-result-name` |
 | UI buttons | 0.8125rem | 500 | 0.02em | `.btn-*` |
 | Exercise meta | 0.75rem | 400 | normal | `.exercise-meta` |
-| Instructions toggle | 0.75rem | 500 | normal | `.instructions-toggle` |
+| Instructions toggle | 0.875rem | 500 | normal | `.instructions-toggle` |
 | Badge / Dia badge | 0.75rem | 500 | normal | `.day-badge` |
 | Small labels | 0.75rem | 400 | 0.02em | `.profile-label` |
 | Tag / CAPS | 0.6875rem | 500 | 0.06em | `.tag`, `.carousel-counter`, `.search-results-title`, `.search-result-category` |
@@ -98,10 +98,10 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 
 **Dimensões:**
 - Ícone-only: 2rem × 2rem
-- Destrutivo/Add/Clear: padding `0.375rem 0.75rem`, border-radius `--radius`
+- Destrutivo/Adicionar/ações de card: padding `0.5rem 1rem`, border-radius `--radius`
 - Delete account: padding `0.5rem 1rem`
 - Google login: padding `0.75rem 1.5rem`, width 100%
-- Instructions toggle: padding `0.25rem 0.5rem`, border-radius `0.375rem`
+- Instructions toggle: padding `0.5rem 1rem`, font-size `0.875rem`, border-radius `0.375rem`
 
 **Ícone em botões:** sempre SVG 0.875rem × 0.875rem (destrutivos) ou 1rem × 1rem
 
