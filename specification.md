@@ -374,10 +374,12 @@ Implementado:
 - autenticação Google OAuth 2.0 com emissão de JWT de 24 horas;
 - atualização dos dados do usuário no login recorrente;
 - criação automática dos sete treinos no primeiro login;
-- seed dos exercícios, `GET /api/workouts` com resumo dos treinos, `GET /api/workouts/:weekDay` com os exercícios completos do dia e `POST /api/workouts/:weekDay/exercises` para adicionar exercícios ao treino autenticado.
+- seed dos exercícios, `GET /api/workouts` com resumo dos treinos, `GET /api/workouts/:weekDay` com os exercícios completos do dia e `POST /api/workouts/:weekDay/exercises` para adicionar exercícios ao treino autenticado;
+- `GET /api/exercises` com paginação e busca sem distinção de acentos;
+- `PATCH /api/workout-exercises/:id` para alternar a conclusão e `POST /api/workouts/:weekDay/clear` para desmarcar o treino;
+- dashboard semanal e página de treino com busca via debounce, paginação manual, adição, marcação e limpeza integradas.
 
 Ainda pendente:
 
 - remoção de exercícios;
-- marcação e limpeza dos exercícios;
 - exclusão da conta.

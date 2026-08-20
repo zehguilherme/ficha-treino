@@ -1,18 +1,22 @@
 import axios, { type AxiosError } from 'axios';
 import { clearSession, getSession } from './auth';
 import {
-  currentUserResponseSchema,
   addWorkoutExerciseResponseSchema,
+  clearWorkoutResponseSchema,
+  currentUserResponseSchema,
   exercisesResponseSchema,
   googleAuthResponseSchema,
   workoutResponseSchema,
   workoutsResponseSchema,
   type CurrentUser,
   type AddWorkoutExerciseResponse,
+  type ClearWorkoutResponse,
   type ExercisesResponse,
   type GoogleAuthResponse,
   type WorkoutResponse,
   type WorkoutsResponse,
+  type ToggleWorkoutExerciseResponse,
+  toggleWorkoutExerciseResponseSchema,
 } from '@/schemas/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
@@ -71,4 +75,16 @@ export const addWorkoutExercise = async (
 ): Promise<AddWorkoutExerciseResponse> =>
   addWorkoutExerciseResponseSchema.parse(
     (await api.post(`/api/workouts/${encodeURIComponent(weekDay)}/exercises`, { exerciseId })).data,
+  );
+
+export const toggleWorkoutExercise = async (
+  workoutExerciseId: number,
+): Promise<ToggleWorkoutExerciseResponse> =>
+  toggleWorkoutExerciseResponseSchema.parse(
+    (await api.patch(`/api/workout-exercises/${workoutExerciseId}`)).data,
+  );
+
+export const clearWorkout = async (weekDay: string): Promise<ClearWorkoutResponse> =>
+  clearWorkoutResponseSchema.parse(
+    (await api.post(`/api/workouts/${encodeURIComponent(weekDay)}/clear`)).data,
   );

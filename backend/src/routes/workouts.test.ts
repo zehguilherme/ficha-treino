@@ -49,6 +49,15 @@ type CreatedWorkoutExercise = {
   done: boolean;
 };
 
+type WorkoutExerciseRecord = {
+  id: number;
+  exerciseId: string;
+  done: boolean;
+  workout: {
+    userId: number;
+  };
+};
+
 type MockPrisma = {
   user: {
     findUnique: jest.Mock<Promise<User | null>, [args: object]>;
@@ -62,6 +71,9 @@ type MockPrisma = {
   };
   workoutExercise: {
     create: jest.Mock<Promise<CreatedWorkoutExercise>, [args: object]>;
+    findUnique: jest.Mock<Promise<WorkoutExerciseRecord | null>, [args: object]>;
+    update: jest.Mock<Promise<CreatedWorkoutExercise>, [args: object]>;
+    updateMany: jest.Mock<Promise<{ count: number }>, [args: object]>;
   };
 };
 
@@ -79,6 +91,9 @@ jest.mock('../db.js', () => ({
     },
     workoutExercise: {
       create: jest.fn<Promise<CreatedWorkoutExercise>, [args: object]>(),
+      findUnique: jest.fn<Promise<WorkoutExerciseRecord | null>, [args: object]>(),
+      update: jest.fn<Promise<CreatedWorkoutExercise>, [args: object]>(),
+      updateMany: jest.fn<Promise<{ count: number }>, [args: object]>(),
     },
   },
 }));
@@ -545,6 +560,143 @@ describe('workouts routes', () => {
     const response = await request(app)
       .post('/api/workouts/SEGUNDA/exercises')
       .send({ exerciseId: 'barbell-bench-press' });
+
+    expect(response.status).toBe(401);
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+  });
+
+  test('PATCH /api/workout-exercises/:id toggles an owned exercise completion state', async () => {
+    prisma.workoutExercise.findUnique
+      .mockResolvedValueOnce({
+        id: 45,
+        exerciseId: 'bench-press',
+        done: false,
+        workout: { userId: 1 },
+      })
+      .mockResolvedValueOnce({
+        id: 45,
+        exerciseId: 'bench-press',
+        done: true,
+        workout: { userId: 1 },
+      });
+    prisma.workoutExercise.update
+      .mockResolvedValueOnce({ id: 45, exerciseId: 'bench-press', done: true })
+      .mockResolvedValueOnce({ id: 45, exerciseId: 'bench-press', done: false });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .patch('/api/workout-exercises/45')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ id: 45, exerciseId: 'bench-press', done: true });
+    expect(prisma.workoutExercise.findUnique).toHaveBeenCalledWith({
+      where: { id: 45 },
+      select: {
+        id: true,
+        exerciseId: true,
+        done: true,
+        workout: { select: { userId: true } },
+      },
+    });
+    expect(prisma.workoutExercise.update).toHaveBeenCalledWith({
+      where: { id: 45 },
+      data: { done: true },
+      select: { id: true, exerciseId: true, done: true },
+    });
+
+    const secondResponse = await request(app)
+      .patch('/api/workout-exercises/45')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(secondResponse.status).toBe(200);
+    expect(secondResponse.body).toEqual({ id: 45, exerciseId: 'bench-press', done: false });
+    expect(prisma.workoutExercise.update).toHaveBeenLastCalledWith({
+      where: { id: 45 },
+      data: { done: false },
+      select: { id: true, exerciseId: true, done: true },
+    });
+  });
+
+  test('PATCH /api/workout-exercises/:id returns 404 for an exercise owned by another user', async () => {
+    prisma.workoutExercise.findUnique.mockResolvedValue({
+      id: 45,
+      exerciseId: 'bench-press',
+      done: false,
+      workout: { userId: 2 },
+    });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .patch('/api/workout-exercises/45')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(prisma.workoutExercise.update).not.toHaveBeenCalled();
+  });
+
+  test('PATCH /api/workout-exercises/:id returns 401 without token', async () => {
+    const response = await request(app).patch('/api/workout-exercises/45');
+
+    expect(response.status).toBe(401);
+    expect(prisma.workoutExercise.findUnique).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/clear resets all completion states in the owned workout', async () => {
+    prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
+    prisma.workoutExercise.updateMany.mockResolvedValue({ count: 3 });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/clear')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ cleared: 3 });
+    expect(prisma.workoutExercise.updateMany).toHaveBeenCalledWith({
+      where: { workoutId: 2 },
+      data: { done: false },
+    });
+  });
+
+  test('POST /api/workouts/:weekDay/clear succeeds for an empty workout', async () => {
+    prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
+    prisma.workoutExercise.updateMany.mockResolvedValue({ count: 0 });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/clear')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ cleared: 0 });
+  });
+
+  test('POST /api/workouts/:weekDay/clear returns 404 for an invalid weekday', async () => {
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/INVALIDO/clear')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(prisma.workout.findUnique).not.toHaveBeenCalled();
+    expect(prisma.workoutExercise.updateMany).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/clear returns 404 when the workout is missing', async () => {
+    prisma.workout.findUnique.mockResolvedValue(null);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/clear')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(404);
+    expect(prisma.workoutExercise.updateMany).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/workouts/:weekDay/clear returns 401 without token', async () => {
+    const response = await request(app).post('/api/workouts/SEGUNDA/clear');
 
     expect(response.status).toBe(401);
     expect(prisma.workout.findUnique).not.toHaveBeenCalled();

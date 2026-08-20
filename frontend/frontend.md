@@ -31,11 +31,11 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 
 ## Estado
 
-- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações implementadas (adicionar exercícios); marcar done, limpar e remover ainda estão pendentes
+- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar e limpar exercícios; remoção ainda está pendente
 - **Context API**: sessão do usuário (login/logout)
 - **`useState`**: input search, debounce, modal, carrossel
 
-A página de treino consulta `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. A rota `POST /api/workouts/:weekDay/exercises` é integrada ao botão de adição, com atualização dos caches do treino/dashboard, toast de sucesso e warning de duplicidade. Marcar/desmarcar, limpar e remover exercícios ainda não estão disponíveis.
+A página de treino consulta `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id` e `POST /api/workouts/:weekDay/clear` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmação acessível para limpeza. A remoção de exercícios ainda depende do endpoint DELETE no backend.
 
 ## Estrutura (planejada)
 
@@ -208,6 +208,19 @@ Testes de integração da callback page (`@/lib/api` e `next/navigation` mockado
 | redirects to login when the user denies access               | integration | `error=access_denied`                                        | redirect `/login`, sem chamada à API                                                  |
 | shows an error when the backend rejects the code             | integration | `exchangeGoogleCode` rejeita com AxiosError (com `response`) | alerta "Não foi possível autenticar"                                                  |
 | shows a connection error when the API call fails             | integration | `exchangeGoogleCode` rejeita com `Error` (rede)              | alerta "Não foi possível conectar ao servidor"                                        |
+
+#### `src/app/workout/[weekDay]/page.test.tsx`
+
+Testes da página de treino para carregamento, busca, adição, marcação e limpeza.
+
+- renderiza exercícios e contador `done/total`;
+- envia o ID da associação ao alternar o checkbox;
+- adiciona exercícios pela busca e atualiza o treino;
+- confirma a limpeza, mostra estado pendente e atualiza os dados.
+
+#### `src/components/workout/ClearWorkoutDialog.test.tsx`
+
+Testes do diálogo de confirmação de limpeza, incluindo confirmação, cancelamento, Escape e estado pendente.
 
 #### `src/lib/api.test.ts`
 

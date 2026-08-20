@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-19: busca e adição de exercícios implementadas; `GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises` e `GET /api/exercises` documentados, `TERCA` é o enum oficial e a busca ignora acentos.
+2026-08-20: marcação e limpeza de exercícios integradas ao frontend; `PATCH /api/workout-exercises/:id` e `POST /api/workouts/:weekDay/clear` implementados e documentados, com atualização de cache, loading, erros e AlertDialog acessível.
 
 ## O que foi feito
 
@@ -15,9 +15,9 @@
 - `frontend/src/lib/exerciseImage.ts`: helper para URLs de imagens via CDN
 - `frontend/src/app/not-found.tsx`: página 404 amigável
 - `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
-- Testes: LoginForm, useGoogleLogin, callback page, auth helpers, api interceptors, not-found
-- `feature_list.json`: ui-001, ui-009 e ui-010 `passes: true`; api-003, api-004 e api-006 concluídos; api-005 tem GET e POST implementados, com DELETE pendente; api-007 e api-008 continuam pendentes
-- `progress.md`: histórico atualizado até 2026-08-19
+- Testes: autenticação, dashboard, página de treino, busca, adição, marcação, limpeza, interceptors e not-found
+- `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-006 e api-007 concluídos; api-005 permanece em andamento pela remoção e api-008 não iniciado
+- `progress.md`: histórico atualizado até 2026-08-20
 
 ## Feature ativa
 
@@ -27,16 +27,15 @@
 
 ### Backend
 
-1. api-005: implementar DELETE de exercícios do treino; GET e POST já implementados
-2. api-007: Marcar/desmarcar exercícios
-3. api-008: Excluir conta
+1. api-005: implementar DELETE de exercícios do treino; GET, POST, PATCH e clear já implementados
+2. api-008: Excluir conta
 
 ### Frontend
 
-5. ui-002: Dashboard
-6. ui-003: Workout day
-7. ui-004: Search UI — busca da issue 71 implementada com debounce de 1000 ms, paginação manual, campo sticky, carrossel e adição integrada ao treino
-8. ui-005: Checkbox + carrossel
+1. ui-007: Minha conta
+2. ui-008: Modal de exclusão de conta
+3. ui-011: Favicon
+4. ui-012: Page transitions (Motion)
 
 ## Branch
 

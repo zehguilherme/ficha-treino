@@ -59,7 +59,8 @@ src/
   generated/prisma/  # Prisma Client gerado (não editar)
   routes/
     auth.ts
-    workouts.ts      # GET, POST de adição implementados; DELETE, PATCH e clear planejados
+    workouts.ts      # GET, POST de adição e clear implementados; DELETE planejado
+    workoutExercises.ts # PATCH de conclusão implementado
     exercises.ts     # GET /api/exercises implementado
     account.ts       # planejado
   middleware/
@@ -67,16 +68,16 @@ src/
   validators/
     auth.ts          # schemas Zod de entrada
     responses.ts     # schemas Zod de resposta
-  *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises)
+  *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises, routes/workouts)
 ```
 
-Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay` e `POST /api/workouts/:weekDay/exercises`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. A adição de exercícios valida o corpo com Zod, restringe o treino ao usuário autenticado, cria a associação com `done=false` e responde 400/401/404/409 conforme o caso; a rota também está documentada no Swagger. Remoção, marcação/limpeza e conta ainda estão planejadas.
+Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises` e `POST /api/workouts/:weekDay/clear`), `routes/workoutExercises.ts` (`PATCH /api/workout-exercises/:id`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. As rotas de conclusão validam autenticação e ownership, alternam `done`, limpam as marcações do treino e estão documentadas no Swagger. Remoção de exercícios e conta ainda estão planejadas.
 
 Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
 
 A busca de exercícios usa a extensão PostgreSQL `unaccent` para que consultas com e sem acentos produzam os mesmos resultados. A rota retorna no máximo 100 itens por página, ordenados por nome e ID, e `total` representa o total filtrado antes da paginação.
 
-Estado verificado em 2026-08-15: a migration da extensão `unaccent` foi adicionada após as migrations versionadas existentes. O container PostgreSQL deve aplicar as 4 migrations antes da validação manual da busca.
+Estado verificado em 2026-08-20: a migration da extensão `unaccent` foi adicionada após as migrations versionadas existentes. O container PostgreSQL deve aplicar as 4 migrations antes da validação manual da busca. As rotas de marcação e limpeza possuem testes e annotations Swagger; remoção de exercícios e conta continuam planejadas.
 
 ## Verificação
 
@@ -174,6 +175,16 @@ Testes unitários para a função `seed` (download HTTP via `http.get` + upsert 
 | removes exercises no longer in dataset         | unit | API retorna só 1, DB tem 1, 2, 3 | deleteMany chamado com `['2', '3']` |
 | rejects when the dataset download fails        | unit | HTTP 500                         | seed rejeita com mensagem de erro   |
 | processes in multiple batches above BATCH_SIZE | unit | 51 exercícios (BATCH_SIZE=50)    | $transaction chamado 2x             |
+
+#### `src/routes/workouts.test.ts`
+
+Testes de integração das rotas de treinos, adição, marcação e limpeza, com autenticação e ownership.
+
+- `GET /api/workouts` lista os sete treinos do usuário;
+- `GET /api/workouts/:weekDay` retorna exercícios completos ordenados;
+- `POST /api/workouts/:weekDay/exercises` valida exercício, duplicidade e ownership;
+- `PATCH /api/workout-exercises/:id` alterna `done` e rejeita associações de outro usuário;
+- `POST /api/workouts/:weekDay/clear` desmarca todas as associações do treino.
 
 ## Constraints
 

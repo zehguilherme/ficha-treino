@@ -377,3 +377,70 @@ workoutsRouter.post('/:weekDay/exercises', requireAuth, async (req, res) => {
     throw error;
   }
 });
+
+/**
+ * @openapi
+ * /api/workouts/{weekDay}/clear:
+ *   post:
+ *     tags: [Workouts]
+ *     summary: Desmarca todos os exercícios de um treino diário
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: weekDay
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SABADO]
+ *     responses:
+ *       200:
+ *         description: Quantidade de associações desmarcadas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: [cleared]
+ *               properties:
+ *                 cleared:
+ *                   type: integer
+ *       401:
+ *         description: Token JWT ausente, inválido ou expirado
+ *       404:
+ *         description: Dia inválido ou treino inexistente
+ */
+workoutsRouter.post('/:weekDay/clear', requireAuth, async (req, res) => {
+  const claims = req.user;
+  if (!claims) {
+    res.status(401).json({ error: 'Token inválido ou expirado' });
+    return;
+  }
+
+  const weekDay = Object.values(WeekDay).find((value) => value === req.params.weekDay);
+  if (!weekDay) {
+    res.status(404).json({ error: 'Treino não encontrado' });
+    return;
+  }
+
+  const workout = await prisma.workout.findUnique({
+    where: {
+      userId_weekDay: {
+        userId: claims.user_id,
+        weekDay,
+      },
+    },
+    select: { id: true },
+  });
+
+  if (!workout) {
+    res.status(404).json({ error: 'Treino não encontrado' });
+    return;
+  }
+
+  const result = await prisma.workoutExercise.updateMany({
+    where: { workoutId: workout.id },
+    data: { done: false },
+  });
+
+  res.json({ cleared: result.count });
+});

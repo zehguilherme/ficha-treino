@@ -72,11 +72,23 @@ export const addWorkoutExerciseResponseSchema = z.object({
   done: z.boolean(),
 });
 
+export const clearWorkoutResponseSchema = z.object({
+  cleared: z.number().int().nonnegative(),
+});
+
+export const toggleWorkoutExerciseResponseSchema = z.object({
+  id: z.number().int(),
+  exerciseId: z.string(),
+  done: z.boolean(),
+});
+
 export type GoogleAuthResponse = z.infer<typeof googleAuthResponseSchema>;
 export type CurrentUser = z.infer<typeof currentUserResponseSchema>;
 export type WeekDay = z.infer<typeof weekDaySchema>;
 export type WorkoutsResponse = z.infer<typeof workoutsResponseSchema>;
 export type WorkoutResponse = z.infer<typeof workoutResponseSchema>;
 export type AddWorkoutExerciseResponse = z.infer<typeof addWorkoutExerciseResponseSchema>;
+export type ClearWorkoutResponse = z.infer<typeof clearWorkoutResponseSchema>;
 export type ExerciseDetails = z.infer<typeof exerciseDetailsSchema>;
 export type ExercisesResponse = z.infer<typeof exercisesResponseSchema>;
+export type ToggleWorkoutExerciseResponse = z.infer<typeof toggleWorkoutExerciseResponseSchema>;

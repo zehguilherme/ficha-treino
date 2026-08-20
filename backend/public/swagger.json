@@ -382,6 +382,122 @@
         }
       }
     },
+    "/api/workouts/{weekDay}/clear": {
+      "post": {
+        "tags": [
+          "Workouts"
+        ],
+        "summary": "Desmarca todos os exercícios de um treino diário",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "weekDay",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DOMINGO",
+                "SEGUNDA",
+                "TERCA",
+                "QUARTA",
+                "QUINTA",
+                "SEXTA",
+                "SABADO"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quantidade de associações desmarcadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "cleared"
+                  ],
+                  "properties": {
+                    "cleared": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente, inválido ou expirado"
+          },
+          "404": {
+            "description": "Dia inválido ou treino inexistente"
+          }
+        }
+      }
+    },
+    "/api/workout-exercises/{id}": {
+      "patch": {
+        "tags": [
+          "Workouts"
+        ],
+        "summary": "Alterna o estado de conclusão de um exercício do treino",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID da associação entre treino e exercício"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Associação atualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "exerciseId",
+                    "done"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "exerciseId": {
+                      "type": "string"
+                    },
+                    "done": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente, inválido ou expirado"
+          },
+          "404": {
+            "description": "Associação inexistente ou pertencente a outro usuário"
+          }
+        }
+      }
+    },
     "/api/exercises": {
       "get": {
         "tags": [

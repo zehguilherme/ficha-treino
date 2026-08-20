@@ -11,17 +11,24 @@ import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { ExerciseImageCarousel } from '@/components/exercise/ExerciseImageCarousel';
 import { Input } from '@/components/ui/Input';
+import { ClearWorkoutDialog } from '@/components/workout/ClearWorkoutDialog';
 import {
   ArrowLeftIcon,
   BrushIcon,
   ChevronDownIcon,
+  MuscleIcon,
   SearchIcon,
-  TargetIcon,
   TrashIcon,
 } from '@/components/ui/WorkoutIcons';
 import { useAuth } from '@/contexts/AuthContext';
-import { addWorkoutExercise, getExercises, getWorkout } from '@/lib/api';
-import type { WeekDay } from '@/schemas/api';
+import {
+  addWorkoutExercise,
+  clearWorkout,
+  getExercises,
+  getWorkout,
+  toggleWorkoutExercise,
+} from '@/lib/api';
+import type { WeekDay, WorkoutResponse } from '@/schemas/api';
 import { toast } from 'sonner';
 
 const DAY_NAMES: Record<WeekDay, string> = {
@@ -61,6 +68,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [openInstructions, setOpenInstructions] = useState<number | null>(null);
+  const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [dismissedError, setDismissedError] = useState<unknown>(null);
   const [isRetryingWorkout, setIsRetryingWorkout] = useState(false);
   const normalizedSearch = debouncedSearch.trim();
@@ -101,6 +109,51 @@ const WorkoutDayPage = (): React.JSX.Element => {
       if (isDuplicateError(error)) toast.warning('Este exercício já está no treino.');
     },
   });
+  const toggleExercise = useMutation({
+    mutationFn: (workoutExerciseId: number) => toggleWorkoutExercise(workoutExerciseId),
+    onMutate: () => setDismissedError(null),
+    onSuccess: (updatedExercise) => {
+      queryClient.setQueryData<WorkoutResponse>(['workout', weekDay], (current) =>
+        current
+          ? {
+              workout: {
+                ...current.workout,
+                exercises: current.workout.exercises.map((workoutExercise) =>
+                  workoutExercise.id === updatedExercise.id
+                    ? { ...workoutExercise, done: updatedExercise.done }
+                    : workoutExercise,
+                ),
+              },
+            }
+          : current,
+      );
+      void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
+      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
+    },
+  });
+  const clearWorkoutMutation = useMutation({
+    mutationFn: (selectedWeekDay: WeekDay) => clearWorkout(selectedWeekDay),
+    onMutate: () => setDismissedError(null),
+    onSuccess: () => {
+      queryClient.setQueryData<WorkoutResponse>(['workout', weekDay], (current) =>
+        current
+          ? {
+              workout: {
+                ...current.workout,
+                exercises: current.workout.exercises.map((workoutExercise) => ({
+                  ...workoutExercise,
+                  done: false,
+                })),
+              },
+            }
+          : current,
+      );
+      void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
+      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      setClearDialogOpen(false);
+      toast.success('Treino limpo.');
+    },
+  });
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebouncedSearch(search), 1000);
@@ -129,7 +182,17 @@ const WorkoutDayPage = (): React.JSX.Element => {
             key: addExercise.error ?? 'add-exercise-error',
             message: 'Não foi possível adicionar o exercício.',
           }
-        : null;
+        : toggleExercise.isError
+          ? {
+              key: toggleExercise.error ?? 'toggle-exercise-error',
+              message: 'Não foi possível atualizar o exercício.',
+            }
+          : clearWorkoutMutation.isError
+            ? {
+                key: clearWorkoutMutation.error ?? 'clear-workout-error',
+                message: 'Não foi possível limpar o treino.',
+              }
+            : null;
   const errorMessage =
     activeError && activeError.key !== dismissedError ? activeError.message : null;
   const exercises = workout.data?.workout.exercises ?? [];
@@ -219,6 +282,15 @@ const WorkoutDayPage = (): React.JSX.Element => {
   return (
     <>
       {errorDialog}
+      <ClearWorkoutDialog
+        open={clearDialogOpen}
+        onOpenChange={setClearDialogOpen}
+        dayName={dayName}
+        isPending={clearWorkoutMutation.isPending}
+        onConfirm={() => {
+          if (weekDay) clearWorkoutMutation.mutate(weekDay);
+        }}
+      />
       {workoutHeader}
       <main className="flex-1 bg-background px-4 py-8 sm:px-6">
         <div className="mx-auto max-w-4xl">
@@ -226,8 +298,10 @@ const WorkoutDayPage = (): React.JSX.Element => {
             <h2 className="text-2xl font-semibold tracking-tight">{dayName}</h2>
             <Button
               variant="outline"
-              disabled
+              disabled={exercises.length === 0 || clearWorkoutMutation.isPending}
               aria-label="Limpar treino"
+              aria-busy={clearWorkoutMutation.isPending}
+              onClick={() => setClearDialogOpen(true)}
               className="gap-1.5 border-border px-3 py-1.5 text-muted-foreground hover:border-destructive/30 hover:text-destructive disabled:hover:border-border disabled:hover:text-muted-foreground"
             >
               <BrushIcon className="size-4" />
@@ -371,51 +445,55 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         exerciseName={exercise.name}
                         className="group mb-4 overflow-hidden rounded-[var(--radius)] bg-secondary"
                       />
-                      <h3 className="text-[0.9375rem] font-semibold">{exercise.name}</h3>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {[exercise.category, exercise.equipment].filter(Boolean).map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full bg-secondary px-2 py-1 text-[0.6875rem] font-medium uppercase tracking-wide text-secondary-foreground"
-                          >
-                            {formatLabel(tag ?? '')}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-                        <p className="flex items-center gap-2">
-                          <TargetIcon className="size-4" aria-hidden="true" />
-                          <span>
-                            <strong className="font-medium text-foreground">
-                              Músculo primário:
-                            </strong>{' '}
-                            {exercise.primaryMuscles.map(formatLabel).join(', ')}
-                          </span>
-                        </p>
-                        {exercise.secondaryMuscles.length > 0 ? (
-                          <p className="flex items-center gap-2">
-                            <TargetIcon className="size-4" aria-hidden="true" />
-                            <span>
-                              <strong className="font-medium text-foreground">
-                                Músculo secundário:
-                              </strong>{' '}
-                              {exercise.secondaryMuscles.map(formatLabel).join(', ')}
+                      <div className="min-w-0">
+                        <h3 className="mb-1.5 text-[0.9375rem] font-semibold">{exercise.name}</h3>
+                        <div className="mb-2 flex flex-wrap gap-1.5">
+                          {[exercise.category, exercise.equipment].filter(Boolean).map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full bg-secondary px-2 py-0.5 text-[0.6875rem] font-medium uppercase tracking-[0.06em] text-muted-foreground"
+                            >
+                              {formatLabel(tag ?? '')}
                             </span>
-                          </p>
-                        ) : null}
+                          ))}
+                        </div>
+                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                          <div className="flex flex-col gap-0.5">
+                            <span className="flex items-center gap-1 text-[0.6875rem] font-medium uppercase tracking-[0.06em]">
+                              <MuscleIcon className="size-3" filled aria-hidden="true" />
+                              Músculo primário
+                            </span>
+                            <span className="pl-4 text-xs text-foreground">
+                              {exercise.primaryMuscles.map(formatLabel).join(', ')}
+                            </span>
+                          </div>
+                          {exercise.secondaryMuscles.length > 0 ? (
+                            <div className="flex flex-col gap-0.5">
+                              <span className="flex items-center gap-1 text-[0.6875rem] font-medium uppercase tracking-[0.06em]">
+                                <MuscleIcon className="size-3" aria-hidden="true" />
+                                Músculo secundário
+                              </span>
+                              <span className="pl-4 text-xs text-foreground">
+                                {exercise.secondaryMuscles.map(formatLabel).join(', ')}
+                              </span>
+                            </div>
+                          ) : null}
+                        </div>
                       </div>
-                      <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-border pt-4">
-                        <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3 max-[360px]:flex-col max-[360px]:items-stretch">
+                        <label className="flex items-center gap-2 text-sm text-muted-foreground max-[360px]:self-start">
                           <Checkbox
                             checked={done}
-                            disabled
+                            disabled={toggleExercise.isPending || clearWorkoutMutation.isPending}
                             aria-label={`Feito: ${exercise.name}`}
+                            onCheckedChange={() => toggleExercise.mutate(id)}
                           />
                           Feito
                         </label>
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="h-7 gap-1 sm:gap-2 max-[360px]:w-full"
                           onClick={() => setOpenInstructions(instructionsOpen ? null : id)}
                           aria-expanded={instructionsOpen}
                           aria-label={`Instruções: ${exercise.name}`}
@@ -426,20 +504,21 @@ const WorkoutDayPage = (): React.JSX.Element => {
                           />
                         </Button>
                         <Button
-                          variant="ghost"
-                          size="sm"
+                          variant="default"
                           disabled
                           aria-label={`Remover ${exercise.name}`}
-                          className="text-destructive hover:text-destructive"
+                          className="ml-auto h-7 gap-1.5 bg-destructive px-2 py-1.5 text-[0.8125rem] font-medium tracking-[0.02em] text-primary-foreground hover:bg-destructive/90 sm:px-3 max-[360px]:ml-0 max-[360px]:w-full"
                         >
-                          <TrashIcon className="size-4" />
+                          <TrashIcon className="size-3.5" />
                           Remover
                         </Button>
                       </div>
                       {instructionsOpen ? (
-                        <div className="mt-4 border-t border-border pt-4 text-sm text-muted-foreground">
+                        <div className="mt-3 rounded-[var(--radius)] bg-secondary p-3 text-sm leading-[1.6] text-muted-foreground">
                           {exercise.instructions.map((instruction) => (
-                            <p key={instruction}>• {instruction}</p>
+                            <p key={instruction} className="mb-1.5">
+                              • {instruction}
+                            </p>
                           ))}
                         </div>
                       ) : null}

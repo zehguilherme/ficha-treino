@@ -13,7 +13,7 @@ Substituir `useState`/`useEffect` por **TanStack Query** para todo estado do ser
 | `GET /workouts/:weekDay/exercises`            | `useQuery({ queryKey: ['workouts', weekDay, 'exercises'] })`                       | stale 5min                          |
 | `POST /workouts/:weekDay/exercises/:id`       | `useMutation({ onSuccess: invalidate ['workouts', weekDay] })`                     | invalida após sucesso               |
 | `DELETE /workouts/:weekDay/exercises/:id`     | `useMutation({ onSuccess: invalidate ['workouts', weekDay] })`                     | invalida após sucesso               |
-| `PATCH /workouts/:weekDay/exercises/:id/done` | `useMutation` com optimistic update                                                | instantâneo na UI                   |
+| `PATCH /api/workout-exercises/:id`            | `useMutation` com optimistic update                                                | instantâneo na UI                   |
 | `POST /workouts/:weekDay/clear`               | `useMutation({ onSuccess: invalidate ['workouts', weekDay] })`                     | invalida                            |
 | `GET /exercises?search=...`                   | `useQuery({ queryKey: ['exercises', 'search', debounced], enabled: !!debounced })` | stale Infinity (seed data)          |
 | `GET /auth/me`                                | `useQuery({ queryKey: ['auth', 'user'] })`                                         | stale Infinity (só no login/logout) |

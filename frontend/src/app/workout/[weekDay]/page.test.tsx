@@ -1,7 +1,9 @@
 jest.mock('@/lib/api', () => ({
   addWorkoutExercise: jest.fn(),
+  clearWorkout: jest.fn(),
   getWorkout: jest.fn(),
   getExercises: jest.fn(),
+  toggleWorkoutExercise: jest.fn(),
 }));
 
 jest.mock('@/contexts/AuthContext', () => ({
@@ -23,7 +25,13 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { addWorkoutExercise, getExercises, getWorkout } from '@/lib/api';
+import {
+  addWorkoutExercise,
+  clearWorkout,
+  getExercises,
+  getWorkout,
+  toggleWorkoutExercise,
+} from '@/lib/api';
 import type { ExercisesResponse } from '@/schemas/api';
 import { toast } from 'sonner';
 import WorkoutDayPage from './page';
@@ -31,7 +39,9 @@ import WorkoutDayPage from './page';
 const mockedGetWorkout = jest.mocked(getWorkout);
 const mockedGetExercises = jest.mocked(getExercises);
 const mockedAddWorkoutExercise = jest.mocked(addWorkoutExercise);
+const mockedClearWorkout = jest.mocked(clearWorkout);
 const mockedToast = jest.mocked(toast);
+const mockedToggleWorkoutExercise = jest.mocked(toggleWorkoutExercise);
 
 const workout = {
   workout: {
@@ -79,6 +89,12 @@ describe('WorkoutDayPage', () => {
       exerciseId: 'triceps-pushdown',
       done: false,
     });
+    mockedClearWorkout.mockResolvedValue({ cleared: 1 });
+    mockedToggleWorkoutExercise.mockResolvedValue({
+      id: 45,
+      exerciseId: 'barbell-bench-press',
+      done: true,
+    });
   });
 
   /**
@@ -95,7 +111,45 @@ describe('WorkoutDayPage', () => {
     expect(await screen.findByText('Supino reto')).toBeInTheDocument();
     expect(screen.getByText('0 / 1')).toBeInTheDocument();
     expect(screen.getByText('Peito')).toBeInTheDocument();
+    const exerciseCard = screen.getByRole('article');
+    expect(exerciseCard).toHaveClass('overflow-hidden', 'rounded-[calc(var(--radius)+0.125rem)]');
+    expect(within(exerciseCard).getByText('Músculo primário')).toHaveClass(
+      'text-[0.6875rem]',
+      'uppercase',
+    );
+    expect(within(exerciseCard).getByText('Peito')).toHaveClass('pl-4', 'text-xs');
+    const primaryMuscleLabel = within(exerciseCard).getByText('Músculo primário');
+    const secondaryMuscleLabel = within(exerciseCard).getByText('Músculo secundário');
+    expect(primaryMuscleLabel.querySelector('svg')).toHaveAttribute('fill', 'currentColor');
+    expect(secondaryMuscleLabel.querySelector('svg')).toHaveAttribute('fill', 'none');
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeInTheDocument();
+    const instructionsButton = screen.getByRole('button', { name: 'Instruções: Supino reto' });
+    expect(instructionsButton).toHaveClass('h-7');
+    expect(instructionsButton).toHaveClass('max-[360px]:w-full');
+    expect(instructionsButton.parentElement).toHaveClass('gap-2');
+    expect(instructionsButton.parentElement).toHaveClass(
+      'max-[360px]:flex-col',
+      'max-[360px]:items-stretch',
+    );
+    expect(instructionsButton).toHaveClass('gap-1', 'sm:gap-2');
+    expect(instructionsButton).toHaveAttribute('aria-expanded', 'false');
+    const removeButton = screen.getByRole('button', { name: 'Remover Supino reto' });
+    expect(removeButton).toBeDisabled();
+    expect(removeButton).toHaveClass('h-7');
+    expect(removeButton).toHaveClass(
+      'ml-auto',
+      'gap-1.5',
+      'px-2',
+      'sm:px-3',
+      'max-[360px]:ml-0',
+      'max-[360px]:w-full',
+      'py-1.5',
+      'text-[0.8125rem]',
+      'bg-destructive',
+      'text-primary-foreground',
+      'hover:bg-destructive/90',
+    );
+    expect(removeButton.querySelector('svg')).toHaveClass('size-3.5');
     const workoutCarousel = screen.getByRole('region', {
       name: 'Imagens de Supino reto',
     });
@@ -126,8 +180,8 @@ describe('WorkoutDayPage', () => {
       screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
         ?.parentElement,
     ).toHaveClass('sticky', 'top-14');
-    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
-    expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeEnabled();
+    expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Imagem anterior' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Próxima imagem' })).toBeInTheDocument();
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
@@ -135,8 +189,81 @@ describe('WorkoutDayPage', () => {
   });
 
   /**
+   * User marks an exercise as completed.
+   * Mock: PATCH returns the toggled association and the workout query is refreshed afterward.
+   * Assert: the association ID is sent and the checkbox enters a pending state during the request.
+   */
+  test('toggles an exercise completion state', async () => {
+    mockedGetWorkout.mockResolvedValueOnce(workout).mockResolvedValueOnce({
+      workout: {
+        ...workout.workout,
+        exercises: [{ ...workout.workout.exercises[0], done: true }],
+      },
+    });
+    let resolveToggle: (response: { id: number; exerciseId: string; done: boolean }) => void = () =>
+      undefined;
+    mockedToggleWorkoutExercise.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveToggle = resolve;
+      }),
+    );
+    const user = userEvent.setup();
+
+    renderPage();
+    const checkbox = await screen.findByRole('checkbox', { name: 'Feito: Supino reto' });
+    await user.click(checkbox);
+
+    expect(mockedToggleWorkoutExercise).toHaveBeenCalledWith(45);
+    expect(checkbox).toBeDisabled();
+
+    resolveToggle({ id: 45, exerciseId: 'barbell-bench-press', done: true });
+    expect(await screen.findByText('1 / 1')).toBeInTheDocument();
+  });
+
+  /**
+   * User confirms clearing the workout.
+   * Mock: clear endpoint returns the number of reset associations and the workout query is refreshed.
+   * Assert: the confirmation dialog is accessible, Escape cancels it, and confirmation calls the weekday endpoint.
+   */
+  test('confirms clearing all exercise completions', async () => {
+    mockedGetWorkout.mockResolvedValueOnce({
+      workout: {
+        ...workout.workout,
+        exercises: [{ ...workout.workout.exercises[0], done: true }],
+      },
+    });
+    let resolveClear: (response: { cleared: number }) => void = () => undefined;
+    mockedClearWorkout.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveClear = resolve;
+      }),
+    );
+    const user = userEvent.setup();
+
+    renderPage();
+    await user.click(await screen.findByRole('button', { name: 'Limpar treino' }));
+
+    const dialog = await screen.findByRole('alertdialog');
+    expect(dialog).toHaveTextContent('Limpar treino?');
+    expect(dialog).toHaveTextContent('Terça-feira');
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Limpar treino' }));
+    await user.click(await screen.findByRole('button', { name: 'Sim, limpar' }));
+
+    expect(mockedClearWorkout).toHaveBeenCalledWith('TERCA');
+    expect(screen.getByRole('button', { name: 'Limpando...' })).toBeDisabled();
+
+    resolveClear({ cleared: 1 });
+    expect(await screen.findByText('0 / 1')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).not.toBeChecked();
+  });
+
+  /**
    * User expands exercise instructions and types a search query.
-   * Mock: populated workout; mutation controls remain disabled until backend APIs exist.
+   * Mock: populated workout with completion and clear mutations available.
    * Assert: instructions become visible and the search input keeps its value.
    */
   test('expands instructions and accepts a search query', async () => {
@@ -145,7 +272,15 @@ describe('WorkoutDayPage', () => {
 
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Instruções: Supino reto' }));
-    expect(screen.getByText('• Deite-se no banco.')).toBeVisible();
+    const instructions = screen.getByText('• Deite-se no banco.').parentElement;
+    expect(instructions).toBeVisible();
+    expect(instructions).toHaveClass('rounded-[var(--radius)]', 'bg-secondary');
+    expect(instructions?.querySelectorAll('p')).toHaveLength(1);
+    expect(instructions?.querySelector('p')).toHaveClass('mb-1.5');
+    expect(screen.getByRole('button', { name: 'Instruções: Supino reto' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
 
     const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
     await user.type(search, 'supino');
@@ -647,5 +782,6 @@ describe('WorkoutDayPage', () => {
 
     expect(await screen.findByText('Nenhum exercício neste treino.')).toBeInTheDocument();
     expect(screen.getByText('Use a busca acima para adicionar exercícios.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
   });
 });

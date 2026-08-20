@@ -7,6 +7,7 @@ import { swaggerSpec } from './swagger.js';
 import { authRouter } from './routes/auth.js';
 import { exercisesRouter } from './routes/exercises.js';
 import { workoutsRouter } from './routes/workouts.js';
+import { workoutExercisesRouter } from './routes/workoutExercises.js';
 
 export const app = express();
 
@@ -69,6 +70,7 @@ app.get('/api/health', async (_req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/exercises', exercisesRouter);
 app.use('/api/workouts', workoutsRouter);
+app.use('/api/workout-exercises', workoutExercisesRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Express error handler requires 4 params
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

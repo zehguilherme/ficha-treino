@@ -78,8 +78,8 @@
       "title": "Marcar/desmarcar exercício como concluído",
       "behavior": "PATCH /api/workout-exercises/:id alterna done; POST /:weekDay/clear desmarca todos",
       "verification": "curl -X PATCH -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workout-exercises/1",
-      "status": "not_started",
-      "evidence": ""
+      "status": "completed",
+      "evidence": "PATCH /api/workout-exercises/:id alterna done com autenticação e ownership; POST /api/workouts/:weekDay/clear desmarca todas as associações do treino; testes de rotas e annotations Swagger implementados."
     },
     {
       "id": "api-008",
@@ -148,7 +148,8 @@
         "Cada exercício mostra nome, imagem, categoria, equipamento, músculos, instruções",
         "Header com contador done/total"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética com metadados, instruções expansíveis, imagens e contador done/total; testes da página, typecheck, lint e build verificados"
     },
     {
       "id": "ui-004",
@@ -163,7 +164,8 @@
         "Busca da issue 71 implementada; adição ao treino integrada à rota POST de exercícios",
         "Campo de busca tem ícone de lupa"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "WorkoutDayPage implementa busca autenticada com debounce de 1000 ms, AbortSignal, paginação manual de 20 itens, busca sem acentos, campo sticky e adição integrada ao treino; testes da página, typecheck, lint e build verificados"
     },
     {
       "id": "ui-005",
@@ -177,7 +179,8 @@
         "Carrossel navega entre 0.jpg e 1.jpg",
         "Instruções expansíveis com chevron"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do contador e invalidação do cache; carrossel e instruções existentes validados na suíte da página."
     },
     {
       "id": "ui-006",
@@ -191,7 +194,8 @@
         "Todos os checkboxes voltam a false",
         "Contador vai a 0/total"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "WorkoutDayPage integra POST /api/workouts/:weekDay/clear com AlertDialog acessível, Escape, loading, estado vazio, atualização do contador e invalidação do cache; coberto por testes da página."
     },
     {
       "id": "ui-007",
@@ -244,7 +248,7 @@
       "behavior": "Todos os endpoints implementados possuem annotation @openapi JSDoc; /api/docs mostra os endpoints disponíveis",
       "verification": "curl -sf http://localhost:3001/api/docs | grep -q 'swagger-ui'",
       "status": "completed",
-      "evidence": "src/swagger.ts (spec swagger-jsdoc + swagger-ui-express) servido em /api/docs; annotations @openapi em app.ts (health), routes/auth.ts e routes/workouts.ts; endpoints futuros serão documentados ao serem implementados"
+      "evidence": "src/swagger.ts (spec swagger-jsdoc + swagger-ui-express) servido em /api/docs; annotations @openapi presentes em app.ts (health), routes/auth.ts, routes/workouts.ts, routes/workoutExercises.ts e routes/exercises.ts; endpoints futuros serão documentados ao serem implementados"
     },
     {
       "id": "tool-003",
