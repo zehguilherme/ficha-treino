@@ -157,12 +157,16 @@ describe('WorkoutDayPage', () => {
     });
     expect(workoutCarousel.className).not.toMatch(/aspect-/);
     expect(within(workoutCarousel).getAllByRole('img')).toHaveLength(2);
-    expect(
-      within(workoutCarousel).getByRole('img', { name: 'Supino reto — imagem 1' }),
-    ).toHaveClass('block', 'h-auto', 'w-full', 'object-contain');
-    expect(
-      within(workoutCarousel).getByRole('img', { name: 'Supino reto — imagem 2' }),
-    ).toHaveClass('block', 'h-auto', 'w-full', 'object-contain');
+    const firstWorkoutImage = within(workoutCarousel).getByRole('img', {
+      name: 'Supino reto — imagem 1',
+    });
+    const secondWorkoutImage = within(workoutCarousel).getByRole('img', {
+      name: 'Supino reto — imagem 2',
+    });
+    expect(firstWorkoutImage).toHaveClass('block', 'h-auto', 'w-full', 'object-contain');
+    expect(firstWorkoutImage).toHaveAttribute('loading', 'eager');
+    expect(secondWorkoutImage).toHaveClass('block', 'h-auto', 'w-full', 'object-contain');
+    expect(secondWorkoutImage).toHaveAttribute('loading', 'lazy');
     expect(
       within(workoutCarousel).getByRole('button', { name: 'Imagem anterior' }),
     ).toBeInTheDocument();
@@ -204,6 +208,71 @@ describe('WorkoutDayPage', () => {
     expect(screen.getByRole('button', { name: 'Próxima imagem' })).toBeInTheDocument();
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Imagem 1' })).toBeInTheDocument();
+  });
+
+  /**
+   * Initial empty search does not schedule unnecessary debounce work.
+   * Mock: authenticated workout loads with an empty search field.
+   * Assert: no timer is pending after the initial render.
+   */
+  test('does not schedule a debounce timer for an empty initial search', async () => {
+    jest.useFakeTimers();
+    const setTimeoutSpy = jest.spyOn(window, 'setTimeout');
+
+    try {
+      renderPage();
+
+      expect(setTimeoutSpy).not.toHaveBeenCalledWith(expect.any(Function), 1000);
+    } finally {
+      jest.clearAllTimers();
+      setTimeoutSpy.mockRestore();
+      jest.useRealTimers();
+    }
+  });
+
+  /**
+   * Populated workout renders only its first visible image eagerly.
+   * Mock: API returns two exercises, each with two carousel images.
+   * Assert: the first image is eager while all remaining images stay lazy.
+   */
+  test('loads only the first workout image eagerly', async () => {
+    mockedGetWorkout.mockResolvedValue({
+      workout: {
+        ...workout.workout,
+        exercises: [
+          ...workout.workout.exercises,
+          {
+            ...workout.workout.exercises[0],
+            id: 46,
+            exercise: {
+              ...workout.workout.exercises[0].exercise,
+              id: 'triceps-pushdown',
+              name: 'Tríceps na polia',
+            },
+          },
+        ],
+      },
+    });
+
+    renderPage();
+
+    const firstCarousel = await screen.findByRole('region', { name: 'Imagens de Supino reto' });
+    const secondCarousel = screen.getByRole('region', { name: 'Imagens de Tríceps na polia' });
+
+    expect(within(firstCarousel).getByRole('img', { name: 'Supino reto — imagem 1' })).toHaveAttribute(
+      'loading',
+      'eager',
+    );
+    expect(within(firstCarousel).getByRole('img', { name: 'Supino reto — imagem 2' })).toHaveAttribute(
+      'loading',
+      'lazy',
+    );
+    expect(
+      within(secondCarousel).getByRole('img', { name: 'Tríceps na polia — imagem 1' }),
+    ).toHaveAttribute('loading', 'lazy');
+    expect(
+      within(secondCarousel).getByRole('img', { name: 'Tríceps na polia — imagem 2' }),
+    ).toHaveAttribute('loading', 'lazy');
   });
 
   /**
@@ -445,18 +514,16 @@ describe('WorkoutDayPage', () => {
     });
     expect(carousel.className).not.toMatch(/aspect-/);
     expect(within(carousel).getAllByRole('img')).toHaveLength(2);
-    expect(within(carousel).getByRole('img', { name: 'Tríceps na polia — imagem 1' })).toHaveClass(
-      'block',
-      'h-auto',
-      'w-full',
-      'object-contain',
-    );
-    expect(within(carousel).getByRole('img', { name: 'Tríceps na polia — imagem 2' })).toHaveClass(
-      'block',
-      'h-auto',
-      'w-full',
-      'object-contain',
-    );
+    const firstSearchImage = within(carousel).getByRole('img', {
+      name: 'Tríceps na polia — imagem 1',
+    });
+    const secondSearchImage = within(carousel).getByRole('img', {
+      name: 'Tríceps na polia — imagem 2',
+    });
+    expect(firstSearchImage).toHaveClass('block', 'h-auto', 'w-full', 'object-contain');
+    expect(firstSearchImage).toHaveAttribute('loading', 'eager');
+    expect(secondSearchImage).toHaveClass('block', 'h-auto', 'w-full', 'object-contain');
+    expect(secondSearchImage).toHaveAttribute('loading', 'lazy');
     expect(within(carousel).getByRole('button', { name: 'Imagem anterior' })).toBeInTheDocument();
     expect(within(carousel).getByRole('button', { name: 'Próxima imagem' })).toHaveClass(
       'opacity-100',
