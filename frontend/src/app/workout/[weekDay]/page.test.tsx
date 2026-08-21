@@ -259,14 +259,12 @@ describe('WorkoutDayPage', () => {
     const firstCarousel = await screen.findByRole('region', { name: 'Imagens de Supino reto' });
     const secondCarousel = screen.getByRole('region', { name: 'Imagens de Tríceps na polia' });
 
-    expect(within(firstCarousel).getByRole('img', { name: 'Supino reto — imagem 1' })).toHaveAttribute(
-      'loading',
-      'eager',
-    );
-    expect(within(firstCarousel).getByRole('img', { name: 'Supino reto — imagem 2' })).toHaveAttribute(
-      'loading',
-      'lazy',
-    );
+    expect(
+      within(firstCarousel).getByRole('img', { name: 'Supino reto — imagem 1' }),
+    ).toHaveAttribute('loading', 'eager');
+    expect(
+      within(firstCarousel).getByRole('img', { name: 'Supino reto — imagem 2' }),
+    ).toHaveAttribute('loading', 'lazy');
     expect(
       within(secondCarousel).getByRole('img', { name: 'Tríceps na polia — imagem 1' }),
     ).toHaveAttribute('loading', 'lazy');
