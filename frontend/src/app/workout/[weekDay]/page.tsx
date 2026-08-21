@@ -190,6 +190,10 @@ const WorkoutDayPage = (): React.JSX.Element => {
   });
 
   useEffect(() => {
+    if (search.length === 0) {
+      return;
+    }
+
     const timeout = window.setTimeout(() => setDebouncedSearch(search), 1000);
     return () => window.clearTimeout(timeout);
   }, [search]);
@@ -197,6 +201,11 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const clearSearch = (): void => {
     setSearch('');
     setDebouncedSearch('');
+  };
+
+  const handleSearchChange = (value: string): void => {
+    setSearch(value);
+    if (value.length === 0) setDebouncedSearch('');
   };
 
   const retryWorkout = (): void => {
@@ -369,7 +378,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
               type="search"
               aria-label="Buscar exercícios"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => handleSearchChange(event.target.value)}
               placeholder="Buscar exercícios para adicionar..."
               leadingIcon={
                 <SearchIcon
@@ -398,7 +407,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                   <ul className="flex flex-col gap-3" aria-label="Resultados da busca">
                     {searchResults.data.pages
                       .flatMap(({ items }) => items)
-                      .map((exercise) => (
+                      .map((exercise, index) => (
                         <li
                           key={exercise.id}
                           className="rounded-lg border border-border bg-card p-4"
@@ -406,6 +415,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                           <ExerciseImageCarousel
                             exerciseId={exercise.id}
                             exerciseName={exercise.name}
+                            aboveTheFold={index === 0}
                             className="group overflow-hidden rounded-md bg-secondary"
                           />
                           <div className="mt-3 flex items-center justify-between gap-4">
@@ -487,7 +497,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
             </p>
           ) : (
             <div className="flex flex-col gap-4">
-              {filteredExercises.map(({ id, done, exercise }) => {
+              {filteredExercises.map(({ id, done, exercise }, index) => {
                 const instructionsOpen = openInstructions === id;
                 return (
                   <article
@@ -498,6 +508,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                       <ExerciseImageCarousel
                         exerciseId={exercise.id}
                         exerciseName={exercise.name}
+                        aboveTheFold={index === 0}
                         className="group mb-4 overflow-hidden rounded-[var(--radius)] bg-secondary"
                       />
                       <div className="min-w-0">

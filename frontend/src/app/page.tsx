@@ -37,8 +37,7 @@ const HomePage = () => {
           src="/hero-gym.jpg"
           alt="Academia organizada"
           sizes="100vw"
-          priority
-          fetchPriority="high"
+          preload
           quality={60}
         />
         <div className="absolute inset-0 bg-gradient-to-br from-foreground/75 to-foreground/45 z-[1]" />

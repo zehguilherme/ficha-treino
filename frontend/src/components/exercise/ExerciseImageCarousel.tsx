@@ -17,6 +17,7 @@ export interface ExerciseImageCarouselProps {
   exerciseName: string;
   className?: string;
   controlClassName?: string;
+  aboveTheFold?: boolean;
 }
 
 export const ExerciseImageCarousel = ({
@@ -24,6 +25,7 @@ export const ExerciseImageCarousel = ({
   exerciseName,
   className,
   controlClassName = 'opacity-100',
+  aboveTheFold = false,
 }: ExerciseImageCarouselProps): React.JSX.Element => (
   <Carousel
     aria-label={`Imagens de ${exerciseName}`}
@@ -40,7 +42,7 @@ export const ExerciseImageCarousel = ({
             width={600}
             height={400}
             sizes="(max-width: 640px) 100vw, 600px"
-            loading="lazy"
+            loading={aboveTheFold && imageIndex === 0 ? 'eager' : 'lazy'}
           />
         </CarouselItem>
       ))}
