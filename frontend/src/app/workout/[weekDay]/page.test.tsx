@@ -166,9 +166,14 @@ describe('WorkoutDayPage', () => {
     expect(
       within(workoutCarousel).getByRole('button', { name: 'Imagem anterior' }),
     ).toBeInTheDocument();
-    expect(
-      within(workoutCarousel).getByRole('button', { name: 'Próxima imagem' }),
-    ).toBeInTheDocument();
+    expect(within(workoutCarousel).getByRole('button', { name: 'Próxima imagem' })).toHaveClass(
+      'opacity-100',
+    );
+    expect(within(workoutCarousel).getByRole('button', { name: 'Próxima imagem' })).not.toHaveClass(
+      'sm:opacity-0',
+      'group-hover:opacity-100',
+      'transition-opacity',
+    );
     expect(within(workoutCarousel).getByRole('button', { name: 'Imagem 1' })).toBeInTheDocument();
     expect(screen.getByRole('searchbox', { name: 'Buscar exercícios' })).toHaveAttribute(
       'placeholder',
