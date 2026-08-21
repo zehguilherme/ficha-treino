@@ -1,9 +1,9 @@
 export const getExercisePreview = (
   exerciseNames: string[],
-): { names: string[]; remaining: number } => ({
-  names: exerciseNames.slice(0, exerciseNames.length > 4 ? 3 : 4),
-  remaining: Math.max(0, exerciseNames.length - 3),
-});
+): { names: string[]; remaining: number } => {
+  const names = exerciseNames.slice(0, exerciseNames.length > 4 ? 3 : 4);
+  return { names, remaining: exerciseNames.length - names.length };
+};
 
 export const getInitials = (name: string): string => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
