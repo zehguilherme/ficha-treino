@@ -407,7 +407,6 @@ const WorkoutDayPage = (): React.JSX.Element => {
                             exerciseId={exercise.id}
                             exerciseName={exercise.name}
                             className="group overflow-hidden rounded-md bg-secondary"
-                            controlClassName="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
                           />
                           <div className="mt-3 flex items-center justify-between gap-4">
                             <div className="min-w-0">

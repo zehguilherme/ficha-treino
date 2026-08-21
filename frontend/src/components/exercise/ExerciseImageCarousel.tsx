@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/Carousel';
 import { getExerciseImageUrl } from '@/lib/exerciseImage';
+import { cn } from '@/lib/utils';
 
 const IMAGE_INDICES = [0, 1] as const;
 
@@ -22,9 +23,13 @@ export const ExerciseImageCarousel = ({
   exerciseId,
   exerciseName,
   className,
-  controlClassName,
+  controlClassName = 'opacity-100',
 }: ExerciseImageCarouselProps): React.JSX.Element => (
-  <Carousel aria-label={`Imagens de ${exerciseName}`} className={className} opts={{ loop: false }}>
+  <Carousel
+    aria-label={`Imagens de ${exerciseName}`}
+    className={cn('group', className)}
+    opts={{ loop: false }}
+  >
     <CarouselContent>
       {IMAGE_INDICES.map((imageIndex) => (
         <CarouselItem key={imageIndex}>

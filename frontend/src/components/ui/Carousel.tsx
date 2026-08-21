@@ -148,7 +148,7 @@ const CarouselPrevious = ({
       aria-label="Imagem anterior"
       disabled={!canScrollPrev}
       className={cn(
-        'absolute size-8 rounded-full bg-card/85 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100',
+        'absolute size-8 rounded-full bg-card/85 opacity-100 backdrop-blur',
         orientation === 'horizontal'
           ? 'left-2 top-1/2 -translate-y-1/2'
           : 'left-1/2 top-2 -translate-x-1/2 rotate-90',
@@ -176,7 +176,7 @@ const CarouselNext = ({
       aria-label="Próxima imagem"
       disabled={!canScrollNext}
       className={cn(
-        'absolute size-8 rounded-full bg-card/85 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100',
+        'absolute size-8 rounded-full bg-card/85 opacity-100 backdrop-blur',
         orientation === 'horizontal'
           ? 'right-2 top-1/2 -translate-y-1/2'
           : 'bottom-2 left-1/2 -translate-x-1/2 rotate-90',
