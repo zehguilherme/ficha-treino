@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
@@ -13,9 +13,13 @@ const STATE_KEY = 'ficha_treino_google_state';
 const GoogleCallbackPage = () => {
   const router = useRouter();
   const { login } = useAuth();
+  const handled = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (handled.current) return;
+    handled.current = true;
+
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     const state = params.get('state');

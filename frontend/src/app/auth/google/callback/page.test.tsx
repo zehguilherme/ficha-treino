@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { StrictMode } from 'react';
 import GoogleCallbackPage from './page';
 import { exchangeGoogleCode } from '@/lib/api';
 
@@ -46,11 +47,17 @@ describe('GoogleCallbackPage', () => {
       email: 'test@example.com',
     });
 
-    render(<GoogleCallbackPage />);
+    render(
+      <StrictMode>
+        <GoogleCallbackPage />
+      </StrictMode>,
+    );
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/dashboard'));
+    expect(mockExchangeGoogleCode).toHaveBeenCalledTimes(1);
     expect(mockExchangeGoogleCode).toHaveBeenCalledWith('test-code');
     expect(mockLogin).toHaveBeenCalledWith('jwt-token');
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(sessionStorage.getItem(STATE_KEY)).toBeNull();
   });
 

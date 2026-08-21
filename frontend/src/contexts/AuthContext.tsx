@@ -28,6 +28,10 @@ interface AuthProviderProps {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+const login = (nextToken: string): void => {
+  setSession(nextToken);
+};
+
 export const AuthProvider = ({ children }: AuthProviderProps): React.JSX.Element => {
   const queryClient = useQueryClient();
   const token = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
@@ -39,9 +43,6 @@ export const AuthProvider = ({ children }: AuthProviderProps): React.JSX.Element
   });
   const status: AuthStatus =
     token === undefined ? 'loading' : token === null ? 'anonymous' : 'authenticated';
-  const login = (nextToken: string): void => {
-    setSession(nextToken);
-  };
   const logout = (): void => {
     clearSession();
     queryClient.clear();
