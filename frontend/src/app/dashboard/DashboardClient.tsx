@@ -86,7 +86,7 @@ export const DashboardClient = (): React.JSX.Element => {
                   </div>
                   <div className="mt-4 space-y-2 text-sm text-muted-foreground">
                     {preview.names.map((name) => (
-                      <p key={name} className="truncate" title={name}>
+                      <p key={name} className="break-words" title={name}>
                         <span
                           aria-hidden="true"
                           className="mr-2 inline-block size-1.5 rounded-full bg-muted-foreground align-middle"

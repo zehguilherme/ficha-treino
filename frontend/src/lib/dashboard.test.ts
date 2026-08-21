@@ -14,6 +14,16 @@ describe('dashboard helpers', () => {
     });
   });
 
+  /**
+   * A workout with exactly four exercises fits entirely in the preview.
+   * Assert: all four names are shown and no remaining count is reported.
+   */
+  test('does not report remaining exercises when exactly four are shown', () => {
+    const result = getExercisePreview(['A', 'B', 'C', 'D']);
+
+    expect(result).toEqual({ names: ['A', 'B', 'C', 'D'], remaining: 0 });
+  });
+
   test('creates initials from the first and last name', () => {
     expect(getInitials('João Guilherme Silva')).toBe('JS');
     expect(getInitials('')).toBe('U');
