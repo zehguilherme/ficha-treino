@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { AuthProvider, useAuth } from './AuthContext';
 import { getCurrentUser } from '@/lib/api';
 import { getSession, setSession } from '@/lib/auth';
@@ -37,6 +37,24 @@ const AuthProbe = (): React.JSX.Element => {
         Logout
       </button>
     </>
+  );
+};
+
+interface LoginEffectProbeProps {
+  onLoginChange: () => void;
+}
+
+const LoginEffectProbe = ({ onLoginChange }: LoginEffectProbeProps): React.JSX.Element => {
+  const { login, status } = useAuth();
+
+  useEffect(() => {
+    onLoginChange();
+  }, [login, onLoginChange]);
+
+  return (
+    <button type="button" onClick={() => login('new-token')}>
+      {status}
+    </button>
   );
 };
 
@@ -84,5 +102,25 @@ describe('AuthContext', () => {
     act(() => screen.getByRole('button', { name: 'Logout' }).click());
     expect(await screen.findByText('anonymous')).toBeInTheDocument();
     expect(getSession()).toBeNull();
+  });
+
+  /**
+   * A consumer depends on the login action while the session changes.
+   * Mock: the profile request resolves after login.
+   * Assert: changing the session does not notify the effect with a new login action.
+   */
+  test('keeps the login action stable when the session changes', async () => {
+    const onLoginChange = jest.fn<void, []>();
+    mockedGetCurrentUser.mockResolvedValue({
+      name: 'João Teste',
+      email: 'joao@teste.com',
+      google_id: 'google-123',
+    });
+    render(<LoginEffectProbe onLoginChange={onLoginChange} />, { wrapper: Wrapper });
+
+    await waitFor(() => expect(onLoginChange).toHaveBeenCalledTimes(1));
+    act(() => screen.getByRole('button', { name: 'anonymous' }).click());
+    expect(await screen.findByRole('button', { name: 'authenticated' })).toBeInTheDocument();
+    expect(onLoginChange).toHaveBeenCalledTimes(1);
   });
 });
