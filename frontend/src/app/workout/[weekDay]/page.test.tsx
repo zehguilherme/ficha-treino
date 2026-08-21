@@ -517,6 +517,63 @@ describe('WorkoutDayPage', () => {
   });
 
   /**
+   * User views an exercise with a long name in both workout states.
+   * Mock: the workout and catalog return the same long exercise name.
+   * Assert: both cards allow the complete name to wrap instead of truncating it.
+   */
+  test('shows complete long exercise names in search and workout cards', async () => {
+    jest.useFakeTimers();
+    const longExerciseName = 'Alongamento de Isquiotibiais e Panturrilhas em Pé com Apoio';
+    mockedGetWorkout.mockResolvedValue({
+      workout: {
+        ...workout.workout,
+        exercises: [
+          {
+            ...workout.workout.exercises[0],
+            exercise: { ...workout.workout.exercises[0].exercise, name: longExerciseName },
+          },
+        ],
+      },
+    });
+    mockedGetExercises.mockResolvedValue({
+      items: [
+        {
+          id: 'long-exercise',
+          name: longExerciseName,
+          force: 'pull',
+          level: 'beginner',
+          mechanic: 'compound',
+          equipment: 'body only',
+          primaryMuscles: ['posterior da coxa'],
+          secondaryMuscles: [],
+          instructions: ['Alongue-se.'],
+          category: 'stretching',
+          images: ['0.jpg', '1.jpg'],
+        },
+      ],
+      total: 1,
+    });
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+    renderPage();
+
+    const workoutHeading = await screen.findByRole('heading', { name: longExerciseName });
+    expect(workoutHeading).toHaveClass('break-words');
+    expect(workoutHeading).not.toHaveClass('truncate');
+
+    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'alongamento');
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    const results = await screen.findByRole('list', { name: 'Resultados da busca' });
+    const searchHeading = within(results).getByRole('heading', { name: longExerciseName });
+    expect(searchHeading).toHaveClass('break-words');
+    expect(searchHeading).not.toHaveClass('truncate');
+    jest.useRealTimers();
+  });
+
+  /**
    * User adds an exercise from the catalog to the current workout.
    * Mock: catalog result, successful POST, then refreshed workout containing the new exercise.
    * Assert: mutation payload, pending state, cleared search and refreshed workout are visible.

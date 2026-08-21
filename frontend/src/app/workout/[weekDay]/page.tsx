@@ -410,7 +410,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                           />
                           <div className="mt-3 flex items-center justify-between gap-4">
                             <div className="min-w-0">
-                              <h3 className="truncate text-sm font-semibold">{exercise.name}</h3>
+                              <h3 className="break-words text-sm font-semibold">{exercise.name}</h3>
                               <p className="mt-1 text-xs text-muted-foreground">
                                 {[exercise.category, exercise.equipment]
                                   .filter(Boolean)
@@ -501,7 +501,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         className="group mb-4 overflow-hidden rounded-[var(--radius)] bg-secondary"
                       />
                       <div className="min-w-0">
-                        <h3 className="mb-1.5 text-[0.9375rem] font-semibold">{exercise.name}</h3>
+                        <h3 className="mb-1.5 break-words text-[0.9375rem] font-semibold">
+                          {exercise.name}
+                        </h3>
                         <div className="mb-2 flex flex-wrap gap-1.5">
                           {[exercise.category, exercise.equipment].filter(Boolean).map((tag) => (
                             <span
