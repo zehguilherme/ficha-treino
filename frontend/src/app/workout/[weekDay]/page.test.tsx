@@ -198,7 +198,7 @@ describe('WorkoutDayPage', () => {
       screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
         ?.parentElement,
     ).toHaveClass('sticky', 'top-14');
-    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Imagem anterior' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Próxima imagem' })).toBeInTheDocument();
@@ -236,6 +236,7 @@ describe('WorkoutDayPage', () => {
 
     resolveToggle({ id: 45, exerciseId: 'barbell-bench-press', done: true });
     expect(await screen.findByText('1 / 1')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeEnabled();
   });
 
   /**

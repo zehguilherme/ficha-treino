@@ -353,7 +353,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
             <h2 className="text-2xl font-semibold tracking-tight">{dayName}</h2>
             <Button
               variant="outline"
-              disabled={exercises.length === 0 || clearWorkoutMutation.isPending}
+              disabled={completed === 0 || clearWorkoutMutation.isPending}
               aria-label="Limpar treino"
               aria-busy={clearWorkoutMutation.isPending}
               onClick={() => setClearDialogOpen(true)}
