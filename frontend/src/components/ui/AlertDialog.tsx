@@ -1,6 +1,7 @@
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
 import * as React from 'react';
 
+import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 
 const AlertDialog = AlertDialogPrimitive.Root;
@@ -85,19 +86,27 @@ const AlertDialogDescription = React.forwardRef<
 ));
 AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
 
-const AlertDialogAction = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Action>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
->(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Action
-    ref={ref}
-    className={cn(
-      'pointer-events-auto inline-flex items-center justify-center rounded-[var(--radius)] border border-border px-4 py-2 text-sm font-medium outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-      className,
-    )}
-    {...props}
-  />
-));
+interface AlertDialogActionProps extends React.ComponentPropsWithoutRef<
+  typeof AlertDialogPrimitive.Action
+> {
+  loading?: boolean;
+}
+
+const AlertDialogAction = React.forwardRef<HTMLButtonElement, AlertDialogActionProps>(
+  ({ className, loading = false, ...props }, ref) => (
+    <AlertDialogPrimitive.Action asChild>
+      <Button
+        ref={ref}
+        loading={loading}
+        className={cn(
+          'pointer-events-auto inline-flex items-center justify-center rounded-[var(--radius)] border border-border px-4 py-2 text-sm font-medium outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+        )}
+        {...props}
+      />
+    </AlertDialogPrimitive.Action>
+  ),
+);
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 
 const AlertDialogCancel = React.forwardRef<

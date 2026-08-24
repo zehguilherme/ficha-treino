@@ -94,7 +94,7 @@ describe('LoginGate', () => {
       </LoginGate>,
     );
 
-    expect(screen.getByRole('status', { name: 'Carregando login' })).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Carregando login...' })).toBeInTheDocument();
     expect(screen.queryByText('Entrar')).not.toBeInTheDocument();
   });
 });

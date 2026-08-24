@@ -65,7 +65,11 @@ describe('RemoveWorkoutExerciseDialog', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'Removendo...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Removendo…/ })).toBeDisabled();
+    expect(screen.getByRole('status', { name: 'Carregando' })).toHaveAttribute(
+      'data-icon',
+      'inline-start',
+    );
     expect(screen.getByRole('button', { name: 'Cancelar' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Fechar' })).toBeDisabled();
   });

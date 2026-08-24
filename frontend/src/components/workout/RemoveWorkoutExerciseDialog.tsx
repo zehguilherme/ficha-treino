@@ -52,13 +52,13 @@ const RemoveWorkoutExerciseDialog = ({
       <AlertDialogFooter>
         <AlertDialogAction
           className="w-full border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90 sm:w-auto"
-          disabled={isPending}
+          loading={isPending}
           onClick={(event) => {
             event.preventDefault();
             onConfirm();
           }}
         >
-          {isPending ? 'Removendo...' : 'Sim, remover'}
+          {isPending ? 'Removendo…' : 'Sim, remover'}
         </AlertDialogAction>
         <AlertDialogCancel className="w-full sm:w-auto" disabled={isPending}>
           Cancelar

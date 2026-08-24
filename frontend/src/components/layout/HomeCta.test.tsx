@@ -66,6 +66,10 @@ describe('HomeCta', () => {
 
     render(<HomeCta />);
 
-    expect(screen.getByRole('button', { name: 'Carregando…' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Carregando…/ })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Carregando…/ })).toHaveAttribute(
+      'aria-busy',
+      'true',
+    );
   });
 });

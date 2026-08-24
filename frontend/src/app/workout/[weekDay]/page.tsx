@@ -11,6 +11,7 @@ import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { ExerciseImageCarousel } from '@/components/exercise/ExerciseImageCarousel';
 import { Input } from '@/components/ui/Input';
+import { Loading } from '@/components/ui/Loading';
 import { ClearWorkoutDialog } from '@/components/workout/ClearWorkoutDialog';
 import { RemoveWorkoutExerciseDialog } from '@/components/workout/RemoveWorkoutExerciseDialog';
 import {
@@ -295,9 +296,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
         {errorDialog}
         {workoutHeader}
         <main className="flex flex-1 items-center justify-center bg-background">
-          <p role="status" className="text-sm text-muted-foreground">
-            Carregando treino...
-          </p>
+          <Loading message="Carregando treino..." />
         </main>
       </>
     );
@@ -314,10 +313,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
             type="button"
             variant="outline"
             onClick={retryWorkout}
-            disabled={isRetryingWorkout}
-            aria-busy={isRetryingWorkout}
+            loading={isRetryingWorkout}
           >
-            {isRetryingWorkout ? 'Tentando novamente...' : 'Tentar novamente'}
+            {isRetryingWorkout ? 'Tentando novamente…' : 'Tentar novamente'}
           </Button>
         </main>
       </>
@@ -393,9 +391,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
           {normalizedSearch ? (
             <>
               {searchResults.isPending ? (
-                <p role="status" className="py-12 text-center text-sm text-muted-foreground">
-                  Buscando exercícios...
-                </p>
+                <div className="flex justify-center py-12">
+                  <Loading message="Buscando exercícios..." />
+                </div>
               ) : searchResults.isError ? (
                 <div className="py-12" aria-hidden="true" />
               ) : searchResults.data.pages.flatMap(({ items }) => items).length === 0 ? (
@@ -449,8 +447,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                               variant="outline"
                               size="lg"
                               className="h-9"
-                              disabled={addExercise.isPending}
-                              aria-busy={addExercise.isPending}
+                              loading={addExercise.isPending}
                               aria-label={'Adicionar ' + exercise.name}
                               onClick={() =>
                                 addExercise.mutate({
@@ -459,7 +456,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                                 })
                               }
                             >
-                              {addExercise.isPending ? 'Adicionando...' : 'Adicionar'}
+                              {addExercise.isPending ? 'Adicionando…' : 'Adicionar'}
                             </Button>
                           </div>
                         </li>
@@ -471,11 +468,10 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         type="button"
                         variant="outline"
                         onClick={() => void searchResults.fetchNextPage()}
-                        disabled={searchResults.isFetchingNextPage}
-                        aria-busy={searchResults.isFetchingNextPage}
+                        loading={searchResults.isFetchingNextPage}
                       >
                         {searchResults.isFetchingNextPage
-                          ? 'Carregando exercícios...'
+                          ? 'Carregando exercícios…'
                           : 'Carregar mais exercícios'}
                       </Button>
                     </div>
@@ -593,7 +589,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                           className="ml-auto h-9 gap-1.5 bg-destructive text-primary-foreground hover:bg-destructive/90 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
                         >
                           <TrashIcon className="size-3.5" />
-                          {removeWorkoutExerciseMutation.isPending ? 'Removendo...' : 'Remover'}
+                          {removeWorkoutExerciseMutation.isPending ? 'Removendo…' : 'Remover'}
                         </Button>
                       </div>
                       {instructionsOpen ? (

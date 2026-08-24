@@ -2,6 +2,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
+import { Spinner } from '@/components/ui/Spinner';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
@@ -30,22 +31,59 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, disabled = false, onClick, ...props }, ref) => {
+  (
+    {
+      children,
+      className,
+      variant,
+      size,
+      asChild = false,
+      disabled = false,
+      loading = false,
+      onClick,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'button';
+    const isDisabled = disabled || loading;
     const childProps = asChild
-      ? disabled
+      ? isDisabled
         ? {
             'aria-disabled': true,
+            'aria-busy': loading || props['aria-busy'],
             onClick: (event: React.MouseEvent<HTMLElement>): void => {
               event.preventDefault();
               event.stopPropagation();
             },
           }
         : { onClick }
-      : { disabled, onClick };
+      : { 'aria-busy': loading || props['aria-busy'], disabled: isDisabled, onClick };
+    const child = React.isValidElement(children)
+      ? (children as React.ReactElement<{ children?: React.ReactNode }>)
+      : null;
+    const renderedChildren =
+      asChild && loading && child ? (
+        React.cloneElement(
+          child,
+          undefined,
+          <>
+            <Spinner data-icon="inline-start" />
+            {child.props.children}
+          </>,
+        )
+      ) : asChild ? (
+        children
+      ) : (
+        <>
+          {loading ? <Spinner data-icon="inline-start" /> : null}
+          {children}
+        </>
+      );
 
     return (
       <Comp
@@ -53,7 +91,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
         {...childProps}
-      />
+      >
+        {renderedChildren}
+      </Comp>
     );
   },
 );

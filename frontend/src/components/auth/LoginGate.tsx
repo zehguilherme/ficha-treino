@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
-import { Spinner } from '@/components/ui/Spinner';
+import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface LoginGateProps {
@@ -26,8 +26,10 @@ export const LoginGate = ({
 
   if (status !== 'anonymous') {
     return (
-      <Spinner
-        aria-label={status === 'loading' ? 'Carregando login' : 'Redirecionando para seus treinos'}
+      <Loading
+        message={
+          status === 'loading' ? 'Carregando login...' : 'Redirecionando para seus treinos...'
+        }
       />
     );
   }
