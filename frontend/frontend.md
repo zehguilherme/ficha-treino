@@ -31,13 +31,13 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 
 ## Estado
 
-- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios
+- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro
 - **Context API**: sessão do usuário (login/logout)
-- **`useState`**: input search, debounce, modal, carrossel
+- **`useState`**: input search, debounce, modal, carrossel e estados transitórios de retry
 
 A página de treino consulta `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis.
 
-## Estrutura (planejada)
+## Estrutura atual
 
 ```
 src/
@@ -52,6 +52,12 @@ src/
   components/
     ui/                   (ShadCN)
       Button.tsx
+      Loading.tsx
+      AlertDialog.tsx
+      ErrorAlertDialog.tsx
+      Carousel.tsx
+      Checkbox.tsx
+      DropdownMenu.tsx
       FeatureCard.tsx
       ArrowRightIcon.tsx
       ChartIcon.tsx
@@ -61,13 +67,22 @@ src/
     layout/
       Header.tsx
       Footer.tsx
+    auth/
+      LoginForm.tsx
+      LoginGate.tsx
     workout/
+      ClearWorkoutDialog.tsx
+      RemoveWorkoutExerciseDialog.tsx
     exercise/
-  hooks/
-  contexts/
-  providers/
+      ExerciseImageCarousel.tsx
+  hooks/                  (autenticação Google)
+  contexts/               (AuthContext)
+  providers/              (QueryProvider)
   lib/
-    api.ts    (axios instance + interceptors + chamadas tipadas)
+    api.ts                 (axios instance + interceptors + chamadas tipadas)
+    auth.ts, dashboard.ts, exerciseImage.ts, utils.ts
+  schemas/
+    api.ts                 (contratos Zod das respostas HTTP)
 ```
 
 ## Verificação
@@ -209,14 +224,24 @@ Testes de integração da callback page (`@/lib/api` e `next/navigation` mockado
 | shows an error when the backend rejects the code             | integration | `exchangeGoogleCode` rejeita com AxiosError (com `response`) | alerta "Não foi possível autenticar"                                                  |
 | shows a connection error when the API call fails             | integration | `exchangeGoogleCode` rejeita com `Error` (rede)              | alerta "Não foi possível conectar ao servidor"                                        |
 
+#### `src/app/dashboard/DashboardClient.test.tsx`
+
+Testes do dashboard para hidratação da autenticação, carregamento dos treinos, preview de nomes longos e retry com sucesso ou falha.
+
 #### `src/app/workout/[weekDay]/page.test.tsx`
 
-Testes da página de treino para carregamento, busca, adição, marcação e limpeza.
+Testes da página de treino para carregamento, retry do treino e da busca, adição, marcação, limpeza, remoção, estados de erro e carregamento das imagens.
 
 - renderiza exercícios e contador `done/total`;
 - envia o ID da associação ao alternar o checkbox;
 - adiciona exercícios pela busca e atualiza o treino;
 - confirma a limpeza, mostra estado pendente e atualiza os dados.
+- tenta novamente após falha do treino ou da busca e restaura o erro quando o retry falha;
+- remove exercícios, trata falhas de remoção e prioriza a primeira imagem acima da dobra.
+
+#### `src/components/ui/Loading.test.tsx`
+
+Testa o componente de loading reutilizável, incluindo mensagem em português, `aria-live` e status acessível.
 
 #### `src/components/workout/ClearWorkoutDialog.test.tsx`
 

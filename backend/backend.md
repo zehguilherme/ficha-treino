@@ -67,8 +67,11 @@ src/
     auth.ts          # requireAuth, signJwt, verifyJwt
   validators/
     auth.ts          # schemas Zod de entrada
+    exercises.ts     # schemas Zod de query e resposta da busca
+    workouts.ts      # schemas Zod de parâmetros e payloads de treinos
     responses.ts     # schemas Zod de resposta
-  *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises, routes/workouts)
+    responses.test.ts
+  *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises e routes/workouts)
 ```
 
 Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises`, `DELETE /api/workouts/:weekDay/exercises/:exerciseId` e `POST /api/workouts/:weekDay/clear`), `routes/workoutExercises.ts` (`PATCH /api/workout-exercises/:id`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. As rotas de conclusão e remoção validam autenticação e ownership, alternam `done`, limpam marcações e removem associações do treino, todas documentadas no Swagger. A exclusão de conta ainda está planejada.
