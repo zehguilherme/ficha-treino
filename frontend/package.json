@@ -37,7 +37,7 @@
     "sharp": "0.35.0"
   },
   "devDependencies": {
-    "@swc/core": "^1.16.0",
+    "@swc/core": "^1.16.1",
     "@swc/jest": "^0.2.39",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^7.0.1",
