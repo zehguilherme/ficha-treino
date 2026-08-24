@@ -8,8 +8,10 @@ jest.mock('@/components/layout/Header', () => ({
   Header: () => <header />,
 }));
 
+let mockAuthStatus: 'authenticated' | 'anonymous' | 'loading' = 'authenticated';
+
 jest.mock('@/contexts/AuthContext', () => ({
-  useAuth: () => ({ status: 'authenticated' }),
+  useAuth: () => ({ status: mockAuthStatus }),
 }));
 
 jest.mock('@/lib/api', () => ({ getWorkouts: jest.fn() }));
@@ -28,6 +30,40 @@ const renderDashboard = (): void => {
 describe('DashboardClient', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAuthStatus = 'authenticated';
+  });
+
+  /**
+   * Authentication is still settling before the dashboard request can start.
+   * Mock: the auth context is loading and the workouts query remains disabled.
+   * Assert: the workout loading message is shown instead of the login loading message.
+   */
+  test('shows workout loading while authentication is hydrating', () => {
+    mockAuthStatus = 'loading';
+
+    renderDashboard();
+
+    expect(screen.getByText('Carregando treinos...')).toBeInTheDocument();
+    expect(screen.queryByText('Carregando Login...')).not.toBeInTheDocument();
+  });
+
+  /**
+   * An anonymous user is being redirected after logout.
+   * Mock: the auth context is anonymous and the dashboard redirect is triggered.
+   * Assert: only the login loading message is shown during the redirect.
+   */
+  test('shows login loading while redirecting an anonymous user', () => {
+    mockAuthStatus = 'anonymous';
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      renderDashboard();
+
+      expect(screen.getByText('Carregando Login...')).toBeInTheDocument();
+      expect(screen.queryByText('Carregando treinos...')).not.toBeInTheDocument();
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   /**
