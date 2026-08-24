@@ -11,7 +11,7 @@ export const HomeCta = (): React.JSX.Element => {
   if (status === 'loading') {
     return (
       <Button
-        disabled
+        loading
         className="bg-background text-foreground font-semibold rounded-[calc(var(--radius)+0.125rem)] px-8 py-3.5 text-[0.9375rem]"
       >
         Carregando…

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
-import { Spinner } from '@/components/ui/Spinner';
+import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 import { exchangeGoogleCode } from '@/lib/api';
 
@@ -69,10 +69,7 @@ const GoogleCallbackPage = () => {
             </Button>
           </>
         ) : (
-          <>
-            <Spinner aria-label="Autenticando" className="mx-auto size-6" />
-            <p className="text-sm text-muted-foreground mt-4">Autenticando...</p>
-          </>
+          <Loading message="Autenticando..." />
         )}
       </div>
     </main>

@@ -2,9 +2,10 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
-import { Spinner } from '@/components/ui/Spinner';
+import { Button } from '@/components/ui/Button';
+import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 import { getWorkouts } from '@/lib/api';
 import { getExercisePreview } from '@/lib/dashboard';
@@ -23,24 +24,24 @@ const DAY_NAMES: Record<WeekDay, string> = {
 export const DashboardClient = (): React.JSX.Element => {
   const { status } = useAuth();
   const authenticated = status === 'authenticated';
+  const [isRetrying, setIsRetrying] = useState(false);
   const workouts = useQuery({
     queryKey: ['workouts'],
     queryFn: getWorkouts,
     enabled: authenticated,
   });
+  const retryWorkouts = async (): Promise<void> => {
+    setIsRetrying(true);
+    try {
+      await workouts.refetch();
+    } finally {
+      setIsRetrying(false);
+    }
+  };
   useEffect(() => {
     if (status === 'anonymous') window.location.replace('/login');
   }, [status]);
-  if (!authenticated || workouts.isPending)
-    return (
-      <>
-        <Header />
-        <main className="flex flex-1 items-center justify-center bg-background">
-          <Spinner aria-label="Carregando treinos" />
-        </main>
-      </>
-    );
-  if (workouts.isError)
+  if (workouts.isError || isRetrying)
     return (
       <>
         <Header />
@@ -48,13 +49,23 @@ export const DashboardClient = (): React.JSX.Element => {
           <p role="alert" className="text-sm text-destructive">
             Não foi possível carregar seus treinos.
           </p>
-          <button
+          <Button
             type="button"
-            className="rounded-md border border-border px-3 py-2 text-sm outline-none hover:bg-secondary focus-visible:ring-1 focus-visible:ring-ring"
-            onClick={() => void workouts.refetch()}
+            variant="outline"
+            onClick={() => void retryWorkouts()}
+            loading={workouts.isFetching}
           >
-            Tentar novamente
-          </button>
+            {workouts.isFetching ? 'Tentando novamente…' : 'Tentar novamente'}
+          </Button>
+        </main>
+      </>
+    );
+  if (!authenticated || workouts.isPending)
+    return (
+      <>
+        <Header />
+        <main className="flex flex-1 items-center justify-center bg-background">
+          <Loading message="Carregando treinos..." />
         </main>
       </>
     );

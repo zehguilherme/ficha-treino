@@ -68,10 +68,14 @@ describe('ClearWorkoutDialog', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'Limpando...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Limpando…/ })).toBeDisabled();
+    expect(screen.getByRole('status', { name: 'Carregando' })).toHaveAttribute(
+      'data-icon',
+      'inline-start',
+    );
     expect(screen.getByRole('button', { name: 'Cancelar' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Fechar' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Limpando...' })).toHaveClass(
+    expect(screen.getByRole('button', { name: /Limpando…/ })).toHaveClass(
       'disabled:cursor-not-allowed',
       'disabled:opacity-50',
     );

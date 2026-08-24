@@ -102,6 +102,26 @@ describe('WorkoutDayPage', () => {
   });
 
   /**
+   * User opens a workout day while its data is loading.
+   * Mock: the workout request remains pending until the test resolves it.
+   * Assert: an accessible spinner is rendered for the workout loading state.
+   */
+  test('shows a spinner while the workout is loading', async () => {
+    let resolveWorkout: ((value: typeof workout) => void) | undefined;
+    mockedGetWorkout.mockReturnValue(
+      new Promise((resolve) => {
+        resolveWorkout = resolve;
+      }),
+    );
+
+    renderPage();
+
+    expect(screen.getByRole('status', { name: 'Carregando treino...' })).toBeInTheDocument();
+    resolveWorkout?.(workout);
+    expect(await screen.findByText('Supino reto')).toBeInTheDocument();
+  });
+
+  /**
    * Authenticated user with a populated workout.
    * Mock: API returns one exercise with complete details and two images.
    * Assert: page renders the day, counter, exercise metadata and ShadCN controls.
@@ -340,7 +360,7 @@ describe('WorkoutDayPage', () => {
     await user.click(await screen.findByRole('button', { name: 'Sim, limpar' }));
 
     expect(mockedClearWorkout).toHaveBeenCalledWith('TERCA');
-    expect(screen.getByRole('button', { name: 'Limpando...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Limpando…/ })).toBeDisabled();
 
     resolveClear({ cleared: 1 });
     expect(await screen.findByText('0 / 1')).toBeInTheDocument();
@@ -371,7 +391,7 @@ describe('WorkoutDayPage', () => {
     await user.click(screen.getByRole('button', { name: 'Sim, remover' }));
 
     expect(mockedRemoveWorkoutExercise).toHaveBeenCalledWith('TERCA', 'barbell-bench-press');
-    expect(screen.getByRole('button', { name: 'Removendo...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Removendo…/ })).toBeDisabled();
 
     resolveRemove({ deleted: true });
     expect(await screen.findByText('0 / 0')).toBeInTheDocument();
@@ -476,7 +496,25 @@ describe('WorkoutDayPage', () => {
    */
   test('loads catalog results after the search debounce', async () => {
     jest.useFakeTimers();
-    mockedGetExercises.mockResolvedValue({
+    let resolveExercises: ((value: ExercisesResponse) => void) | undefined;
+    mockedGetExercises.mockReturnValue(
+      new Promise((resolve) => {
+        resolveExercises = resolve;
+      }),
+    );
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+    renderPage();
+    await screen.findByText('Supino reto');
+    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    expect(mockedGetExercises).not.toHaveBeenCalled();
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(screen.getByRole('status', { name: 'Buscando exercícios...' })).toBeInTheDocument();
+    resolveExercises?.({
       items: [
         {
           id: 'triceps-pushdown',
@@ -493,16 +531,6 @@ describe('WorkoutDayPage', () => {
         },
       ],
       total: 1,
-    });
-    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-
-    renderPage();
-    await screen.findByText('Supino reto');
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
-    expect(mockedGetExercises).not.toHaveBeenCalled();
-
-    await act(async () => {
-      jest.advanceTimersByTime(1000);
     });
 
     expect(await screen.findByText('Tríceps na polia')).toBeInTheDocument();
@@ -878,7 +906,7 @@ describe('WorkoutDayPage', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Fechar' })[1]);
     await user.click(screen.getByRole('button', { name: 'Tentar novamente' }));
 
-    expect(screen.getByRole('button', { name: 'Tentando novamente...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Tentando novamente…/ })).toBeDisabled();
     resolveRetry(workout);
 
     expect(await screen.findByText('Supino reto')).toBeInTheDocument();
@@ -927,9 +955,10 @@ describe('WorkoutDayPage', () => {
     expect(await screen.findByText('Tríceps na polia')).toBeInTheDocument();
     const loadMoreButton = screen.getByRole('button', { name: 'Carregar mais exercícios' });
     await user.click(loadMoreButton);
-    const loadingButton = screen.getByRole('button', { name: 'Carregando exercícios...' });
+    const loadingButton = screen.getByRole('button', { name: /Carregando exercícios/ });
     expect(loadingButton).toBeDisabled();
     expect(loadingButton).toHaveAttribute('aria-busy', 'true');
+    expect(within(loadingButton).getByRole('status', { name: 'Carregando' })).toBeInTheDocument();
 
     resolveNextPage({
       items: [

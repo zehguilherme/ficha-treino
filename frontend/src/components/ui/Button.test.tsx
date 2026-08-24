@@ -36,4 +36,35 @@ describe('Button', () => {
     expect(link).toHaveClass('aria-disabled:cursor-not-allowed');
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  /**
+   * Loading native buttons expose a busy disabled state and the standard inline spinner.
+   * Assert: spinner is rendered before the label with the shadcn icon position attribute.
+   */
+  test('renders an inline spinner while loading', () => {
+    render(<Button loading>Salvar</Button>);
+
+    const button = screen.getByRole('button', { name: /Salvar/ });
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+    expect(button.querySelector('[role="status"]')).toHaveAttribute('data-icon', 'inline-start');
+    expect(button.textContent?.indexOf('Salvar')).toBeGreaterThan(-1);
+  });
+
+  /**
+   * Loading links rendered through Button asChild remain inert during an async operation.
+   * Assert: aria-disabled, aria-busy and the inline spinner are present.
+   */
+  test('renders loading state for links rendered with asChild', () => {
+    render(
+      <Button asChild loading>
+        <a href="/saving">Salvar</a>
+      </Button>,
+    );
+
+    const link = screen.getByRole('link', { name: /Salvar/ });
+    expect(link).toHaveAttribute('aria-disabled', 'true');
+    expect(link).toHaveAttribute('aria-busy', 'true');
+    expect(link.querySelector('[role="status"]')).toHaveAttribute('data-icon', 'inline-start');
+  });
 });

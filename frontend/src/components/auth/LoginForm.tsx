@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/Button';
 import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 import { GoogleIcon } from '@/components/ui/GoogleIcon';
-import { Spinner } from '@/components/ui/Spinner';
 import { useGoogleLogin } from '@/hooks/useGoogleLogin';
 
 export const LoginForm = () => {
@@ -26,14 +25,10 @@ export const LoginForm = () => {
         variant="outline"
         className="w-full gap-3 px-6 py-3 text-[0.9375rem] bg-card hover:border-ring/20"
         onClick={startLogin}
-        disabled={isLoading}
-        aria-busy={isLoading}
+        loading={isLoading}
       >
         {isLoading ? (
-          <>
-            <Spinner aria-label="Entrando" className="size-[18px]" />
-            Entrando...
-          </>
+          'Entrando…'
         ) : (
           <>
             <GoogleIcon />

@@ -1,14 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import userEvent from '@testing-library/user-event';
 import { getWorkouts } from '@/lib/api';
 import { DashboardClient } from './DashboardClient';
 
 jest.mock('@/components/layout/Header', () => ({
   Header: () => <header />,
-}));
-
-jest.mock('@/components/ui/Spinner', () => ({
-  Spinner: () => <span />,
 }));
 
 jest.mock('@/contexts/AuthContext', () => ({
@@ -77,5 +74,37 @@ describe('DashboardClient', () => {
     renderDashboard();
 
     expect(await screen.findByText('Nenhum exercício')).toBeInTheDocument();
+  });
+
+  /**
+   * The dashboard request fails and the user retries it.
+   * Mock: the first request rejects and the retry resolves after a deferred promise.
+   * Assert: retry matches the outline design and exposes the internal loading state.
+   */
+  test('uses the outline retry button and shows loading while retrying', async () => {
+    let resolveRetry: ((value: Awaited<ReturnType<typeof getWorkouts>>) => void) | undefined;
+    mockedGetWorkouts.mockRejectedValueOnce(new Error('request failed')).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveRetry = resolve;
+        }),
+    );
+
+    renderDashboard();
+
+    const retryButton = await screen.findByRole('button', { name: 'Tentar novamente' });
+    expect(retryButton).toHaveClass('border', 'border-border');
+    expect(retryButton).toBeEnabled();
+
+    await userEvent.click(retryButton);
+
+    const loadingButton = await screen.findByRole('button', { name: /Tentando novamente…/ });
+    expect(loadingButton).toBeDisabled();
+    expect(loadingButton).toHaveAttribute('aria-busy', 'true');
+    expect(loadingButton).toHaveClass('border', 'border-border');
+    expect(within(loadingButton).getByRole('status', { name: 'Carregando' })).toBeInTheDocument();
+
+    resolveRetry?.({ workouts: [] });
+    expect(await screen.findByText('Meus Treinos')).toBeInTheDocument();
   });
 });
