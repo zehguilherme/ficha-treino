@@ -143,4 +143,22 @@ describe('DashboardClient', () => {
     resolveRetry?.({ workouts: [] });
     expect(await screen.findByText('Meus Treinos')).toBeInTheDocument();
   });
+
+  /**
+   * The dashboard retry request fails after the initial request already failed.
+   * Mock: both workout requests reject so the retry state can return to the error state.
+   * Assert: the error message and enabled retry action are restored.
+   */
+  test('restores the retry action after a failed retry', async () => {
+    mockedGetWorkouts
+      .mockRejectedValueOnce(new Error('initial request failed'))
+      .mockRejectedValueOnce(new Error('retry request failed'));
+
+    renderDashboard();
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Tentar novamente' }));
+
+    expect(await screen.findByRole('button', { name: 'Tentar novamente' })).toBeEnabled();
+    expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível carregar seus treinos.');
+  });
 });
