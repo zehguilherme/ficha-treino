@@ -221,30 +221,30 @@ const WorkoutDayPage = (): React.JSX.Element => {
   };
 
   const activeError = workout.isError
-    ? { key: workout.error ?? 'workout-error', message: 'Não foi possível carregar o treino.' }
+    ? { key: 'workout-error', message: 'Não foi possível carregar o treino.' }
     : searchResults.isError
       ? {
-          key: searchResults.error ?? 'search-error',
+          key: 'search-error',
           message: 'Não foi possível buscar exercícios.',
         }
       : addExercise.isError && !isDuplicateError(addExercise.error)
         ? {
-            key: addExercise.error ?? 'add-exercise-error',
+            key: 'add-exercise-error',
             message: 'Não foi possível adicionar o exercício.',
           }
         : toggleExercise.isError
           ? {
-              key: toggleExercise.error ?? 'toggle-exercise-error',
+              key: 'toggle-exercise-error',
               message: 'Não foi possível atualizar o exercício.',
             }
           : clearWorkoutMutation.isError
             ? {
-                key: clearWorkoutMutation.error ?? 'clear-workout-error',
+                key: 'clear-workout-error',
                 message: 'Não foi possível limpar o treino.',
               }
             : removeWorkoutExerciseMutation.isError
               ? {
-                  key: removeWorkoutExerciseMutation.error ?? 'remove-exercise-error',
+                  key: 'remove-exercise-error',
                   message: 'Não foi possível remover o exercício.',
                 }
               : null;

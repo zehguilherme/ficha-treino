@@ -945,6 +945,27 @@ describe('WorkoutDayPage', () => {
   });
 
   /**
+   * The workout retry request fails after the initial request already failed.
+   * Mock: both workout requests reject and the initial error dialog is dismissed.
+   * Assert: the inline error and enabled retry action are restored.
+   */
+  test('restores the retry action after a failed workout retry', async () => {
+    mockedGetWorkout
+      .mockRejectedValueOnce(new Error('initial request failed'))
+      .mockRejectedValueOnce(new Error('retry request failed'));
+    const user = userEvent.setup();
+
+    renderPage();
+    await screen.findByRole('alertdialog');
+    fireEvent.click(screen.getAllByRole('button', { name: 'Fechar' })[1]);
+
+    await user.click(screen.getByRole('button', { name: 'Tentar novamente' }));
+
+    expect(await screen.findByRole('button', { name: 'Tentar novamente' })).toBeEnabled();
+    expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível carregar o treino.');
+  });
+
+  /**
    * User requests more results after the first catalog page is loaded.
    * Mock: the first page contains one result and the second page contains another result.
    * Assert: both pages render and the next request uses the following offset.
