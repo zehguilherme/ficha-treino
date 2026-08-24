@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
+import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 import { getWorkouts } from '@/lib/api';
@@ -25,12 +26,14 @@ export const DashboardClient = (): React.JSX.Element => {
   const { status } = useAuth();
   const authenticated = status === 'authenticated';
   const [isRetrying, setIsRetrying] = useState(false);
+  const [dismissedError, setDismissedError] = useState<string | null>(null);
   const workouts = useQuery({
     queryKey: ['workouts'],
     queryFn: getWorkouts,
     enabled: authenticated,
   });
   const retryWorkouts = async (): Promise<void> => {
+    setDismissedError(null);
     setIsRetrying(true);
     try {
       await workouts.refetch();
@@ -54,6 +57,13 @@ export const DashboardClient = (): React.JSX.Element => {
     return (
       <>
         <Header />
+        <ErrorAlertDialog
+          open={workouts.isError && dismissedError !== 'workouts-error'}
+          onOpenChange={(open) => {
+            if (!open) setDismissedError('workouts-error');
+          }}
+          message="Não foi possível carregar seus treinos."
+        />
         <main className="flex flex-1 flex-col items-center justify-center gap-4 bg-background px-4">
           <p role="alert" className="text-sm text-destructive">
             Não foi possível carregar seus treinos.

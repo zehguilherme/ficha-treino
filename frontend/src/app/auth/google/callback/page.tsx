@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 import { exchangeGoogleCode } from '@/lib/api';
@@ -58,6 +59,13 @@ const GoogleCallbackPage = () => {
 
   return (
     <main className="flex-1 flex items-center justify-center px-4 py-8 bg-background">
+      <ErrorAlertDialog
+        open={error !== null}
+        onOpenChange={(open) => {
+          if (!open) router.replace('/login');
+        }}
+        message={error ?? ''}
+      />
       {error ? (
         <div className="bg-card border border-border rounded-[calc(var(--radius)+0.25rem)] p-10 w-full max-w-[22rem] text-center">
           <p role="alert" className="text-sm text-destructive mb-6">

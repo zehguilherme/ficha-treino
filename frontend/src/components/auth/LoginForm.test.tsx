@@ -65,9 +65,9 @@ describe('LoginForm', () => {
   /**
    * Shows the error message when login fails.
    * Mock: useGoogleLogin returns status 'error'.
-   * Assert: error message displayed in role="alert".
+   * Assert: error message displayed in role="alertdialog".
    */
-  test('shows the error message when login fails', () => {
+  test('shows the login error state when login fails', () => {
     mockUseGoogleLogin.mockReturnValue({
       status: 'error',
       error: 'Login com Google indisponível no momento.',
@@ -75,8 +75,29 @@ describe('LoginForm', () => {
     });
     render(<LoginForm />);
 
-    expect(screen.getByRole('alert')).toHaveTextContent(
+    expect(screen.getByRole('alertdialog')).toHaveTextContent(
       'Login com Google indisponível no momento.',
     );
+  });
+
+  /**
+   * A dismissed login error does not block another login attempt.
+   * Mock: useGoogleLogin returns the login error state.
+   * Assert: closing the dialog keeps the login button available.
+   */
+  test('keeps the login retry available after dismissing the error', async () => {
+    const user = userEvent.setup();
+    mockUseGoogleLogin.mockReturnValue({
+      status: 'error',
+      error: 'Login com Google indisponível no momento.',
+      startLogin: mockStartLogin,
+    });
+
+    render(<LoginForm />);
+
+    await user.click(screen.getAllByRole('button', { name: 'Fechar' })[1]);
+
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Entrar com Google' })).toBeEnabled();
   });
 });
