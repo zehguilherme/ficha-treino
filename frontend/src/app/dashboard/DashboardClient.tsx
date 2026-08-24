@@ -41,6 +41,15 @@ export const DashboardClient = (): React.JSX.Element => {
   useEffect(() => {
     if (status === 'anonymous') window.location.replace('/login');
   }, [status]);
+  if (status === 'anonymous')
+    return (
+      <>
+        <Header />
+        <main className="flex flex-1 items-center justify-center bg-background">
+          <Loading message="Carregando Login..." />
+        </main>
+      </>
+    );
   if (workouts.isError || isRetrying)
     return (
       <>
@@ -60,7 +69,7 @@ export const DashboardClient = (): React.JSX.Element => {
         </main>
       </>
     );
-  if (!authenticated || workouts.isPending)
+  if (status !== 'authenticated' || workouts.isPending)
     return (
       <>
         <Header />
