@@ -128,6 +128,7 @@ describe('DashboardClient', () => {
 
     renderDashboard();
 
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Fechar' }))[1]);
     const retryButton = await screen.findByRole('button', { name: 'Tentar novamente' });
     expect(retryButton).toHaveClass('border', 'border-border');
     expect(retryButton).toBeEnabled();
@@ -156,9 +157,31 @@ describe('DashboardClient', () => {
 
     renderDashboard();
 
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Fechar' }))[1]);
     await userEvent.click(await screen.findByRole('button', { name: 'Tentar novamente' }));
 
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Fechar' }))[1]);
     expect(await screen.findByRole('button', { name: 'Tentar novamente' })).toBeEnabled();
     expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível carregar seus treinos.');
+  });
+
+  /**
+   * Dashboard loading failures are also surfaced through the shared error dialog.
+   * Mock: the workouts request rejects.
+   * Assert: the dialog contains the dashboard error message and retry remains available.
+   */
+  test('shows an error dialog while keeping dashboard retry available', async () => {
+    mockedGetWorkouts.mockRejectedValue(new Error('request failed'));
+
+    renderDashboard();
+
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
+      'Não foi possível carregar seus treinos.',
+    );
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'Fechar' })[1]);
+
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tentar novamente' })).toBeEnabled();
   });
 });

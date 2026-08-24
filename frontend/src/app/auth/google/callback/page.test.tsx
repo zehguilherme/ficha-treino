@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { StrictMode } from 'react';
+import userEvent from '@testing-library/user-event';
 import GoogleCallbackPage from './page';
 import { exchangeGoogleCode } from '@/lib/api';
 
@@ -84,7 +85,7 @@ describe('GoogleCallbackPage', () => {
 
     render(<GoogleCallbackPage />);
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
       'Falha na autenticação com o Google. Tente novamente.',
     );
     expect(mockExchangeGoogleCode).not.toHaveBeenCalled();
@@ -102,7 +103,7 @@ describe('GoogleCallbackPage', () => {
 
     render(<GoogleCallbackPage />);
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
       'Falha na autenticação com o Google. Tente novamente.',
     );
   });
@@ -134,7 +135,7 @@ describe('GoogleCallbackPage', () => {
 
     render(<GoogleCallbackPage />);
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
       'Não foi possível autenticar com o Google. Tente novamente.',
     );
   });
@@ -149,8 +150,25 @@ describe('GoogleCallbackPage', () => {
 
     render(<GoogleCallbackPage />);
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
       'Não foi possível conectar ao servidor. Tente novamente.',
     );
+  });
+
+  /**
+   * OAuth failures can be dismissed from the shared error dialog.
+   * Mock: the Google code exchange fails with a network error.
+   * Assert: closing the dialog returns the user to the login page.
+   */
+  test('returns to login after dismissing an OAuth error dialog', async () => {
+    const user = userEvent.setup();
+    mockExchangeGoogleCode.mockRejectedValue(new Error('network'));
+
+    render(<GoogleCallbackPage />);
+
+    const closeButtons = await screen.findAllByRole('button', { name: 'Fechar' });
+    await user.click(closeButtons[1]);
+
+    expect(mockReplace).toHaveBeenCalledWith('/login');
   });
 });
