@@ -58,20 +58,18 @@ const GoogleCallbackPage = () => {
 
   return (
     <main className="flex-1 flex items-center justify-center px-4 py-8 bg-background">
-      <div className="bg-card border border-border rounded-[calc(var(--radius)+0.25rem)] p-10 w-full max-w-[22rem] text-center">
-        {error ? (
-          <>
-            <p role="alert" className="text-sm text-destructive mb-6">
-              {error}
-            </p>
-            <Button variant="outline" className="w-full" onClick={() => router.replace('/login')}>
-              Voltar para o login
-            </Button>
-          </>
-        ) : (
-          <Loading message="Autenticando..." />
-        )}
-      </div>
+      {error ? (
+        <div className="bg-card border border-border rounded-[calc(var(--radius)+0.25rem)] p-10 w-full max-w-[22rem] text-center">
+          <p role="alert" className="text-sm text-destructive mb-6">
+            {error}
+          </p>
+          <Button variant="outline" className="w-full" onClick={() => router.replace('/login')}>
+            Voltar para o login
+          </Button>
+        </div>
+      ) : (
+        <Loading message="Autenticando..." />
+      )}
     </main>
   );
 };
