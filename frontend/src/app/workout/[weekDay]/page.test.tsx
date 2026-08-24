@@ -842,12 +842,17 @@ describe('WorkoutDayPage', () => {
 
   /**
    * User searches the exercise catalog and the request fails.
-   * Mock: debounced catalog request rejects with a generic network/server error.
-   * Assert: closing the modal reveals the dashboard-style recovery state.
+   * Mock: the first debounced request fails and the retry remains pending before succeeding.
+   * Assert: closing the modal reveals an accessible retry state that preserves the query.
    */
-  test('shows a modal error when catalog search fails', async () => {
+  test('retries a failed catalog search', async () => {
     jest.useFakeTimers();
-    mockedGetExercises.mockRejectedValue(new Error('Network error'));
+    let resolveRetry: ((value: ExercisesResponse) => void) | undefined;
+    mockedGetExercises.mockRejectedValueOnce(new Error('Network error')).mockReturnValueOnce(
+      new Promise<ExercisesResponse>((resolve) => {
+        resolveRetry = resolve;
+      }),
+    );
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
     renderPage();
@@ -860,7 +865,34 @@ describe('WorkoutDayPage', () => {
     expect(await screen.findByRole('alertdialog')).toHaveTextContent(
       'Não foi possível buscar exercícios.',
     );
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole('button', { name: 'Fechar' })[1]);
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível buscar exercícios.');
+    const retryButton = screen.getByRole('button', { name: 'Tentar novamente' });
+    expect(retryButton).toBeEnabled();
+    expect(screen.getByRole('searchbox', { name: 'Buscar exercícios' })).toHaveValue('triceps');
+
+    await user.click(retryButton);
+    expect(screen.getByRole('button', { name: /Tentando novamente/ })).toBeDisabled();
+    resolveRetry?.({
+      items: [
+        {
+          id: 'triceps-pushdown',
+          name: 'Tríceps pulley',
+          force: 'push',
+          level: 'intermediate',
+          mechanic: 'isolation',
+          equipment: 'cable',
+          primaryMuscles: ['tríceps'],
+          secondaryMuscles: [],
+          instructions: ['Empurre a barra para baixo.'],
+          category: 'strength',
+          images: ['0.jpg'],
+        },
+      ],
+      total: 1,
+    });
+    expect(await screen.findByText('Tríceps pulley')).toBeInTheDocument();
     jest.useRealTimers();
   });
 

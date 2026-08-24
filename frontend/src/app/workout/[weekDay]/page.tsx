@@ -78,6 +78,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
   } | null>(null);
   const [dismissedError, setDismissedError] = useState<unknown>(null);
   const [isRetryingWorkout, setIsRetryingWorkout] = useState(false);
+  const [isRetryingExerciseSearch, setIsRetryingExerciseSearch] = useState(false);
   const normalizedSearch = debouncedSearch.trim();
   const workout = useQuery({
     queryKey: ['workout', weekDay],
@@ -212,6 +213,11 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const retryWorkout = (): void => {
     setIsRetryingWorkout(true);
     void workout.refetch().finally(() => setIsRetryingWorkout(false));
+  };
+
+  const retryExerciseSearch = (): void => {
+    setIsRetryingExerciseSearch(true);
+    void searchResults.refetch().finally(() => setIsRetryingExerciseSearch(false));
   };
 
   const activeError = workout.isError
@@ -390,12 +396,24 @@ const WorkoutDayPage = (): React.JSX.Element => {
           </div>
           {normalizedSearch ? (
             <>
-              {searchResults.isPending ? (
+              {searchResults.isError || isRetryingExerciseSearch ? (
+                <div className="flex flex-col items-center gap-4 py-12 text-center">
+                  <p role="alert" className="text-sm text-destructive">
+                    Não foi possível buscar exercícios.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={retryExerciseSearch}
+                    loading={isRetryingExerciseSearch}
+                  >
+                    {isRetryingExerciseSearch ? 'Tentando novamente…' : 'Tentar novamente'}
+                  </Button>
+                </div>
+              ) : searchResults.isPending ? (
                 <div className="flex justify-center py-12">
                   <Loading message="Buscando exercícios..." />
                 </div>
-              ) : searchResults.isError ? (
-                <div className="py-12" aria-hidden="true" />
               ) : searchResults.data.pages.flatMap(({ items }) => items).length === 0 ? (
                 <p className="py-12 text-center text-sm text-muted-foreground">
                   Nenhum exercício encontrado.
