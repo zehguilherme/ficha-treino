@@ -134,7 +134,7 @@
         "Clicar em um card navega para /workout/[weekDay]"
       ],
       "passes": true,
-      "evidence": "Dashboard client consome a sessão pelo AuthContext e habilita TanStack Query somente quando autenticado; 7 cards semanais, preview limitado e overflow explícito Mais N exercícios; testes, typecheck, lint e build verificados"
+      "evidence": "Dashboard client consome a sessão pelo AuthContext e habilita TanStack Query somente quando autenticado; 7 cards semanais, preview limitado, nomes longos preservados e overflow explícito Mais N exercícios; loading de autenticação e treinos separado, retry manual com estados busy/disabled e testes de sucesso/falha do retry; typecheck, lint e build verificados"
     },
     {
       "id": "ui-003",
@@ -149,7 +149,7 @@
         "Header com contador done/total"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética com metadados, instruções expansíveis, imagens e contador done/total; integra confirmação acessível e DELETE para remoção, com atualização dos caches e tratamento de erro; testes da página, typecheck, lint e build verificados"
+      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética com metadados, instruções expansíveis, imagens e contador done/total; integra confirmação acessível e DELETE para remoção, com atualização dos caches, retry do treino, loading acessível e tratamento de erro; nomes longos preservados e primeira imagem priorizada; testes da página, typecheck, lint e build verificados"
     },
     {
       "id": "ui-004",
@@ -165,7 +165,7 @@
         "Campo de busca tem ícone de lupa"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage implementa busca autenticada com debounce de 1000 ms, AbortSignal, paginação manual de 20 itens, busca sem acentos, campo sticky e adição integrada ao treino; testes da página, typecheck, lint e build verificados"
+      "evidence": "WorkoutDayPage implementa busca autenticada com debounce de 1000 ms, AbortSignal, paginação manual de 20 itens, busca sem acentos, campo sticky e adição integrada ao treino; loading acessível e retry manual após falha, com testes de sucesso/falha do retry; typecheck, lint e build verificados"
     },
     {
       "id": "ui-005",
@@ -180,7 +180,7 @@
         "Instruções expansíveis com chevron"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do contador e invalidação do cache; carrossel e instruções existentes validados na suíte da página."
+      "evidence": "WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do contador e invalidação do cache; carrossel mantém setas visíveis, imagens acima da dobra usam carregamento eager e instruções são validadas na suíte da página."
     },
     {
       "id": "ui-006",
@@ -195,7 +195,7 @@
         "Contador vai a 0/total"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage integra POST /api/workouts/:weekDay/clear com AlertDialog acessível, Escape, loading, estado vazio, atualização do contador e invalidação do cache; coberto por testes da página."
+      "evidence": "WorkoutDayPage integra POST /api/workouts/:weekDay/clear com AlertDialog acessível, Escape, loading, estado vazio e botão desabilitado quando não há exercícios concluídos; atualiza o contador e invalida o cache; coberto por testes da página."
     },
     {
       "id": "ui-007",

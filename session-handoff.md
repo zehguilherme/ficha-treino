@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-20: marcação, limpeza e remoção de exercícios integradas ao frontend; `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` implementados e documentados, com atualização de cache, loading, erros e confirmações acessíveis.
+2026-08-24: frontend com marcação, limpeza e remoção de exercícios, loading acessível padronizado e retry explícito para dashboard, treino e busca; correções de nomes longos, carregamento de imagens, callback OAuth e estado de autenticação foram implementadas e cobertas por testes.
 
 ## O que foi feito
 
@@ -16,8 +16,11 @@
 - `frontend/src/app/not-found.tsx`: página 404 amigável
 - `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
 - Testes: autenticação, dashboard, página de treino, busca, adição, marcação, limpeza, remoção, interceptors e not-found
+- `frontend/src/components/ui/Loading.tsx`: estado de carregamento acessível e reutilizável
+- `frontend/src/app/dashboard/DashboardClient.tsx`: loading separado de autenticação, retry de treinos e preservação de nomes longos
+- `frontend/src/app/workout/[weekDay]/page.tsx`: retry do treino e da busca, loading padronizado, limpeza condicionada a exercícios concluídos e imagens acima da dobra priorizadas
 - `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-005, api-006 e api-007 concluídos; api-008 não iniciado
-- `progress.md`: histórico atualizado até 2026-08-20
+- `progress.md`: histórico atualizado até 2026-08-24
 
 ## Feature ativa
 

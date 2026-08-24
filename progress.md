@@ -74,3 +74,11 @@ Estado atual em 2026-08-20: `api-005` está concluída; `api-008` (exclusão de 
 2026-08-20 — api-005 — `DELETE /api/workouts/:weekDay/exercises/:exerciseId` remove a associação do exercício ao treino autenticado com filtro de ownership, respostas 200/401/404, testes de sucesso e falhas de autorização, annotation Swagger e spec regenerada.
 
 2026-08-20 — ui-003 + issue #157 — página de treino integra remoção de exercícios com confirmação acessível, Escape, loading, erro genérico, atualização do contador e invalidação dos caches; testes frontend, lint, format, PascalCase e typecheck verificados.
+
+2026-08-21 — refinamentos de UX no frontend — nomes completos de exercícios no dashboard e na página de treino, setas do carrossel sempre visíveis, imagens acima da dobra com carregamento eager e limpeza do treino desabilitada quando não há exercícios concluídos.
+
+2026-08-21 — correções de autenticação e callback — callback OAuth protegido contra processamento duplicado e estados de sessão/carregamento ajustados para evitar telas incorretas durante a hidratação.
+
+2026-08-24 — loading e recuperação padronizados — estados de carregamento migrados para o componente `Loading`, botões passaram a expor estado busy/disabled consistente e foram adicionados retries para dashboard, treino e busca de exercícios, com testes para sucesso e falha do retry.
+
+Estado atual em 2026-08-24: as features implementadas permanecem concluídas; `api-008`, `ui-007`, `ui-008`, `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens e preservação de nomes longos.
