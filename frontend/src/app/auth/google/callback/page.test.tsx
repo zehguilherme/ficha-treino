@@ -36,6 +36,19 @@ afterEach(() => {
 
 describe('GoogleCallbackPage', () => {
   /**
+   * Displays the authentication loading state on the page background.
+   * Mock: OAuth code and state are valid while the exchange remains pending.
+   * Assert: the loading message is not wrapped in the card surface used by errors.
+   */
+  test('renders authentication loading without a card surface', () => {
+    mockExchangeGoogleCode.mockReturnValue(new Promise(() => undefined));
+
+    render(<GoogleCallbackPage />);
+
+    expect(screen.getByText('Autenticando...').closest('.bg-card')).toBeNull();
+  });
+
+  /**
    * Exchanges the code and redirects to the dashboard on success.
    * Mock: exchangeGoogleCode resolves with a JWT token, URL has code and state.
    * Assert: POST /api/auth/google with code, context login called, redirect /dashboard, state cleared.
