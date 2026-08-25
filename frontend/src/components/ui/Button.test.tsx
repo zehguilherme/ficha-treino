@@ -17,6 +17,19 @@ describe('Button', () => {
   });
 
   /**
+   * Primary buttons expose the shared visible focus treatment.
+   * Assert: the default button includes the two-pixel focus ring.
+   */
+  test('uses the shared two-pixel visible focus ring', () => {
+    render(<Button>Salvar</Button>);
+
+    expect(screen.getByRole('button', { name: 'Salvar' })).toHaveClass(
+      'focus-visible:ring-2',
+      'focus-visible:ring-ring',
+    );
+  });
+
+  /**
    * A disabled Button rendered as a link must remain focusable but inert.
    * Assert: aria-disabled is exposed and the click handler is not called.
    */

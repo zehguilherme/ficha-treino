@@ -189,6 +189,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 - Hover destrutivo: `opacity 0.9`
 - Hover outline: bg `--secondary`
 - Focus input: ring de 2px `--ring / 0.1`
+- Focus-visible de botões: ring de 2px `--ring`
 - Chevron instruções: rotate 180deg com transition 0.2s
 - Carrossel buttons: opacity 0 → 1, transition 0.15s
 - Header sticky z-index: 50

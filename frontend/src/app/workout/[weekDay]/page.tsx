@@ -276,7 +276,6 @@ const WorkoutDayPage = (): React.JSX.Element => {
                   <Button
                     ref={addExerciseTriggerRef}
                     type="button"
-                    variant="outline"
                     onClick={() => setAddExerciseDialogOpen(true)}
                   >
                     Adicionar exercício

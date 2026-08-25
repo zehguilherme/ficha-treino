@@ -222,7 +222,6 @@ const AddExerciseDialog = ({
                               </div>
                               <Button
                                 type="button"
-                                variant="outline"
                                 size="lg"
                                 className="h-9"
                                 loading={addExercise.isPending}

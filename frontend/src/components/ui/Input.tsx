@@ -64,7 +64,7 @@ const Input = ({
             size="icon"
             onClick={onClear}
             aria-label={clearLabel}
-            className="absolute right-2 top-1/2 size-7 -translate-y-1/2 border-0"
+            className="absolute right-2 top-1/2 -translate-y-1/2 border-0"
           >
             <XIcon className="size-4" />
           </Button>

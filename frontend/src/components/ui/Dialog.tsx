@@ -44,7 +44,7 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close
         type="button"
-        className="absolute right-4 top-4 rounded-[var(--radius)] p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="absolute right-3 top-3 inline-flex size-8 items-center justify-center rounded-[var(--radius)] p-0 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label="Fechar"
       >
         <XIcon className="size-4" />
