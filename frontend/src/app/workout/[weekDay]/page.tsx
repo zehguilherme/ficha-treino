@@ -1,17 +1,16 @@
 'use client';
 
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { ExerciseImageCarousel } from '@/components/exercise/ExerciseImageCarousel';
-import { Input } from '@/components/ui/Input';
 import { Loading } from '@/components/ui/Loading';
+import { AddExerciseDialog } from '@/components/workout/AddExerciseDialog';
 import { ClearWorkoutDialog } from '@/components/workout/ClearWorkoutDialog';
 import { RemoveWorkoutExerciseDialog } from '@/components/workout/RemoveWorkoutExerciseDialog';
 import {
@@ -19,18 +18,11 @@ import {
   BrushIcon,
   ChevronDownIcon,
   MuscleIcon,
-  SearchIcon,
   TrashIcon,
 } from '@/components/ui/WorkoutIcons';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  addWorkoutExercise,
-  clearWorkout,
-  getExercises,
-  getWorkout,
-  removeWorkoutExercise,
-  toggleWorkoutExercise,
-} from '@/lib/api';
+import { formatLabel } from '@/lib/utils';
+import { clearWorkout, getWorkout, removeWorkoutExercise, toggleWorkoutExercise } from '@/lib/api';
 import type { WeekDay, WorkoutResponse } from '@/schemas/api';
 import { toast } from 'sonner';
 
@@ -44,33 +36,19 @@ const DAY_NAMES: Record<WeekDay, string> = {
   SABADO: 'Sábado',
 };
 
-const EXERCISES_PAGE_SIZE = 20;
-
 const getWeekDay = (value: string | string[] | undefined): WeekDay | null => {
   const candidate = Array.isArray(value) ? value[0] : value;
   return candidate && candidate in DAY_NAMES ? (candidate as WeekDay) : null;
 };
-
-const formatLabel = (value: string): string =>
-  value
-    .replace(/[-_]/g, ' ')
-    .replace(
-      /(^|\s)(\p{L})/gu,
-      (_, separator: string, letter: string) => separator + letter.toLocaleUpperCase('pt-BR'),
-    );
-
-const isDuplicateError = (error: unknown): boolean =>
-  isAxiosError(error) && error.response?.status === 409;
 
 const WorkoutDayPage = (): React.JSX.Element => {
   const params = useParams<{ weekDay: string }>();
   const { status } = useAuth();
   const queryClient = useQueryClient();
   const weekDay = getWeekDay(params.weekDay);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [openInstructions, setOpenInstructions] = useState<number | null>(null);
+  const [addExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
+  const addExerciseTriggerRef = useRef<HTMLButtonElement>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [removeExercise, setRemoveExercise] = useState<{
     exerciseId: string;
@@ -78,44 +56,10 @@ const WorkoutDayPage = (): React.JSX.Element => {
   } | null>(null);
   const [dismissedError, setDismissedError] = useState<unknown>(null);
   const [isRetryingWorkout, setIsRetryingWorkout] = useState(false);
-  const [isRetryingExerciseSearch, setIsRetryingExerciseSearch] = useState(false);
-  const normalizedSearch = debouncedSearch.trim();
   const workout = useQuery({
     queryKey: ['workout', weekDay],
     queryFn: () => getWorkout(weekDay ?? ''),
     enabled: status === 'authenticated' && weekDay !== null,
-  });
-  const searchResults = useInfiniteQuery({
-    queryKey: ['exercises', normalizedSearch],
-    queryFn: ({ pageParam, signal }) =>
-      getExercises(normalizedSearch, EXERCISES_PAGE_SIZE, pageParam, signal),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      const nextOffset = allPages.length * EXERCISES_PAGE_SIZE;
-      return nextOffset < lastPage.total ? nextOffset : undefined;
-    },
-    enabled: status === 'authenticated' && normalizedSearch.length > 0,
-  });
-  const addExercise = useMutation({
-    mutationFn: ({
-      selectedWeekDay,
-      exerciseId,
-    }: {
-      selectedWeekDay: WeekDay;
-      exerciseId: string;
-    }) => addWorkoutExercise(selectedWeekDay, exerciseId),
-    onMutate: () => setDismissedError(null),
-    onSuccess: () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
-      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
-      toast.success('Exercício adicionado ao treino.');
-      clearSearch();
-      searchInputRef.current?.focus();
-    },
-    onError: (error: unknown) => {
-      if (isDuplicateError(error)) toast.warning('Este exercício já está no treino.');
-    },
   });
   const toggleExercise = useMutation({
     mutationFn: (workoutExerciseId: number) => toggleWorkoutExercise(workoutExerciseId),
@@ -191,63 +135,29 @@ const WorkoutDayPage = (): React.JSX.Element => {
     },
   });
 
-  useEffect(() => {
-    if (search.length === 0) {
-      return;
-    }
-
-    const timeout = window.setTimeout(() => setDebouncedSearch(search), 1000);
-    return () => window.clearTimeout(timeout);
-  }, [search]);
-
-  const clearSearch = (): void => {
-    setSearch('');
-    setDebouncedSearch('');
-  };
-
-  const handleSearchChange = (value: string): void => {
-    setSearch(value);
-    if (value.length === 0) setDebouncedSearch('');
-  };
-
   const retryWorkout = (): void => {
     setIsRetryingWorkout(true);
     void workout.refetch().finally(() => setIsRetryingWorkout(false));
   };
 
-  const retryExerciseSearch = (): void => {
-    setIsRetryingExerciseSearch(true);
-    void searchResults.refetch().finally(() => setIsRetryingExerciseSearch(false));
-  };
-
   const activeError = workout.isError
     ? { key: 'workout-error', message: 'Não foi possível carregar o treino.' }
-    : searchResults.isError
+    : toggleExercise.isError
       ? {
-          key: 'search-error',
-          message: 'Não foi possível buscar exercícios.',
+          key: 'toggle-exercise-error',
+          message: 'Não foi possível atualizar o exercício.',
         }
-      : addExercise.isError && !isDuplicateError(addExercise.error)
+      : clearWorkoutMutation.isError
         ? {
-            key: 'add-exercise-error',
-            message: 'Não foi possível adicionar o exercício.',
+            key: 'clear-workout-error',
+            message: 'Não foi possível limpar o treino.',
           }
-        : toggleExercise.isError
+        : removeWorkoutExerciseMutation.isError
           ? {
-              key: 'toggle-exercise-error',
-              message: 'Não foi possível atualizar o exercício.',
+              key: 'remove-exercise-error',
+              message: 'Não foi possível remover o exercício.',
             }
-          : clearWorkoutMutation.isError
-            ? {
-                key: 'clear-workout-error',
-                message: 'Não foi possível limpar o treino.',
-              }
-            : removeWorkoutExerciseMutation.isError
-              ? {
-                  key: 'remove-exercise-error',
-                  message: 'Não foi possível remover o exercício.',
-                }
-              : null;
+          : null;
   const errorMessage =
     activeError && activeError.key !== dismissedError ? activeError.message : null;
   const exercises = workout.data?.workout.exercises ?? [];
@@ -327,10 +237,6 @@ const WorkoutDayPage = (): React.JSX.Element => {
       </>
     );
 
-  const filteredExercises = exercises.filter(({ exercise }) =>
-    exercise.name.toLocaleLowerCase('pt-BR').includes(search.toLocaleLowerCase('pt-BR')),
-  );
-
   return (
     <>
       {errorDialog}
@@ -364,154 +270,49 @@ const WorkoutDayPage = (): React.JSX.Element => {
         <div className="mx-auto max-w-4xl">
           <div className="mb-4 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold tracking-tight">{dayName}</h2>
-            <Button
-              variant="outline"
-              disabled={completed === 0 || clearWorkoutMutation.isPending}
-              aria-label="Limpar treino"
-              aria-busy={clearWorkoutMutation.isPending}
-              onClick={() => setClearDialogOpen(true)}
-              className="gap-1.5 border-border px-3 py-1.5 text-muted-foreground hover:border-destructive/30 hover:text-destructive disabled:hover:border-border disabled:hover:text-muted-foreground"
-            >
-              <BrushIcon className="size-4" />
-              Limpar treino
-            </Button>
-          </div>
-          <div className="sticky top-14 z-10 mb-6 bg-background py-3">
-            <Input
-              ref={searchInputRef}
-              type="search"
-              aria-label="Buscar exercícios"
-              value={search}
-              onChange={(event) => handleSearchChange(event.target.value)}
-              placeholder="Buscar exercícios para adicionar..."
-              leadingIcon={
-                <SearchIcon
-                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                  aria-hidden="true"
-                />
-              }
-              onClear={clearSearch}
-              clearLabel="Limpar busca"
-            />
-          </div>
-          {normalizedSearch ? (
-            <>
-              {searchResults.isError || isRetryingExerciseSearch ? (
-                <div className="flex flex-col items-center gap-4 py-12 text-center">
-                  <p role="alert" className="text-sm text-destructive">
-                    Não foi possível buscar exercícios.
-                  </p>
+            <div className="flex items-center gap-2">
+              {weekDay ? (
+                <>
                   <Button
+                    ref={addExerciseTriggerRef}
                     type="button"
                     variant="outline"
-                    onClick={retryExerciseSearch}
-                    loading={isRetryingExerciseSearch}
+                    onClick={() => setAddExerciseDialogOpen(true)}
                   >
-                    {isRetryingExerciseSearch ? 'Tentando novamente…' : 'Tentar novamente'}
+                    Adicionar exercício
                   </Button>
-                </div>
-              ) : searchResults.isPending ? (
-                <div className="flex justify-center py-12">
-                  <Loading message="Buscando exercícios..." />
-                </div>
-              ) : searchResults.data.pages.flatMap(({ items }) => items).length === 0 ? (
-                <p className="py-12 text-center text-sm text-muted-foreground">
-                  Nenhum exercício encontrado.
-                </p>
-              ) : (
-                <>
-                  <ul className="flex flex-col gap-3" aria-label="Resultados da busca">
-                    {searchResults.data.pages
-                      .flatMap(({ items }) => items)
-                      .map((exercise, index) => (
-                        <li
-                          key={exercise.id}
-                          className="rounded-lg border border-border bg-card p-4"
-                        >
-                          <ExerciseImageCarousel
-                            exerciseId={exercise.id}
-                            exerciseName={exercise.name}
-                            aboveTheFold={index === 0}
-                            className="group overflow-hidden rounded-md bg-secondary"
-                          />
-                          <div className="mt-3 flex items-center justify-between gap-4">
-                            <div className="min-w-0">
-                              <h3 className="break-words text-sm font-semibold">{exercise.name}</h3>
-                              <p className="mt-1 text-xs text-muted-foreground">
-                                {[exercise.category, exercise.equipment]
-                                  .filter(Boolean)
-                                  .map((tag) => formatLabel(tag ?? ''))
-                                  .join(' · ')}
-                              </p>
-                              <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-                                <p>
-                                  <span className="font-medium text-foreground">
-                                    Músculo primário:
-                                  </span>{' '}
-                                  {exercise.primaryMuscles.map(formatLabel).join(', ')}
-                                </p>
-                                {exercise.secondaryMuscles.length > 0 ? (
-                                  <p>
-                                    <span className="font-medium text-foreground">
-                                      Músculos secundários:
-                                    </span>{' '}
-                                    {exercise.secondaryMuscles.map(formatLabel).join(', ')}
-                                  </p>
-                                ) : null}
-                              </div>
-                            </div>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="lg"
-                              className="h-9"
-                              loading={addExercise.isPending}
-                              aria-label={'Adicionar ' + exercise.name}
-                              onClick={() =>
-                                addExercise.mutate({
-                                  selectedWeekDay: weekDay,
-                                  exerciseId: exercise.id,
-                                })
-                              }
-                            >
-                              {addExercise.isPending ? 'Adicionando…' : 'Adicionar'}
-                            </Button>
-                          </div>
-                        </li>
-                      ))}
-                  </ul>
-                  {searchResults.hasNextPage ? (
-                    <div className="mt-6 flex justify-center">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => void searchResults.fetchNextPage()}
-                        loading={searchResults.isFetchingNextPage}
-                      >
-                        {searchResults.isFetchingNextPage
-                          ? 'Carregando exercícios…'
-                          : 'Carregar mais exercícios'}
-                      </Button>
-                    </div>
-                  ) : null}
+                  <AddExerciseDialog
+                    weekDay={weekDay}
+                    open={addExerciseDialogOpen}
+                    onOpenChange={setAddExerciseDialogOpen}
+                    triggerRef={addExerciseTriggerRef}
+                  />
                 </>
-              )}
-            </>
-          ) : exercises.length === 0 ? (
+              ) : null}
+              <Button
+                variant="outline"
+                disabled={completed === 0 || clearWorkoutMutation.isPending}
+                aria-label="Limpar treino"
+                aria-busy={clearWorkoutMutation.isPending}
+                onClick={() => setClearDialogOpen(true)}
+                className="gap-1.5 border-border px-3 py-1.5 text-muted-foreground hover:border-destructive/30 hover:text-destructive disabled:hover:border-border disabled:hover:text-muted-foreground"
+              >
+                <BrushIcon className="size-4" />
+                Limpar treino
+              </Button>
+            </div>
+          </div>
+          {exercises.length === 0 ? (
             <div className="flex min-h-64 flex-col items-center justify-center rounded-lg border border-dashed border-border px-6 text-center">
               <DumbbellIcon className="mb-3 size-8 text-muted-foreground" aria-hidden="true" />
               <p className="text-sm font-medium">Nenhum exercício neste treino.</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Use a busca acima para adicionar exercícios.
+                Use o botão Adicionar exercício para incluir exercícios.
               </p>
             </div>
-          ) : filteredExercises.length === 0 ? (
-            <p className="py-12 text-center text-sm text-muted-foreground">
-              Nenhum exercício encontrado.
-            </p>
           ) : (
             <div className="flex flex-col gap-4">
-              {filteredExercises.map(({ id, done, exercise }, index) => {
+              {exercises.map(({ id, done, exercise }, index) => {
                 const instructionsOpen = openInstructions === id;
                 return (
                   <article

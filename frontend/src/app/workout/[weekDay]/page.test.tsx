@@ -199,35 +199,35 @@ describe('WorkoutDayPage', () => {
       'transition-opacity',
     );
     expect(within(workoutCarousel).getByRole('button', { name: 'Imagem 1' })).toBeInTheDocument();
-    expect(screen.getByRole('searchbox', { name: 'Buscar exercícios' })).toHaveAttribute(
-      'placeholder',
-      'Buscar exercícios para adicionar...',
-    );
-    expect(screen.getByRole('searchbox', { name: 'Buscar exercícios' })).toHaveAttribute(
-      'type',
-      'search',
-    );
     expect(
       screen.getByRole('heading', { name: 'Terça-feira', level: 2 }).parentElement,
     ).toHaveClass('mb-4');
-    expect(
-      screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
-        ?.parentElement,
-    ).toHaveClass('sticky', 'top-14', 'mb-6');
-    expect(
-      screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
-        ?.parentElement,
-    ).toHaveClass('py-3');
-    expect(
-      screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
-        ?.parentElement,
-    ).toHaveClass('sticky', 'top-14');
+    expect(screen.getByRole('button', { name: 'Adicionar exercício' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Imagem anterior' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Próxima imagem' })).toBeInTheDocument();
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Imagem 1' })).toBeInTheDocument();
+  });
+
+  test('opens the exercise search inside the add dialog', async () => {
+    const user = userEvent.setup();
+
+    renderPage();
+
+    const addButton = await screen.findByRole('button', { name: 'Adicionar exercício' });
+    expect(screen.queryByRole('searchbox', { name: 'Buscar exercícios' })).not.toBeInTheDocument();
+
+    await user.click(addButton);
+
+    const dialog = screen.getByRole('dialog', { name: 'Adicionar exercício' });
+    expect(within(dialog).getByRole('searchbox', { name: 'Buscar exercícios' })).toHaveFocus();
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog', { name: 'Adicionar exercício' })).not.toBeInTheDocument();
+    expect(addButton).toHaveFocus();
   });
 
   /**
@@ -440,6 +440,7 @@ describe('WorkoutDayPage', () => {
       'true',
     );
 
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
     await user.type(search, 'supino');
     expect(search).toHaveValue('supino');
@@ -474,6 +475,7 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
     await user.type(search, 'triceps');
     await act(async () => {
@@ -506,6 +508,7 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
     expect(mockedGetExercises).not.toHaveBeenCalled();
 
@@ -596,12 +599,15 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'exercício');
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
 
     const results = await screen.findByRole('list', { name: 'Resultados da busca' });
+    expect(results.parentElement).toHaveAttribute('data-slot', 'exercise-search-results');
+    expect(results.parentElement).toHaveClass('min-h-0', 'overflow-y-auto');
     const resultItems = within(results).getAllByRole('listitem');
     expect(resultItems[0]).toHaveTextContent('Músculo primário: Tríceps, Peito');
     expect(resultItems[0]).toHaveTextContent('Músculos secundários: Ombro, Costas');
@@ -655,6 +661,7 @@ describe('WorkoutDayPage', () => {
     expect(workoutHeading).toHaveClass('break-words');
     expect(workoutHeading).not.toHaveClass('truncate');
 
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'alongamento');
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -722,6 +729,7 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
     await user.type(search, 'triceps');
     await act(async () => {
@@ -734,8 +742,8 @@ describe('WorkoutDayPage', () => {
 
     expect(mockedAddWorkoutExercise).toHaveBeenCalledWith('TERCA', 'triceps-pushdown');
     expect(mockedToast.success).toHaveBeenCalledWith('Exercício adicionado ao treino.');
-    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
-    expect(search).toHaveValue('');
+    expect(screen.queryByRole('dialog', { name: 'Adicionar exercício' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Adicionar exercício' })).toHaveFocus();
     expect(await screen.findByText('Tríceps na polia')).toBeInTheDocument();
     expect(screen.getByRole('banner').querySelector('span')).toHaveTextContent('0 / 2');
     jest.useRealTimers();
@@ -779,6 +787,7 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -822,6 +831,7 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -857,6 +867,7 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -1000,6 +1011,7 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     await screen.findByText('Supino reto');
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -1034,11 +1046,7 @@ describe('WorkoutDayPage', () => {
 
     expect(await screen.findByText('Mergulho para tríceps')).toBeInTheDocument();
     expect(mockedGetExercises).toHaveBeenLastCalledWith('triceps', 20, 20, expect.anything());
-    expect(screen.getByRole('searchbox', { name: 'Buscar exercícios' })).toBeVisible();
-    expect(
-      screen.getByRole('searchbox', { name: 'Buscar exercícios' }).parentElement?.parentElement
-        ?.parentElement,
-    ).toHaveClass('sticky', 'top-14');
+    expect(screen.getByRole('dialog', { name: 'Adicionar exercício' })).toBeVisible();
     expect(
       screen.queryByRole('button', { name: 'Carregar mais exercícios' }),
     ).not.toBeInTheDocument();
@@ -1057,7 +1065,9 @@ describe('WorkoutDayPage', () => {
     renderPage();
 
     expect(await screen.findByText('Nenhum exercício neste treino.')).toBeInTheDocument();
-    expect(screen.getByText('Use a busca acima para adicionar exercícios.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Use o botão Adicionar exercício para incluir exercícios.'),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
   });
 });
