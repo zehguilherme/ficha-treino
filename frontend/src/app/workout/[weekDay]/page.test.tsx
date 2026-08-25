@@ -204,6 +204,24 @@ describe('WorkoutDayPage', () => {
     ).toHaveClass('mb-4');
     expect(screen.getByRole('button', { name: 'Adicionar exercício' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
+    const workoutActions = screen.getByRole('button', {
+      name: 'Adicionar exercício',
+    }).parentElement;
+    expect(workoutActions).toHaveClass('w-full', 'flex-col', 'sm:w-auto', 'sm:flex-row');
+    expect(screen.getByRole('button', { name: 'Adicionar exercício' })).toHaveClass(
+      'w-full',
+      'sm:w-auto',
+    );
+    expect(screen.getByRole('button', { name: 'Limpar treino' })).toHaveClass(
+      'w-full',
+      'sm:w-auto',
+    );
+    expect(workoutActions?.children[0]).toContainElement(
+      screen.getByRole('button', { name: 'Adicionar exercício' }),
+    );
+    expect(workoutActions?.children[1]).toContainElement(
+      screen.getByRole('button', { name: 'Limpar treino' }),
+    );
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Imagem anterior' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Próxima imagem' })).toBeInTheDocument();
