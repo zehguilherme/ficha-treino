@@ -19,13 +19,16 @@ jest.mock('sonner', () => ({
 }));
 
 jest.mock('next/navigation', () => ({
-  useParams: () => ({ weekDay: 'TERCA' }),
+  useParams: jest.fn(() => ({ weekDay: 'TERCA' })),
+  usePathname: jest.fn(() => '/workout/TERCA'),
+  useRouter: jest.fn(() => ({ replace: jest.fn() })),
 }));
 
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import { useParams } from 'next/navigation';
 import {
   addWorkoutExercise,
   clearWorkout,
@@ -45,6 +48,7 @@ const mockedClearWorkout = jest.mocked(clearWorkout);
 const mockedToast = jest.mocked(toast);
 const mockedToggleWorkoutExercise = jest.mocked(toggleWorkoutExercise);
 const mockedRemoveWorkoutExercise = jest.mocked(removeWorkoutExercise);
+const mockedUseParams = jest.mocked(useParams);
 
 const workout = {
   workout: {
@@ -84,6 +88,7 @@ const renderPage = (): void => {
 describe('WorkoutDayPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedUseParams.mockReturnValue({ weekDay: 'TERCA' });
     jest.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
     mockedGetWorkout.mockResolvedValue(workout);
     mockedGetExercises.mockResolvedValue({ items: [], total: 0 });
@@ -99,6 +104,30 @@ describe('WorkoutDayPage', () => {
       exerciseId: 'barbell-bench-press',
       done: true,
     });
+  });
+
+  /**
+   * Authenticated user opens a workout route with an unsupported weekday.
+   * Mock: route params contain an invalid weekday and no workout request should run.
+   * Assert: contextual empty state explains the issue and links back to the dashboard.
+   */
+  test('shows a contextual empty state for an invalid workout route', () => {
+    mockedUseParams.mockReturnValue({ weekDay: 'INVALIDO' });
+
+    renderPage();
+
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Esse treino não existe', level: 1 }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('O endereço pode estar incorreto ou este dia não faz parte da sua ficha.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Voltar para meus treinos' })).toHaveAttribute(
+      'href',
+      '/dashboard',
+    );
+    expect(mockedGetWorkout).not.toHaveBeenCalled();
   });
 
   /**
@@ -148,7 +177,7 @@ describe('WorkoutDayPage', () => {
     expect(secondaryMuscleLabel.querySelector('svg')).toHaveAttribute('fill', 'none');
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeInTheDocument();
     const instructionsButton = screen.getByRole('button', { name: 'Instruções: Supino reto' });
-    expect(instructionsButton).toHaveClass('h-9', 'px-4', 'py-2', 'text-sm');
+    expect(instructionsButton).toHaveClass('px-4', 'py-2', 'text-sm');
     expect(instructionsButton).toHaveClass('max-[640px]:col-span-1', 'max-[640px]:w-full');
     expect(instructionsButton.parentElement).toHaveClass('gap-2');
     expect(instructionsButton.parentElement).toHaveClass(
@@ -160,7 +189,7 @@ describe('WorkoutDayPage', () => {
     expect(instructionsButton).toHaveAttribute('aria-expanded', 'false');
     const removeButton = screen.getByRole('button', { name: 'Remover Supino reto' });
     expect(removeButton).toBeEnabled();
-    expect(removeButton).toHaveClass('h-9', 'px-4', 'py-2', 'text-sm');
+    expect(removeButton).toHaveClass('px-4', 'py-2', 'text-sm');
     expect(removeButton).toHaveClass(
       'ml-auto',
       'gap-1.5',
@@ -755,7 +784,7 @@ describe('WorkoutDayPage', () => {
     });
 
     const addButton = await screen.findByRole('button', { name: 'Adicionar Tríceps na polia' });
-    expect(addButton).toHaveClass('h-9', 'px-4', 'py-2', 'text-sm');
+    expect(addButton).toHaveClass('px-4', 'py-2', 'text-sm');
     await user.click(addButton);
 
     expect(mockedAddWorkoutExercise).toHaveBeenCalledWith('TERCA', 'triceps-pushdown');
@@ -815,7 +844,7 @@ describe('WorkoutDayPage', () => {
     expect(mockedToast.warning).toHaveBeenCalledWith('Este exercício já está no treino.');
     expect(window.scrollTo).not.toHaveBeenCalled();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    expect(screen.getByText('Tríceps na polia')).toBeInTheDocument();
+    expect(screen.getAllByText('Tríceps na polia').length).toBeGreaterThan(0);
     jest.useRealTimers();
   });
 

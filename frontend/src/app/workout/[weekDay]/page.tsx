@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useRef, useState } from 'react';
+import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
@@ -203,7 +204,26 @@ const WorkoutDayPage = (): React.JSX.Element => {
     return (
       <>
         {errorDialog}
-        <main className="flex-1 bg-background p-8">Treino não encontrado</main>
+        <Header />
+        <main className="flex flex-1 items-center justify-center bg-background px-4 py-8 sm:px-6">
+          <section
+            aria-labelledby="invalid-workout-title"
+            className="w-full max-w-[26rem] rounded-[calc(var(--radius)+0.25rem)] border border-border bg-card px-10 py-12 text-center max-sm:px-6 max-sm:py-8"
+          >
+            <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-full bg-secondary text-muted-foreground">
+              <DumbbellIcon className="size-7" aria-hidden="true" />
+            </div>
+            <h1 id="invalid-workout-title" className="text-xl font-semibold tracking-tight">
+              Esse treino não existe
+            </h1>
+            <p className="mx-auto mt-3 max-w-[26rem] text-sm leading-6 text-muted-foreground">
+              O endereço pode estar incorreto ou este dia não faz parte da sua ficha.
+            </p>
+            <Button asChild className="mt-8 w-full sm:w-auto">
+              <Link href="/dashboard">Voltar para meus treinos</Link>
+            </Button>
+          </section>
+        </main>
       </>
     );
   if (workout.isPending && !isRetryingWorkout)
@@ -295,7 +315,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                 aria-label="Limpar treino"
                 aria-busy={clearWorkoutMutation.isPending}
                 onClick={() => setClearDialogOpen(true)}
-                className="w-full gap-1.5 border-border px-3 py-1.5 text-muted-foreground hover:border-destructive/30 hover:text-destructive disabled:hover:border-border disabled:hover:text-muted-foreground sm:w-auto"
+                className="w-full gap-1.5 border-border text-muted-foreground hover:border-destructive/30 hover:text-destructive disabled:hover:border-border disabled:hover:text-muted-foreground sm:w-auto"
               >
                 <BrushIcon className="size-4" />
                 Limpar treino
@@ -379,8 +399,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         </label>
                         <Button
                           variant="ghost"
-                          size="lg"
-                          className="h-9 gap-1 max-[640px]:col-span-1 max-[640px]:w-full sm:gap-2"
+                          className="gap-1 max-[640px]:col-span-1 max-[640px]:w-full sm:gap-2"
                           onClick={() => setOpenInstructions(instructionsOpen ? null : id)}
                           aria-expanded={instructionsOpen}
                           aria-label={`Instruções: ${exercise.name}`}
@@ -392,7 +411,6 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         </Button>
                         <Button
                           variant="default"
-                          size="lg"
                           disabled={
                             removeWorkoutExerciseMutation.isPending ||
                             clearWorkoutMutation.isPending
@@ -405,7 +423,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                               exerciseName: exercise.name,
                             })
                           }
-                          className="ml-auto h-9 gap-1.5 bg-destructive text-primary-foreground hover:bg-destructive/90 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
+                          className="ml-auto gap-1.5 bg-destructive text-primary-foreground hover:bg-destructive/90 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
                         >
                           <TrashIcon className="size-3.5" />
                           {removeWorkoutExerciseMutation.isPending ? 'Removendo…' : 'Remover'}

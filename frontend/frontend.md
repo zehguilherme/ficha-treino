@@ -35,7 +35,7 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 - **Context API**: sessão do usuário (login/logout)
 - **`useState`**: input search, debounce, modal, carrossel e estados transitórios de retry
 
-A página de treino abre um modal shadcn para consultar `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis.
+A página de treino abre um modal shadcn para consultar `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
 
 ## Estrutura atual
 
@@ -239,6 +239,7 @@ Testes da página de treino para carregamento, retry do treino e da busca, adiç
 - confirma a limpeza, mostra estado pendente e atualiza os dados.
 - tenta novamente após falha do treino ou da busca e restaura o erro quando o retry falha;
 - remove exercícios, trata falhas de remoção e prioriza a primeira imagem acima da dobra.
+- exibe estado contextual e link para o dashboard quando o parâmetro do dia é inválido, sem chamar a API de treinos.
 
 #### `src/components/ui/Loading.test.tsx`
 

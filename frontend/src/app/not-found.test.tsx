@@ -22,6 +22,9 @@ describe('NotFoundPage', () => {
 
     expect(screen.getByText('404')).toBeInTheDocument();
     expect(screen.getByText('Esse exercício não existe na sua ficha')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Voltar para Home' })).toHaveAttribute('href', '/');
+    const homeLink = screen.getByRole('link', { name: 'Voltar para Home' });
+    expect(homeLink).toHaveAttribute('href', '/');
+    expect(homeLink).toHaveClass('bg-foreground', 'text-primary-foreground');
+    expect(homeLink.querySelector('svg')).toHaveClass('size-3.5');
   });
 });

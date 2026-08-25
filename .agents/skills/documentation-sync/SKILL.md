@@ -12,7 +12,7 @@ description: |
 2. Compare the implementation with only the applicable living sources:
    - Backend routes or contracts: Swagger/OpenAPI, `backend/backend.md`, `specification.md`, and `frontend/frontend.md` when the client contract changes. Use `swagger-workflow` for endpoint changes.
    - Database, seed, or infrastructure: `specification.md`, `backend/backend.md`, and `README.md` only when its setup or architecture information changes.
-   - Frontend behavior: `frontend/frontend.md` (routes, structure, state, and test catalog).
+   - Frontend behavior: `frontend/frontend.md` (routes, structure, state, and test catalog). For every visual or functional frontend change, update the affected final HTML pages in `design-system/pages/*.html` so their structure, states, interactions, copy, tokens, and relevant accessibility behavior stay aligned with the implemented pages. Update previews, source examples, or UI kits only when they directly represent the changed behavior.
    - Visual tokens, reusable UI components, or interaction patterns: `design-system/design-system.md`.
    - Feature scope, status, or milestone: `feature_list.json` and `progress.md`.
    - Project-wide facts: `README.md` and `AGENTS.md` only when they become inaccurate.

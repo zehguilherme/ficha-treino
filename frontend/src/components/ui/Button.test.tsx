@@ -30,6 +30,26 @@ describe('Button', () => {
   });
 
   /**
+   * Primary and secondary text actions share the same base touch target.
+   * Assert: default and outline variants use the shared 36px button spacing.
+   */
+  test('keeps default and outline variants at the same base size', () => {
+    render(
+      <>
+        <Button>Primária</Button>
+        <Button variant="outline">Secundária</Button>
+      </>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Primária' })).toHaveClass('px-4', 'py-2', 'text-sm');
+    expect(screen.getByRole('button', { name: 'Secundária' })).toHaveClass(
+      'px-4',
+      'py-2',
+      'text-sm',
+    );
+  });
+
+  /**
    * A disabled Button rendered as a link must remain focusable but inert.
    * Assert: aria-disabled is exposed and the click handler is not called.
    */

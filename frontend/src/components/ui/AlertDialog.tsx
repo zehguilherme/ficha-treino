@@ -98,10 +98,7 @@ const AlertDialogAction = React.forwardRef<HTMLButtonElement, AlertDialogActionP
       <Button
         ref={ref}
         loading={loading}
-        className={cn(
-          'pointer-events-auto inline-flex items-center justify-center rounded-[var(--radius)] border border-border px-4 py-2 text-sm font-medium outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-          className,
-        )}
+        className={cn('pointer-events-auto', className)}
         {...props}
       />
     </AlertDialogPrimitive.Action>
