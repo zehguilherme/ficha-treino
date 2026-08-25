@@ -222,8 +222,7 @@ const AddExerciseDialog = ({
                               </div>
                               <Button
                                 type="button"
-                                size="lg"
-                                className="h-9 w-full sm:w-auto"
+                                className="w-full sm:w-auto"
                                 loading={addExercise.isPending}
                                 aria-label={'Adicionar ' + exercise.name}
                                 onClick={() => addExercise.mutate(exercise.id)}

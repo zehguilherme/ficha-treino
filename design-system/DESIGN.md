@@ -93,7 +93,8 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 | Body / subtitle | 0.875rem | 400 | normal | `.page-subtitle`, `.profile-value`, `.empty-workout p` |
 | Search input | 0.875rem | 400 | normal | `.search-input` |
 | Search result | 0.875rem | 500 | normal | `.search-result-name` |
-| UI button | 0.8125rem | 500 | 0.02em | `.btn-clear`, `.btn-remove`, `.btn-add`, `.menu-item` |
+| UI button (default/lg) | 0.875rem | 500 | 0.02em | `.btn-*` |
+| UI button (sm) | 0.75rem | 500 | 0.02em | `.btn-sm` |
 | Small label | 0.75rem | 400/500 | 0.02em | `.profile-label`, `.exercise-meta`, `.day-badge` |
 | Tag / badge | 0.6875rem | 500 | 0.06em uppercase | `.tag`, `.carousel-counter`, `.search-results-title` |
 | Eyebrow | 0.75rem | 500–600 | 0.08–0.12em uppercase | `.hero-eyebrow` |
@@ -102,7 +103,7 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 - Body `line-height: 1.5–1.6`
 - Display headings use tighter `line-height: 1.08–1.1`
 - All caps with expanded tracking (0.06em–0.08em) for tags, counters, eyebrow text
-- Buttons use uppercase with 0.02em letter-spacing
+- Buttons use 0.02em letter-spacing; capitalization follows the copy of each action
 
 ---
 
@@ -190,6 +191,7 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 
 | Variant | Padding | Border | Background | Text | Hover |
 |---------|---------|--------|------------|------|-------|
+| Default (primary) | 0.5rem 1rem | none | `--foreground` | `--primary-foreground` | opacity 0.85 |
 | Back (icon) | — | 1px `--border` | `--card` | `--foreground` | `--secondary` |
 | Destructive (remove) | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
 | Destructive outline (danger) | 0.375rem 0.75rem | 1px `--destructive / 0.3` | none | `--destructive` | `--destructive / 0.05` |
@@ -202,9 +204,11 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 | Google (full) | 0.625rem 1rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
 | Hero CTA | 0.75rem 2rem | none | `--primary` | `--primary-fg` | opacity 0.9 |
 | Instructions toggle | 0.5rem 1rem | 1px `--border` | none | `--muted-fg` | `--secondary` |
-| Home (404) | 0.5rem 1.25rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
+| Home (404) | 0.5rem 1.25rem | none | `--foreground` | `--primary-foreground` | opacity 0.85 |
 
-All buttons: `font-size: 0.8125rem`, `font-weight: 500`, `letter-spacing: 0.02em`, `text-transform: uppercase`, `border-radius: var(--radius)`, `transition: all 0.15s`.
+All buttons: `font-weight: 500`, `letter-spacing: 0.02em`, `border-radius: var(--radius)`, `transition: all 0.15s`.
+
+Default and outline actions share the base size of `0.5rem 1rem` padding and approximately 36px height. Use `sm` only for compact controls, `lg` for deliberate emphasis, and `icon` for square icon-only actions. CTA, Google login, carousel and modal controls may use their documented semantic exceptions.
 
 Back button: 2rem × 2rem icon-only, SVG 1rem.
 

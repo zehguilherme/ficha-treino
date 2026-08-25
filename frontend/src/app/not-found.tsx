@@ -19,7 +19,7 @@ const NotFoundPage = () => {
             Parece que você tentou pegar um haltere que não está no rack. Respira, volta pro início
             e tenta de novo.
           </p>
-          <Button variant="outline" asChild className="px-5 py-2">
+          <Button asChild>
             <Link href="/">
               <HomeIcon className="size-3.5" />
               Voltar para Home

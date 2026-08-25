@@ -50,7 +50,8 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Subtítulo | 0.875rem | 400 | normal | `.page-subtitle`, `.delete-description`, `.modal p` |
 | Search input | 0.875rem | 400 | normal | `.search-input` |
 | Search results | 0.875rem | 500 | normal | `.search-result-name` |
-| UI buttons | 0.8125rem | 500 | 0.02em | `.btn-*` |
+| UI buttons (default/lg) | 0.875rem | 500 | 0.02em | `.btn-*` |
+| UI buttons (sm) | 0.75rem | 500 | 0.02em | `.btn-sm` |
 | Exercise meta | 0.75rem | 400 | normal | `.exercise-meta` |
 | Instructions toggle | 0.875rem | 500 | normal | `.instructions-toggle` |
 | Badge / Dia badge | 0.75rem | 500 | normal | `.day-badge` |
@@ -63,7 +64,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 - Body line-height: 1.5–1.6
 - Display negrito tracking: `h1` (1.5rem) usa `-0.02em`
 - Tags uppercase com `letter-spacing: 0.06em`
-- UI buttons uppercase tracking `0.02em`
+- UI buttons use `letter-spacing: 0.02em`; capitalization follows the copy of each action
 
 ---
 
@@ -90,18 +91,23 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 |----------|-------|-------|-------|-------|
 | **Back** (ícone) | 1px `--border` | `--card` | `--fg` | `--secondary` |
 | **Destrutivo** | none | `--destructive` | white | `--destructive / 0.9` |
-| **Outline default** | 1px `--border` | none / `--card` | `--fg` / `--muted-fg` | `--secondary` |
+| **Default** | none | `--fg` | `--primary-fg` | opacity 0.85 |
+| **Outline** | 1px `--border` | none / `--card` | `--fg` / `--muted-fg` | `--secondary` |
 | **Add (sólido)** | none | `--fg` | `--primary-fg` | opacity 0.85 |
 | **Clear (hover destr.)** | 1px `--border` | none | `--muted-fg` → `--destructive` | border `--destructive / 0.3` |
 | **Cancel (modal)** | 1px `--border` | `--card` | `--fg` | `--secondary` |
 | **Google (full-width)** | 1px `--border` | `--card` | `--fg` | `--secondary`, border `--ring / 0.2` |
 
 **Dimensões:**
+- Default/outline/destrutivo/ações de card: padding `0.5rem 1rem`, border-radius `--radius`
+- Small: padding `0.25rem 0.5rem`, font-size `0.75rem`
+- Large: padding `0.625rem 1.25rem`, font-size `0.875rem`
 - Ícone-only: 2rem × 2rem
-- Destrutivo/Adicionar/ações de card: padding `0.5rem 1rem`, border-radius `--radius`
 - Delete account: padding `0.5rem 1rem`
 - Google login: padding `0.75rem 1.5rem`, width 100%
-- Instructions toggle: padding `0.5rem 1rem`, font-size `0.875rem`, border-radius `0.375rem`
+- CTA da landing: padding `0.875rem 2rem`, font-size `0.9375rem`
+
+**Regra:** ações equivalentes usam a mesma altura base. Variações `small`, `large`, `icon`, CTA e login são exceções semânticas, não overrides locais de altura.
 
 **Ícone em botões:** sempre SVG 0.875rem × 0.875rem (destrutivos) ou 1rem × 1rem
 
