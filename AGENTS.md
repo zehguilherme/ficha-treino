@@ -41,6 +41,7 @@ Feature atual: `Usuário: backend routes + frontend pages` — ver `feature_list
 - Imagens: CDN jsDelivr (`https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/0.jpg`)
 - PT-BR em toda UI e dados de exercícios
 - Antes de editar um módulo, ler seu arquivo `<module>.md`
+- Após qualquer alteração de código, schema, API, infraestrutura, interface ou design system, antes de concluir, usar a skill `documentation-sync` para revisar e atualizar apenas a documentação viva afetada
 - **Sempre** verificar a documentação Swagger atual (servida em `/api/docs`, spec em `src/swagger.ts` + annotations JSDoc nas rotas) antes de modificar ou adicionar endpoints — usar skill `swagger-workflow`
 - Todo endpoint novo/modificado deve ter sua annotation `@openapi` JSDoc — validar com `npm run dev` + acesso a `/api/docs`
 - Feature concluída → marcar em `feature_list.json` e `progress.md`
