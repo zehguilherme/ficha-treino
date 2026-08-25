@@ -58,7 +58,7 @@ describe('Input', () => {
     render(<ControlledInput />);
 
     const input = screen.getByRole('searchbox', { name: 'Buscar' });
-    expect(screen.getByRole('button', { name: 'Limpar campo' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Limpar campo' })).toHaveClass('size-8');
     expect(input).toHaveAttribute('data-custom-clear', 'true');
 
     await user.click(screen.getByRole('button', { name: 'Limpar campo' }));

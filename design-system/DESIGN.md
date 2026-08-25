@@ -343,6 +343,7 @@ Card hover: `border-color: hsl(var(--ring) / 0.12)`, `box-shadow: 0 1px 3px hsl(
 - **Hover destructive:** `opacity 0.9`
 - **Hover outline/secondary:** bg `--secondary`
 - **Focus input:** border `--ring` (no ring shadow, just border-color change)
+- **Button focus-visible:** 2px `--ring` ring for a clearly visible keyboard state
 - **Chevron rotate:** `transform: rotate(180deg)`, `transition: 0.2s` (instructions toggle)
 - **Carousel buttons:** `opacity: 0 → 1`, `transition: 0.15s`
 - **Hero CTA:** `opacity 0.9` on hover

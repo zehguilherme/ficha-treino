@@ -144,7 +144,9 @@ describe('Header', () => {
     });
     render(<Header />, { wrapper: Wrapper });
 
-    await user.click(await screen.findByRole('button', { name: 'Abrir menu do usuário' }));
+    const trigger = await screen.findByRole('button', { name: 'Abrir menu do usuário' });
+    expect(trigger).toHaveClass('size-8', 'rounded-full', 'focus-visible:ring-2');
+    await user.click(trigger);
 
     const content = await screen.findByRole('menu');
     expect(content).toHaveClass('min-w-40', 'bg-card', 'border-border', 'z-[100]');

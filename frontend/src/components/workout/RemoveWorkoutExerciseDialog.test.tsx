@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { RemoveWorkoutExerciseDialog } from './RemoveWorkoutExerciseDialog';
 
 describe('RemoveWorkoutExerciseDialog', () => {
-  test('renders confirmation content and closes with cancel or Escape', async () => {
+  test('renders confirmation content and closes with cancel', async () => {
     const onOpenChange = jest.fn();
     const user = userEvent.setup();
 
@@ -33,8 +33,80 @@ describe('RemoveWorkoutExerciseDialog', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancelar' }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  /**
+   * User presses Escape while the remove confirmation is open.
+   * Mock: the confirmation is controlled by an open change spy.
+   * Assert: Escape requests dismissal.
+   */
+  test('closes through Escape', async () => {
+    const onOpenChange = jest.fn();
+    const user = userEvent.setup();
+
+    render(
+      <RemoveWorkoutExerciseDialog
+        open
+        onOpenChange={onOpenChange}
+        exerciseName="Supino reto"
+        isPending={false}
+        onConfirm={jest.fn()}
+      />,
+    );
 
     await user.keyboard('{Escape}');
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  /**
+   * User clicks the page outside the remove confirmation.
+   * Mock: the destructive confirmation is open and idle.
+   * Assert: clicking outside does not dismiss it.
+   */
+  test('remains open after clicking outside', async () => {
+    const onOpenChange = jest.fn();
+    const user = userEvent.setup();
+
+    render(
+      <RemoveWorkoutExerciseDialog
+        open
+        onOpenChange={onOpenChange}
+        exerciseName="Supino reto"
+        isPending={false}
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    const dialog = screen.getByRole('alertdialog');
+    const overlay = dialog.parentElement?.querySelector('[data-state="open"]:not([role])');
+    if (!overlay) throw new Error('Alert dialog overlay was not rendered');
+    await user.click(overlay);
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  /**
+   * User presses Escape while removing is pending.
+   * Mock: destructive operation controls are disabled while the request runs.
+   * Assert: Escape still requests dismissal, matching the selected interaction policy.
+   */
+  test('allows Escape while the remove operation is pending', async () => {
+    const onOpenChange = jest.fn();
+    const user = userEvent.setup();
+
+    render(
+      <RemoveWorkoutExerciseDialog
+        open
+        onOpenChange={onOpenChange}
+        exerciseName="Supino reto"
+        isPending
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    await user.keyboard('{Escape}');
+
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 

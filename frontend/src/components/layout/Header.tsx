@@ -43,13 +43,15 @@ export const Header = (): React.JSX.Element => {
           ) : authenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button
+                <Button
                   type="button"
-                  className="flex size-8 items-center justify-center rounded-full border border-border bg-muted text-xs font-semibold outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full bg-muted text-xs font-semibold"
                   aria-label="Abrir menu do usuário"
                 >
                   {getInitials(user?.name ?? '')}
-                </button>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>

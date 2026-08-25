@@ -71,6 +71,27 @@ describe('AddExerciseDialog', () => {
   });
 
   /**
+   * User clicks the page outside the exercise search dialog.
+   * Mock: the authenticated exercise catalog is empty.
+   * Assert: the dialog closes and focus returns to its trigger.
+   */
+  test('closes and restores trigger focus after clicking outside', async () => {
+    const user = userEvent.setup();
+
+    renderDialog();
+
+    const trigger = screen.getByRole('button', { name: 'Adicionar exercício' });
+    await user.click(trigger);
+    const dialog = screen.getByRole('dialog', { name: 'Adicionar exercício' });
+    const overlay = dialog.parentElement?.querySelector('[data-state="open"]:not([role])');
+    if (!overlay) throw new Error('Dialog overlay was not rendered');
+    await user.click(overlay);
+
+    expect(screen.queryByRole('dialog', { name: 'Adicionar exercício' })).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+
+  /**
    * User clears a typed exercise search with the input clear button.
    * Mock: the authenticated exercise catalog is empty.
    * Assert: the search is empty and retains focus after clearing.
@@ -87,5 +108,46 @@ describe('AddExerciseDialog', () => {
 
     expect(search).toHaveValue('');
     expect(search).toHaveFocus();
+  });
+
+  /**
+   * A search result exposes its main action with the primary button treatment.
+   * Mock: the catalog returns one exercise after the dialog opens.
+   * Assert: the result action uses the filled default variant.
+   */
+  test('renders the result add action as a primary button', async () => {
+    const user = userEvent.setup();
+    mockedGetExercises.mockResolvedValueOnce({
+      items: [
+        {
+          id: 'abdominais-obliquos',
+          name: 'Abdominais oblíquos',
+          force: null,
+          level: 'beginner',
+          mechanic: null,
+          equipment: 'body only',
+          primaryMuscles: ['abdominais'],
+          secondaryMuscles: [],
+          instructions: ['Deite-se no chão.'],
+          category: 'strength',
+          images: ['abdominais-obliquos/0.jpg'],
+        },
+      ],
+      total: 1,
+    });
+
+    renderDialog();
+
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
+    const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
+    await user.type(search, 'abdominais');
+
+    expect(
+      await screen.findByRole(
+        'button',
+        { name: 'Adicionar Abdominais oblíquos' },
+        { timeout: 3000 },
+      ),
+    ).toHaveClass('bg-foreground', 'text-primary-foreground');
   });
 });

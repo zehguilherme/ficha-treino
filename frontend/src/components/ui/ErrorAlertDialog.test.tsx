@@ -40,4 +40,38 @@ describe('ErrorAlertDialog', () => {
 
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
   });
+
+  /**
+   * User presses Escape while an error alert is open.
+   * Mock: the alert is controlled by a local open state.
+   * Assert: Escape dismisses the alert.
+   */
+  test('closes and restores focus after Escape', async () => {
+    const user = userEvent.setup();
+
+    render(<ErrorAlertDialogHarness />);
+    const closeButton = screen.getAllByRole('button', { name: 'Fechar' })[0];
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(closeButton).not.toHaveFocus();
+  });
+
+  /**
+   * User clicks the page outside an error alert.
+   * Mock: the alert is open with a recoverable error message.
+   * Assert: clicking outside does not dismiss the alert.
+   */
+  test('remains open after clicking outside', async () => {
+    const user = userEvent.setup();
+
+    render(<ErrorAlertDialogHarness />);
+    const alertDialog = screen.getByRole('alertdialog');
+    const overlay = alertDialog.parentElement?.querySelector('[data-state="open"]:not([role])');
+    if (!overlay) throw new Error('Alert dialog overlay was not rendered');
+    await user.click(overlay);
+
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+  });
 });

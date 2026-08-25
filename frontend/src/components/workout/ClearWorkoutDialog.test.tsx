@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { ClearWorkoutDialog } from './ClearWorkoutDialog';
 
 describe('ClearWorkoutDialog', () => {
-  test('renders the confirmation content and closes through X, cancel, and Escape', async () => {
+  test('renders the confirmation content and closes through X and cancel', async () => {
     const onOpenChange = jest.fn();
     const user = userEvent.setup();
 
@@ -36,8 +36,80 @@ describe('ClearWorkoutDialog', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancelar' }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  /**
+   * User presses Escape while the clear confirmation is open.
+   * Mock: the confirmation is controlled by an open change spy.
+   * Assert: Escape requests dismissal.
+   */
+  test('closes through Escape', async () => {
+    const onOpenChange = jest.fn();
+    const user = userEvent.setup();
+
+    render(
+      <ClearWorkoutDialog
+        open
+        onOpenChange={onOpenChange}
+        dayName="Terça-feira"
+        isPending={false}
+        onConfirm={jest.fn()}
+      />,
+    );
 
     await user.keyboard('{Escape}');
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  /**
+   * User clicks the page outside the clear confirmation.
+   * Mock: the destructive confirmation is open and idle.
+   * Assert: clicking outside does not dismiss it.
+   */
+  test('remains open after clicking outside', async () => {
+    const onOpenChange = jest.fn();
+    const user = userEvent.setup();
+
+    render(
+      <ClearWorkoutDialog
+        open
+        onOpenChange={onOpenChange}
+        dayName="Terça-feira"
+        isPending={false}
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    const dialog = screen.getByRole('alertdialog');
+    const overlay = dialog.parentElement?.querySelector('[data-state="open"]:not([role])');
+    if (!overlay) throw new Error('Alert dialog overlay was not rendered');
+    await user.click(overlay);
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  /**
+   * User presses Escape while clearing is pending.
+   * Mock: destructive operation controls are disabled while the request runs.
+   * Assert: Escape still requests dismissal, matching the selected interaction policy.
+   */
+  test('allows Escape while the clear operation is pending', async () => {
+    const onOpenChange = jest.fn();
+    const user = userEvent.setup();
+
+    render(
+      <ClearWorkoutDialog
+        open
+        onOpenChange={onOpenChange}
+        dayName="Terça-feira"
+        isPending
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    await user.keyboard('{Escape}');
+
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
