@@ -11,7 +11,7 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
 .sub { font-size:0.875rem; color:hsl(var(--muted-foreground)); margin-bottom:2rem; }
 .group { display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; padding:1.25rem; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:calc(var(--radius)+0.125rem); margin-bottom:1rem; }
 .label { font-size:0.75rem; font-weight:500; color:hsl(var(--muted-foreground)); letter-spacing:0.06em; text-transform:uppercase; width:100%; }
-.btn { display:inline-flex;align-items:center;gap:0.375rem;font-size:0.8125rem;font-weight:500;letter-spacing:0.02em;text-transform:uppercase;border-radius:var(--radius);padding:0.375rem 0.75rem;cursor:default;transition:all 0.15s; }
+.btn { display:inline-flex;align-items:center;gap:0.375rem;font-size:0.875rem;font-weight:500;letter-spacing:0.02em;border-radius:var(--radius);padding:0.5rem 1rem;cursor:default;transition:all 0.15s; }
 .btn-icon { width:2rem;height:2rem;justify-content:center;border:1px solid hsl(var(--border));background:hsl(var(--card));color:hsl(var(--foreground));padding:0; }
 .btn-destructive { color:white;background:hsl(var(--destructive));border:none;font-size:0.875rem;padding:0.5rem 1rem; }
 .btn-clear { color:hsl(var(--muted-foreground));background:none;border:1px solid hsl(var(--border)); }
@@ -20,7 +20,7 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
 </style>
 </head><body>
 <h1>Button Variants</h1>
-<p class="sub">All buttons: 0.8125rem / 500 / 0.02em / uppercase</p>
+<p class="sub">Default/lg buttons: 0.875rem / 500 / 0.02em</p>
 <div class="group"><div class="label">Icon (back)</div><div class="btn btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></div></div>
 <div class="group"><div class="label">Destructive (remove, delete)</div><div class="btn btn-destructive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>Remover</div><div class="btn btn-destructive" style="padding:0.5rem 1rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>Excluir conta</div></div>
 <div class="group"><div class="label">Clear (hover → destructive)</div><div class="btn btn-clear"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 22-1-4"/><path d="M19 14a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v1a1 1 0 0 0 1 1"/><path d="M19 14H5l-1.973 6.767A1 1 0 0 0 4 22h16a1 1 0 0 0 .973-1.233z"/><path d="M8 22 7 18"/></svg>Limpar treino</div></div>

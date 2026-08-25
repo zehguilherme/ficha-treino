@@ -125,14 +125,14 @@
       display: inline-flex;
       align-items: center;
       gap: 0.375rem;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 500;
       letter-spacing: 0.02em;
       color: hsl(var(--muted-foreground));
       background: none;
       border: 1px solid hsl(var(--border));
       border-radius: var(--radius);
-      padding: 0.375rem 0.75rem;
+      padding: 0.5rem 1rem;
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -480,14 +480,14 @@
     }
 
     .btn-add-exercise {
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 500;
       letter-spacing: 0.02em;
       color: hsl(var(--primary-foreground));
       background: hsl(var(--foreground));
       border: none;
       border-radius: var(--radius);
-      padding: 0.375rem 0.75rem;
+      padding: 0.5rem 1rem;
       cursor: pointer;
       white-space: nowrap;
       transition: opacity 0.1s;
@@ -612,9 +612,76 @@
       color: hsl(var(--muted-foreground));
     }
 
+    .invalid-workout {
+      width: 100%;
+      max-width: 26rem;
+      margin: 0 auto;
+      padding: 3rem 2.5rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) + 0.25rem);
+      background: hsl(var(--card));
+      text-align: center;
+    }
+
+    .invalid-workout-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      border-radius: 9999px;
+      background: hsl(var(--secondary));
+      color: hsl(var(--muted-foreground));
+    }
+
+    .invalid-workout-icon svg {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    .invalid-workout h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .invalid-workout p {
+      max-width: 26rem;
+      margin: 0.75rem auto 0;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      background: hsl(var(--foreground));
+      color: hsl(var(--primary-foreground));
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
     @media (max-width: 640px) {
       .container { padding: 1.5rem 1rem; }
       .exercise-carousel { aspect-ratio: 4 / 3; }
+      .invalid-workout { padding: 2rem 1.5rem; }
       .exercise-actions {
         display: grid;
         grid-template-columns: 1fr;
@@ -718,7 +785,7 @@
     }
 
     .btn-cancel {
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 500;
       letter-spacing: 0.02em;
       color: hsl(var(--foreground));
@@ -738,7 +805,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.375rem;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 500;
       letter-spacing: 0.02em;
       color: white;
@@ -775,6 +842,21 @@
   </header>
 
   <main class="container">
+    <section id="invalidWorkout" class="invalid-workout hidden" aria-labelledby="invalidWorkoutTitle">
+      <div class="invalid-workout-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6.5 6.5 17.5 17.5" />
+          <path d="M17.5 6.5 6.5 17.5" />
+          <circle cx="12" cy="5" r="1" />
+          <circle cx="12" cy="19" r="1" />
+          <circle cx="5" cy="12" r="1" />
+          <circle cx="19" cy="12" r="1" />
+        </svg>
+      </div>
+      <h1 id="invalidWorkoutTitle">Esse treino não existe</h1>
+      <p>O endereço pode estar incorreto ou este dia não faz parte da sua ficha.</p>
+      <a class="btn-primary" href="dashboard.html">Voltar para meus treinos</a>
+    </section>
     <div class="day-section">
       <div class="day-section-top">
         <h1 class="day-name-large" id="dayName">Segunda-feira</h1>
@@ -911,7 +993,10 @@
 
     const params = new URLSearchParams(window.location.search);
     const day = params.get('day') || 'segunda';
+    const isValidDay = days.includes(day);
     const dayDisplay = dayNames[day] || 'Segunda-feira';
+    document.getElementById('invalidWorkout').classList.toggle('hidden', isValidDay);
+    document.querySelector('.day-section').classList.toggle('hidden', !isValidDay);
     document.getElementById('pageDayName').textContent = dayDisplay;
     document.getElementById('dayName').textContent = dayDisplay;
 

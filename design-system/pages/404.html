@@ -138,21 +138,26 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 500;
       letter-spacing: 0.02em;
-      color: hsl(var(--foreground));
-      background: hsl(var(--card));
-      border: 1px solid hsl(var(--border));
+      color: hsl(var(--primary-foreground));
+      background: hsl(var(--foreground));
+      border: none;
       border-radius: var(--radius);
-      padding: 0.5rem 1.25rem;
+      padding: 0.5rem 1rem;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: opacity 0.15s;
       text-decoration: none;
     }
 
     .btn-home:hover {
-      background: hsl(var(--secondary));
+      opacity: 0.85;
+    }
+
+    .btn-home:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
     }
 
     .btn-home svg {
