@@ -192,7 +192,7 @@ const AddExerciseDialog = ({
                               aboveTheFold={index === 0}
                               className="group overflow-hidden rounded-md bg-secondary"
                             />
-                            <div className="mt-3 flex items-center justify-between gap-4">
+                            <div className="mt-3 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
                               <div className="min-w-0">
                                 <h3 className="break-words text-sm font-semibold">
                                   {exercise.name}
@@ -223,7 +223,7 @@ const AddExerciseDialog = ({
                               <Button
                                 type="button"
                                 size="lg"
-                                className="h-9"
+                                className="h-9 w-full sm:w-auto"
                                 loading={addExercise.isPending}
                                 aria-label={'Adicionar ' + exercise.name}
                                 onClick={() => addExercise.mutate(exercise.id)}

@@ -5,7 +5,7 @@ jest.mock('@/lib/api', () => ({
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from '@/components/ui/Button';
 import { getExercises } from '@/lib/api';
@@ -142,12 +142,21 @@ describe('AddExerciseDialog', () => {
     const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
     await user.type(search, 'abdominais');
 
+    const addButton = await screen.findByRole(
+      'button',
+      { name: 'Adicionar Abdominais oblíquos' },
+      { timeout: 3000 },
+    );
+    expect(addButton).toHaveClass('bg-foreground', 'text-primary-foreground');
+    expect(addButton).toHaveClass('w-full', 'sm:w-auto');
+
+    const resultItem = addButton.closest('li');
+    if (!resultItem) throw new Error('Exercise result item was not rendered');
+    const resultActions = addButton.parentElement;
+    expect(resultActions).toHaveClass('flex-col', 'sm:flex-row', 'sm:items-center');
     expect(
-      await screen.findByRole(
-        'button',
-        { name: 'Adicionar Abdominais oblíquos' },
-        { timeout: 3000 },
-      ),
-    ).toHaveClass('bg-foreground', 'text-primary-foreground');
+      within(resultItem).getByRole('heading', { name: 'Abdominais oblíquos' }),
+    ).toBeInTheDocument();
+    expect(resultActions?.children[1]).toContainElement(addButton);
   });
 });

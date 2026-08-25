@@ -268,15 +268,16 @@ const WorkoutDayPage = (): React.JSX.Element => {
       {workoutHeader}
       <main className="flex-1 bg-background px-4 py-8 sm:px-6">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="mb-4 flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
             <h2 className="text-2xl font-semibold tracking-tight">{dayName}</h2>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
               {weekDay ? (
                 <>
                   <Button
                     ref={addExerciseTriggerRef}
                     type="button"
                     onClick={() => setAddExerciseDialogOpen(true)}
+                    className="w-full sm:w-auto"
                   >
                     Adicionar exercício
                   </Button>
@@ -294,7 +295,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                 aria-label="Limpar treino"
                 aria-busy={clearWorkoutMutation.isPending}
                 onClick={() => setClearDialogOpen(true)}
-                className="gap-1.5 border-border px-3 py-1.5 text-muted-foreground hover:border-destructive/30 hover:text-destructive disabled:hover:border-border disabled:hover:text-muted-foreground"
+                className="w-full gap-1.5 border-border px-3 py-1.5 text-muted-foreground hover:border-destructive/30 hover:text-destructive disabled:hover:border-border disabled:hover:text-muted-foreground sm:w-auto"
               >
                 <BrushIcon className="size-4" />
                 Limpar treino
