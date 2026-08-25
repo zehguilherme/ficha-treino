@@ -48,7 +48,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "esbuild-register": "^3.6.0",
-    "eslint": "^9.39.5",
+    "eslint": "^10.9.0",
     "eslint-config-next": "16.3.2",
     "eslint-config-prettier": "^10.1.8",
     "jest": "^30.4.2",
