@@ -49,14 +49,14 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Nome do dia (card) | 0.9375rem | 500 | normal | `.day-name` |
 | Subtítulo | 0.875rem | 400 | normal | `.page-subtitle`, `.delete-description`, `.modal p` |
 | Search input | 0.875rem | 400 | normal | `.search-input` |
-| Search results | 0.875rem | 500 | normal | `.search-result-name` |
+| Nome de resultado/card | 0.9375rem | 600 | normal | `.exercise-name` |
 | UI buttons (default/lg) | 0.875rem | 500 | 0.02em | `.btn-*` |
 | UI buttons (sm) | 0.75rem | 500 | 0.02em | `.btn-sm` |
 | Exercise meta | 0.75rem | 400 | normal | `.exercise-meta` |
 | Instructions toggle | 0.875rem | 500 | normal | `.instructions-toggle` |
 | Badge / Dia badge | 0.75rem | 500 | normal | `.day-badge` |
 | Small labels | 0.75rem | 400 | 0.02em | `.profile-label` |
-| Tag / CAPS | 0.6875rem | 500 | 0.06em | `.tag`, `.carousel-counter`, `.search-results-title`, `.search-result-category` |
+| Tag / CAPS | 0.6875rem | 500 | 0.06em | `.tag`, `.carousel-counter`, `.search-results-title` |
 | Carousel counter | 0.6875rem | 500 | 0.06em | `.carousel-counter` |
 
 ### Regras
@@ -132,6 +132,8 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Gap (ícone + título) | 0.75rem |
 
 **Header counter (workout day):** `.header-counter` pill badge on the right side, shows `[done] / [total]` exercises. Font `0.75rem`/500, color `--muted-foreground`, bg `--secondary`, padding `0.125rem 0.5rem`, border-radius `9999px`, `flex-shrink: 0`. Updates dynamically on checkbox toggle, add/remove exercise, and clear workout.
+
+**Exercise card:** the same card composition is used in the workout-day list and the add-exercise dialog. Both show the carousel, exercise metadata, muscles, and expandable instructions. The workout variant exposes `Feito` and `Remover`; the search variant exposes `Adicionar`. On mobile, `Instruções` appears before the contextual action and both actions use the full card width.
 
 ### 4.4 Formulários
 

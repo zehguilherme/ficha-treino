@@ -9,7 +9,7 @@ Applied component kit extracted from the live Ficha de Treino workout app. Docum
 | `index.html` | Navigation hub linking all component files | All screens |
 | `header.html` | Sticky header in 3 variants | dashboard, workout-day, landing |
 | `day-card.html` | Week grid card with exercise previews | dashboard |
-| `exercise-card.html` | Full card with carousel, muscle labels, checkbox + remove | workout-day |
+| `exercise-card.html` | Shared exercise card with carousel, metadata, muscles, instructions, and workout/search action variants | workout-day, add-exercise dialog |
 | `modal.html` | Confirmation modal + danger zone settings | minha-conta |
 
 ## Usage workflow
@@ -25,6 +25,7 @@ Applied component kit extracted from the live Ficha de Treino workout app. Docum
 - Buttons follow: all caps 0.8125rem / 500 / 0.02em tracking
 - Cards: 1px border, `--card` bg, `calc(var(--radius) + 0.125rem)` radius
 - The toggle icon on instructions chevron rotates 180° on expand
+- Exercise card actions are contextual: `Feito` + `Remover` on workout-day, `Adicionar` on search results; on mobile, `Instruções` comes first and the contextual action follows below
 - Data attributes (`data-od-id`) mark interactive elements for testing
 
 ## Source basis
@@ -39,7 +40,7 @@ Extracted from 6 live screens: landing, login, dashboard, workout-day, minha-con
 |------|----------|----------|
 | `header.html` | Adding sticky nav with back button + avatar | 3 layout variants (auth, landing, 404) |
 | `day-card.html` | Dashboard week grid items | Exercise count badge, hover state |
-| `exercise-card.html` | Workout day exercise lists | Carousel, tags, muscle labels, actions |
+| `exercise-card.html` | Workout day lists and add-exercise search results | Carousel, tags, muscle labels, instructions, `Feito`/`Remover` or `Adicionar` actions |
 | `modal.html` | Confirmation dialogs | Overlay, destructive flow, close handlers |
 
 ### Workflow

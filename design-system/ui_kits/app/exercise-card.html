@@ -49,20 +49,24 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
 .instructions-toggle { display:inline-flex; align-items:center; gap:0.2rem; font-size:0.875rem; font-weight:500; color:hsl(var(--muted-foreground)); background:none; border:1px solid hsl(var(--border)); border-radius:0.375rem; cursor:pointer; padding:0.5rem 1rem; transition:background 0.15s; }
 .instructions-toggle:hover { background:hsl(var(--secondary)); }
 .instructions-toggle .toggle-icon { width:0.625rem; height:0.625rem; transition:transform 0.2s; }
-.btn-remove { display:inline-flex; align-items:center; gap:0.375rem; font-size:0.875rem; font-weight:500; letter-spacing:0.02em; color:white; background:hsl(var(--destructive)); border:none; border-radius:var(--radius); padding:0.5rem 1rem; cursor:pointer; margin-left:auto; transition:background 0.15s; }
+.btn-remove,
+.btn-add { display:inline-flex; align-items:center; gap:0.375rem; font-size:0.875rem; font-weight:500; letter-spacing:0.02em; color:white; border:none; border-radius:var(--radius); padding:0.5rem 1rem; cursor:pointer; margin-left:auto; transition:background 0.15s; }
+.btn-add { color:hsl(var(--primary-foreground)); background:hsl(var(--foreground)); }
 .btn-remove:hover { background:hsl(var(--destructive)/0.9); }
+.btn-add:hover { opacity:0.85; }
 .btn-remove svg { width:0.875rem; height:0.875rem; }
 @media (max-width:40rem) {
   .exercise-actions { display:grid; grid-template-columns:1fr; row-gap:0.5rem; }
   .instructions-toggle,
-  .btn-remove { grid-column:1; width:100%; margin-left:0; }
+  .btn-remove,
+  .btn-add { grid-column:1; width:100%; margin-left:0; }
 }
 </style>
 </head><body>
 <div class="container">
   <a href="index.html" style="display:inline-flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:hsl(var(--muted-foreground));text-decoration:none;margin-bottom:1.5rem">← Voltar ao UI Kit</a>
   <h1>Exercise Card</h1>
-  <p class="subtitle">Carousel + metadata + actions — workout-day.html pattern</p>
+  <p class="subtitle">Shared carousel + metadata + instructions + contextual actions — workout-day and add-exercise patterns</p>
 
   <div class="exercise-card">
     <div class="exercise-card-body">
@@ -98,10 +102,25 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
         <button class="instructions-toggle">Instruções<svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
         <button class="btn-remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>Remover</button>
       </div>
+      <div class="subtitle" style="margin:0.75rem 0 0;padding:0.75rem;background:hsl(var(--secondary));border-radius:var(--radius);line-height:1.6">
+        <strong>Instruções:</strong> mantenha o movimento controlado e repita para a quantidade recomendada.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Search variant</div>
+  <div class="exercise-card">
+    <div class="exercise-card-body">
+      <div class="exercise-name">Elevação de pernas no banco plano</div>
+      <div class="exercise-tags"><span class="tag">força</span><span class="tag">peso do corpo</span></div>
+      <div class="exercise-actions">
+        <button class="instructions-toggle">Instruções<svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <button class="btn-add">Adicionar</button>
+      </div>
     </div>
   </div>
 
   <div class="section-title">Integration Note</div>
-  <p class="subtitle">On the workout day page, the header displays a counter: <strong>done / total</strong>. Updates when checkboxes toggle or exercises are added/removed. See <a href="header.html" style="color:hsl(var(--foreground))">header component</a> for the counter variant.</p>
+  <p class="subtitle">On the workout day page, the header displays a counter: <strong>done / total</strong>. Updates when checkboxes toggle or exercises are added/removed. See <a href="header.html" style="color:hsl(var(--foreground))">header component</a> for the counter variant. The add-exercise dialog reuses the same card structure and replaces workout actions with <strong>Adicionar</strong>.</p>
 </div>
 </body></html>

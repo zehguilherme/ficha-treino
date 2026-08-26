@@ -656,10 +656,13 @@ describe('WorkoutDayPage', () => {
     expect(results.parentElement).toHaveAttribute('data-slot', 'exercise-search-results');
     expect(results.parentElement).toHaveClass('min-h-0', 'overflow-y-auto');
     const resultItems = within(results).getAllByRole('listitem');
-    expect(resultItems[0]).toHaveTextContent('Músculo primário: Tríceps, Peito');
-    expect(resultItems[0]).toHaveTextContent('Músculos secundários: Ombro, Costas');
-    expect(resultItems[1]).toHaveTextContent('Músculo primário: Quadríceps');
-    expect(resultItems[1]).not.toHaveTextContent('Músculos secundários:');
+    expect(resultItems[0]).toHaveTextContent('Músculo primário');
+    expect(resultItems[0]).toHaveTextContent('Tríceps, Peito');
+    expect(resultItems[0]).toHaveTextContent('Músculo secundário');
+    expect(resultItems[0]).toHaveTextContent('Ombro, Costas');
+    expect(resultItems[1]).toHaveTextContent('Músculo primário');
+    expect(resultItems[1]).toHaveTextContent('Quadríceps');
+    expect(resultItems[1]).not.toHaveTextContent('Músculo secundário');
     jest.useRealTimers();
   });
 
