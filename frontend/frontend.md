@@ -35,7 +35,7 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 - **Context API**: sessão do usuário (login/logout)
 - **`useState`**: input search, debounce, modal, carrossel e estados transitórios de retry
 
-A página de treino abre um modal shadcn para consultar `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
+A página de treino abre um modal shadcn para consultar `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. A página de treino e a modal usam o `ExerciseCard` compartilhado para manter a mesma estrutura visual; a modal expõe `Instruções` e `Adicionar`, enquanto o treino expõe `Feito`, `Instruções` e `Remover`. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
 
 ## Estrutura atual
 
@@ -76,6 +76,7 @@ src/
       RemoveWorkoutExerciseDialog.tsx
     exercise/
       ExerciseImageCarousel.tsx
+      ExerciseCard.tsx
   hooks/                  (autenticação Google)
   contexts/               (AuthContext)
   providers/              (QueryProvider)
@@ -248,6 +249,14 @@ Testa o componente de loading reutilizável, incluindo mensagem em português, `
 #### `src/components/workout/ClearWorkoutDialog.test.tsx`
 
 Testes do diálogo de confirmação de limpeza, incluindo confirmação, cancelamento, Escape e estado pendente.
+
+#### `src/components/exercise/ExerciseCard.test.tsx`
+
+Testa o card compartilhado de exercícios, incluindo metadados, ações e expansão das instruções.
+
+#### `src/components/workout/AddExerciseDialog.test.tsx`
+
+Também valida que os resultados da busca usam o card compartilhado, permitem abrir instruções e exibem apenas a ação de adicionar entre as ações específicas do catálogo.
 
 #### `src/lib/api.test.ts`
 

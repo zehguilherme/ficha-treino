@@ -149,7 +149,7 @@
         "Header com contador done/total"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética com metadados, instruções expansíveis, imagens e contador done/total; integra confirmação acessível e DELETE para remoção, com atualização dos caches, retry do treino, loading acessível e tratamento de erro; nomes longos preservados e primeira imagem priorizada; testes da página, typecheck, lint e build verificados"
+      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética pelo ExerciseCard compartilhado, com metadados, instruções expansíveis, imagens e contador done/total; integra confirmação acessível e DELETE para remoção, com atualização dos caches, retry do treino, loading acessível e tratamento de erro; nomes longos preservados e primeira imagem priorizada; testes do card e da página, typecheck, lint e build verificados"
     },
     {
       "id": "ui-004",
@@ -165,7 +165,7 @@
         "Campo de busca tem ícone de lupa"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage implementa busca autenticada no modal de adição com debounce de 1000 ms, AbortSignal, paginação manual de 20 itens e busca sem acentos; a adição integrada atualiza os caches do treino/dashboard, fecha o modal e restaura o foco ao botão disparador; loading acessível e retry manual após falha, com testes de sucesso/falha do retry."
+      "evidence": "WorkoutDayPage implementa busca autenticada no modal de adição com debounce de 1000 ms, AbortSignal, paginação manual de 20 itens e busca sem acentos; resultados usam o ExerciseCard compartilhado com instruções expansíveis e a ação contextual Adicionar; a adição integrada atualiza os caches do treino/dashboard, fecha o modal e restaura o foco ao botão disparador; loading acessível e retry manual após falha, com testes do card, da modal e de sucesso/falha do retry."
     },
     {
       "id": "ui-005",
@@ -180,7 +180,7 @@
         "Instruções expansíveis com chevron"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do contador e invalidação do cache; carrossel mantém setas visíveis, imagens acima da dobra usam carregamento eager e instruções são validadas na suíte da página."
+      "evidence": "ExerciseCard compartilhado mantém carrossel, metadados, músculos e instruções expansíveis nos cards do treino e da busca; WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do contador e invalidação do cache; carrossel mantém setas visíveis, imagens acima da dobra usam carregamento eager e instruções são validadas nas suítes do card, da modal e da página."
     },
     {
       "id": "ui-006",

@@ -81,6 +81,8 @@ Estado atual em 2026-08-20: `api-005` está concluída; `api-008` (exclusão de 
 
 2026-08-24 — loading e recuperação padronizados — estados de carregamento migrados para o componente `Loading`, botões passaram a expor estado busy/disabled consistente e foram adicionados retries para dashboard, treino e busca de exercícios, com testes para sucesso e falha do retry.
 
-Estado atual em 2026-08-24: as features implementadas permanecem concluídas; `api-008`, `ui-007`, `ui-008`, `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens e preservação de nomes longos.
+Estado atual em 2026-08-26: as features implementadas permanecem concluídas; `api-008`, `ui-007`, `ui-008`, `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos e card de exercício compartilhado entre treino e busca.
 
 2026-08-24 — issue #149 — a busca e adição de exercícios foram movidas para um modal shadcn, com foco inicial na busca, Escape/fechamento acessíveis e retorno do foco ao botão disparador.
+
+2026-08-26 — issue #197 — o card de exercício foi compartilhado entre a página de treino e a modal de adição, mantendo carrossel, metadados, músculos e instruções expansíveis; as ações ficaram contextuais (`Feito`/`Remover` no treino e `Adicionar` na busca), com `Instruções` antes da ação principal em telas menores. Testes do card, modal e página, lint, typecheck, build e PascalCase verificados.

@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-24: frontend com marcação, limpeza e remoção de exercícios, loading acessível padronizado e retry explícito para dashboard, treino e busca; correções de nomes longos, carregamento de imagens, callback OAuth e estado de autenticação foram implementadas e cobertas por testes.
+2026-08-26: card de exercício compartilhado entre página de treino e modal de adição, com ações contextuais e instruções expansíveis; alterações anteriores de marcação, limpeza, remoção, loading, retry, nomes longos, imagens, callback OAuth e autenticação permanecem cobertas por testes.
 
 ## O que foi feito
 
@@ -19,8 +19,13 @@
 - `frontend/src/components/ui/Loading.tsx`: estado de carregamento acessível e reutilizável
 - `frontend/src/app/dashboard/DashboardClient.tsx`: loading separado de autenticação, retry de treinos e preservação de nomes longos
 - `frontend/src/app/workout/[weekDay]/page.tsx`: retry do treino e da busca, loading padronizado, limpeza condicionada a exercícios concluídos e imagens acima da dobra priorizadas
+- `frontend/src/components/exercise/ExerciseCard.tsx`: estrutura visual compartilhada do card, carrossel, metadados, músculos, instruções e ações contextuais
+- `frontend/src/components/exercise/ExerciseCard.test.tsx`: testes da estrutura, metadados, ações e expansão das instruções
+- `frontend/src/components/workout/AddExerciseDialog.tsx`: resultados da busca renderizados pelo card compartilhado com ação `Adicionar`
+- `frontend/src/components/workout/AddExerciseDialog.test.tsx`: testes da modal, busca, instruções e adição
+- `frontend/src/app/workout/[weekDay]/page.test.tsx`: testes da página usando o card compartilhado e mantendo `Feito`/`Remover`
 - `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-005, api-006 e api-007 concluídos; api-008 não iniciado
-- `progress.md`: histórico atualizado até 2026-08-24
+- `progress.md`: histórico atualizado até 2026-08-26, incluindo a issue #197
 
 ## Feature ativa
 

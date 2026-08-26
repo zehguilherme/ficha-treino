@@ -4,6 +4,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { isAxiosError } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { ExerciseCard } from '@/components/exercise/ExerciseCard';
 import {
   Dialog,
   DialogContent,
@@ -12,12 +13,10 @@ import {
   DialogTitle,
 } from '@/components/ui/Dialog';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
-import { ExerciseImageCarousel } from '@/components/exercise/ExerciseImageCarousel';
 import { Input } from '@/components/ui/Input';
 import { Loading } from '@/components/ui/Loading';
 import { SearchIcon } from '@/components/ui/WorkoutIcons';
 import { addWorkoutExercise, getExercises } from '@/lib/api';
-import { formatLabel } from '@/lib/utils';
 import type { WeekDay } from '@/schemas/api';
 import { toast } from 'sonner';
 
@@ -44,6 +43,7 @@ const AddExerciseDialog = ({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [dismissedError, setDismissedError] = useState<unknown>(null);
   const [isRetryingSearch, setIsRetryingSearch] = useState(false);
+  const [openInstructions, setOpenInstructions] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const wasOpen = useRef(open);
   const normalizedSearch = debouncedSearch.trim();
@@ -88,6 +88,7 @@ const AddExerciseDialog = ({
   const clearSearch = (): void => {
     setSearch('');
     setDebouncedSearch('');
+    setOpenInstructions(null);
   };
 
   const clearSearchAndFocus = (): void => {
@@ -182,54 +183,28 @@ const AddExerciseDialog = ({
                       {searchResults.data.pages
                         .flatMap(({ items }) => items)
                         .map((exercise, index) => (
-                          <li
-                            key={exercise.id}
-                            className="rounded-lg border border-border bg-card p-4"
-                          >
-                            <ExerciseImageCarousel
-                              exerciseId={exercise.id}
-                              exerciseName={exercise.name}
+                          <li key={exercise.id}>
+                            <ExerciseCard
+                              exercise={exercise}
                               aboveTheFold={index === 0}
-                              className="group overflow-hidden rounded-md bg-secondary"
+                              instructionsOpen={openInstructions === exercise.id}
+                              onToggleInstructions={() =>
+                                setOpenInstructions((current) =>
+                                  current === exercise.id ? null : exercise.id,
+                                )
+                              }
+                              trailingActions={
+                                <Button
+                                  type="button"
+                                  className="ml-auto gap-1.5 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
+                                  loading={addExercise.isPending}
+                                  aria-label={'Adicionar ' + exercise.name}
+                                  onClick={() => addExercise.mutate(exercise.id)}
+                                >
+                                  {addExercise.isPending ? 'Adicionando…' : 'Adicionar'}
+                                </Button>
+                              }
                             />
-                            <div className="mt-3 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
-                              <div className="min-w-0">
-                                <h3 className="break-words text-sm font-semibold">
-                                  {exercise.name}
-                                </h3>
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                  {[exercise.category, exercise.equipment]
-                                    .filter(Boolean)
-                                    .map((tag) => formatLabel(tag ?? ''))
-                                    .join(' · ')}
-                                </p>
-                                <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-                                  <p>
-                                    <span className="font-medium text-foreground">
-                                      Músculo primário:
-                                    </span>{' '}
-                                    {exercise.primaryMuscles.map(formatLabel).join(', ')}
-                                  </p>
-                                  {exercise.secondaryMuscles.length > 0 ? (
-                                    <p>
-                                      <span className="font-medium text-foreground">
-                                        Músculos secundários:
-                                      </span>{' '}
-                                      {exercise.secondaryMuscles.map(formatLabel).join(', ')}
-                                    </p>
-                                  ) : null}
-                                </div>
-                              </div>
-                              <Button
-                                type="button"
-                                className="w-full sm:w-auto"
-                                loading={addExercise.isPending}
-                                aria-label={'Adicionar ' + exercise.name}
-                                onClick={() => addExercise.mutate(exercise.id)}
-                              >
-                                {addExercise.isPending ? 'Adicionando…' : 'Adicionar'}
-                              </Button>
-                            </div>
                           </li>
                         ))}
                     </ul>

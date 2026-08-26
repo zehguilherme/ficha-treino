@@ -177,7 +177,9 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 
 ### Exercise list (workout day)
 - Stacked flex column, gap 0.75rem
-- Each card: carousel (16:9) + info + actions (checkbox, instructions toggle, remove)
+- Each card: shared exercise card with carousel (16:9), name, category/equipment tags, primary and optional secondary muscles, expandable instructions, and contextual actions
+- Workout actions: `Feito`, `Instruções`, and destructive `Remover`
+- Search actions: `Instruções` and primary `Adicionar`
 
 ### Responsive
 - Mobile (<640px): padding reduces to 1rem, grid goes 1 column, carousel goes 4:3
@@ -272,21 +274,25 @@ Card hover: `border-color: hsl(var(--ring) / 0.12)`, `box-shadow: 0 1px 3px hsl(
 - Hover: border-color + shadow transition
 
 ### 7.9 Search Results
-- Top border separator, 0.75rem top padding
-- Result items: flex row, border-bottom separator, 0.625rem padding
-- Name: 0.875rem 500
-- Category meta: 0.6875rem uppercase, 0.06em, `--muted-fg`
+- Results use the same exercise card structure as the workout-day list
+- Each card contains the carousel, exercise name, category/equipment tags, primary and optional secondary muscles, and expandable instructions
+- Search card actions are `Instruções` followed by the primary `Adicionar` action
+- Pagination remains outside the cards and appears after the result list
 
 ### 7.10 Exercise Card (Workout Day)
-- Padding: 1rem
-- Header: flex row, justify-content space-between
-  - Title: 0.9375rem, weight 600
+- Shared by the workout-day list and the add-exercise dialog
+- Card body padding: 1.25rem
+- Content order: carousel, exercise name, category/equipment tags, primary and optional secondary muscles, action row, and instructions panel when expanded
+- Exercise name: 0.9375rem, weight 600, wrapping long names instead of clipping
 - Tags row: flex wrap, 0.375rem gap
-- Muscle label: 0.75rem, `--muted-foreground`
-- Actions row: flex, align-items center, gap 0.75rem, top border separator, 0.5rem top padding
-  - Remove: inline-flex, 0.75rem, `--destructive`, no border, gap 0.25rem
-  - Instructions toggle: margin-left auto, 0.75rem, `--muted-foreground`
-  - Chevron: 0.625rem, rotates 180° on expand
+- Muscle labels: 0.6875rem uppercase; muscle names: 0.75rem
+- Actions row: flex-wrap, align-items center, gap 0.5rem, top border separator, 0.75rem top padding
+  - Workout: `Feito`, `Instruções`, and `Remover`, with `Remover` aligned to the end
+  - Search: `Instruções` and `Adicionar`, with `Adicionar` aligned to the end
+  - Instructions toggle: outline/ghost action with accessible expanded state
+  - Chevron: 0.75rem, rotates 180° on expand
+- Instructions panel: secondary background, default radius, 0.75rem padding, 0.875rem text, 1.6 line-height
+- Mobile (<640px): action row becomes one column; `Instruções` is rendered first and the contextual primary action follows immediately below it. Actions fill the available width.
 
 ### 7.11 Dropdown Menu
 - Absolute below avatar, `right: 0`, top: `calc(100% + 0.375rem)`
