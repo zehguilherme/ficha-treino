@@ -20,7 +20,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.9.0",
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.9.0",
     "axios": "^1.19.0",
     "cors": "^2.8.5",
