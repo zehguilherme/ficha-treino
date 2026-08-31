@@ -20,7 +20,7 @@ API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`)
 | DELETE | `/api/workouts/:weekDay/exercises/:exerciseId` | Sim  | Remove exercício                                                                     |
 | PATCH  | `/api/workout-exercises/:id`                   | Sim  | Marca/desmarca como concluído                                                        |
 | POST   | `/api/workouts/:weekDay/clear`                 | Sim  | Limpa marcações do treino                                                            |
-| GET    | `/api/exercises?q=&limit=20&offset=0`          | Sim  | Busca exercícios por nome, ignorando maiúsculas, minúsculas e acentos               |
+| GET    | `/api/exercises?q=&limit=20&offset=0&category=forca` | Sim  | Busca exercícios por nome e metadados com listas fixas, ignorando maiúsculas, minúsculas e acentos |
 | DELETE | `/api/account`                                 | Sim  | Exclui conta + cascade                                                               |
 | GET    | `/api/health`                                  | Não  | Health check                                                                         |
 
@@ -78,7 +78,7 @@ Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `rou
 
 Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
 
-A busca de exercícios usa a extensão PostgreSQL `unaccent` para que consultas com e sem acentos produzam os mesmos resultados. A rota retorna no máximo 100 itens por página, ordenados por nome e ID, e `total` representa o total filtrado antes da paginação.
+A busca de exercícios usa a extensão PostgreSQL `unaccent` para que consultas com e sem acentos produzam os mesmos resultados. Além de `q`, aceita filtros opcionais com valores fixos do dataset em `category`, `equipment`, `level`, `force`, `mechanic`, `primaryMuscle` e `secondaryMuscle`; filtros vazios são ignorados e valores repetidos no mesmo filtro usam OR. A rota retorna no máximo 100 itens por página, ordenados por nome e ID, e `total` representa o total filtrado antes da paginação. Valores fora das listas permitidas retornam 400.
 
 Estado verificado em 2026-08-20: a migration da extensão `unaccent` foi adicionada após as migrations versionadas existentes. O container PostgreSQL deve aplicar as 4 migrations antes da validação manual da busca. As rotas de marcação, limpeza e remoção possuem testes e annotations Swagger; exclusão de conta continua planejada.
 

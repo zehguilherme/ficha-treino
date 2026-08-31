@@ -168,10 +168,12 @@
       padding: 0.625rem 0.75rem 0.625rem 2.25rem;
       font-size: 0.875rem;
       font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
       background: hsl(var(--card));
       border: 1px solid hsl(var(--border));
       border-radius: var(--radius);
-      color: hsl(var(--foreground));
+      color: hsl(var(--muted-foreground));
       outline: none;
       transition: border-color 0.15s;
     }
@@ -183,6 +185,126 @@
 
     .search-input::placeholder {
       color: hsl(var(--muted-foreground));
+    }
+
+    .search-submit {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    @media (min-width: 641px) {
+      .search-submit {
+        width: auto;
+      }
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .filter-panel {
+      display: flex;
+      min-height: 0;
+      flex-direction: column;
+      padding: 1rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      background: hsl(var(--muted) / 0.5);
+    }
+
+    .search-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid hsl(var(--border));
+    }
+
+    .search-actions > button {
+      width: auto;
+    }
+
+    @media (max-width: 640px) {
+      .search-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-actions > button {
+        width: 100%;
+      }
+    }
+
+    .filter-grid label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: hsl(var(--foreground));
+    }
+
+    .filter-grid select {
+      padding-left: 0.75rem;
+      appearance: auto;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .filter-grid select:has(option:checked[value=""]) {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .filter-grid select:not(:has(option:checked[value=""])) {
+      color: hsl(var(--foreground));
+    }
+
+    .filter-toggle {
+      display: flex;
+      width: 100%;
+      height: 2.5rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.625rem 0.75rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      background: hsl(var(--card));
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      text-align: left;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    .active-filters {
+      display: flex;
+      min-width: 0;
+      max-width: 100%;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .filter-chip {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: 999px;
+      background: hsl(var(--card));
+      color: hsl(var(--foreground));
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 640px) {
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .exercise-list {
@@ -544,6 +666,8 @@
       margin-top: 1.5rem;
       padding-top: 1.5rem;
       border-top: 1px solid hsl(var(--border));
+      max-height: 28rem;
+      overflow-y: auto;
     }
 
     .search-results-title {
@@ -856,9 +980,34 @@
           class="search-input"
           type="text"
           id="searchInput"
-          placeholder="Buscar exercícios para adicionar..."
+          placeholder="Buscar pelo nome do exercício..."
           data-od-id="input-busca-exercicios"
         >
+      </div>
+      <button class="filter-toggle" type="button" aria-label="Filtros avançados" aria-expanded="false" aria-controls="exerciseFilters">
+        Filtros avançados
+        <span aria-hidden="true">⌄</span>
+      </button>
+
+      <div class="active-filters" aria-label="Filtros ativos">
+        <button class="filter-chip" type="button" aria-label="Remover filtro Categoria">Categoria: Força ×</button>
+      </div>
+
+      <div id="exerciseFilters" class="filter-panel" aria-label="Filtros de exercícios" hidden>
+        <div class="filter-grid">
+        <label>Categoria<select class="search-input"><option value="">Selecionar categoria</option><option>Força</option><option>Cardio</option></select></label>
+        <label>Equipamento<select class="search-input"><option value="">Selecionar equipamento</option><option>Barra</option><option>Halteres</option></select></label>
+        <label>Nível<select class="search-input"><option value="">Selecionar nível</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></label>
+        <label>Tipo de força<select class="search-input"><option value="">Selecionar tipo de força</option><option>Puxar</option><option>Empurrar</option><option>Estático</option></select></label>
+        <label>Mecânica<select class="search-input"><option value="">Selecionar mecânica</option><option>Composto</option><option>Isolado</option></select></label>
+        <label>Músculo primário<select class="search-input"><option value="">Selecionar músculo primário</option><option>Peito</option><option>Costas</option><option>Tríceps</option></select></label>
+        <label>Músculo secundário<select class="search-input"><option value="">Selecionar músculo secundário</option><option>Peito</option><option>Costas</option><option>Tríceps</option></select></label>
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button class="button button-ghost" type="button" disabled>Limpar busca e filtros</button>
+        <button class="button button-primary search-submit" type="button">Pesquisar exercícios</button>
       </div>
 
       <div id="searchResults" class="search-results hidden">

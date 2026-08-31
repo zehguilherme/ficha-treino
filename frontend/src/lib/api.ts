@@ -23,6 +23,28 @@ import {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
+export interface ExerciseFilters {
+  category?: string;
+  equipment?: string;
+  level?: string;
+  force?: string;
+  mechanic?: string;
+  primaryMuscle?: string;
+  secondaryMuscle?: string;
+}
+
+const selectedExerciseFilters = (filters?: ExerciseFilters): ExerciseFilters => {
+  const selected: ExerciseFilters = {};
+  if (filters?.category) selected.category = filters.category;
+  if (filters?.equipment) selected.equipment = filters.equipment;
+  if (filters?.level) selected.level = filters.level;
+  if (filters?.force) selected.force = filters.force;
+  if (filters?.mechanic) selected.mechanic = filters.mechanic;
+  if (filters?.primaryMuscle) selected.primaryMuscle = filters.primaryMuscle;
+  if (filters?.secondaryMuscle) selected.secondaryMuscle = filters.secondaryMuscle;
+  return selected;
+};
+
 export const api = axios.create({ baseURL: API_BASE_URL });
 
 api.interceptors.request.use((config) => {
@@ -49,11 +71,17 @@ export const getExercises = async (
   limit = 20,
   offset = 0,
   signal?: AbortSignal,
+  filters?: ExerciseFilters,
 ): Promise<ExercisesResponse> =>
   exercisesResponseSchema.parse(
     (
       await api.get('/api/exercises', {
-        params: { q: query, limit, offset },
+        params: {
+          q: query,
+          limit,
+          offset,
+          ...selectedExerciseFilters(filters),
+        },
         signal,
       })
     ).data,

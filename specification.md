@@ -147,6 +147,10 @@ Não há sincronização periódica com API externa.
 
 - A busca dos exercícios ocorrerá enquanto o usuário digita (debounce).
 - A pesquisa será realizada no banco de dados da aplicação.
+- A API aceitará filtros opcionais por `category`, `equipment`, `level`, `force`, `mechanic`, `primaryMuscle` e `secondaryMuscle`, usando somente valores fixos do dataset.
+- Filtros vazios ou ausentes serão ignorados; valores repetidos do mesmo filtro serão combinados com OR e filtros diferentes com AND.
+- Valores de filtro desconhecidos retornarão HTTP 400.
+- Os filtros textuais ignorarão diferenças entre maiúsculas, minúsculas e acentos.
 
 ### Informações exibidas
 
@@ -375,7 +379,7 @@ Implementado:
 - atualização dos dados do usuário no login recorrente;
 - criação automática dos sete treinos no primeiro login;
 - seed dos exercícios, `GET /api/workouts` com resumo dos treinos, `GET /api/workouts/:weekDay` com os exercícios completos do dia e `POST /api/workouts/:weekDay/exercises` para adicionar exercícios ao treino autenticado;
-- `GET /api/exercises` com paginação e busca sem distinção de acentos;
+- `GET /api/exercises` com paginação, busca sem distinção de acentos e filtros por metadados;
 - `PATCH /api/workout-exercises/:id` para alternar a conclusão e `POST /api/workouts/:weekDay/clear` para desmarcar o treino;
 - `DELETE /api/workouts/:weekDay/exercises/:exerciseId` para remover somente a associação do exercício ao treino autenticado;
 - dashboard semanal e página de treino com busca via debounce, paginação manual, adição, marcação, limpeza e remoção integradas.

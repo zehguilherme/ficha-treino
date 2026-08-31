@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-26: card de exercício compartilhado entre página de treino e modal de adição, com ações contextuais e instruções expansíveis; alterações anteriores de marcação, limpeza, remoção, loading, retry, nomes longos, imagens, callback OAuth e autenticação permanecem cobertas por testes.
+2026-08-28: modal de adição de exercícios mantém a busca visível e executa texto + filtros somente após `Pesquisar exercícios` ou `Enter`; `Limpar busca e filtros` reseta tudo e retorna ao estado inicial sem resultados, fica desabilitado sem filtros/resultados, recolher filtros preserva os valores editados, chips refletem imediatamente os filtros provisórios selecionados sem consulta automática, `Enter` mantém o foco no campo de busca, e fechar/reabrir a modal não exibe resultados anteriores.
 
 ## O que foi feito
 

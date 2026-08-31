@@ -19,6 +19,19 @@ const ControlledInput = (): React.JSX.Element => {
 };
 
 describe('Input', () => {
+  test('uses muted foreground for input text and placeholder text', () => {
+    render(<Input aria-label="Campo" placeholder="Digite aqui" />);
+
+    expect(screen.getByRole('textbox', { name: 'Campo' })).toHaveClass(
+      'font-sans',
+      'text-sm',
+      'font-normal',
+      'tracking-normal',
+      'text-muted-foreground',
+      'placeholder:text-muted-foreground',
+    );
+  });
+
   /**
    * Input receives an optional label and leading icon.
    * Mock: renders the component with an explicit id and SearchIcon.

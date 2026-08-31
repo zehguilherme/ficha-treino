@@ -20,7 +20,10 @@ class IntersectionObserverMock {
   disconnect(): void {}
 }
 
-Object.defineProperty(window, 'IntersectionObserver', { writable: true, value: IntersectionObserverMock });
+Object.defineProperty(window, 'IntersectionObserver', {
+  writable: true,
+  value: IntersectionObserverMock,
+});
 
 class ResizeObserverMock {
   observe(): void {}
@@ -29,3 +32,10 @@ class ResizeObserverMock {
 }
 
 Object.defineProperty(window, 'ResizeObserver', { writable: true, value: ResizeObserverMock });
+
+Object.defineProperties(HTMLElement.prototype, {
+  hasPointerCapture: { value: () => false },
+  releasePointerCapture: { value: () => undefined },
+  setPointerCapture: { value: () => undefined },
+  scrollIntoView: { value: () => undefined },
+});
