@@ -168,6 +168,7 @@ const AddExerciseDialog = ({
   const [dismissedError, setDismissedError] = useState<unknown>(null);
   const [isRetryingSearch, setIsRetryingSearch] = useState(false);
   const [openInstructions, setOpenInstructions] = useState<string | null>(null);
+  const [addingExerciseId, setAddingExerciseId] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
   const filterTriggerRef = useRef<HTMLButtonElement>(null);
@@ -204,7 +205,10 @@ const AddExerciseDialog = ({
 
   const addExercise = useMutation({
     mutationFn: (exerciseId: string) => addWorkoutExercise(weekDay, exerciseId),
-    onMutate: () => setDismissedError(null),
+    onMutate: (exerciseId) => {
+      setAddingExerciseId(exerciseId);
+      setDismissedError(null);
+    },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
       void queryClient.invalidateQueries({ queryKey: ['workouts'] });
@@ -215,6 +219,7 @@ const AddExerciseDialog = ({
     onError: (error: unknown) => {
       if (isDuplicateError(error)) toast.warning('Este exercício já está no treino.');
     },
+    onSettled: () => setAddingExerciseId(null),
   });
 
   useEffect(() => {
@@ -535,31 +540,36 @@ const AddExerciseDialog = ({
                       <ul className="flex flex-col gap-3" aria-label="Resultados da busca">
                         {searchResults.data.pages
                           .flatMap(({ items }) => items)
-                          .map((exercise, index) => (
-                            <li key={exercise.id}>
-                              <ExerciseCard
-                                exercise={exercise}
-                                aboveTheFold={index === 0}
-                                instructionsOpen={openInstructions === exercise.id}
-                                onToggleInstructions={() =>
-                                  setOpenInstructions((current) =>
-                                    current === exercise.id ? null : exercise.id,
-                                  )
-                                }
-                                trailingActions={
-                                  <Button
-                                    type="button"
-                                    className="ml-auto gap-1.5 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
-                                    loading={addExercise.isPending}
-                                    aria-label={'Adicionar ' + exercise.name}
-                                    onClick={() => addExercise.mutate(exercise.id)}
-                                  >
-                                    {addExercise.isPending ? 'Adicionando…' : 'Adicionar'}
-                                  </Button>
-                                }
-                              />
-                            </li>
-                          ))}
+                          .map((exercise, index) => {
+                            const isAdding =
+                              addingExerciseId === exercise.id && addExercise.isPending;
+                            return (
+                              <li key={exercise.id}>
+                                <ExerciseCard
+                                  exercise={exercise}
+                                  aboveTheFold={index === 0}
+                                  instructionsOpen={openInstructions === exercise.id}
+                                  onToggleInstructions={() =>
+                                    setOpenInstructions((current) =>
+                                      current === exercise.id ? null : exercise.id,
+                                    )
+                                  }
+                                  trailingActions={
+                                    <Button
+                                      type="button"
+                                      className="ml-auto gap-1.5 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
+                                      disabled={addExercise.isPending}
+                                      loading={isAdding}
+                                      aria-label={'Adicionar ' + exercise.name}
+                                      onClick={() => addExercise.mutate(exercise.id)}
+                                    >
+                                      {isAdding ? 'Adicionando…' : 'Adicionar'}
+                                    </Button>
+                                  }
+                                />
+                              </li>
+                            );
+                          })}
                       </ul>
                       {searchResults.hasNextPage ? (
                         <div className="mt-6 flex justify-center">

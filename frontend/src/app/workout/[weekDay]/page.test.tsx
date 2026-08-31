@@ -420,8 +420,20 @@ describe('WorkoutDayPage', () => {
    * Assert: confirmation, pending state, API variables, visible removal and counter update.
    */
   test('removes an exercise after confirmation', async () => {
-    mockedGetWorkout.mockResolvedValueOnce(workout).mockResolvedValue({
-      workout: { ...workout.workout, exercises: [] },
+    const secondExercise = {
+      ...workout.workout.exercises[0],
+      id: 46,
+      exercise: {
+        ...workout.workout.exercises[0].exercise,
+        id: 'incline-dumbbell-press',
+        name: 'Supino inclinado',
+      },
+    };
+    const workoutWithTwoExercises = {
+      workout: { ...workout.workout, exercises: [...workout.workout.exercises, secondExercise] },
+    };
+    mockedGetWorkout.mockResolvedValueOnce(workoutWithTwoExercises).mockResolvedValue({
+      workout: { ...workoutWithTwoExercises.workout, exercises: [secondExercise] },
     });
     let resolveRemove: (response: { deleted: true }) => void = () => undefined;
     mockedRemoveWorkoutExercise.mockReturnValueOnce(
@@ -438,11 +450,25 @@ describe('WorkoutDayPage', () => {
     await user.click(screen.getByRole('button', { name: 'Sim, remover' }));
 
     expect(mockedRemoveWorkoutExercise).toHaveBeenCalledWith('TERCA', 'barbell-bench-press');
-    expect(screen.getByRole('button', { name: /Removendo…/ })).toBeDisabled();
+    const exerciseCards = screen.getAllByRole('article', { hidden: true });
+    const removingButton = within(exerciseCards[0]).getByRole('button', {
+      name: 'Remover Supino reto',
+      hidden: true,
+    });
+    const otherRemoveButton = within(exerciseCards[1]).getByRole('button', {
+      name: 'Remover Supino inclinado',
+      hidden: true,
+    });
+    expect(removingButton).toHaveTextContent('Removendo…');
+    expect(removingButton).toBeDisabled();
+    expect(otherRemoveButton).toHaveTextContent('Remover');
+    expect(otherRemoveButton).not.toHaveTextContent('Removendo…');
+    expect(otherRemoveButton).toBeDisabled();
 
     resolveRemove({ deleted: true });
-    expect(await screen.findByText('0 / 0')).toBeInTheDocument();
+    expect(await screen.findByText('0 / 1')).toBeInTheDocument();
     expect(screen.queryByText('Supino reto')).not.toBeInTheDocument();
+    expect(screen.getByText('Supino inclinado')).toBeInTheDocument();
   });
 
   /**

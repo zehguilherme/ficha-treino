@@ -5,7 +5,7 @@ jest.mock('@/lib/api', () => ({
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from '@/components/ui/Button';
 import { addWorkoutExercise, getExercises } from '@/lib/api';
@@ -677,6 +677,62 @@ describe('AddExerciseDialog', () => {
       within(resultItem).getByRole('heading', { name: 'Abdominais oblíquos' }),
     ).toBeInTheDocument();
     expect(resultActions?.children[1]).toContainElement(addButton);
+  });
+
+  /**
+   * A user adds one exercise while another result remains visible.
+   * Mock: the catalog returns two exercises and the first add request stays pending.
+   * Assert: only the selected result shows the pending label while both actions are disabled.
+   */
+  test('shows pending state only on the selected result add action', async () => {
+    const user = userEvent.setup();
+    const firstExercise = {
+      id: 'abdominais-obliquos',
+      name: 'Abdominais oblíquos',
+      force: null,
+      level: 'beginner' as const,
+      mechanic: null,
+      equipment: 'body only',
+      primaryMuscles: ['abdominais'],
+      secondaryMuscles: [],
+      instructions: ['Deite-se no chão.'],
+      category: 'strength',
+      images: ['abdominais-obliquos/0.jpg'],
+    };
+    const secondExercise = { ...firstExercise, id: 'prancha', name: 'Prancha' };
+    let resolveAdd:
+      ((response: { id: number; exerciseId: string; done: boolean }) => void) | undefined;
+    mockedGetExercises.mockResolvedValueOnce({
+      items: [firstExercise, secondExercise],
+      total: 2,
+    });
+    mockedAddWorkoutExercise.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveAdd = resolve;
+      }),
+    );
+
+    renderDialog();
+
+    await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
+    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'abd');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
+
+    const firstAddButton = await screen.findByRole('button', {
+      name: 'Adicionar Abdominais oblíquos',
+    });
+    const secondAddButton = screen.getByRole('button', { name: 'Adicionar Prancha' });
+    await user.click(firstAddButton);
+
+    expect(firstAddButton).toHaveTextContent('Adicionando…');
+    expect(firstAddButton).toBeDisabled();
+    expect(secondAddButton).toHaveTextContent('Adicionar');
+    expect(secondAddButton).not.toHaveTextContent('Adicionando…');
+    expect(secondAddButton).toBeDisabled();
+
+    await act(async () => {
+      resolveAdd?.({ id: 1, exerciseId: firstExercise.id, done: false });
+    });
   });
 
   /**

@@ -327,6 +327,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
             <div className="flex flex-col gap-4">
               {exercises.map(({ id, done, exercise }, index) => {
                 const instructionsOpen = openInstructions === id;
+                const isRemoving = removeExercise?.exerciseId === exercise.id;
                 return (
                   <ExerciseCard
                     key={id}
@@ -355,7 +356,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         disabled={
                           removeWorkoutExerciseMutation.isPending || clearWorkoutMutation.isPending
                         }
-                        aria-busy={removeWorkoutExerciseMutation.isPending}
+                        aria-busy={isRemoving && removeWorkoutExerciseMutation.isPending}
                         aria-label={`Remover ${exercise.name}`}
                         onClick={() =>
                           setRemoveExercise({
@@ -366,7 +367,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         className="ml-auto gap-1.5 bg-destructive text-primary-foreground hover:bg-destructive/90 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
                       >
                         <TrashIcon className="size-3.5" />
-                        {removeWorkoutExerciseMutation.isPending ? 'Removendo…' : 'Remover'}
+                        {isRemoving && removeWorkoutExerciseMutation.isPending
+                          ? 'Removendo…'
+                          : 'Remover'}
                       </Button>
                     }
                   />
