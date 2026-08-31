@@ -33,9 +33,11 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 
 - **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro
 - **Context API**: sessão do usuário (login/logout)
-- **`useState`**: input search, debounce, modal, carrossel e estados transitórios de retry
+- **`useState`**: input e texto pesquisado, filtros aplicados e provisórios, modal, painel dedicado de filtros, carrossel e estados transitórios de retry
 
-A página de treino abre um modal shadcn para consultar `GET /api/exercises` após 1000 ms sem digitação, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. Os resultados são carregados em páginas de 20 itens e o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. A página de treino e a modal usam o `ExerciseCard` compartilhado para manter a mesma estrutura visual; a modal expõe `Instruções` e `Adicionar`, enquanto o treino expõe `Feito`, `Instruções` e `Remover`. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
+A página de treino abre um modal shadcn para consultar `GET /api/exercises` somente após o botão `Pesquisar exercícios` ou `Enter` no campo, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. A busca permanece visível em todas as visões. Texto e filtros editados não consultam a API automaticamente; a ação explícita normaliza o nome, confirma os filtros e inicia uma única consulta combinada. Textos de inputs comuns, incluindo seu placeholder, usam `muted-foreground`; todos os textos dos controles de formulário usam a mesma família sans-serif, tamanho `text-sm`, peso normal e espaçamento normal. A modal oferece um painel dedicado com os sete selects de categoria, equipamento, nível, força, mecânica e músculos primário/secundário. Os valores são fixos, as labels são PT-BR, o texto sem seleção dos `Select` usa `muted-foreground`, o item selecionado usa `foreground`, o controle sem label externo segue o tratamento visual do `SelectTrigger`, e filtros aplicados aparecem como chips removíveis em faixa horizontal. Ao abrir o painel, os valores editáveis são preservados; recolher o painel ou pressionar `Escape` apenas o oculta, sem consultar a API nem alterar os chips. O painel possui rolagem própria, uma coluna no mobile e duas no desktop. `Limpar busca e filtros` remove texto, filtros e chips, fecha o painel e retorna ao estado inicial sem resultados nem nova consulta. Limpar o texto da busca pelo X preserva os filtros aplicados e provisórios, enquanto fechar a modal ou concluir a adição executa o reset completo. A consulta também pode ser iniciada apenas por filtros. Os resultados são carregados em páginas de 20 itens, usam o `ExerciseCard` compartilhado sem alteração visual e possuem rolagem exclusiva na lista; o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. A modal expõe `Instruções` e `Adicionar`, enquanto o treino expõe `Feito`, `Instruções` e `Remover`. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
+
+Na busca de exercícios, o placeholder informa que a consulta é feita somente pelo nome do exercício. Abaixo do controle, dos chips e da abertura dos selects, `Limpar busca e filtros` fica à esquerda e `Pesquisar exercícios` à direita; em telas menores, ambos ocupam toda a largura e ficam empilhados. Os chips refletem imediatamente os valores selecionados nos filtros editáveis e cada um pode ser removido de forma independente, sem consulta automática; a nova combinação só é enviada após pesquisar. A faixa de chips mantém largura mínima zero, limite de largura e contenção de overscroll horizontal para não expandir a modal em telas estreitas. O botão de limpeza fica desabilitado quando não há filtros nem exercícios nos resultados. Quando expandido, o painel de filtros usa uma superfície clara `muted/50` com borda e espaçamento próprio; os selects permanecem em `card` e não há ações duplicadas no rodapé. A pesquisa fecha o painel após confirmar texto e filtros; pelo botão, o foco retorna ao controle de filtros, enquanto o envio com `Enter` preserva o foco no campo de busca. Fechar a modal limpa texto, filtros, chips e a solicitação do catálogo, portanto a reabertura começa sem resultados.
 
 ## Estrutura atual
 
@@ -58,6 +60,7 @@ src/
       Carousel.tsx
       Checkbox.tsx
       DropdownMenu.tsx
+      Select.tsx
       FeatureCard.tsx
       ArrowRightIcon.tsx
       ChartIcon.tsx
@@ -256,7 +259,7 @@ Testa o card compartilhado de exercícios, incluindo metadados, ações e expans
 
 #### `src/components/workout/AddExerciseDialog.test.tsx`
 
-Também valida que os resultados da busca usam o card compartilhado, permitem abrir instruções e exibem apenas a ação de adicionar entre as ações específicas do catálogo.
+Também valida o painel dedicado dos sete filtros fixos, busca visível, preservação dos valores ao recolher, foco de teclado, labels PT-BR, chips ativos removíveis, montagem de consultas com nome e filtros, limpeza conjunta da busca e filtros, estados da busca, uso do card compartilhado, abertura de instruções e a ação contextual `Adicionar`.
 
 #### `src/lib/api.test.ts`
 

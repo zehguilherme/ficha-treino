@@ -81,8 +81,48 @@ Estado atual em 2026-08-20: `api-005` está concluída; `api-008` (exclusão de 
 
 2026-08-24 — loading e recuperação padronizados — estados de carregamento migrados para o componente `Loading`, botões passaram a expor estado busy/disabled consistente e foram adicionados retries para dashboard, treino e busca de exercícios, com testes para sucesso e falha do retry.
 
-Estado atual em 2026-08-26: as features implementadas permanecem concluídas; `api-008`, `ui-007`, `ui-008`, `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos e card de exercício compartilhado entre treino e busca.
+Estado atual em 2026-08-26: as features implementadas permanecem concluídas; `api-008`, `ui-007`, `ui-008`, `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos e card de exercício compartilhado entre treino e busca. A busca backend agora aceita filtros por listas fixas, enquanto a UI dos filtros permanece na issue #174.
 
 2026-08-24 — issue #149 — a busca e adição de exercícios foram movidas para um modal shadcn, com foco inicial na busca, Escape/fechamento acessíveis e retorno do foco ao botão disparador.
 
 2026-08-26 — issue #197 — o card de exercício foi compartilhado entre a página de treino e a modal de adição, mantendo carrossel, metadados, músculos e instruções expansíveis; as ações ficaram contextuais (`Feito`/`Remover` no treino e `Adicionar` na busca), com `Instruções` antes da ação principal em telas menores. Testes do card, modal e página, lint, typecheck, build e PascalCase verificados.
+
+2026-08-27 — issue #174 — modal de adição passou a consumir os filtros fixos de exercícios com selects Radix/shadcn, labels PT-BR, limpeza acessível, combinação com nome, reinício da paginação e testes frontend.
+
+2026-08-27 — refinamento de UX da issue #174 — busca mantida visível, filtros agrupados em seção recolhível inicialmente fechada, filtros ativos exibidos como chips removíveis e rolagem restrita à lista de resultados; `ExerciseCard` preservado.
+
+2026-08-27 — refinamento visual dos selects — placeholder dos filtros usa `muted-foreground` e valores selecionados usam `foreground` no componente base `Select`, com cobertura de teste compartilhada.
+
+2026-08-27 — controle de filtros avançados — botão expansível recebeu o mesmo tratamento visual do `SelectTrigger`, mantendo a semântica de expansão e sem label externo.
+
+2026-08-27 — padronização de textos de formulário — inputs comuns passaram a usar `foreground` também no placeholder; somente placeholders de `Select` permanecem diferenciados com `muted-foreground`.
+
+2026-08-27 — ajuste final de contraste dos formulários — inputs comuns e estados sem seleção usam `muted-foreground`; somente valores selecionados nos `Select` usam `foreground`.
+
+2026-08-27 — padronização tipográfica dos formulários — `Input`, `SelectTrigger` e o controle `Filtros avançados` usam família sans-serif, `text-sm`, peso normal e espaçamento normal.
+
+2026-08-27 — espaço de resultados na modal — filtros recolhem automaticamente após a consulta terminar, mantendo chips e contagem de filtros ativos visíveis para recuperar a área de rolagem dos exercícios.
+
+2026-08-27 — feedback do recolhimento de filtros — aviso acessível informa que os filtros foram fechados para ampliar a área dos resultados e some ao reabrir a seção ou resetar a modal.
+
+2026-08-27 — limpeza independente da busca — o X do campo textual limpa somente a busca e preserva os filtros selecionados; o reset completo permanece restrito ao fechamento da modal e à conclusão da adição.
+
+2026-08-27 — painel dedicado de filtros — filtros passaram a ser editados em um painel interno com rolagem própria, estado provisório, confirmação/cancelamento, foco no primeiro select e faixa horizontal de chips ativos; busca e resultados ficam separados da edição dos filtros.
+
+2026-08-28 — distinção visual do painel de filtros — a área expandida recebeu superfície clara `muted/50`, borda e espaçamento próprios, mantendo os selects em `card` e o rodapé dentro da mesma região.
+
+2026-08-28 — ações responsivas dos filtros — em telas menores, `Limpar filtros`, `Cancelar` e `Aplicar filtros` passaram a ocupar 100% da largura e ficar empilhados, preservando a ação primária por último.
+
+2026-08-28 — busca com filtros abertos — o debounce da busca textual foi reduzido para 400 ms e a modal passou a informar espera, carregamento e conclusão enquanto o painel de filtros oculta temporariamente os resultados.
+
+2026-08-28 — pesquisa manual na modal — busca por nome e filtros só consultam a API após `Pesquisar exercícios` ou `Enter`; a ação confirma texto e filtros juntos, reinicia a paginação e fecha o painel.
+
+2026-08-28 — ações de busca e filtros — `Cancelar` foi removido; `Limpar busca e filtros` reseta texto, selects e chips, retorna ao estado inicial sem resultados e fecha o painel, enquanto recolher filtros preserva os valores editados.
+
+2026-08-28 — estado da limpeza — `Limpar busca e filtros` fica desabilitado quando não há filtros ativos nem exercícios nos resultados.
+
+2026-08-28 — refinamento das ações e chips — as ações foram posicionadas após o painel e seus selects, com ordem responsiva preservada; chips passaram a refletir imediatamente os valores provisórios selecionados, sem iniciar consulta.
+
+2026-08-28 — remoção manual de filtros — remover uma pílula altera apenas os filtros provisórios; a busca permanece inalterada até uma nova confirmação pelo botão ou `Enter`, inclusive ao remover o último filtro.
+
+2026-08-28 — reset ao fechar a modal — fechar e reabrir a modal limpa a solicitação do catálogo, garantindo início sem pesquisa, filtros, chips ou resultados.

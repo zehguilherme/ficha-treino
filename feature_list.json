@@ -66,10 +66,10 @@
       "type": "api",
       "area": "exercises",
       "title": "Busca de exercícios",
-      "behavior": "GET /api/exercises?q=supino&limit=20&offset=0 retorna resultados filtrados por nome, ignorando maiúsculas, minúsculas e acentos",
-      "verification": "curl -H 'Authorization: Bearer $JWT' 'http://localhost:3001/api/exercises?q=triceps' | jq '.items | length > 0'",
+      "behavior": "GET /api/exercises?q=supino&category=forca&limit=20&offset=0 retorna resultados filtrados por nome e metadados com valores fixos, ignorando maiúsculas, minúsculas e acentos; filtros vazios são ignorados e valores desconhecidos retornam 400",
+      "verification": "curl -H 'Authorization: Bearer $JWT' 'http://localhost:3001/api/exercises?q=triceps&category=forca&equipment=halteres' | jq '.total >= 0'",
       "status": "completed",
-      "evidence": "Rota autenticada implementada com paginação, total pré-paginação, ordenação determinística e PostgreSQL unaccent; testes cobrem query acentuada/não acentuada, query vazia, paginação inválida e 401."
+      "evidence": "Rota autenticada implementada com paginação, total pré-paginação, ordenação determinística, filtros por listas fixas e PostgreSQL unaccent; testes cobrem query acentuada/não acentuada, query vazia, filtros escalares e de músculos, paginação inválida, filtro vazio, valores inválidos e 401."
     },
     {
       "id": "api-007",
@@ -156,16 +156,17 @@
       "type": "ui",
       "area": "exercises",
       "category": "functional",
-      "description": "Busca de exercícios com debounce",
+      "description": "Busca manual de exercícios por nome e filtros",
       "steps": [
-        "Na página workout day, digitar no search input",
-        "Resultados aparecem após debounce de 1000 ms, ignorando acentos na busca",
+        "Na página workout day, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
+        "Resultados aparecem somente após a ação explícita, ignorando acentos na busca",
         "Clicar em 'Carregar mais exercícios' exibe a próxima página até carregar todos os resultados",
         "Busca da issue 71 implementada; adição ao treino integrada à rota POST de exercícios",
-        "Campo de busca tem ícone de lupa"
+        "Campo de busca tem ícone de lupa",
+        "Modal oferece filtros select fixos para categoria, equipamento, nível, força, mecânica e músculos, combinados com a busca"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage implementa busca autenticada no modal de adição com debounce de 1000 ms, AbortSignal, paginação manual de 20 itens e busca sem acentos; resultados usam o ExerciseCard compartilhado com instruções expansíveis e a ação contextual Adicionar; a adição integrada atualiza os caches do treino/dashboard, fecha o modal e restaura o foco ao botão disparador; loading acessível e retry manual após falha, com testes do card, da modal e de sucesso/falha do retry."
+        "evidence": "WorkoutDayPage implementa busca autenticada no modal de adição com ação manual por botão/Enter, AbortSignal, paginação manual de 20 itens, busca sem acentos e filtros select fixos em painel dedicado; texto e filtros só são enviados juntos após confirmação explícita, que fecha o painel, reinicia a paginação e restaura o foco ao controle de filtros; recolher o painel ou usar Escape preserva os valores editáveis, enquanto Limpar busca e filtros reseta tudo e retorna ao estado inicial sem resultados ou nova consulta, ficando desabilitado sem filtros nem resultados; chips refletem imediatamente os filtros provisórios e permitem remoção independente; o controle segue visualmente o SelectTrigger sem label externo e exibe os filtros ativos; o X da busca limpa somente o texto, resultados usam o ExerciseCard compartilhado sem alteração visual, com rolagem exclusiva na lista, instruções expansíveis e a ação contextual Adicionar; a adição integrada atualiza os caches do treino/dashboard, fecha o modal e restaura o foco ao botão disparador; loading acessível e retry manual após falha, com testes do card, da modal e de sucesso/falha do retry."
     },
     {
       "id": "ui-005",

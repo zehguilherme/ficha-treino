@@ -571,8 +571,8 @@
         "tags": [
           "Exercises"
         ],
-        "summary": "Busca exercícios por nome",
-        "description": "A busca ignora diferenças entre maiúsculas, minúsculas e acentos.",
+        "summary": "Busca exercícios por nome e metadados",
+        "description": "A busca ignora diferenças entre maiúsculas, minúsculas e acentos; filtros repetidos usam OR e filtros diferentes usam AND.",
         "security": [
           {
             "bearerAuth": []
@@ -608,6 +608,179 @@
               "minimum": 0,
               "default": 0
             }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "alongamento",
+                  "cardio",
+                  "forca",
+                  "levantamento-olimpico",
+                  "pliometria",
+                  "powerlifting",
+                  "strongman"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Uma ou mais categorias"
+          },
+          {
+            "in": "query",
+            "name": "equipment",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "barra",
+                  "barra-w",
+                  "bola-de-exercicio",
+                  "bola-medicinal",
+                  "cabo",
+                  "faixas",
+                  "halteres",
+                  "kettlebell",
+                  "maquina",
+                  "outros",
+                  "peso-do-corpo",
+                  "rolo-de-espuma"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Um ou mais equipamentos"
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "avancado",
+                  "iniciante",
+                  "intermediario"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Um ou mais níveis"
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "pull",
+                  "push",
+                  "static"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Um ou mais tipos de força"
+          },
+          {
+            "in": "query",
+            "name": "mechanic",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "composto",
+                  "isolado"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Um ou mais tipos de mecânica"
+          },
+          {
+            "in": "query",
+            "name": "primaryMuscle",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "abdominais",
+                  "abdutores",
+                  "adutores",
+                  "antebracos",
+                  "biceps",
+                  "dorsais",
+                  "gluteos",
+                  "inferior-das-costas",
+                  "isquiotibiais",
+                  "meio-das-costas",
+                  "ombros",
+                  "panturrilhas",
+                  "peito",
+                  "pescoco",
+                  "quadriceps",
+                  "trapezio",
+                  "triceps"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Um ou mais músculos principais"
+          },
+          {
+            "in": "query",
+            "name": "secondaryMuscle",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "abdominais",
+                  "abdutores",
+                  "adutores",
+                  "antebracos",
+                  "biceps",
+                  "dorsais",
+                  "gluteos",
+                  "inferior-das-costas",
+                  "isquiotibiais",
+                  "meio-das-costas",
+                  "ombros",
+                  "panturrilhas",
+                  "peito",
+                  "pescoco",
+                  "quadriceps",
+                  "trapezio",
+                  "triceps"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Um ou mais músculos secundários"
           }
         ],
         "responses": {
@@ -698,7 +871,7 @@
             }
           },
           "400": {
-            "description": "Parâmetros de paginação inválidos"
+            "description": "Parâmetros de busca ou paginação inválidos"
           },
           "401": {
             "description": "Token JWT ausente, inválido ou expirado"

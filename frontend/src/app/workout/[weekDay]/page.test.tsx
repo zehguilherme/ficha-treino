@@ -278,11 +278,11 @@ describe('WorkoutDayPage', () => {
   });
 
   /**
-   * Initial empty search does not schedule unnecessary debounce work.
+   * Initial empty search does not schedule unnecessary timer work.
    * Mock: authenticated workout loads with an empty search field.
    * Assert: no timer is pending after the initial render.
    */
-  test('does not schedule a debounce timer for an empty initial search', async () => {
+  test('does not schedule a timer for an empty initial search', async () => {
     jest.useFakeTimers();
     const setTimeoutSpy = jest.spyOn(window, 'setTimeout');
 
@@ -494,9 +494,9 @@ describe('WorkoutDayPage', () => {
   });
 
   /**
-   * User clears an active catalog search.
-   * Mock: the debounced API returns one catalog result.
-   * Assert: the input is empty and the initial workout view is restored immediately.
+   * User clears the editable catalog search.
+   * Mock: an explicit catalog search returns one result.
+   * Assert: the input is empty while the submitted results remain unchanged.
    */
   test('clears the search and restores the initial results', async () => {
     jest.useFakeTimers();
@@ -525,6 +525,7 @@ describe('WorkoutDayPage', () => {
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
     await user.type(search, 'triceps');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
@@ -533,17 +534,17 @@ describe('WorkoutDayPage', () => {
     await user.click(screen.getByRole('button', { name: 'Limpar busca' }));
 
     expect(search).toHaveValue('');
-    expect(screen.queryByText('Tríceps na polia')).not.toBeInTheDocument();
+    expect(screen.getByText('Tríceps na polia')).toBeInTheDocument();
     expect(screen.getByText('Supino reto')).toBeInTheDocument();
     jest.useRealTimers();
   });
 
   /**
    * User searches the exercise catalog after entering a term.
-   * Mock: the debounced API returns one exercise outside the current workout.
-   * Assert: the result appears only after the debounce and the query uses the typed term.
+   * Mock: the explicit API search returns one exercise outside the current workout.
+   * Assert: the result appears after submission and the query uses the typed term.
    */
-  test('loads catalog results after the search debounce', async () => {
+  test('loads catalog results after explicit search submission', async () => {
     jest.useFakeTimers();
     let resolveExercises: ((value: ExercisesResponse) => void) | undefined;
     mockedGetExercises.mockReturnValue(
@@ -557,7 +558,7 @@ describe('WorkoutDayPage', () => {
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
-    expect(mockedGetExercises).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
 
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -648,6 +649,7 @@ describe('WorkoutDayPage', () => {
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'exercício');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
@@ -713,6 +715,7 @@ describe('WorkoutDayPage', () => {
 
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'alongamento');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
@@ -782,6 +785,7 @@ describe('WorkoutDayPage', () => {
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
     await user.type(search, 'triceps');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
@@ -839,6 +843,7 @@ describe('WorkoutDayPage', () => {
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
@@ -883,6 +888,7 @@ describe('WorkoutDayPage', () => {
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
@@ -902,7 +908,7 @@ describe('WorkoutDayPage', () => {
 
   /**
    * User searches the exercise catalog and the request fails.
-   * Mock: the first debounced request fails and the retry remains pending before succeeding.
+   * Mock: the first explicit request fails and the retry remains pending before succeeding.
    * Assert: closing the modal reveals an accessible retry state that preserves the query.
    */
   test('retries a failed catalog search', async () => {
@@ -919,6 +925,7 @@ describe('WorkoutDayPage', () => {
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
@@ -1063,6 +1070,7 @@ describe('WorkoutDayPage', () => {
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
     await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });

@@ -50,7 +50,7 @@ const Input = ({
           data-custom-clear={type === 'search' && onClear ? 'true' : undefined}
           data-slot="input"
           className={cn(
-            'flex h-10 w-full rounded-[var(--radius)] border border-border bg-card px-3 py-2.5 font-sans text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10 disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-10 w-full rounded-[var(--radius)] border border-border bg-card px-3 py-2.5 font-sans text-sm font-normal tracking-normal text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10 disabled:cursor-not-allowed disabled:opacity-50',
             leadingIcon && 'pl-9',
             onClear && 'pr-10',
             className,

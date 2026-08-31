@@ -20,6 +20,11 @@ type MockPrisma = {
   $queryRaw: jest.Mock<Promise<unknown>, [unknown]>;
 };
 
+type SqlQuery = {
+  values: unknown[];
+  strings: readonly string[];
+};
+
 jest.mock('../db.js', () => ({
   prisma: {
     $queryRaw: jest.fn<Promise<unknown>, [unknown]>(),
@@ -42,6 +47,14 @@ const makeExercise = (overrides: Partial<ExerciseSearchRow> = {}): ExerciseSearc
   images: ['0.jpg', '1.jpg'],
   ...overrides,
 });
+
+const getSqlQuery = (callIndex: number): SqlQuery => {
+  const query = prisma.$queryRaw.mock.calls[callIndex]?.[0];
+  if (!query || typeof query !== 'object' || !('values' in query) || !('strings' in query)) {
+    throw new Error('Expected a Prisma SQL query');
+  }
+  return query as SqlQuery;
+};
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -95,6 +108,66 @@ describe('exercises routes', () => {
     const token = signJwt({ user_id: 1, google_id: 'google-123' });
     const response = await request(app)
       .get('/api/exercises?limit=101&offset=-1')
+      .set('Authorization', 'Bearer ' + token);
+
+    expect(response.status).toBe(400);
+    expect(prisma.$queryRaw).not.toHaveBeenCalled();
+  });
+
+  test('GET /api/exercises applies repeated scalar and array filters', async () => {
+    const exercise = makeExercise();
+    prisma.$queryRaw.mockResolvedValueOnce([exercise]).mockResolvedValueOnce([{ total: 1 }]);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get(
+        '/api/exercises?category=forca&category=alongamento&equipment=halteres&level=intermediario&force=push&mechanic=composto&primaryMuscle=peito&primaryMuscle=ombros&secondaryMuscle=triceps',
+      )
+      .set('Authorization', 'Bearer ' + token);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ items: [exercise], total: 1 });
+
+    const itemQuery = getSqlQuery(0);
+    const itemSql = itemQuery.strings.join('?');
+    expect(itemSql).toContain('category');
+    expect(itemSql).toContain('equipment');
+    expect(itemSql).toContain('primary_muscles');
+    expect(itemSql).toContain('secondary_muscles');
+    expect(itemQuery.values).toEqual(
+      expect.arrayContaining([
+        'forca',
+        'alongamento',
+        'halteres',
+        'intermediario',
+        'push',
+        'composto',
+        'peito',
+        'ombros',
+        'triceps',
+      ]),
+    );
+    expect(getSqlQuery(1).values).toEqual(expect.arrayContaining(itemQuery.values.slice(0, -2)));
+  });
+
+  test('GET /api/exercises ignores empty filters', async () => {
+    const exercise = makeExercise();
+    prisma.$queryRaw.mockResolvedValueOnce([exercise]).mockResolvedValueOnce([{ total: 1 }]);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/exercises?category=forca&equipment=')
+      .set('Authorization', 'Bearer ' + token);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ items: [exercise], total: 1 });
+    expect(getSqlQuery(0).values).not.toContain('');
+  });
+
+  test('GET /api/exercises rejects values outside fixed filter lists', async () => {
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/exercises?category=Todos&equipment=unknown')
       .set('Authorization', 'Bearer ' + token);
 
     expect(response.status).toBe(400);

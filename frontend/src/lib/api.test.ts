@@ -9,6 +9,7 @@ import {
   removeWorkoutExercise,
 } from './api';
 import { setSession } from './auth';
+import type { ExerciseFilters } from './api';
 
 const TOKEN = 'jwt-token';
 
@@ -119,6 +120,42 @@ describe('api axios instance', () => {
 
     expect(response).toEqual({ items: [], total: 0 });
     expect(api.defaults.adapter).toBeDefined();
+  });
+
+  test('gets exercises with selected filters and omits unselected filters', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { items: [], total: 0 },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      };
+    };
+
+    const filters: ExerciseFilters = {
+      category: 'forca',
+      equipment: undefined,
+      level: 'iniciante',
+      force: undefined,
+      mechanic: 'composto',
+      primaryMuscle: undefined,
+      secondaryMuscle: 'triceps',
+    };
+
+    await getExercises('', 20, 0, undefined, filters);
+
+    expect(requestConfig?.params).toEqual({
+      q: '',
+      limit: 20,
+      offset: 0,
+      category: 'forca',
+      level: 'iniciante',
+      mechanic: 'composto',
+      secondaryMuscle: 'triceps',
+    });
   });
 
   /**
