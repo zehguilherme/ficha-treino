@@ -519,7 +519,7 @@ describe('AddExerciseDialog', () => {
     expect(screen.getByRole('button', { name: 'Mais filtros' })).toHaveFocus();
   });
 
-  test('keeps focus in the search input when submitting with Enter', async () => {
+  test('removes focus from the search input when submitting with Enter', async () => {
     const user = userEvent.setup();
     mockedGetExercises.mockResolvedValue({ items: [], total: 0 });
 
@@ -530,7 +530,7 @@ describe('AddExerciseDialog', () => {
     await user.keyboard('{Enter}');
 
     await waitFor(() => expect(mockedGetExercises).toHaveBeenCalled());
-    expect(search).toHaveFocus();
+    expect(search).not.toHaveFocus();
   });
 
   test('returns the results scroll to the top after a new search', async () => {
