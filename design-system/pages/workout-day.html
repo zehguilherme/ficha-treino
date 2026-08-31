@@ -1251,6 +1251,7 @@
 
     let pendingRemoveId = null;
 
+    // The pending state belongs only to the selected exercise; other remove buttons stay labeled "Remover".
     function removeExercise(id) {
       pendingRemoveId = id;
       const ex = getExercise(id);
@@ -1274,6 +1275,7 @@
       closeRemoveModal();
     });
 
+    // The add pending state belongs only to the selected search result; other actions stay labeled "Adicionar".
     function addExercise(id) {
       if (!currentIds.includes(id)) {
         currentIds.push(id);

@@ -31,7 +31,7 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 
 ## Estado
 
-- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro
+- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro. Durante a adição ou remoção, o estado visual de loading e `aria-busy` é individual do exercício confirmado, enquanto os demais botões permanecem desabilitados para evitar ações concorrentes
 - **Context API**: sessão do usuário (login/logout)
 - **`useState`**: input e texto pesquisado, filtros aplicados e provisórios, modal, painel dedicado de filtros, carrossel e estados transitórios de retry
 
@@ -239,10 +239,10 @@ Testes da página de treino para carregamento, retry do treino e da busca, adiç
 
 - renderiza exercícios e contador `done/total`;
 - envia o ID da associação ao alternar o checkbox;
-- adiciona exercícios pela busca e atualiza o treino;
+- adiciona exercícios pela busca, mostra loading apenas no exercício confirmado e atualiza o treino;
 - confirma a limpeza, mostra estado pendente e atualiza os dados.
 - tenta novamente após falha do treino ou da busca e restaura o erro quando o retry falha;
-- remove exercícios, trata falhas de remoção e prioriza a primeira imagem acima da dobra.
+- remove exercícios, mostra loading apenas no exercício confirmado, trata falhas de remoção e prioriza a primeira imagem acima da dobra.
 - exibe estado contextual e link para o dashboard quando o parâmetro do dia é inválido, sem chamar a API de treinos.
 
 #### `src/components/ui/Loading.test.tsx`

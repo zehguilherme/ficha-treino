@@ -78,14 +78,18 @@ describe('Header', () => {
    * Assert: the authenticated menu remains available with fallback initials.
    */
   test('shows the authenticated fallback when the profile is unavailable', async () => {
+    const user = userEvent.setup();
     setSession('jwt-token');
     mockedGetCurrentUser.mockRejectedValue(new Error('network'));
 
     render(<Header />, { wrapper: Wrapper });
 
-    expect(await screen.findByRole('button', { name: 'Abrir menu do usuário' })).toHaveTextContent(
-      'U',
-    );
+    const trigger = await screen.findByRole('button', { name: 'Abrir menu do usuário' });
+    expect(trigger).toHaveTextContent('U');
+    await user.click(trigger);
+
+    expect(await screen.findByRole('menuitem', { name: 'Minha conta' })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'Sair' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Entrar' })).not.toBeInTheDocument();
   });
 
