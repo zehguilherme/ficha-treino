@@ -263,6 +263,7 @@ const AddExerciseDialog = ({
     const nextFilters = { ...draftFilters };
     const count = Object.values(nextFilters).filter(Boolean).length;
     if (!nextSearch && count === 0 && !hasPendingFilterChanges) return;
+    if (nextSearch) searchInputRef.current?.blur();
     setSubmittedSearch(nextSearch);
     setCatalogRequested(false);
     setFilters(nextFilters);
