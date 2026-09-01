@@ -11,6 +11,7 @@ import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { ExerciseCard } from '@/components/exercise/ExerciseCard';
 import { Loading } from '@/components/ui/Loading';
+import { Progress } from '@/components/ui/Progress';
 import { AddExerciseDialog } from '@/components/workout/AddExerciseDialog';
 import { ClearWorkoutDialog } from '@/components/workout/ClearWorkoutDialog';
 import { RemoveWorkoutExerciseDialog } from '@/components/workout/RemoveWorkoutExerciseDialog';
@@ -156,6 +157,15 @@ const WorkoutDayPage = (): React.JSX.Element => {
     activeError && activeError.key !== dismissedError ? activeError.message : null;
   const exercises = workout.data?.workout.exercises ?? [];
   const completed = exercises.filter(({ done }) => done).length;
+  const progressValue = exercises.length > 0 ? (completed / exercises.length) * 100 : 0;
+  const progressLabel =
+    exercises.length === 0
+      ? 'Nenhum exercício'
+      : `${completed} de ${exercises.length} exercício${exercises.length === 1 ? '' : 's'} concluído${exercises.length === 1 ? '' : 's'}`;
+  const compactProgressLabel =
+    exercises.length === 0
+      ? 'Nenhum exercício'
+      : `${completed}/${exercises.length} concluído${exercises.length === 1 ? '' : 's'}`;
   const dayName = weekDay ? DAY_NAMES[weekDay] : '';
 
   const errorDialog = (
@@ -176,11 +186,29 @@ const WorkoutDayPage = (): React.JSX.Element => {
             <ArrowLeftIcon className="size-4" />
           </Link>
         </Button>
-        <h1 className="flex-1 text-base font-semibold tracking-tight">{dayName}</h1>
+        <h1 className="min-w-0 flex-1 truncate text-base font-semibold tracking-tight">
+          {dayName}
+        </h1>
         {workout.data ? (
-          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
-            {completed} / {exercises.length}
-          </span>
+          exercises.length > 0 ? (
+            <div className="w-52 shrink-0 max-[640px]:w-40 max-[420px]:w-28">
+              <div className="mb-1 flex min-w-0 items-center justify-between gap-2 whitespace-nowrap text-[0.6875rem] font-medium text-muted-foreground">
+                <span className="min-w-0 max-[640px]:hidden">{progressLabel}</span>
+                <span className="hidden max-[640px]:inline">{compactProgressLabel}</span>
+                <span>{Math.round(progressValue)}%</span>
+              </div>
+              <Progress
+                value={progressValue}
+                aria-label="Progresso do treino"
+                aria-valuetext={progressLabel}
+                indicatorClassName={progressValue === 100 ? 'bg-success' : 'bg-primary'}
+              />
+            </div>
+          ) : (
+            <span className="shrink-0 text-xs font-medium text-muted-foreground">
+              {progressLabel}
+            </span>
+          )
         ) : null}
       </div>
     </header>

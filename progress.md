@@ -126,3 +126,5 @@ Estado atual em 2026-08-26: as features implementadas permanecem concluídas; `a
 2026-08-28 — remoção manual de filtros — remover uma pílula altera apenas os filtros provisórios; a busca permanece inalterada até uma nova confirmação pelo botão ou `Enter`, inclusive ao remover o último filtro.
 
 2026-08-28 — reset ao fechar a modal — fechar e reabrir a modal limpa a solicitação do catálogo, garantindo início sem pesquisa, filtros, chips ou resultados.
+2026-08-31 — issue #220 — o cabeçalho fixo da página de treino passou a exibir progresso textual e barra Shadcn com percentual, pluralização, estado de sucesso ao concluir todos os exercícios e estado vazio sem barra; testes e protótipo estático sincronizados.
+2026-08-31 — ajuste responsivo da issue #220 — o rótulo visual do progresso usa `concluído/total` até 640px, evitando quebra de linha e estouro da altura fixa do cabeçalho; acima desse breakpoint, a descrição completa fica visível e permanece acessível em todos os tamanhos.

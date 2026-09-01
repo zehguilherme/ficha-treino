@@ -173,7 +173,7 @@
       "type": "ui",
       "area": "exercises",
       "category": "functional",
-      "description": "Checkbox de conclusão + carrossel de imagens",
+      "description": "Checkbox de conclusão, progresso visual + carrossel de imagens",
       "steps": [
         "Cada exercício tem checkbox 'Feito'",
         "Marcar persiste até desmarcar ou limpar treino",
@@ -181,7 +181,7 @@
         "Instruções expansíveis com chevron"
       ],
       "passes": true,
-      "evidence": "ExerciseCard compartilhado mantém carrossel, metadados, músculos e instruções expansíveis nos cards do treino e da busca; WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do contador e invalidação do cache; carrossel mantém setas visíveis, imagens acima da dobra usam carregamento eager e instruções são validadas nas suítes do card, da modal e da página."
+      "evidence": "ExerciseCard compartilhado mantém carrossel, metadados, músculos e instruções expansíveis nos cards do treino e da busca; WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do progresso textual e visual no cabeçalho, e invalidação do cache; a barra usa o estado success ao concluir todos os exercícios e é omitida no treino vazio; carrossel mantém setas visíveis, imagens acima da dobra usam carregamento eager e instruções são validadas nas suítes do card, da modal e da página."
     },
     {
       "id": "ui-006",
@@ -193,10 +193,10 @@
         "Botão 'Limpar treino' na página do dia",
         "Confirmar ação",
         "Todos os checkboxes voltam a false",
-        "Contador vai a 0/total"
+        "Progresso volta a 0/total"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage integra POST /api/workouts/:weekDay/clear com AlertDialog acessível, Escape, loading, estado vazio e botão desabilitado quando não há exercícios concluídos; atualiza o contador e invalida o cache; coberto por testes da página."
+      "evidence": "WorkoutDayPage integra POST /api/workouts/:weekDay/clear com AlertDialog acessível, Escape, loading, estado vazio e botão desabilitado quando não há exercícios concluídos; atualiza o progresso e invalida o cache; coberto por testes da página."
     },
     {
       "id": "ui-007",
