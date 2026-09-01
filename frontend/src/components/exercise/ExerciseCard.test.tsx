@@ -35,11 +35,44 @@ describe('ExerciseCard', () => {
     expect(screen.getByRole('heading', { name: exercise.name })).toBeInTheDocument();
     expect(screen.getByText('Forca')).toBeInTheDocument();
     expect(screen.getByText('Peso Do Corpo')).toBeInTheDocument();
+    expect(screen.getByText('Categoria')).toBeInTheDocument();
+    expect(screen.getByText('Equipamento')).toBeInTheDocument();
+    expect(screen.getByText('Iniciante')).toBeInTheDocument();
+    expect(screen.getByText('Puxar')).toBeInTheDocument();
+    expect(screen.getByText('Isolado')).toBeInTheDocument();
+    expect(screen.getByText('Nível').querySelector('svg')).toBeInTheDocument();
+    expect(screen.getByText('Tipo de força').querySelector('svg')).toBeInTheDocument();
+    expect(screen.getByText('Mecânica').querySelector('svg')).toBeInTheDocument();
+    expect(screen.getByText('Iniciante')).toHaveClass('pl-5');
+    expect(screen.getByText('Puxar')).toHaveClass('pl-5');
+    expect(screen.getByText('Isolado')).toHaveClass('pl-5');
+    const details = screen.getByText('Nível').closest('dl');
+    expect(details).toHaveClass('flex-wrap');
+    expect(details).not.toHaveClass('grid-cols-1');
     expect(screen.getByText('Abdominais')).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: `Instruções: ${exercise.name}` }),
-    ).toBeInTheDocument();
+    const instructionsButton = screen.getByRole('button', {
+      name: `Instruções: ${exercise.name}`,
+    });
+    expect(instructionsButton).toHaveAttribute('type', 'button');
+    expect(instructionsButton).toHaveAttribute(
+      'aria-controls',
+      `exercise-instructions-${exercise.id}`,
+    );
+    expect(screen.getByText(`• ${exercise.instructions[0]}`)).not.toBeVisible();
     expect(screen.getByRole('button', { name: 'Adicionar' })).toBeInTheDocument();
+  });
+
+  test('omits optional force and mechanic details when unavailable', () => {
+    render(
+      <ExerciseCard
+        exercise={{ ...exercise, force: null, mechanic: null }}
+        instructionsOpen={false}
+        onToggleInstructions={jest.fn()}
+      />,
+    );
+
+    expect(screen.queryByText('Tipo de força')).not.toBeInTheDocument();
+    expect(screen.queryByText('Mecânica')).not.toBeInTheDocument();
   });
 
   /**
@@ -72,6 +105,6 @@ describe('ExerciseCard', () => {
       />,
     );
 
-    expect(screen.getByText(`• ${exercise.instructions[0]}`)).toBeInTheDocument();
+    expect(screen.getByText(`• ${exercise.instructions[0]}`)).toBeVisible();
   });
 });

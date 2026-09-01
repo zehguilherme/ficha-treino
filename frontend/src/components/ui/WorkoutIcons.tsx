@@ -106,6 +106,51 @@ const TrashIcon = (props: IconProps): React.JSX.Element => (
     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
   </svg>
 );
+const LevelIcon = (props: IconProps): React.JSX.Element => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M4 20v-4" />
+    <path d="M10 20v-8" />
+    <path d="M16 20V8" />
+    <path d="M22 20V4" />
+  </svg>
+);
+const ForceIcon = (props: IconProps): React.JSX.Element => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M5 12h14" />
+    <path d="m13 6 6 6-6 6" />
+  </svg>
+);
+const MechanicIcon = (props: IconProps): React.JSX.Element => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect x="3" y="4" width="7" height="16" rx="1" />
+    <rect x="14" y="4" width="7" height="16" rx="1" />
+    <path d="M10 8h4M10 16h4" />
+  </svg>
+);
 
 export {
   AlertTriangleIcon,
@@ -115,6 +160,9 @@ export {
   ChevronDownIcon,
   ChevronUpIcon,
   MuscleIcon,
+  LevelIcon,
+  ForceIcon,
+  MechanicIcon,
   SearchIcon,
   TrashIcon,
   XIcon,

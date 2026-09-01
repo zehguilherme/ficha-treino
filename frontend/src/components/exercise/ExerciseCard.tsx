@@ -1,9 +1,24 @@
 import * as React from 'react';
+import { ExerciseTag } from '@/components/exercise/ExerciseTag';
 import { ExerciseImageCarousel } from '@/components/exercise/ExerciseImageCarousel';
 import { Button } from '@/components/ui/Button';
-import { MuscleIcon, ChevronDownIcon } from '@/components/ui/WorkoutIcons';
+import {
+  ChevronDownIcon,
+  ForceIcon,
+  LevelIcon,
+  MechanicIcon,
+  MuscleIcon,
+} from '@/components/ui/WorkoutIcons';
 import { formatLabel } from '@/lib/utils';
 import type { ExerciseDetails } from '@/schemas/api';
+
+const FORCE_LABELS: Record<string, string> = {
+  pull: 'Puxar',
+  push: 'Empurrar',
+  static: 'Estático',
+};
+
+const formatForceLabel = (force: string): string => FORCE_LABELS[force] ?? formatLabel(force);
 
 export interface ExerciseCardProps {
   exercise: ExerciseDetails;
@@ -33,15 +48,46 @@ const ExerciseCard = ({
       <div className="min-w-0">
         <h3 className="mb-1.5 break-words text-[0.9375rem] font-semibold">{exercise.name}</h3>
         <div className="mb-2 flex flex-wrap gap-1.5">
-          {[exercise.category, exercise.equipment].filter(Boolean).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-secondary px-2 py-0.5 text-[0.6875rem] font-medium uppercase tracking-[0.06em] text-muted-foreground"
-            >
-              {formatLabel(tag ?? '')}
-            </span>
+          {[
+            { label: 'Categoria', value: exercise.category },
+            { label: 'Equipamento', value: exercise.equipment },
+          ].map(({ label, value }) => (
+            <ExerciseTag key={label} label={label} value={value ? formatLabel(value) : null} />
           ))}
         </div>
+        <dl className="mb-3 flex flex-wrap gap-2 border-y border-border py-3 text-xs sm:gap-6">
+          <div className="max-w-full shrink-0">
+            <dt className="flex items-center gap-1.5 text-[0.6875rem] font-medium uppercase tracking-[0.06em] text-muted-foreground">
+              <LevelIcon className="size-3.5 shrink-0" aria-hidden="true" />
+              Nível
+            </dt>
+            <dd className="mt-0.5 break-words pl-5 text-foreground">
+              {formatLabel(exercise.level)}
+            </dd>
+          </div>
+          {exercise.force ? (
+            <div className="max-w-full shrink-0">
+              <dt className="flex items-center gap-1.5 text-[0.6875rem] font-medium uppercase tracking-[0.06em] text-muted-foreground">
+                <ForceIcon className="size-3.5 shrink-0" aria-hidden="true" />
+                Tipo de força
+              </dt>
+              <dd className="mt-0.5 break-words pl-5 text-foreground">
+                {formatForceLabel(exercise.force)}
+              </dd>
+            </div>
+          ) : null}
+          {exercise.mechanic ? (
+            <div className="max-w-full shrink-0">
+              <dt className="flex items-center gap-1.5 text-[0.6875rem] font-medium uppercase tracking-[0.06em] text-muted-foreground">
+                <MechanicIcon className="size-3.5 shrink-0" aria-hidden="true" />
+                Mecânica
+              </dt>
+              <dd className="mt-0.5 break-words pl-5 text-foreground">
+                {formatLabel(exercise.mechanic)}
+              </dd>
+            </div>
+          ) : null}
+        </dl>
         <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
           <div className="flex flex-col gap-0.5">
             <span className="flex items-center gap-1 text-[0.6875rem] font-medium uppercase tracking-[0.06em]">
@@ -68,10 +114,12 @@ const ExerciseCard = ({
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3 max-[640px]:grid max-[640px]:grid-cols-1 max-[640px]:gap-y-2">
         {leadingActions}
         <Button
+          type="button"
           variant="ghost"
           className="gap-1 max-[640px]:col-span-1 max-[640px]:w-full sm:gap-2"
           onClick={onToggleInstructions}
           aria-expanded={instructionsOpen}
+          aria-controls={`exercise-instructions-${exercise.id}`}
           aria-label={`Instruções: ${exercise.name}`}
         >
           Instruções
@@ -81,15 +129,17 @@ const ExerciseCard = ({
         </Button>
         {trailingActions}
       </div>
-      {instructionsOpen ? (
-        <div className="mt-3 rounded-[var(--radius)] bg-secondary p-3 text-sm leading-[1.6] text-muted-foreground">
-          {exercise.instructions.map((instruction) => (
-            <p key={instruction} className="mb-1.5">
-              • {instruction}
-            </p>
-          ))}
-        </div>
-      ) : null}
+      <div
+        id={`exercise-instructions-${exercise.id}`}
+        hidden={!instructionsOpen}
+        className="mt-3 rounded-[var(--radius)] bg-secondary p-3 text-sm leading-[1.6] text-muted-foreground"
+      >
+        {exercise.instructions.map((instruction) => (
+          <p key={instruction} className="mb-1.5">
+            • {instruction}
+          </p>
+        ))}
+      </div>
     </div>
   </article>
 );

@@ -145,7 +145,7 @@
       "steps": [
         "Navegar para /workout/[weekDay]",
         "Ver lista de exercícios em ordem alfabética",
-        "Cada exercício mostra nome, imagem, categoria, equipamento, músculos, instruções",
+        "Cada exercício mostra nome, imagem, categoria, equipamento, nível, tipo de força, mecânica, músculos e instruções",
         "Header com contador done/total"
       ],
       "passes": true,
