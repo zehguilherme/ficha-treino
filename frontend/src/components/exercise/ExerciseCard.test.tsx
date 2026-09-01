@@ -33,8 +33,8 @@ describe('ExerciseCard', () => {
     );
 
     expect(screen.getByRole('heading', { name: exercise.name })).toBeInTheDocument();
-    expect(screen.getByText('Forca')).toBeInTheDocument();
-    expect(screen.getByText('Peso Do Corpo')).toBeInTheDocument();
+    expect(screen.getByText('Força')).toBeInTheDocument();
+    expect(screen.getByText('Peso do corpo')).toBeInTheDocument();
     expect(screen.getByText('Categoria')).toBeInTheDocument();
     expect(screen.getByText('Equipamento')).toBeInTheDocument();
     expect(screen.getByText('Iniciante')).toBeInTheDocument();
@@ -60,6 +60,33 @@ describe('ExerciseCard', () => {
     );
     expect(screen.getByText(`• ${exercise.instructions[0]}`)).not.toBeVisible();
     expect(screen.getByRole('button', { name: 'Adicionar' })).toBeInTheDocument();
+  });
+
+  test('renders exercise metadata with Brazilian Portuguese accents and casing', () => {
+    render(
+      <ExerciseCard
+        exercise={{
+          ...exercise,
+          category: 'levantamento-olimpico',
+          equipment: 'bola-de-exercicio',
+          level: 'intermediario',
+          force: 'push',
+          mechanic: 'composto',
+          primaryMuscles: ['biceps'],
+          secondaryMuscles: ['gluteos', 'quadriceps'],
+        }}
+        instructionsOpen={false}
+        onToggleInstructions={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Levantamento olímpico')).toBeInTheDocument();
+    expect(screen.getByText('Bola de exercício')).toBeInTheDocument();
+    expect(screen.getByText('Intermediário')).toBeInTheDocument();
+    expect(screen.getByText('Empurrar')).toBeInTheDocument();
+    expect(screen.getByText('Composto')).toBeInTheDocument();
+    expect(screen.getByText('Bíceps')).toBeInTheDocument();
+    expect(screen.getByText('Glúteos, Quadríceps')).toBeInTheDocument();
   });
 
   test('omits optional force and mechanic details when unavailable', () => {
