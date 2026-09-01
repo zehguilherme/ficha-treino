@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/Select';
 import { ChevronDownIcon, SearchIcon, XIcon } from '@/components/ui/WorkoutIcons';
 import { addWorkoutExercise, getExercises, type ExerciseFilters } from '@/lib/api';
+import { EXERCISE_LABELS } from '@/lib/exerciseLabels';
 import type { WeekDay } from '@/schemas/api';
 import { toast } from 'sonner';
 
@@ -44,88 +45,38 @@ const toOptions = (
 ): ReadonlyArray<{ value: string; label: string }> =>
   values.map(([value, label]) => ({ value, label }));
 
-const MUSCLE_OPTIONS = toOptions([
-  ['abdominais', 'Abdominais'],
-  ['abdutores', 'Abdutores'],
-  ['adutores', 'Adutores'],
-  ['antebracos', 'Antebraços'],
-  ['biceps', 'Bíceps'],
-  ['dorsais', 'Dorsais'],
-  ['gluteos', 'Glúteos'],
-  ['inferior-das-costas', 'Inferior das costas'],
-  ['isquiotibiais', 'Isquiotibiais'],
-  ['meio-das-costas', 'Meio das costas'],
-  ['ombros', 'Ombros'],
-  ['panturrilhas', 'Panturrilhas'],
-  ['peito', 'Peito'],
-  ['pescoco', 'Pescoço'],
-  ['quadriceps', 'Quadríceps'],
-  ['trapezio', 'Trapézio'],
-  ['triceps', 'Tríceps'],
-]);
+const MUSCLE_OPTIONS = toOptions(Object.entries(EXERCISE_LABELS.muscle));
 
 const FILTER_DEFINITIONS: ReadonlyArray<FilterDefinition> = [
   {
     key: 'category',
     label: 'Categoria',
     placeholder: 'Selecionar categoria',
-    options: toOptions([
-      ['alongamento', 'Alongamento'],
-      ['cardio', 'Cardio'],
-      ['forca', 'Força'],
-      ['levantamento-olimpico', 'Levantamento olímpico'],
-      ['pliometria', 'Pliometria'],
-      ['powerlifting', 'Powerlifting'],
-      ['strongman', 'Strongman'],
-    ]),
+    options: toOptions(Object.entries(EXERCISE_LABELS.category)),
   },
   {
     key: 'equipment',
     label: 'Equipamento',
     placeholder: 'Selecionar equipamento',
-    options: toOptions([
-      ['barra', 'Barra'],
-      ['barra-w', 'Barra W'],
-      ['bola-de-exercicio', 'Bola de exercício'],
-      ['bola-medicinal', 'Bola medicinal'],
-      ['cabo', 'Cabo'],
-      ['faixas', 'Faixas'],
-      ['halteres', 'Halteres'],
-      ['kettlebell', 'Kettlebell'],
-      ['maquina', 'Máquina'],
-      ['outros', 'Outros'],
-      ['peso-do-corpo', 'Peso do corpo'],
-      ['rolo-de-espuma', 'Rolo de espuma'],
-    ]),
+    options: toOptions(Object.entries(EXERCISE_LABELS.equipment)),
   },
   {
     key: 'level',
     label: 'Nível',
     placeholder: 'Selecionar nível',
-    options: toOptions([
-      ['iniciante', 'Iniciante'],
-      ['intermediario', 'Intermediário'],
-      ['avancado', 'Avançado'],
-    ]),
+    options: toOptions(Object.entries(EXERCISE_LABELS.level)),
   },
   {
     key: 'force',
     label: 'Tipo de força',
     placeholder: 'Selecionar tipo de força',
-    options: toOptions([
-      ['push', 'Empurrar'],
-      ['static', 'Estático'],
-      ['pull', 'Puxar'],
-    ]),
+    options: toOptions(Object.entries(EXERCISE_LABELS.force)),
   },
   {
     key: 'mechanic',
     label: 'Mecânica',
     placeholder: 'Selecionar mecânica',
-    options: toOptions([
-      ['composto', 'Composto'],
-      ['isolado', 'Isolado'],
-    ]),
+    options: toOptions(Object.entries(EXERCISE_LABELS.mechanic)),
   },
   {
     key: 'primaryMuscle',

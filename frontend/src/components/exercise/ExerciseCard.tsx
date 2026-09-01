@@ -9,16 +9,8 @@ import {
   MechanicIcon,
   MuscleIcon,
 } from '@/components/ui/WorkoutIcons';
-import { formatLabel } from '@/lib/utils';
+import { getExerciseLabel } from '@/lib/exerciseLabels';
 import type { ExerciseDetails } from '@/schemas/api';
-
-const FORCE_LABELS: Record<string, string> = {
-  pull: 'Puxar',
-  push: 'Empurrar',
-  static: 'Estático',
-};
-
-const formatForceLabel = (force: string): string => FORCE_LABELS[force] ?? formatLabel(force);
 
 export interface ExerciseCardProps {
   exercise: ExerciseDetails;
@@ -49,10 +41,14 @@ const ExerciseCard = ({
         <h3 className="mb-1.5 break-words text-[0.9375rem] font-semibold">{exercise.name}</h3>
         <div className="mb-2 flex flex-wrap gap-1.5">
           {[
-            { label: 'Categoria', value: exercise.category },
-            { label: 'Equipamento', value: exercise.equipment },
-          ].map(({ label, value }) => (
-            <ExerciseTag key={label} label={label} value={value ? formatLabel(value) : null} />
+            { label: 'Categoria', value: exercise.category, group: 'category' as const },
+            { label: 'Equipamento', value: exercise.equipment, group: 'equipment' as const },
+          ].map(({ label, value, group }) => (
+            <ExerciseTag
+              key={label}
+              label={label}
+              value={value ? getExerciseLabel(group, value) : null}
+            />
           ))}
         </div>
         <dl className="mb-3 flex flex-wrap gap-2 border-y border-border py-3 text-xs sm:gap-6">
@@ -62,7 +58,7 @@ const ExerciseCard = ({
               Nível
             </dt>
             <dd className="mt-0.5 break-words pl-5 text-foreground">
-              {formatLabel(exercise.level)}
+              {getExerciseLabel('level', exercise.level)}
             </dd>
           </div>
           {exercise.force ? (
@@ -72,7 +68,7 @@ const ExerciseCard = ({
                 Tipo de força
               </dt>
               <dd className="mt-0.5 break-words pl-5 text-foreground">
-                {formatForceLabel(exercise.force)}
+                {getExerciseLabel('force', exercise.force)}
               </dd>
             </div>
           ) : null}
@@ -83,7 +79,7 @@ const ExerciseCard = ({
                 Mecânica
               </dt>
               <dd className="mt-0.5 break-words pl-5 text-foreground">
-                {formatLabel(exercise.mechanic)}
+                {getExerciseLabel('mechanic', exercise.mechanic)}
               </dd>
             </div>
           ) : null}
@@ -95,7 +91,9 @@ const ExerciseCard = ({
               Músculo primário
             </span>
             <span className="pl-4 text-xs text-foreground">
-              {exercise.primaryMuscles.map(formatLabel).join(', ')}
+              {exercise.primaryMuscles
+                .map((muscle) => getExerciseLabel('muscle', muscle))
+                .join(', ')}
             </span>
           </div>
           {exercise.secondaryMuscles.length > 0 ? (
@@ -105,7 +103,9 @@ const ExerciseCard = ({
                 Músculo secundário
               </span>
               <span className="pl-4 text-xs text-foreground">
-                {exercise.secondaryMuscles.map(formatLabel).join(', ')}
+                {exercise.secondaryMuscles
+                  .map((muscle) => getExerciseLabel('muscle', muscle))
+                  .join(', ')}
               </span>
             </div>
           ) : null}
