@@ -535,12 +535,49 @@
       text-transform: uppercase;
     }
 
+    .tag-label {
+      opacity: 0.7;
+    }
+
     .exercise-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
       font-size: 0.75rem;
       color: hsl(var(--muted-foreground));
+    }
+
+    .exercise-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      padding: 0.75rem 0;
+      border-top: 1px solid hsl(var(--border));
+      border-bottom: 1px solid hsl(var(--border));
+      font-size: 0.75rem;
+    }
+
+    .exercise-details > div {
+      flex: 0 1 auto;
+      max-width: 100%;
+    }
+
+    .exercise-detail-label {
+      display: block;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .exercise-detail-value {
+      display: block;
+      margin-top: 0.125rem;
+      padding-left: 1.25rem;
+      overflow-wrap: anywhere;
+      color: hsl(var(--foreground));
     }
 
     .exercise-meta .muscle-group {
@@ -1240,9 +1277,14 @@
               <div class="exercise-info">
                 <div class="exercise-name">${ex.name}</div>
                 <div class="exercise-tags">
-                  <span class="tag">${ex.category}</span>
-                  <span class="tag">${ex.equipment}</span>
+                  <span class="tag"><span class="tag-label">Categoria:</span> ${ex.category}</span>
+                  <span class="tag"><span class="tag-label">Equipamento:</span> ${ex.equipment}</span>
                 </div>
+                <dl class="exercise-details">
+                  <div><dt class="exercise-detail-label"><span aria-hidden="true">▥</span> Nível</dt><dd class="exercise-detail-value">${ex.level || '—'}</dd></div>
+                  <div><dt class="exercise-detail-label"><span aria-hidden="true">→</span> Tipo de força</dt><dd class="exercise-detail-value">${ex.force || '—'}</dd></div>
+                  <div><dt class="exercise-detail-label"><span aria-hidden="true">▤</span> Mecânica</dt><dd class="exercise-detail-value">${ex.mechanic || '—'}</dd></div>
+                </dl>
                 <div class="exercise-meta">
                   <div class="muscle-group">
                     <span class="muscle-label">
@@ -1266,7 +1308,7 @@
                   <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleDone('${id}')" data-od-id="check-feito-${id}">
                   Feito
                 </label>
-                <button class="instructions-toggle" onclick="toggleInstructions('${id}')" data-od-id="btn-instrucoes-${id}">Instruções<svg class="toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <button type="button" class="instructions-toggle" onclick="toggleInstructions('${id}')" aria-controls="instr-${id}" data-od-id="btn-instrucoes-${id}">Instruções<svg class="toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <button class="btn-remove-exercise" onclick="removeExercise('${id}')" data-od-id="btn-remover-${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>Remover</button>
               </div>
               <div class="instructions-text" id="instr-${id}">
@@ -1445,9 +1487,14 @@
               <div class="exercise-info">
                 <div class="exercise-name">${ex.name}</div>
                 <div class="exercise-tags">
-                  <span class="tag">${ex.category}</span>
-                  <span class="tag">${ex.equipment}</span>
+                  <span class="tag"><span class="tag-label">Categoria:</span> ${ex.category}</span>
+                  <span class="tag"><span class="tag-label">Equipamento:</span> ${ex.equipment}</span>
                 </div>
+                <dl class="exercise-details">
+                  <div><dt class="exercise-detail-label"><span aria-hidden="true">▥</span> Nível</dt><dd class="exercise-detail-value">${ex.level || '—'}</dd></div>
+                  <div><dt class="exercise-detail-label"><span aria-hidden="true">→</span> Tipo de força</dt><dd class="exercise-detail-value">${ex.force || '—'}</dd></div>
+                  <div><dt class="exercise-detail-label"><span aria-hidden="true">▤</span> Mecânica</dt><dd class="exercise-detail-value">${ex.mechanic || '—'}</dd></div>
+                </dl>
                 <div class="exercise-meta">
                   <div class="muscle-group">
                     <span class="muscle-label">Músculo Primário</span>
@@ -1456,7 +1503,7 @@
                 </div>
               </div>
               <div class="exercise-actions">
-                <button class="instructions-toggle" onclick="toggleInstructions('search-${ex.id}')" data-od-id="btn-instrucoes-search-${ex.id}">Instruções<svg class="toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <button type="button" class="instructions-toggle" onclick="toggleInstructions('search-${ex.id}')" aria-controls="instr-search-${ex.id}" data-od-id="btn-instrucoes-search-${ex.id}">Instruções<svg class="toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <button class="btn-add-exercise" onclick="addExercise('${ex.id}')" data-od-id="btn-add-${ex.id}">Adicionar</button>
               </div>
               <div class="instructions-text" id="instr-search-${ex.id}">

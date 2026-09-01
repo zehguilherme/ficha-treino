@@ -128,3 +128,13 @@ Estado atual em 2026-08-26: as features implementadas permanecem concluídas; `a
 2026-08-28 — reset ao fechar a modal — fechar e reabrir a modal limpa a solicitação do catálogo, garantindo início sem pesquisa, filtros, chips ou resultados.
 2026-08-31 — issue #220 — o cabeçalho fixo da página de treino passou a exibir progresso textual e barra Shadcn com percentual, pluralização, estado de sucesso ao concluir todos os exercícios e estado vazio sem barra; testes e protótipo estático sincronizados.
 2026-08-31 — ajuste responsivo da issue #220 — o rótulo visual do progresso usa `concluído/total` até 640px, evitando quebra de linha e estouro da altura fixa do cabeçalho; acima desse breakpoint, a descrição completa fica visível e permanece acessível em todos os tamanhos.
+
+2026-09-01 — refinamento do card de exercícios — o `ExerciseCard` compartilhado passou a exibir nível, tipo de força e mecânica em faixa responsiva, mantendo instruções expansíveis e cobrindo valores opcionais ausentes; a busca reutiliza automaticamente o novo resumo.
+
+2026-09-01 — ajuste responsivo dos metadados — os três detalhes agora usam flex-wrap em todas as larguras, mantendo cada item unido e transferindo-o para a linha seguinte apenas quando necessário.
+
+2026-09-01 — identificação das pílulas — categoria e equipamento agora exibem seus próprios rótulos dentro das pílulas, mantendo os valores fáceis de interpretar durante a filtragem.
+
+2026-09-01 — alinhamento dos metadados — os valores de nível, força e mecânica agora começam sob o texto dos respectivos rótulos, compensando o espaço ocupado pelos ícones.
+
+2026-09-01 — acessibilidade do card — o botão de instruções agora declara `type="button"` e referencia seu painel com `aria-controls`, que permanece identificável mesmo quando recolhido.
