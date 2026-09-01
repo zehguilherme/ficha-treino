@@ -1,15 +1,28 @@
 import { getExercisePreview, getInitials } from './dashboard';
 
 describe('dashboard helpers', () => {
-  test('shows three exercises and the remaining count when a workout has more than four', () => {
-    expect(
-      getExercisePreview(['Agachamento', 'Leg press', 'Mesa flexora', 'Panturrilha', 'Extensora']),
-    ).toEqual({ names: ['Agachamento', 'Leg press', 'Mesa flexora'], remaining: 2 });
+  test('shows eight exercises and the remaining count when a workout has more than eight', () => {
+    const exercises = [
+      'Agachamento',
+      'Leg press',
+      'Mesa flexora',
+      'Panturrilha',
+      'Extensora',
+      'Supino',
+      'Remada',
+      'Rosca',
+      'Elevação',
+    ].map((name) => ({ name, done: false }));
+    expect(getExercisePreview(exercises)).toEqual({
+      exercises: exercises.slice(0, 8),
+      remaining: 1,
+    });
   });
 
   test('shows all exercises when a workout has at most four', () => {
-    expect(getExercisePreview(['Supino', 'Remada'])).toEqual({
-      names: ['Supino', 'Remada'],
+    const exercises = ['Supino', 'Remada'].map((name) => ({ name, done: false }));
+    expect(getExercisePreview(exercises)).toEqual({
+      exercises,
       remaining: 0,
     });
   });
@@ -19,9 +32,10 @@ describe('dashboard helpers', () => {
    * Assert: all four names are shown and no remaining count is reported.
    */
   test('does not report remaining exercises when exactly four are shown', () => {
-    const result = getExercisePreview(['A', 'B', 'C', 'D']);
+    const exercises = ['A', 'B', 'C', 'D'].map((name) => ({ name, done: false }));
+    const result = getExercisePreview(exercises);
 
-    expect(result).toEqual({ names: ['A', 'B', 'C', 'D'], remaining: 0 });
+    expect(result).toEqual({ exercises, remaining: 0 });
   });
 
   test('creates initials from the first and last name', () => {

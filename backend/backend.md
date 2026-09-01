@@ -14,7 +14,7 @@ API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`)
 | ------ | ---------------------------------------------- | ---- | ------------------------------------------------------------------------------------ |
 | POST   | `/api/auth/google`                             | Não  | Login com `code` OAuth2 ou `token` do Google; no 1º login cria os 7 treinos semanais |
 | GET    | `/api/auth/me`                                 | Sim  | Retorna usuário atual                                                                |
-| GET    | `/api/workouts`                                | Sim  | Lista os 7 treinos do usuário com contagem e nomes dos exercícios                    |
+| GET    | `/api/workouts`                                | Sim  | Lista os 7 treinos do usuário com contagem e exercícios (`name` + `done`)             |
 | GET    | `/api/workouts/:weekDay`                       | Sim  | Exercícios de um dia                                                                |
 | POST   | `/api/workouts/:weekDay/exercises`             | Sim  | Adiciona exercício                                                                   |
 | DELETE | `/api/workouts/:weekDay/exercises/:exerciseId` | Sim  | Remove exercício                                                                     |

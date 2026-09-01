@@ -27,6 +27,7 @@ export const DashboardClient = (): React.JSX.Element => {
   const authenticated = status === 'authenticated';
   const [isRetrying, setIsRetrying] = useState(false);
   const [dismissedError, setDismissedError] = useState<string | null>(null);
+  const [expandedWorkouts, setExpandedWorkouts] = useState<Record<number, boolean>>({});
   const workouts = useQuery({
     queryKey: ['workouts'],
     queryFn: getWorkouts,
@@ -99,37 +100,66 @@ export const DashboardClient = (): React.JSX.Element => {
           </p>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))]">
             {workouts.data.workouts.map((workout) => {
-              const preview = getExercisePreview(workout.exerciseNames);
+              const preview = getExercisePreview(workout.exercises);
+              const exercises = expandedWorkouts[workout.id]
+                ? workout.exercises
+                : preview.exercises;
+              const expanded = expandedWorkouts[workout.id] ?? false;
               return (
-                <Link
+                <article
                   key={workout.id}
-                  href={`/workout/${workout.weekDay}`}
-                  className="rounded-[calc(var(--radius)+0.125rem)] border border-border bg-card p-5 outline-none transition hover:border-ring/15 hover:shadow-sm focus-visible:ring-1 focus-visible:ring-ring"
+                  className="relative isolate flex flex-col rounded-[calc(var(--radius)+0.125rem)] border border-border bg-card p-5 transition hover:border-ring/15 hover:shadow-sm"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[0.9375rem] font-medium">
-                      {DAY_NAMES[workout.weekDay]}
-                    </span>
-                    <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                      {workout.exerciseCount}
-                    </span>
-                  </div>
-                  <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-                    {preview.names.map((name) => (
-                      <p key={name} className="break-words" title={name}>
-                        <span
-                          aria-hidden="true"
-                          className="mr-2 inline-block size-1.5 rounded-full bg-muted-foreground align-middle"
-                        />
-                        {name}
-                      </p>
-                    ))}
-                    {preview.remaining > 0 ? (
-                      <p className="italic">Mais {preview.remaining} exercícios</p>
-                    ) : null}
-                    {preview.names.length === 0 ? <p className="italic">Nenhum exercício</p> : null}
-                  </div>
-                </Link>
+                  <Link
+                    href={`/workout/${workout.weekDay}`}
+                    className={`-m-5 block h-full flex-1 rounded-[calc(var(--radius)+0.125rem)] p-5 ${preview.remaining > 0 ? 'pb-16' : 'pb-5'} outline-none focus-visible:ring-1 focus-visible:ring-ring`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[0.9375rem] font-medium">
+                        {DAY_NAMES[workout.weekDay]}
+                      </span>
+                      <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                        {workout.exerciseCount}
+                      </span>
+                    </div>
+                    <ul
+                      id={`workout-exercises-${workout.id}`}
+                      className="mt-4 space-y-2 text-sm text-muted-foreground"
+                    >
+                      {exercises.map(({ name, done }) => (
+                        <li
+                          key={name}
+                          className={`break-words ${done ? 'line-through' : ''}`}
+                          title={name}
+                        >
+                          <span
+                            aria-hidden="true"
+                            className={`mr-2 inline-block size-1.5 rounded-full align-middle ${done ? 'bg-primary' : 'bg-muted-foreground'}`}
+                          />
+                          {name}
+                          {done ? <span className="sr-only"> (concluído)</span> : null}
+                        </li>
+                      ))}
+                      {exercises.length === 0 ? <li className="italic">Nenhum exercício</li> : null}
+                    </ul>
+                  </Link>
+                  {preview.remaining > 0 ? (
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      aria-controls={`workout-exercises-${workout.id}`}
+                      aria-label={expanded ? 'Ocultar exercícios' : 'Mostrar todos os exercícios'}
+                      onClick={() =>
+                        setExpandedWorkouts((current) => ({ ...current, [workout.id]: !expanded }))
+                      }
+                      className="absolute bottom-5 left-5 z-20 text-sm italic text-muted-foreground underline underline-offset-4 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      {expanded
+                        ? 'Ocultar exercícios'
+                        : `Mostrar mais ${preview.remaining} exercícios`}
+                    </button>
+                  ) : null}
+                </article>
               );
             })}
           </div>

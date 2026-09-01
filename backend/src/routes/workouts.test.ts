@@ -8,6 +8,7 @@ type WorkoutWithCount = {
   id: number;
   weekDay: string;
   exercises: {
+    done: boolean;
     exercise: {
       name: string;
     };
@@ -131,7 +132,7 @@ describe('workouts routes', () => {
   /**
    * Valid JWT and an existing user with all weekly workouts.
    * Assert: 200 with workouts ordered from DOMINGO to SABADO, `_count.exercises`
-   * mapped to `exerciseCount`, and exercise relation names mapped to `exerciseNames`.
+   * mapped to `exerciseCount`, and exercise relation names/statuses mapped to `exercises`.
    */
   test('GET /api/workouts returns ordered workouts with exercise counts and names', async () => {
     prisma.user.findUnique.mockResolvedValue(makeUser());
@@ -140,26 +141,26 @@ describe('workouts routes', () => {
         id: 6,
         weekDay: 'SEXTA',
         exercises: [
-          { exercise: { name: 'Crucifixo reto' } },
-          { exercise: { name: 'Elevação lateral' } },
-          { exercise: { name: 'Tríceps corda' } },
+          { done: false, exercise: { name: 'Crucifixo reto' } },
+          { done: false, exercise: { name: 'Elevação lateral' } },
+          { done: false, exercise: { name: 'Tríceps corda' } },
         ],
         _count: { exercises: 3 },
       },
       {
         id: 2,
         weekDay: 'SEGUNDA',
-        exercises: [{ exercise: { name: 'Supino reto com barra' } }],
+        exercises: [{ done: true, exercise: { name: 'Supino reto com barra' } }],
         _count: { exercises: 1 },
       },
       {
         id: 7,
         weekDay: 'SABADO',
         exercises: [
-          { exercise: { name: 'Cadeira flexora' } },
-          { exercise: { name: 'Leg press' } },
-          { exercise: { name: 'Mesa flexora' } },
-          { exercise: { name: 'Panturrilha em pé' } },
+          { done: false, exercise: { name: 'Cadeira flexora' } },
+          { done: false, exercise: { name: 'Leg press' } },
+          { done: false, exercise: { name: 'Mesa flexora' } },
+          { done: false, exercise: { name: 'Panturrilha em pé' } },
         ],
         _count: { exercises: 4 },
       },
@@ -168,15 +169,15 @@ describe('workouts routes', () => {
         id: 4,
         weekDay: 'QUARTA',
         exercises: [
-          { exercise: { name: 'Agachamento livre' } },
-          { exercise: { name: 'Cadeira extensora' } },
+          { done: false, exercise: { name: 'Agachamento livre' } },
+          { done: true, exercise: { name: 'Cadeira extensora' } },
         ],
         _count: { exercises: 2 },
       },
       {
         id: 3,
         weekDay: 'TERCA',
-        exercises: [{ exercise: { name: 'Puxada frontal' } }],
+        exercises: [{ done: false, exercise: { name: 'Puxada frontal' } }],
         _count: { exercises: 1 },
       },
       { id: 5, weekDay: 'QUINTA', exercises: [], _count: { exercises: 0 } },
@@ -190,32 +191,49 @@ describe('workouts routes', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       workouts: [
-        { id: 1, weekDay: 'DOMINGO', exerciseCount: 0, exerciseNames: [] },
+        { id: 1, weekDay: 'DOMINGO', exerciseCount: 0, exercises: [] },
         {
           id: 2,
           weekDay: 'SEGUNDA',
           exerciseCount: 1,
-          exerciseNames: ['Supino reto com barra'],
+          exercises: [{ name: 'Supino reto com barra', done: true }],
         },
-        { id: 3, weekDay: 'TERCA', exerciseCount: 1, exerciseNames: ['Puxada frontal'] },
+        {
+          id: 3,
+          weekDay: 'TERCA',
+          exerciseCount: 1,
+          exercises: [{ name: 'Puxada frontal', done: false }],
+        },
         {
           id: 4,
           weekDay: 'QUARTA',
           exerciseCount: 2,
-          exerciseNames: ['Agachamento livre', 'Cadeira extensora'],
+          exercises: [
+            { name: 'Agachamento livre', done: false },
+            { name: 'Cadeira extensora', done: true },
+          ],
         },
-        { id: 5, weekDay: 'QUINTA', exerciseCount: 0, exerciseNames: [] },
+        { id: 5, weekDay: 'QUINTA', exerciseCount: 0, exercises: [] },
         {
           id: 6,
           weekDay: 'SEXTA',
           exerciseCount: 3,
-          exerciseNames: ['Crucifixo reto', 'Elevação lateral', 'Tríceps corda'],
+          exercises: [
+            { name: 'Crucifixo reto', done: false },
+            { name: 'Elevação lateral', done: false },
+            { name: 'Tríceps corda', done: false },
+          ],
         },
         {
           id: 7,
           weekDay: 'SABADO',
           exerciseCount: 4,
-          exerciseNames: ['Cadeira flexora', 'Leg press', 'Mesa flexora', 'Panturrilha em pé'],
+          exercises: [
+            { name: 'Cadeira flexora', done: false },
+            { name: 'Leg press', done: false },
+            { name: 'Mesa flexora', done: false },
+            { name: 'Panturrilha em pé', done: false },
+          ],
         },
       ],
     });
@@ -227,6 +245,7 @@ describe('workouts routes', () => {
         weekDay: true,
         exercises: {
           select: {
+            done: true,
             exercise: {
               select: {
                 name: true,

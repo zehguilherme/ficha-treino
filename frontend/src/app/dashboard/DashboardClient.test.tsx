@@ -68,22 +68,28 @@ describe('DashboardClient', () => {
 
   /**
    * An authenticated user has a workout with a long exercise name and five exercises.
-   * Mock: the workouts query resolves with five exercise names.
-   * Assert: the visible name is complete, wraps instead of truncating, and the overflow count remains.
+   * Mock: the workouts query resolves with five exercises and mixed completion.
+   * Assert: the card exposes completion status and an accessible expansion for long lists.
    */
-  test('shows complete preview names and keeps the remaining count', async () => {
+  test('shows exercise completion status and expands long lists', async () => {
+    const user = userEvent.setup();
     mockedGetWorkouts.mockResolvedValue({
       workouts: [
         {
           id: 1,
           weekDay: 'SEGUNDA',
-          exerciseCount: 5,
-          exerciseNames: [
-            'Alongamento de Isquiotibiais e Panturrilhas em Pé',
-            'Agachamento livre',
-            'Supino reto',
-            'Remada curvada',
-            'Rosca direta',
+          exerciseCount: 9,
+          exercises: [
+            { name: 'Alongamento de Isquiotibiais e Panturrilhas em Pé', done: true },
+            { name: 'Agachamento livre', done: false },
+            { name: 'Supino reto', done: false },
+            { name: 'Remada curvada', done: false },
+            { name: 'Rosca direta', done: false },
+            { name: 'Elevação lateral', done: false },
+            { name: 'Tríceps corda', done: false },
+            { name: 'Cadeira extensora', done: false },
+            { name: 'Mesa flexora', done: false },
+            { name: 'Panturrilha em pé', done: false },
           ],
         },
       ],
@@ -94,7 +100,23 @@ describe('DashboardClient', () => {
     const exercise = await screen.findByText('Alongamento de Isquiotibiais e Panturrilhas em Pé');
     expect(exercise).toHaveClass('break-words');
     expect(exercise).not.toHaveClass('truncate');
-    expect(await screen.findByText('Mais 2 exercícios')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Alongamento de Isquiotibiais e Panturrilhas em Pé'),
+    ).toHaveClass('line-through');
+    const expand = await screen.findByRole('button', { name: 'Mostrar todos os exercícios' });
+    expect(screen.getByRole('link', { name: /Segunda-feira/ })).toHaveClass(
+      '-m-5',
+      'flex-1',
+      'pb-16',
+    );
+    expect(screen.getByText('Segunda-feira')).not.toHaveClass('underline');
+    expect(expand).toHaveClass('underline');
+    expect(expand).not.toHaveClass('border');
+    await user.tab();
+    await user.tab();
+    expect(expand).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(screen.getByText('Panturrilha em pé')).toBeVisible();
   });
 
   /**
@@ -104,12 +126,18 @@ describe('DashboardClient', () => {
    */
   test('shows the empty workout state', async () => {
     mockedGetWorkouts.mockResolvedValue({
-      workouts: [{ id: 1, weekDay: 'SEGUNDA', exerciseCount: 0, exerciseNames: [] }],
+      workouts: [{ id: 1, weekDay: 'SEGUNDA', exerciseCount: 0, exercises: [] }],
     });
 
     renderDashboard();
 
     expect(await screen.findByText('Nenhum exercício')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Segunda-feira/ })).toHaveClass(
+      'h-full',
+      'flex-1',
+      'pb-5',
+    );
+    expect(screen.getByRole('link', { name: /Segunda-feira/ })).not.toHaveClass('pb-16');
   });
 
   /**

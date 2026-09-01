@@ -22,7 +22,7 @@ describe('API response schemas', () => {
             id: 1,
             weekDay: 'FERIADO',
             exerciseCount: -1,
-            exerciseNames: [],
+            exercises: [],
           },
         ],
       }),

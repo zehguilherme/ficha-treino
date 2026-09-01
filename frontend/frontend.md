@@ -11,7 +11,7 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 | `/`                     | `HomePage`           | Landing page pública com hero + features |
 | `/login`                | `LoginPage`          | Login com Google OAuth                   |
 | `/auth/google/callback` | `GoogleCallbackPage` | Callback do OAuth Google                 |
-| `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards de treino       |
+| `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards totalmente clicáveis, status e expansão de exercícios |
 | `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + search               |
 | `/account`              | `AccountPage` (planejada) | Dados do perfil + excluir conta       |
 
@@ -31,7 +31,7 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 
 ## Estado
 
-- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro. Durante a adição ou remoção, o estado visual de loading e `aria-busy` é individual do exercício confirmado, enquanto os demais botões permanecem desabilitados para evitar ações concorrentes
+- **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro. O dashboard recebe o resumo de cada treino com nome e status `done` de todos os exercícios e permite expandir listas longas sem abrir o dia. Durante a adição ou remoção, o estado visual de loading e `aria-busy` é individual do exercício confirmado, enquanto os demais botões permanecem desabilitados para evitar ações concorrentes
 - **Context API**: sessão do usuário (login/logout)
 - **`useState`**: input e texto pesquisado, filtros aplicados e provisórios, modal, painel dedicado de filtros, carrossel e estados transitórios de retry
 
@@ -235,7 +235,7 @@ Testes de integração da callback page (`@/lib/api` e `next/navigation` mockado
 
 #### `src/app/dashboard/DashboardClient.test.tsx`
 
-Testes do dashboard para hidratação da autenticação, carregamento dos treinos, preview de nomes longos e retry com sucesso ou falha.
+Testes do dashboard para hidratação da autenticação, carregamento dos treinos, cards totalmente clicáveis, status/expansão de exercícios, nomes longos e retry com sucesso ou falha.
 
 #### `src/app/workout/[weekDay]/page.test.tsx`
 

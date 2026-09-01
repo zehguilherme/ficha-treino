@@ -1,8 +1,8 @@
 export const getExercisePreview = (
-  exerciseNames: string[],
-): { names: string[]; remaining: number } => {
-  const names = exerciseNames.slice(0, exerciseNames.length > 4 ? 3 : 4);
-  return { names, remaining: exerciseNames.length - names.length };
+  exercises: Array<{ name: string; done: boolean }>,
+): { exercises: Array<{ name: string; done: boolean }>; remaining: number } => {
+  const visible = exercises.slice(0, 8);
+  return { exercises: visible, remaining: exercises.length - visible.length };
 };
 
 export const getInitials = (name: string): string => {
