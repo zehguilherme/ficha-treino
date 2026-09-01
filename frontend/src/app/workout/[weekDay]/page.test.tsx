@@ -153,7 +153,7 @@ describe('WorkoutDayPage', () => {
   /**
    * Authenticated user with a populated workout.
    * Mock: API returns one exercise with complete details and two images.
-   * Assert: page renders the day, counter, exercise metadata and ShadCN controls.
+   * Assert: page renders the day, progress indicator, exercise metadata and ShadCN controls.
    */
   test('renders the workout day and exercise details', async () => {
     renderPage();
@@ -162,7 +162,14 @@ describe('WorkoutDayPage', () => {
       await screen.findByRole('heading', { name: 'Terça-feira', level: 1 }),
     ).toBeInTheDocument();
     expect(await screen.findByText('Supino reto')).toBeInTheDocument();
-    expect(screen.getByText('0 / 1')).toBeInTheDocument();
+    expect(screen.getByText('0 de 1 exercício concluído')).toBeInTheDocument();
+    expect(screen.getByText('0/1 concluído')).toHaveClass('hidden', 'max-[640px]:inline');
+    expect(screen.getByText('0 de 1 exercício concluído')).toHaveClass('max-[640px]:hidden');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'aria-valuetext',
+      '0 de 1 exercício concluído',
+    );
     expect(screen.getByText('Peito')).toBeInTheDocument();
     const exerciseCard = screen.getByRole('article');
     expect(exerciseCard).toHaveClass('overflow-hidden', 'rounded-[calc(var(--radius)+0.125rem)]');
@@ -369,8 +376,46 @@ describe('WorkoutDayPage', () => {
     expect(checkbox).toBeDisabled();
 
     resolveToggle({ id: 45, exerciseId: 'barbell-bench-press', done: true });
-    expect(await screen.findByText('1 / 1')).toBeInTheDocument();
+    expect(await screen.findByText('1 de 1 exercício concluído')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
+    expect(
+      screen.getByRole('progressbar').querySelector('[data-slot="progress-indicator"]'),
+    ).toHaveClass('bg-success');
     expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeEnabled();
+  });
+
+  /**
+   * User opens a workout with one of two exercises completed.
+   * Mock: API returns two associations and only the first is done.
+   * Assert: the header communicates partial progress and keeps the primary indicator color.
+   */
+  test('shows partial workout progress', async () => {
+    mockedGetWorkout.mockResolvedValue({
+      workout: {
+        ...workout.workout,
+        exercises: [
+          { ...workout.workout.exercises[0], done: true },
+          {
+            ...workout.workout.exercises[0],
+            id: 46,
+            exercise: {
+              ...workout.workout.exercises[0].exercise,
+              id: 'incline-press',
+              name: 'Supino inclinado',
+            },
+          },
+        ],
+      },
+    });
+
+    renderPage();
+
+    expect(await screen.findByText('1 de 2 exercícios concluídos')).toBeInTheDocument();
+    expect(screen.getByText('50%')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
+    expect(
+      screen.getByRole('progressbar').querySelector('[data-slot="progress-indicator"]'),
+    ).toHaveClass('bg-primary');
   });
 
   /**
@@ -410,7 +455,7 @@ describe('WorkoutDayPage', () => {
     expect(screen.getByRole('button', { name: /Limpando…/ })).toBeDisabled();
 
     resolveClear({ cleared: 1 });
-    expect(await screen.findByText('0 / 1')).toBeInTheDocument();
+    expect(await screen.findByText('0 de 1 exercício concluído')).toBeInTheDocument();
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).not.toBeChecked();
   });
 
@@ -466,7 +511,7 @@ describe('WorkoutDayPage', () => {
     expect(otherRemoveButton).toBeDisabled();
 
     resolveRemove({ deleted: true });
-    expect(await screen.findByText('0 / 1')).toBeInTheDocument();
+    expect(await screen.findByText('0 de 1 exercício concluído')).toBeInTheDocument();
     expect(screen.queryByText('Supino reto')).not.toBeInTheDocument();
     expect(screen.getByText('Supino inclinado')).toBeInTheDocument();
   });
@@ -825,7 +870,8 @@ describe('WorkoutDayPage', () => {
     expect(screen.queryByRole('dialog', { name: 'Adicionar exercício' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Adicionar exercício' })).toHaveFocus();
     expect(await screen.findByText('Tríceps na polia')).toBeInTheDocument();
-    expect(screen.getByRole('banner').querySelector('span')).toHaveTextContent('0 / 2');
+    expect(screen.getByText('0 de 2 exercícios concluídos')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
     jest.useRealTimers();
   });
 
@@ -1153,5 +1199,7 @@ describe('WorkoutDayPage', () => {
       screen.getByText('Use o botão Adicionar exercício para incluir exercícios.'),
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
+    expect(screen.getByText('Nenhum exercício')).toBeInTheDocument();
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 });

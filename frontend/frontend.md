@@ -39,6 +39,8 @@ A página de treino abre um modal shadcn para consultar `GET /api/exercises` som
 
 Na busca de exercícios, o placeholder informa que a consulta é feita somente pelo nome do exercício. Abaixo do controle, dos chips e da abertura dos selects, `Limpar busca e filtros` fica à esquerda e `Pesquisar exercícios` à direita; em telas menores, ambos ocupam toda a largura e ficam empilhados. Os chips refletem imediatamente os valores selecionados nos filtros editáveis e cada um pode ser removido de forma independente, sem consulta automática; a nova combinação só é enviada após pesquisar. A faixa de chips mantém largura mínima zero, limite de largura e contenção de overscroll horizontal para não expandir a modal em telas estreitas. O botão de limpeza fica desabilitado quando não há filtros nem exercícios nos resultados. Quando expandido, o painel de filtros usa uma superfície clara `muted/50` com borda e espaçamento próprio; os selects permanecem em `card` e não há ações duplicadas no rodapé. A pesquisa fecha o painel após confirmar texto e filtros; pelo botão, o foco retorna ao controle de filtros, enquanto uma pesquisa por texto desfoca o campo também no envio com `Enter`, permitindo visualizar os resultados no mobile sem o teclado virtual aberto. Fechar a modal limpa texto, filtros, chips e a solicitação do catálogo, portanto a reabertura começa sem resultados.
 
+O cabeçalho fixo da página de treino exibe o progresso dos exercícios com o componente Shadcn `Progress`: texto explícito de exercícios concluídos, percentual e barra semântica; a barra usa `success` quando todos estão concluídos e é omitida quando o treino está vazio. Em telas de até 640px, o rótulo visual usa o formato compacto `concluído/total` para caber na altura fixa do cabeçalho; acima desse breakpoint, o texto completo fica visível, e o nome completo permanece na semântica do indicador em todos os tamanhos.
+
 ## Estrutura atual
 
 ```
@@ -67,6 +69,7 @@ src/
       ClockIcon.tsx
       DocumentIcon.tsx
       DumbbellIcon.tsx
+      Progress.tsx
     layout/
       Header.tsx
       Footer.tsx

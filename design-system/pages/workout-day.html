@@ -85,17 +85,59 @@
       font-weight: 600;
       letter-spacing: -0.01em;
       flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .header-counter {
+    .header-progress {
+      width: 13rem;
+      flex-shrink: 0;
+    }
+
+    .header-progress-label {
       font-size: 0.75rem;
       font-weight: 500;
       color: hsl(var(--muted-foreground));
-      background: hsl(var(--secondary));
-      padding: 0.125rem 0.5rem;
-      border-radius: 9999px;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
       white-space: nowrap;
-      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-progress-compact-label { display: none; }
+
+    .progress-track {
+      height: 0.5rem;
+      overflow: hidden;
+      border-radius: 9999px;
+      background: hsl(var(--secondary));
+    }
+
+    .progress-indicator {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: hsl(var(--primary));
+      transition: width 0.15s ease;
+    }
+
+    .progress-indicator.complete {
+      background: hsl(var(--success));
+    }
+
+    @media (max-width: 640px) {
+      .header-progress { width: 10rem; }
+      .header-progress-label > #headerProgressLabel { display: none; }
+      .header-progress-compact-label { display: inline; }
+    }
+
+    @media (max-width: 420px) {
+      .header-progress { width: 7rem; }
     }
 
     .container {
@@ -945,7 +987,12 @@
         </svg>
       </button>
       <span class="header-title" id="pageDayName">Segunda-feira</span>
-      <span class="header-counter" id="headerCounter">0 / 0</span>
+      <div class="header-progress" id="headerProgress" aria-label="Progresso do treino" role="group">
+        <div class="header-progress-label"><span id="headerProgressLabel">Nenhum exercício</span><span id="headerProgressCompactLabel" class="header-progress-compact-label">Nenhum exercício</span><span id="headerProgressValue">0%</span></div>
+        <div class="progress-track" id="headerProgressTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Nenhum exercício" aria-label="Progresso do treino">
+          <div class="progress-indicator" id="headerProgressIndicator"></div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -1236,7 +1283,24 @@
     function updateHeaderCounter() {
       const total = currentIds.length;
       const done = currentIds.filter(id => doneState[id]).length;
-      document.getElementById('headerCounter').textContent = `${done} / ${total}`;
+      const label = document.getElementById('headerProgressLabel');
+      const compactLabel = document.getElementById('headerProgressCompactLabel');
+      const value = document.getElementById('headerProgressValue');
+      const indicator = document.getElementById('headerProgressIndicator');
+      const track = document.getElementById('headerProgressTrack');
+      const progress = total > 0 ? (done / total) * 100 : 0;
+      label.textContent = total > 0
+        ? `${done} de ${total} exercício${total === 1 ? '' : 's'} concluído${total === 1 ? '' : 's'}`
+        : 'Nenhum exercício';
+      compactLabel.textContent = total > 0
+        ? `${done}/${total} concluído${total === 1 ? '' : 's'}`
+        : 'Nenhum exercício';
+      value.textContent = total > 0 ? `${Math.round(progress)}%` : '';
+      track.hidden = total === 0;
+      indicator.style.width = `${progress}%`;
+      indicator.classList.toggle('complete', total > 0 && done === total);
+      indicator.parentElement.setAttribute('aria-valuenow', String(progress));
+      indicator.parentElement.setAttribute('aria-valuetext', label.textContent || '');
     }
 
     function toggleDone(id) {
