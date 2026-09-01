@@ -26,7 +26,7 @@ export const workoutSummarySchema = z.object({
   id: z.number().int(),
   weekDay: weekDaySchema,
   exerciseCount: z.number().int().nonnegative(),
-  exerciseNames: z.array(z.string()),
+  exercises: z.array(z.object({ name: z.string(), done: z.boolean() })),
 });
 
 export const workoutsResponseSchema = z.object({

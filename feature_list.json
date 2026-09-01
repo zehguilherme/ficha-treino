@@ -134,7 +134,7 @@
         "Clicar em um card navega para /workout/[weekDay]"
       ],
       "passes": true,
-      "evidence": "Dashboard client consome a sessão pelo AuthContext e habilita TanStack Query somente quando autenticado; 7 cards semanais, preview limitado, nomes longos preservados e overflow explícito Mais N exercícios; loading de autenticação e treinos separado, retry manual com estados busy/disabled e testes de sucesso/falha do retry; typecheck, lint e build verificados"
+      "evidence": "Dashboard client consome a sessão pelo AuthContext e habilita TanStack Query somente quando autenticado; 7 cards semanais exibem todos os exercícios com status concluído, listas longas podem ser expandidas por botão acessível, nomes longos são preservados e treinos vazios têm estado próprio; loading de autenticação e treinos separado, retry manual com estados busy/disabled e testes de status, expansão por teclado e sucesso/falha do retry; typecheck, lint e build verificados"
     },
     {
       "id": "ui-003",

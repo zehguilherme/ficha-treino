@@ -51,10 +51,16 @@ export const workoutsRouter = Router();
  *                         enum: [DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SABADO]
  *                       exerciseCount:
  *                         type: integer
- *                       exerciseNames:
+ *                       exercises:
  *                         type: array
  *                         items:
- *                           type: string
+ *                           type: object
+ *                           required: [name, done]
+ *                           properties:
+ *                             name:
+ *                               type: string
+ *                             done:
+ *                               type: boolean
  *       401:
  *         description: Token JWT ausente, inválido ou expirado
  *         content:
@@ -99,6 +105,7 @@ workoutsRouter.get('/', requireAuth, async (req, res) => {
               name: true,
             },
           },
+          done: true,
         },
         orderBy: {
           exercise: {
@@ -115,7 +122,10 @@ workoutsRouter.get('/', requireAuth, async (req, res) => {
       id: workout.id,
       weekDay: workout.weekDay,
       exerciseCount: workout._count.exercises,
-      exerciseNames: workout.exercises.map((workoutExercise) => workoutExercise.exercise.name),
+      exercises: workout.exercises.map((workoutExercise) => ({
+        name: workoutExercise.exercise.name,
+        done: workoutExercise.done,
+      })),
     }))
     .sort((left, right) => weekDayRank(left.weekDay) - weekDayRank(right.weekDay));
 

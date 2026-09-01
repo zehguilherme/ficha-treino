@@ -13,7 +13,7 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
 .section-title { font-size:0.9375rem; font-weight:600; margin:2rem 0 1rem; padding-bottom:0.5rem; border-bottom:1px solid hsl(var(--border)); }
 
 /* Day card */
-.day-card { background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:calc(var(--radius) + 0.125rem); padding:1.25rem; cursor:pointer; transition:all 0.15s; }
+.day-card { position:relative; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:calc(var(--radius) + 0.125rem); padding:1.25rem; cursor:pointer; transition:all 0.15s; }
 .day-card:hover { border-color:hsl(var(--ring) / 0.15); box-shadow:0 1px 3px hsl(var(--foreground) / 0.04); }
 .day-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem; }
 .day-name { font-size:0.9375rem; font-weight:500; }
@@ -22,7 +22,10 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
 .exercise-preview { display:flex; flex-direction:column; gap:0.375rem; }
 .exercise-preview-item { display:flex; align-items:center; gap:0.5rem; font-size:0.8125rem; color:hsl(var(--muted-foreground)); }
 .exercise-preview-item .dot { width:0.375rem; height:0.375rem; border-radius:50%; background:hsl(var(--muted-foreground)); flex-shrink:0; }
+.exercise-preview-item.done { text-decoration:line-through; }
+.exercise-preview-item.done .dot { background:hsl(var(--primary)); }
 .empty-state { font-size:0.8125rem; color:hsl(var(--muted-foreground)); font-style:italic; }
+.expand-exercises { display:inline-flex; margin-top:0.75rem; color:hsl(var(--muted-foreground)); font-size:0.875rem; font-style:italic; text-decoration:underline; text-underline-offset:0.25rem; }
 
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(18rem,1fr)); gap:1rem; }
 </style>
@@ -40,7 +43,7 @@ h1 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.
         <span class="day-badge">4</span>
       </div>
       <div class="exercise-preview">
-        <div class="exercise-preview-item"><span class="dot"></span> Supino reto com barra</div>
+        <div class="exercise-preview-item done"><span class="dot"></span> Supino reto com barra (concluído)</div>
         <div class="exercise-preview-item"><span class="dot"></span> Crucifixo inclinado</div>
         <div class="exercise-preview-item"><span class="dot"></span> Desenvolvimento com halteres</div>
         <div class="exercise-preview-item"><span class="dot"></span> Elevação lateral</div>

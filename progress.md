@@ -138,3 +138,11 @@ Estado atual em 2026-08-26: as features implementadas permanecem concluídas; `a
 2026-09-01 — alinhamento dos metadados — os valores de nível, força e mecânica agora começam sob o texto dos respectivos rótulos, compensando o espaço ocupado pelos ícones.
 
 2026-09-01 — acessibilidade do card — o botão de instruções agora declara `type="button"` e referencia seu painel com `aria-controls`, que permanece identificável mesmo quando recolhido.
+
+2026-09-01 — issue #177 — `GET /api/workouts` passou a retornar cada exercício do resumo com `name` e `done`; o dashboard exibe o status concluído, lista até oito itens e permite revelar o restante por botão acessível, com testes de teclado e documentação Swagger sincronizada.
+
+2026-09-01 — refinamento da issue #177 — o link voltou a envolver visualmente o conteúdo do card e se estende por toda a superfície interna com margem negativa; o nome do dia permanece sem sublinhado e o botão de expansão usa o tratamento textual sublinhado do link anterior.
+
+2026-09-01 — ajuste de área clicável da issue #177 — o link ocupa toda a largura e altura do card nos estados com e sem botão de expansão, usando espaçamento inferior condicional para não reservar área extra em cards sem botão.
+
+2026-09-01 — correção de altura da área clicável da issue #177 — cards em uma mesma linha agora usam coluna flexível e o link `flex-1`, cobrindo também a altura esticada pelo grid quando não há botão de expansão.

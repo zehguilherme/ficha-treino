@@ -124,6 +124,7 @@
     }
 
     .day-card {
+      position: relative;
       background: hsl(var(--card));
       border: 1px solid hsl(var(--border));
       border-radius: calc(var(--radius) + 0.125rem);
@@ -183,6 +184,11 @@
       background: hsl(var(--muted-foreground));
       flex-shrink: 0;
     }
+
+    .exercise-preview-item.done { text-decoration: line-through; }
+    .exercise-preview-item.done .dot { background: hsl(var(--primary)); }
+
+    .expand-exercises { display:inline-flex; margin-top:0.75rem; color:hsl(var(--muted-foreground)); font-size:0.875rem; font-style:italic; text-decoration:underline; text-underline-offset:0.25rem; }
 
     .empty-state {
       font-size: 0.8125rem;
@@ -289,11 +295,12 @@
           <span class="day-badge">4</span>
         </div>
         <div class="exercise-preview">
-          <div class="exercise-preview-item"><span class="dot"></span> Crucifixo inclinado</div>
+          <div class="exercise-preview-item done"><span class="dot"></span> Crucifixo inclinado (concluído)</div>
           <div class="exercise-preview-item"><span class="dot"></span> Desenvolvimento com halteres</div>
           <div class="exercise-preview-item"><span class="dot"></span> Elevação lateral</div>
           <div class="exercise-preview-item"><span class="dot"></span> Supino reto com barra</div>
         </div>
+        <button class="expand-exercises" type="button">Mostrar mais exercícios</button>
       </div>
 
       <div class="day-card" onclick="window.location.href='workout-day.html?day=terca'" data-od-id="day-card-terca">

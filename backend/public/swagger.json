@@ -105,10 +105,22 @@
                           "exerciseCount": {
                             "type": "integer"
                           },
-                          "exerciseNames": {
+                          "exercises": {
                             "type": "array",
                             "items": {
-                              "type": "string"
+                              "type": "object",
+                              "required": [
+                                "name",
+                                "done"
+                              ],
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "done": {
+                                  "type": "boolean"
+                                }
+                              }
                             }
                           }
                         }
