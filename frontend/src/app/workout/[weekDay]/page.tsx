@@ -309,8 +309,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
       {workoutHeader}
       <main className="flex-1 bg-background px-4 py-8 sm:px-6">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-4 flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
-            <h2 className="text-2xl font-semibold tracking-tight">{dayName}</h2>
+          <div className="mb-4 flex justify-end">
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
               {weekDay ? (
                 <>

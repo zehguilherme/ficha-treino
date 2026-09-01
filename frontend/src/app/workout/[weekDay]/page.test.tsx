@@ -236,8 +236,8 @@ describe('WorkoutDayPage', () => {
     );
     expect(within(workoutCarousel).getByRole('button', { name: 'Imagem 1' })).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Terça-feira', level: 2 }).parentElement,
-    ).toHaveClass('mb-4');
+      screen.queryByRole('heading', { name: 'Terça-feira', level: 2 }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Adicionar exercício' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
     const workoutActions = screen.getByRole('button', {
