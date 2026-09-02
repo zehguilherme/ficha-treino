@@ -182,8 +182,6 @@ authRouter.post('/google', async (req, res) => {
  *                   type: string
  *                 email:
  *                   type: string
- *                 google_id:
- *                   type: string
  *       401:
  *         description: Token JWT ausente, inválido ou expirado
  *         content:
@@ -220,7 +218,6 @@ authRouter.get('/me', requireAuth, async (req, res) => {
     currentUserResponseSchema.parse({
       name: user.name,
       email: user.email,
-      google_id: user.googleId,
     }),
   );
 });

@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-08-28: modal de adição de exercícios mantém a busca visível e executa texto + filtros somente após `Pesquisar exercícios` ou `Enter`; `Limpar busca e filtros` reseta tudo e retorna ao estado inicial sem resultados, fica desabilitado sem filtros/resultados, recolher filtros preserva os valores editados, chips refletem imediatamente os filtros provisórios selecionados sem consulta automática, `Enter` mantém o foco no campo de busca, e fechar/reabrir a modal não exibe resultados anteriores.
+2026-09-01: `DELETE /api/account` remove a conta autenticada via cascata do banco, com respostas 200/401/404, testes e Swagger atualizados.
 
 ## O que foi feito
 
@@ -24,8 +24,8 @@
 - `frontend/src/components/workout/AddExerciseDialog.tsx`: resultados da busca renderizados pelo card compartilhado com ação `Adicionar`
 - `frontend/src/components/workout/AddExerciseDialog.test.tsx`: testes da modal, busca, instruções e adição
 - `frontend/src/app/workout/[weekDay]/page.test.tsx`: testes da página usando o card compartilhado e mantendo `Feito`/`Remover`
-- `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-005, api-006 e api-007 concluídos; api-008 não iniciado
-- `progress.md`: histórico atualizado até 2026-08-26, incluindo a issue #197
+- `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-005, api-006, api-007 e api-008 concluídos
+- `progress.md`: histórico atualizado até 2026-09-01, incluindo a issue #40
 
 ## Feature ativa
 
@@ -35,7 +35,7 @@
 
 ### Backend
 
-1. api-008: Excluir conta
+1. Nenhuma pendência de backend
 
 ### Frontend
 

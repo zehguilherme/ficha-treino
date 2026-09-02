@@ -88,8 +88,8 @@
       "title": "Excluir conta (cascade)",
       "behavior": "DELETE /api/account remove usuário + treinos + associações",
       "verification": "curl -X DELETE -H 'Authorization: Bearer $JWT' http://localhost:3001/api/account",
-      "status": "not_started",
-      "evidence": ""
+      "status": "completed",
+      "evidence": "DELETE /api/account autenticado remove o usuário via Prisma; as FKs existentes removem treinos e associações em cascata. Respostas 200/401/404, testes de rota e annotation Swagger implementados; novo login permanece coberto pelo fluxo de criação inicial dos 7 treinos."
     },
     {
       "id": "ui-000",
@@ -209,7 +209,8 @@
         "Ver nome e email do usuário",
         "Botão 'Excluir conta' destacado em vermelho"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "Rota /account protegida pelo AuthContext, exibe nome, e-mail, ID Google e iniciais do usuário, com zona de perigo; testes da página cobrem autenticação e perfil."
     },
     {
       "id": "infra-001",
@@ -283,7 +284,8 @@
         "Confirmar remove conta + redireciona para login",
         "Cancelar fecha modal"
       ],
-      "passes": false
+      "passes": true,
+      "evidence": "AccountDeleteDialog acessível cobre abrir/fechar, Escape, loading, confirmação via DELETE /api/account, logout e redirecionamento para /login; testes da página passam."
     },
     {
       "id": "ui-009",

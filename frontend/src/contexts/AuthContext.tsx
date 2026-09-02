@@ -18,6 +18,8 @@ interface AuthContextValue {
   status: AuthStatus;
   user: CurrentUser | undefined;
   isProfilePending: boolean;
+  isProfileError: boolean;
+  refetchProfile: () => Promise<void>;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -43,6 +45,9 @@ export const AuthProvider = ({ children }: AuthProviderProps): React.JSX.Element
   });
   const status: AuthStatus =
     token === undefined ? 'loading' : token === null ? 'anonymous' : 'authenticated';
+  const refetchProfile = async (): Promise<void> => {
+    await profile.refetch();
+  };
   const logout = (): void => {
     clearSession();
     queryClient.clear();
@@ -54,6 +59,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): React.JSX.Element
         status,
         user: profile.data,
         isProfilePending: typeof token === 'string' && profile.isPending,
+        isProfileError: typeof token === 'string' && profile.isError,
+        refetchProfile,
         login,
         logout,
       }}

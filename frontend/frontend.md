@@ -13,7 +13,7 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 | `/auth/google/callback` | `GoogleCallbackPage` | Callback do OAuth Google                 |
 | `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards totalmente clicáveis, status e expansão de exercícios |
 | `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + search               |
-| `/account`              | `AccountPage` (planejada) | Dados do perfil + excluir conta       |
+| `/account`              | `AccountPage`           | Dados do perfil + excluir conta + retry em falha de carregamento |
 
 ## Validação
 
@@ -32,7 +32,8 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 ## Estado
 
 - **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro. O dashboard recebe o resumo de cada treino com nome e status `done` de todos os exercícios e permite expandir listas longas sem abrir o dia. Durante a adição ou remoção, o estado visual de loading e `aria-busy` é individual do exercício confirmado, enquanto os demais botões permanecem desabilitados para evitar ações concorrentes
-- **Context API**: sessão do usuário (login/logout)
+- **Context API**: sessão do usuário (login/logout); a página `/account` reutiliza o perfil carregado (`name`, `email`) e exibe iniciais como avatar. Falhas ao carregar o perfil exibem modal de erro, estado contextual e botão `Tentar novamente` usando o refetch da consulta.
+- A página `/account` usa cabeçalho próprio com botão voltar, título “Minha Conta” e menu de iniciais contendo somente “Sair”, sem o logo/menu de navegação do cabeçalho global; a ação de exclusão fica alinhada à direita no desktop e ocupa toda a largura no mobile.
 - **`useState`**: input e texto pesquisado, filtros aplicados e provisórios, modal, painel dedicado de filtros, carrossel e estados transitórios de retry
 
 A página de treino abre um modal shadcn para consultar `GET /api/exercises` somente após o botão `Pesquisar exercícios` ou `Enter` no campo, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. A busca permanece visível em todas as visões. Texto e filtros editados não consultam a API automaticamente; a ação explícita normaliza o nome, confirma os filtros e inicia uma única consulta combinada. Textos de inputs comuns, incluindo seu placeholder, usam `muted-foreground`; todos os textos dos controles de formulário usam a mesma família sans-serif, tamanho `text-sm`, peso normal e espaçamento normal. A modal oferece um painel dedicado com os sete selects de categoria, equipamento, nível, força, mecânica e músculos primário/secundário. Os valores são fixos, as labels são PT-BR, o texto sem seleção dos `Select` usa `muted-foreground`, o item selecionado usa `foreground`, o controle sem label externo segue o tratamento visual do `SelectTrigger`, e filtros aplicados aparecem como chips removíveis em faixa horizontal. Ao abrir o painel, os valores editáveis são preservados; recolher o painel ou pressionar `Escape` apenas o oculta, sem consultar a API nem alterar os chips. O painel possui rolagem própria, uma coluna no mobile e duas no desktop. `Limpar busca e filtros` remove texto, filtros e chips, fecha o painel e retorna ao estado inicial sem resultados nem nova consulta. Limpar o texto da busca pelo X preserva os filtros aplicados e provisórios, enquanto fechar a modal ou concluir a adição executa o reset completo. A consulta também pode ser iniciada apenas por filtros. Os resultados são carregados em páginas de 20 itens, usam o `ExerciseCard` compartilhado com categoria/equipamento e uma faixa responsiva de nível, tipo de força e mecânica, além dos músculos, e possuem rolagem exclusiva na lista; o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. A modal expõe `Instruções` e `Adicionar`, enquanto o treino expõe `Feito`, `Instruções` e `Remover`. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
@@ -52,7 +53,7 @@ src/
     login/page.tsx
     dashboard/page.tsx
     workout/[weekDay]/page.tsx
-    account/page.tsx       (planejada)
+    account/page.tsx
   components/
     ui/                   (ShadCN)
       Button.tsx
@@ -80,6 +81,8 @@ src/
       AddExerciseDialog.tsx
       ClearWorkoutDialog.tsx
       RemoveWorkoutExerciseDialog.tsx
+    account/
+      AccountDeleteDialog.tsx
     exercise/
       ExerciseImageCarousel.tsx
       ExerciseTag.tsx

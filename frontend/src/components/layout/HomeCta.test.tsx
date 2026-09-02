@@ -19,6 +19,8 @@ describe('HomeCta', () => {
       status: 'anonymous',
       user: undefined,
       isProfilePending: false,
+      isProfileError: false,
+      refetchProfile: jest.fn().mockResolvedValue(undefined),
       login: jest.fn(),
       logout: jest.fn(),
     });
@@ -38,6 +40,8 @@ describe('HomeCta', () => {
       status: 'authenticated',
       user: undefined,
       isProfilePending: false,
+      isProfileError: false,
+      refetchProfile: jest.fn().mockResolvedValue(undefined),
       login: jest.fn(),
       logout: jest.fn(),
     });
@@ -60,6 +64,8 @@ describe('HomeCta', () => {
       status: 'loading',
       user: undefined,
       isProfilePending: false,
+      isProfileError: false,
+      refetchProfile: jest.fn().mockResolvedValue(undefined),
       login: jest.fn(),
       logout: jest.fn(),
     });

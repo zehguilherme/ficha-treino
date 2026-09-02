@@ -87,6 +87,11 @@
       flex: 1;
     }
 
+    .profile-trigger { width: 2rem; height: 2rem; border: 1px solid hsl(var(--border)); border-radius: 9999px; background: hsl(var(--muted)); font-size: .75rem; font-weight: 600; cursor: pointer; }
+    .profile-menu { display: none; position: absolute; right: 1.5rem; top: 3.25rem; min-width: 8rem; padding: .25rem; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); box-shadow: 0 4px 12px hsl(var(--foreground) / .06); }
+    .profile-menu.open { display: block; }
+    .profile-menu button { width: 100%; padding: .5rem .75rem; border: 0; background: transparent; text-align: left; color: hsl(var(--destructive)); cursor: pointer; border-radius: .25rem; }
+
     .container {
       max-width: 48rem;
       margin: 0 auto;
@@ -374,6 +379,8 @@
         </svg>
       </button>
       <span class="header-title">Minha Conta</span>
+      <button class="profile-trigger" type="button" aria-label="Abrir menu do usuário" onclick="toggleProfileMenu()">MS</button>
+      <div class="profile-menu" id="profileMenu"><button type="button" onclick="window.location.href='login.html'">Sair</button></div>
     </div>
   </header>
 
@@ -387,9 +394,7 @@
       </div>
       <div class="settings-body" style="padding:0;">
         <div class="profile-row">
-          <div class="profile-avatar">
-            <img id="profileAvatar" src="" alt="Avatar">
-          </div>
+          <div class="profile-avatar" id="profileAvatar" aria-label="Avatar com iniciais">MS</div>
           <div class="profile-col">
             <span class="profile-label">Nome</span>
             <span class="profile-value" id="profileName">—</span>
@@ -399,12 +404,6 @@
           <div class="profile-col" style="flex:1">
             <span class="profile-label">E-mail</span>
             <span class="profile-value" id="profileEmail">—</span>
-          </div>
-        </div>
-        <div class="profile-row">
-          <div class="profile-col" style="flex:1">
-            <span class="profile-label">ID Google</span>
-            <span class="profile-value" id="profileGoogleId">—</span>
           </div>
         </div>
       </div>
@@ -433,6 +432,22 @@
       </div>
     </div>
   </main>
+
+  <div class="modal-overlay" id="profileErrorModal">
+    <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="profileErrorTitle">
+      <button class="modal-close" onclick="closeProfileError()" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <h3 id="profileErrorTitle">Algo deu errado</h3>
+      <p>Não foi possível carregar os dados da sua conta.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeProfileError()">Fechar</button>
+        <button class="btn-confirm-delete" onclick="retryProfile()">Tentar novamente</button>
+      </div>
+    </div>
+  </div>
 
   <div class="modal-overlay" id="deleteModal">
     <div class="modal" role="dialog" aria-modal="true">
@@ -474,10 +489,10 @@
       if (user) {
         document.getElementById('profileName').textContent = user.name;
         document.getElementById('profileEmail').textContent = user.email;
-        document.getElementById('profileGoogleId').textContent = user.google_id;
-        if (user.avatar) {
-          document.getElementById('profileAvatar').src = user.avatar;
-        }
+        const parts = user.name.trim().split(/\s+/).filter(Boolean);
+        document.getElementById('profileAvatar').textContent = parts.length > 1
+          ? `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+          : (parts[0] || 'U').slice(0, 2).toUpperCase();
       }
     }
 
@@ -489,10 +504,23 @@
       document.getElementById('deleteModal').classList.remove('open');
     }
 
+    function closeProfileError() {
+      document.getElementById('profileErrorModal').classList.remove('open');
+    }
+
+    function retryProfile() {
+      closeProfileError();
+      loadProfile();
+    }
+
     function executeDelete() {
       localStorage.removeItem('user');
       closeDeleteModal();
       window.location.href = 'login.html';
+    }
+
+    function toggleProfileMenu() {
+      document.getElementById('profileMenu').classList.toggle('open');
     }
 
     document.addEventListener('keydown', function(e) {

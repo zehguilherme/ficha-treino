@@ -36,6 +36,8 @@ describe('LoginGate', () => {
       status: 'anonymous',
       user: undefined,
       isProfilePending: false,
+      isProfileError: false,
+      refetchProfile: jest.fn().mockResolvedValue(undefined),
       login: jest.fn(),
       logout: jest.fn(),
     });
@@ -60,6 +62,8 @@ describe('LoginGate', () => {
       status: 'authenticated',
       user: undefined,
       isProfilePending: false,
+      isProfileError: false,
+      refetchProfile: jest.fn().mockResolvedValue(undefined),
       login: jest.fn(),
       logout: jest.fn(),
     });
@@ -84,6 +88,8 @@ describe('LoginGate', () => {
       status: 'loading',
       user: undefined,
       isProfilePending: false,
+      isProfileError: false,
+      refetchProfile: jest.fn().mockResolvedValue(undefined),
       login: jest.fn(),
       logout: jest.fn(),
     });

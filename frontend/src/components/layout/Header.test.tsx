@@ -61,7 +61,6 @@ describe('Header', () => {
     mockedGetCurrentUser.mockResolvedValue({
       name: 'João Teste',
       email: 'joao@teste.com',
-      google_id: 'google-123',
     });
 
     render(<Header />, { wrapper: Wrapper });
@@ -120,7 +119,6 @@ describe('Header', () => {
     mockedGetCurrentUser.mockResolvedValue({
       name: 'João Teste',
       email: 'joao@teste.com',
-      google_id: 'google-123',
     });
     render(<Header />, { wrapper: Wrapper });
 
@@ -144,7 +142,6 @@ describe('Header', () => {
     mockedGetCurrentUser.mockResolvedValue({
       name: 'João Teste',
       email: 'joao@teste.com',
-      google_id: 'google-123',
     });
     render(<Header />, { wrapper: Wrapper });
 

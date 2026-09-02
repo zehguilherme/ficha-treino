@@ -12,9 +12,10 @@ describe('API response schemas', () => {
    */
   test('rejects malformed response payloads', () => {
     expect(() => googleAuthResponseSchema.parse({ token: '', name: 'João' })).toThrow();
-    expect(() =>
-      currentUserResponseSchema.parse({ name: 'João', email: 'joao@teste.com' }),
-    ).toThrow();
+    expect(currentUserResponseSchema.parse({ name: 'João', email: 'joao@teste.com' })).toEqual({
+      name: 'João',
+      email: 'joao@teste.com',
+    });
     expect(() =>
       workoutsResponseSchema.parse({
         workouts: [
