@@ -2,6 +2,7 @@ import axios, { type AxiosError } from 'axios';
 import { clearSession, getSession } from './auth';
 import {
   addWorkoutExerciseResponseSchema,
+  accountDeletionResponseSchema,
   clearWorkoutResponseSchema,
   currentUserResponseSchema,
   exercisesResponseSchema,
@@ -18,6 +19,7 @@ import {
   type WorkoutsResponse,
   type ToggleWorkoutExerciseResponse,
   type RemoveWorkoutExerciseResponse,
+  type AccountDeletionResponse,
   toggleWorkoutExerciseResponseSchema,
 } from '@/schemas/api';
 
@@ -130,3 +132,6 @@ export const removeWorkoutExercise = async (
       )
     ).data,
   );
+
+export const deleteAccount = async (): Promise<AccountDeletionResponse> =>
+  accountDeletionResponseSchema.parse((await api.delete('/api/account')).data);

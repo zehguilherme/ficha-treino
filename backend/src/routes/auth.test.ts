@@ -336,7 +336,7 @@ describe('auth routes', () => {
 
   /**
    * Valid JWT via Bearer header.
-   * Assert: 200 with `{ name, email, google_id }` fetched by `req.user.user_id`.
+   * Assert: 200 with `{ name, email }` fetched by `req.user.user_id`.
    */
   test('GET /api/auth/me returns user data with valid JWT', async () => {
     prisma.user.findUnique.mockResolvedValue(makeUser());
@@ -345,11 +345,8 @@ describe('auth routes', () => {
     const response = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      name: 'João Teste',
-      email: 'joao@teste.com',
-      google_id: 'google-123',
-    });
+    expect(response.body).toEqual({ name: 'João Teste', email: 'joao@teste.com' });
+    expect(response.body).not.toHaveProperty('google_id');
     expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
   });
 

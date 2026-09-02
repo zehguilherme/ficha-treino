@@ -62,7 +62,7 @@ src/
     workouts.ts      # GET, POST, DELETE e clear implementados
     workoutExercises.ts # PATCH de conclusão implementado
     exercises.ts     # GET /api/exercises implementado
-    account.ts       # planejado
+    account.ts       # DELETE /api/account
   middleware/
     auth.ts          # requireAuth, signJwt, verifyJwt
   validators/
@@ -74,7 +74,7 @@ src/
   *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises e routes/workouts)
 ```
 
-Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises`, `DELETE /api/workouts/:weekDay/exercises/:exerciseId` e `POST /api/workouts/:weekDay/clear`), `routes/workoutExercises.ts` (`PATCH /api/workout-exercises/:id`), `routes/exercises.ts` (`GET /api/exercises`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. As rotas de conclusão e remoção validam autenticação e ownership, alternam `done`, limpam marcações e removem associações do treino, todas documentadas no Swagger. A exclusão de conta ainda está planejada.
+Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises`, `DELETE /api/workouts/:weekDay/exercises/:exerciseId` e `POST /api/workouts/:weekDay/clear`), `routes/workoutExercises.ts` (`PATCH /api/workout-exercises/:id`), `routes/exercises.ts` (`GET /api/exercises`), `routes/account.ts` (`DELETE /api/account`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. As rotas de conclusão, remoção e exclusão de conta validam autenticação e ownership; a exclusão remove o usuário e depende das FKs em cascata para treinos e associações. Todas as rotas são documentadas no Swagger.
 
 Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
 
@@ -164,7 +164,7 @@ Testes de integração das rotas de auth (supertest + mocks de `./db.js` e `goog
 | POST /api/auth/google returns 401 when code exchange fails                      | int  | 401                                   |
 | POST /api/auth/google returns 401 when code exchange yields no ID token         | int  | 401                                   |
 | POST /api/auth/google returns 400 when both token and code are missing          | int  | 400                                   |
-| GET /api/auth/me returns user data with valid JWT                               | int  | 200 + `name`/`email`/`google_id`      |
+| GET /api/auth/me returns user data with valid JWT                               | int  | 200 + `name`/`email`                  |
 | GET /api/auth/me returns 401 without token                                      | int  | 401                                   |
 
 #### `src/seed.test.ts`

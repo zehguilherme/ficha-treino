@@ -9,7 +9,10 @@ export const googleAuthResponseSchema = z.object({
 export const currentUserResponseSchema = z.object({
   name: z.string(),
   email: z.string(),
-  google_id: z.string(),
+});
+
+export const accountDeletionResponseSchema = z.object({
+  message: z.literal('Conta excluída'),
 });
 
 export const workoutSummarySchema = z.object({

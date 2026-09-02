@@ -89,7 +89,6 @@ describe('AuthContext', () => {
     mockedGetCurrentUser.mockResolvedValue({
       name: 'João Teste',
       email: 'joao@teste.com',
-      google_id: 'google-123',
     });
     render(<AuthProbe />, { wrapper: Wrapper });
 
@@ -114,7 +113,6 @@ describe('AuthContext', () => {
     mockedGetCurrentUser.mockResolvedValue({
       name: 'João Teste',
       email: 'joao@teste.com',
-      google_id: 'google-123',
     });
     render(<LoginEffectProbe onLoginChange={onLoginChange} />, { wrapper: Wrapper });
 

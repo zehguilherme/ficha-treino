@@ -9,7 +9,6 @@ export const googleAuthResponseSchema = z.object({
 export const currentUserResponseSchema = z.object({
   name: z.string(),
   email: z.string(),
-  google_id: z.string(),
 });
 
 export const weekDaySchema = z.enum([
@@ -86,6 +85,10 @@ export const toggleWorkoutExerciseResponseSchema = z.object({
   done: z.boolean(),
 });
 
+export const accountDeletionResponseSchema = z.object({
+  message: z.literal('Conta excluída'),
+});
+
 export type GoogleAuthResponse = z.infer<typeof googleAuthResponseSchema>;
 export type CurrentUser = z.infer<typeof currentUserResponseSchema>;
 export type WeekDay = z.infer<typeof weekDaySchema>;
@@ -97,3 +100,4 @@ export type RemoveWorkoutExerciseResponse = z.infer<typeof removeWorkoutExercise
 export type ExerciseDetails = z.infer<typeof exerciseDetailsSchema>;
 export type ExercisesResponse = z.infer<typeof exercisesResponseSchema>;
 export type ToggleWorkoutExerciseResponse = z.infer<typeof toggleWorkoutExerciseResponseSchema>;
+export type AccountDeletionResponse = z.infer<typeof accountDeletionResponseSchema>;
