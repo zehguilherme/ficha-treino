@@ -119,7 +119,8 @@ describe('AccountPage', () => {
 
     expect(screen.getByRole('heading', { name: 'Minha Conta' })).toBeInTheDocument();
     expect(screen.queryByText('Ficha de Treino')).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Voltar' })).toHaveClass('transition-all');
+    expect(screen.getByRole('link', { name: 'Voltar' })).toHaveAttribute('href', '/dashboard');
+    expect(screen.getByRole('link', { name: 'Voltar' })).toHaveClass('size-8');
     expect(screen.getByRole('button', { name: 'Abrir menu do usuário' })).toHaveTextContent('MS');
     expect(screen.getByRole('button', { name: 'Excluir minha conta' })).toHaveClass(
       'w-full',

@@ -119,7 +119,7 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 - `1rem` — grid gap, container padding, card padding (exercise cards)
 - `1.25rem` — card padding, settings section padding
 - `1.5rem` — header inner padding, container padding, feature gap
-- `2rem` — header height, back button size, avatar size
+- `2rem` — header height, avatar size
 - `2.5rem` — login card padding, logo mark, feature icon
 - `3.5rem` — header height
 - `4rem` — hero padding
@@ -166,7 +166,7 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 - Background: `--card`, bottom border `--border`
 - Inner max-width: 80rem, padding 0 1.5rem
 - z-index: 50
-- Left: back button (icon 2rem) + title (flex gap 0.75rem)
+- Left: reusable `IconLink` back link (outline, square arrow icon) + title (flex gap 0.75rem)
 - Right: avatar with dropdown menu
 - **Workout header counter** (`header-counter`): right side, shows `[done] / [total]` exercises. Styled as pill badge (`--secondary` bg, `--muted-foreground` text, `0.75rem`/500, `9999px` radius, `0.125rem 0.5rem` padding). Updates on checkbox toggle, add/remove exercise, and clear workout.
 
@@ -194,7 +194,7 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 | Variant | Padding | Border | Background | Text | Hover |
 |---------|---------|--------|------------|------|-------|
 | Default (primary) | 0.5rem 1rem | none | `--foreground` | `--primary-foreground` | opacity 0.85 |
-| Back (icon) | — | 1px `--border` | `--card` | `--foreground` | `--secondary` |
+| Back link | 2rem × 2rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
 | Destructive (remove) | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
 | Destructive outline (danger) | 0.375rem 0.75rem | 1px `--destructive / 0.3` | none | `--destructive` | `--destructive / 0.05` |
 | Clear | 0.375rem 0.75rem | 1px `--border` | none | `--muted-fg` | `--destructive`, border `--destructive / 0.3` |
@@ -212,7 +212,7 @@ All buttons: `font-weight: 500`, `letter-spacing: 0.02em`, `border-radius: var(-
 
 Default and outline actions share the base size of `0.5rem 1rem` padding and approximately 36px height. Use `sm` only for compact controls, `lg` for deliberate emphasis, and `icon` for square icon-only actions. CTA, Google login, carousel and modal controls may use their documented semantic exceptions.
 
-Back button: 2rem × 2rem icon-only, SVG 1rem.
+Back link: square outline link with `ArrowLeftIcon`, accessible label and SVG 1rem; keyboard focus uses the standard visible ring.
 
 ### 7.2 Cards
 

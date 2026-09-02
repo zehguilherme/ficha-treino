@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
+import { IconLink } from '@/components/ui/IconLink';
 import { ExerciseCard } from '@/components/exercise/ExerciseCard';
 import { Loading } from '@/components/ui/Loading';
 import { Progress } from '@/components/ui/Progress';
@@ -181,11 +182,13 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const workoutHeader = weekDay ? (
     <header className="sticky top-0 z-20 border-b border-border bg-card">
       <div className="mx-auto flex h-14 max-w-[80rem] items-center gap-3 px-4 sm:px-6">
-        <Button asChild variant="outline" size="icon" aria-label="Voltar para o dashboard">
-          <Link href="/dashboard">
-            <ArrowLeftIcon className="size-4" />
-          </Link>
-        </Button>
+        <IconLink
+          href="/dashboard"
+          icon={<ArrowLeftIcon className="size-4" aria-hidden="true" />}
+          variant="outline"
+          size="icon"
+          aria-label="Voltar para o dashboard"
+        />
         <h1 className="min-w-0 flex-1 truncate text-base font-semibold tracking-tight">
           {dayName}
         </h1>

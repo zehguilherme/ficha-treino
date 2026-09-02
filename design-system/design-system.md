@@ -103,6 +103,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 - Small: padding `0.25rem 0.5rem`, font-size `0.75rem`
 - Large: padding `0.625rem 1.25rem`, font-size `0.875rem`
 - Ícone-only: 2rem × 2rem
+- Back link: outline link quadrado com seta à esquerda, dimensões `2rem × 2rem`
 - Delete account: padding `0.5rem 1rem`
 - Google login: padding `0.75rem 1.5rem`, width 100%
 - CTA da landing: padding `0.875rem 2rem`, font-size `0.9375rem`
@@ -132,6 +133,8 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Gap (ícone + título) | 0.75rem |
 
 **Header counter (workout day):** `.header-counter` pill badge on the right side, shows `[done] / [total]` exercises. Font `0.75rem`/500, color `--muted-foreground`, bg `--secondary`, padding `0.125rem 0.5rem`, border-radius `9999px`, `flex-shrink: 0`. Updates dynamically on checkbox toggle, add/remove exercise, and clear workout.
+
+**Back link:** `IconLink` compartilhado pelos cabeçalhos de conta e treino; combina `ArrowLeftIcon`, rótulo acessível, link para `/dashboard`, variante outline e foco visível.
 
 **Exercise card:** the same card composition is used in the workout-day list and the add-exercise dialog. Both show the carousel, exercise metadata, muscles, and expandable instructions. The workout variant exposes `Feito` and `Remover`; the search variant exposes `Adicionar`. On mobile, `Instruções` appears before the contextual action and both actions use the full card width.
 
