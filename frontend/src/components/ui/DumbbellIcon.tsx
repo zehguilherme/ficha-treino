@@ -4,19 +4,11 @@ type DumbbellIconProps = {
 
 export const DumbbellIcon = ({ className = 'w-3.5 h-3.5 text-background' }: DumbbellIconProps) => (
   <svg
+    xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
+    fill="currentColor"
     className={className}
   >
-    <path d="M6.5 6.5 17.5 17.5" />
-    <path d="M17.5 6.5 6.5 17.5" />
-    <circle cx="12" cy="5" r="1" />
-    <circle cx="12" cy="19" r="1" />
-    <circle cx="5" cy="12" r="1" />
-    <circle cx="19" cy="12" r="1" />
+    <path d="M2.5 9.25a1.25 1.25 0 0 1 2.5 0v5.5a1.25 1.25 0 0 1-2.5 0v-5.5Zm3.5-2a1.25 1.25 0 0 1 2.5 0v9.5a1.25 1.25 0 0 1-2.5 0v-9.5Zm2.5 3.25h7v3h-7v-3Zm7-3.25a1.25 1.25 0 0 1 2.5 0v9.5a1.25 1.25 0 0 1-2.5 0v-9.5Zm3.5 2a1.25 1.25 0 0 1 2.5 0v5.5a1.25 1.25 0 0 1-2.5 0v-5.5Z" />
   </svg>
 );

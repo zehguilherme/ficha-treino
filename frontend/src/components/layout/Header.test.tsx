@@ -45,10 +45,20 @@ describe('Header', () => {
   test('links anonymous users to the landing page', async () => {
     render(<Header />, { wrapper: Wrapper });
 
-    expect(await screen.findByRole('link', { name: 'Ficha de Treino' })).toHaveAttribute(
-      'href',
-      '/',
-    );
+    const logoLink = await screen.findByRole('link', { name: 'Ficha de Treino' });
+    expect(logoLink).toHaveAttribute('href', '/');
+  });
+
+  /**
+   * An anonymous user sees the logo in the global header.
+   * Mock: no session is stored.
+   * Assert: the icon uses the background token for contrast on the dark logo surface.
+   */
+  test('renders the logo icon with contrasting color', async () => {
+    render(<Header />, { wrapper: Wrapper });
+
+    const logoLink = await screen.findByRole('link', { name: 'Ficha de Treino' });
+    expect(logoLink.querySelector('svg')).toHaveClass('text-background', 'size-5');
   });
 
   /**
