@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
 import { Loading } from '@/components/ui/Loading';
+import { IconLink } from '@/components/ui/IconLink';
 import { ArrowLeftIcon, TrashIcon } from '@/components/ui/WorkoutIcons';
 import { useAuth } from '@/contexts/AuthContext';
 import { deleteAccount } from '@/lib/api';
@@ -85,16 +86,14 @@ const AccountPage = (): React.JSX.Element => {
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-card">
         <div className="mx-auto flex h-14 max-w-[80rem] items-center gap-3 px-6">
-          <Button
-            type="button"
+          <IconLink
+            href="/dashboard"
+            icon={<ArrowLeftIcon className="size-4" aria-hidden="true" />}
             variant="outline"
             size="icon"
             aria-label="Voltar"
-            onClick={() => router.back()}
             className="rounded-md bg-card"
-          >
-            <ArrowLeftIcon className="size-4" aria-hidden="true" />
-          </Button>
+          />
           <span className="text-base font-semibold">Minha Conta</span>
           <div className="ml-auto">
             <DropdownMenu>
