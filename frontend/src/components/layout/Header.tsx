@@ -29,8 +29,8 @@ export const Header = (): React.JSX.Element => {
           href={authenticated ? '/dashboard' : '/'}
           className="flex items-center gap-3 rounded-md outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-foreground">
-            <DumbbellIcon />
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-[0.625rem] bg-foreground">
+            <DumbbellIcon className="size-5 text-background" />
           </span>
           <span className="text-base font-semibold tracking-tight">Ficha de Treino</span>
         </Link>

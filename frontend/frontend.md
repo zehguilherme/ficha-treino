@@ -49,6 +49,8 @@ src/
   app/
     globals.css           (HSL tokens + Tailwind v4)
     layout.tsx            (root layout: Inter font, lang pt-BR)
+    icon.svg              (favicon da aplicação)
+    apple-icon.svg        (ícone para atalhos Apple)
     page.tsx              (HomePage — landing)
     login/page.tsx
     dashboard/page.tsx

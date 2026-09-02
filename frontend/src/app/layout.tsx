@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   title: 'Ficha de Treino - Seu treino organizado',
   description:
     'Organize seus treinos, acompanhe cada exercício e evolua com consistência. O planejamento que separa quem sonha de quem conquista.',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.svg',
+  },
 };
 
 const RootLayout = ({
