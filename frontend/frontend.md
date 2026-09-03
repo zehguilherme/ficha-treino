@@ -18,6 +18,11 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 Todas as rotas usam o metadata do Next.js com o padrão `<contexto> — Ficha de Treino`; a landing
 mantém `Ficha de Treino — Seu treino organizado`. A rota dinâmica de treino deriva o contexto do
 dia na URL (ou `Treino não encontrado` para parâmetros inválidos), sem consulta adicional à API.
+A origem canônica é `https://fichatreino.vercel.app`; `sitemap.xml` lista apenas a home pública e
+`robots.txt` bloqueia as áreas autenticadas. Login, callback, dashboard, conta e treinos usam
+`noindex, nofollow`. A home publica metadados Open Graph (`website`, locale `pt_BR`, título,
+descrição e URL canônica) e Twitter Card `summary_large_image`; `opengraph-image.tsx` gera o card
+social PNG em 1200×630 com texto alternativo descritivo.
 
 ## Validação
 
@@ -53,6 +58,8 @@ src/
   app/
     globals.css           (HSL tokens + Tailwind v4)
     layout.tsx            (root layout: Inter font, lang pt-BR)
+    sitemap.ts            (sitemap da página pública)
+    robots.ts             (regras de rastreamento)
     account/layout.tsx
     auth/google/callback/layout.tsx
     icon.svg              (favicon da aplicação)
@@ -267,6 +274,18 @@ Testes da página de treino para carregamento, retry do treino e da busca, adiç
 #### `src/app/workout/[weekDay]/layout.test.ts`
 
 Testa o metadata da rota dinâmica para dia válido e parâmetro inválido.
+
+#### `src/app/sitemap.test.ts` e `src/app/robots.test.ts`
+
+Testam a lista de URLs públicas, as regras para áreas privadas e a referência ao sitemap.
+
+#### `src/app/layout.test.ts`
+
+Testa a origem canônica de produção e os metadados Open Graph/Twitter definidos no metadata raiz.
+
+#### `src/app/opengraph-image.test.tsx`
+
+Testa as dimensões, o tipo, o texto alternativo e o conteúdo da imagem social gerada para a home.
 
 #### `src/components/ui/Loading.test.tsx`
 

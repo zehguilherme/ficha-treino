@@ -148,3 +148,5 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-01 — ajuste de área clicável da issue #177 — o link ocupa toda a largura e altura do card nos estados com e sem botão de expansão, usando espaçamento inferior condicional para não reservar área extra em cards sem botão.
 
 2026-09-01 — correção de altura da área clicável da issue #177 — cards em uma mesma linha agora usam coluna flexível e o link `flex-1`, cobrindo também a altura esticada pelo grid quando não há botão de expansão.
+
+2026-09-03 — issue #193 — metadata Open Graph e Twitter Card adicionados à home; card social PNG 1200×630 gerado pela convenção `opengraph-image.tsx`, com testes de contrato e conteúdo.

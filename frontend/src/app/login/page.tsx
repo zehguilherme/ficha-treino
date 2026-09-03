@@ -4,6 +4,7 @@ import { LoginGate } from '@/components/auth/LoginGate';
 
 export const metadata: Metadata = {
   title: 'Entrar',
+  robots: { index: false, follow: false },
 };
 
 const LoginPage = () => {

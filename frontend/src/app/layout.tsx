@@ -12,6 +12,18 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://fichatreino.vercel.app'),
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: '/',
+    siteName: 'Ficha de Treino',
+    title: 'Ficha de Treino — Seu treino organizado',
+    description:
+      'Organize seus treinos, acompanhe cada exercício e evolua com consistência. O planejamento que separa quem sonha de quem conquista.',
+  },
+  twitter: { card: 'summary_large_image' },
   title: {
     default: 'Ficha de Treino — Seu treino organizado',
     template: '%s — Ficha de Treino',
