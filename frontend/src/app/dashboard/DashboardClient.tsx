@@ -144,7 +144,7 @@ export const DashboardClient = (): React.JSX.Element => {
                     </ul>
                   </Link>
                   {preview.remaining > 0 ? (
-                    <button
+                    <Button
                       type="button"
                       aria-expanded={expanded}
                       aria-controls={`workout-exercises-${workout.id}`}
@@ -152,12 +152,13 @@ export const DashboardClient = (): React.JSX.Element => {
                       onClick={() =>
                         setExpandedWorkouts((current) => ({ ...current, [workout.id]: !expanded }))
                       }
-                      className="absolute bottom-5 left-5 z-20 text-sm italic text-muted-foreground underline underline-offset-4 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      variant="ghost"
+                      className="absolute bottom-5 left-5 z-20 border-0 px-0 py-0 text-sm italic text-muted-foreground underline underline-offset-4 hover:bg-transparent hover:opacity-100 focus-visible:outline-none focus-visible:ring-1"
                     >
                       {expanded
                         ? 'Ocultar exercícios'
                         : `Mostrar mais ${preview.remaining} exercícios`}
-                    </button>
+                    </Button>
                   ) : null}
                 </article>
               );
