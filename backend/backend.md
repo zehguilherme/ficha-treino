@@ -80,7 +80,7 @@ Todo usuário autenticado possui sete treinos criados no primeiro login, um para
 
 A busca de exercícios usa a extensão PostgreSQL `unaccent` para que consultas com e sem acentos produzam os mesmos resultados. Além de `q`, aceita filtros opcionais com valores fixos do dataset em `category`, `equipment`, `level`, `force`, `mechanic`, `primaryMuscle` e `secondaryMuscle`; filtros vazios são ignorados e valores repetidos no mesmo filtro usam OR. A rota retorna no máximo 100 itens por página, ordenados por nome e ID, e `total` representa o total filtrado antes da paginação. Valores fora das listas permitidas retornam 400.
 
-Estado verificado em 2026-08-20: a migration da extensão `unaccent` foi adicionada após as migrations versionadas existentes. O container PostgreSQL deve aplicar as 4 migrations antes da validação manual da busca. As rotas de marcação, limpeza e remoção possuem testes e annotations Swagger; exclusão de conta continua planejada.
+Estado verificado em 2026-09-03: a migration da extensão `unaccent` foi adicionada após as migrations versionadas existentes. O container PostgreSQL deve aplicar as 4 migrations antes da validação manual da busca. As rotas de marcação, limpeza, remoção e exclusão de conta possuem testes e annotations Swagger; a exclusão de conta remove o usuário e depende das FKs em cascata para treinos e associações.
 
 ## Verificação
 
