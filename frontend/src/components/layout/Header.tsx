@@ -4,14 +4,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu';
+import { UserMenu } from '@/components/layout/UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
-import { getInitials } from '@/lib/dashboard';
 
 export const Header = (): React.JSX.Element => {
   const router = useRouter();
@@ -41,30 +35,7 @@ export const Header = (): React.JSX.Element => {
               aria-hidden="true"
             />
           ) : authenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full bg-muted text-xs font-semibold"
-                  aria-label="Abrir menu do usuário"
-                >
-                  {getInitials(user?.name ?? '')}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/account">Minha conta</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onSelect={handleLogout}
-                >
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <UserMenu name={user?.name ?? ''} showAccountLink onLogout={handleLogout} />
           ) : pathname !== '/login' ? (
             <Button variant="outline" asChild>
               <Link href="/login">Entrar</Link>

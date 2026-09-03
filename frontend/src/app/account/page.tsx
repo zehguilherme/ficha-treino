@@ -3,14 +3,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { AccountDeleteDialog } from '@/components/account/AccountDeleteDialog';
+import { UserMenu } from '@/components/layout/UserMenu';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Button } from '@/components/ui/Button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu';
 import { Loading } from '@/components/ui/Loading';
 import { IconLink } from '@/components/ui/IconLink';
 import { ArrowLeftIcon, TrashIcon } from '@/components/ui/WorkoutIcons';
@@ -96,30 +91,14 @@ const AccountPage = (): React.JSX.Element => {
           />
           <span className="text-base font-semibold">Minha Conta</span>
           <div className="ml-auto">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full bg-muted text-xs font-semibold"
-                  aria-label="Abrir menu do usuário"
-                >
-                  {getInitials(user.name)}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onSelect={() => {
-                    logout();
-                    router.replace('/login');
-                  }}
-                >
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <UserMenu
+              name={user.name}
+              showAccountLink={false}
+              onLogout={() => {
+                logout();
+                router.replace('/login');
+              }}
+            />
           </div>
         </div>
       </header>

@@ -76,6 +76,8 @@ src/
       Progress.tsx
     layout/
       Header.tsx
+      UserInitialsButton.tsx
+      UserMenu.tsx
       Footer.tsx
     auth/
       LoginForm.tsx
@@ -262,6 +264,14 @@ Testa o componente de loading reutilizável, incluindo mensagem em português, `
 #### `src/components/ui/IconLink.test.tsx`
 
 Testa o link reutilizável com ícone, texto acessível e destino de navegação.
+
+#### `src/components/layout/UserInitialsButton.test.tsx`
+
+Testa as iniciais, o nome acessível e os tokens visuais do botão reutilizável do usuário.
+
+#### `src/components/layout/UserMenu.test.tsx`
+
+Testa as variantes do menu autenticado, a ação de logout e a navegação por teclado com restauração de foco.
 
 #### `src/components/workout/ClearWorkoutDialog.test.tsx`
 
