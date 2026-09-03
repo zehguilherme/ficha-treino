@@ -3,7 +3,7 @@ import { LoginForm } from '@/components/auth/LoginForm';
 import { LoginGate } from '@/components/auth/LoginGate';
 
 export const metadata: Metadata = {
-  title: 'Entrar - Ficha de Treino',
+  title: 'Entrar',
 };
 
 const LoginPage = () => {

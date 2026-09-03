@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
 import { HomeIcon } from '@/components/ui/HomeIcon';
+
+export const metadata: Metadata = { title: 'Página não encontrada' };
 
 const NotFoundPage = () => {
   return (
