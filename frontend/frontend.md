@@ -15,6 +15,10 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 | `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + search               |
 | `/account`              | `AccountPage`           | Dados do perfil + excluir conta + retry em falha de carregamento |
 
+Todas as rotas usam o metadata do Next.js com o padrão `<contexto> — Ficha de Treino`; a landing
+mantém `Ficha de Treino — Seu treino organizado`. A rota dinâmica de treino deriva o contexto do
+dia na URL (ou `Treino não encontrado` para parâmetros inválidos), sem consulta adicional à API.
+
 ## Validação
 
 Schemas Zod próprios do frontend validam respostas na fronteira HTTP. O Swagger documenta o
@@ -49,12 +53,15 @@ src/
   app/
     globals.css           (HSL tokens + Tailwind v4)
     layout.tsx            (root layout: Inter font, lang pt-BR)
+    account/layout.tsx
+    auth/google/callback/layout.tsx
     icon.svg              (favicon da aplicação)
     apple-icon.svg        (ícone para atalhos Apple)
     page.tsx              (HomePage — landing)
     login/page.tsx
     dashboard/page.tsx
     workout/[weekDay]/page.tsx
+    workout/[weekDay]/layout.tsx (metadata dinâmico por dia)
     account/page.tsx
   components/
     ui/                   (ShadCN)
@@ -256,6 +263,10 @@ Testes da página de treino para carregamento, retry do treino e da busca, adiç
 - tenta novamente após falha do treino ou da busca e restaura o erro quando o retry falha;
 - remove exercícios, mostra loading apenas no exercício confirmado, trata falhas de remoção e prioriza a primeira imagem acima da dobra.
 - exibe estado contextual e link para o dashboard quando o parâmetro do dia é inválido, sem chamar a API de treinos.
+
+#### `src/app/workout/[weekDay]/layout.test.ts`
+
+Testa o metadata da rota dinâmica para dia válido e parâmetro inválido.
 
 #### `src/components/ui/Loading.test.tsx`
 
