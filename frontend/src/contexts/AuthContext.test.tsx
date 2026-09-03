@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from 'react';
 import { AuthProvider, useAuth } from './AuthContext';
 import { getCurrentUser } from '@/lib/api';
 import { getSession, setSession } from '@/lib/auth';
+import type { CurrentUser } from '@/schemas/api';
 
 jest.mock('@/lib/api', () => ({
   getCurrentUser: jest.fn(),
@@ -101,6 +102,46 @@ describe('AuthContext', () => {
     act(() => screen.getByRole('button', { name: 'Logout' }).click());
     expect(await screen.findByText('anonymous')).toBeInTheDocument();
     expect(getSession()).toBeNull();
+  });
+
+  /**
+   * A profile request is still pending when the user logs out and the backend later returns 500.
+   * Mock: getCurrentUser rejects after logout with a backend-shaped error.
+   * Assert: logout remains anonymous, clears the token and removes cached profile data.
+   */
+  test('ignores a late backend error after logout', async () => {
+    let rejectProfile: ((reason?: unknown) => void) | undefined;
+    mockedGetCurrentUser.mockImplementation(
+      () =>
+        new Promise<CurrentUser>((_resolve, reject) => {
+          rejectProfile = reject;
+        }),
+    );
+    setSession('jwt-token');
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AuthProbe />
+        </AuthProvider>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => expect(mockedGetCurrentUser).toHaveBeenCalledTimes(1));
+    act(() => screen.getByRole('button', { name: 'Logout' }).click());
+    expect(await screen.findByText('anonymous')).toBeInTheDocument();
+
+    const backendError = Object.assign(new Error('Erro interno do servidor'), {
+      response: { status: 500 },
+    });
+    await act(async () => {
+      rejectProfile?.(backendError);
+      await Promise.resolve();
+    });
+
+    expect(getSession()).toBeNull();
+    expect(queryClient.getQueryData(['current-user'])).toBeUndefined();
   });
 
   /**
