@@ -79,7 +79,7 @@ Estado atual em 2026-08-20: `api-005` está concluída; `api-008` (exclusão de 
 
 2026-08-24 — loading e recuperação padronizados — estados de carregamento migrados para o componente `Loading`, botões passaram a expor estado busy/disabled consistente e foram adicionados retries para dashboard, treino e busca de exercícios, com testes para sucesso e falha do retry.
 
-Estado atual em 2026-08-26: as features implementadas permanecem concluídas; `api-008`, `ui-007`, `ui-008`, `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos e card de exercício compartilhado entre treino e busca. A busca backend agora aceita filtros por listas fixas, enquanto a UI dos filtros permanece na issue #174.
+Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos e card de exercício compartilhado entre treino e busca. A busca backend agora aceita filtros por listas fixas, enquanto a UI dos filtros permanece na issue #174.
 
 2026-09-01 — api-008 — `DELETE /api/account` implementado com autenticação JWT, exclusão do usuário via cascata de banco, respostas 200/401/404, testes de rota e documentação Swagger sincronizada.
 
