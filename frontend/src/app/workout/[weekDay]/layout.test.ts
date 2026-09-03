@@ -8,7 +8,10 @@ describe('Workout day metadata', () => {
   test('returns the weekday for a valid route', async () => {
     const metadata = await generateMetadata({ params: Promise.resolve({ weekDay: 'SEGUNDA' }) });
 
-    expect(metadata).toEqual({ title: 'Segunda-feira' });
+    expect(metadata).toEqual({
+      title: 'Segunda-feira',
+      robots: { index: false, follow: false },
+    });
   });
 
   /**
@@ -18,6 +21,9 @@ describe('Workout day metadata', () => {
   test('returns a not-found context for an invalid route', async () => {
     const metadata = await generateMetadata({ params: Promise.resolve({ weekDay: 'INVALIDO' }) });
 
-    expect(metadata).toEqual({ title: 'Treino não encontrado' });
+    expect(metadata).toEqual({
+      title: 'Treino não encontrado',
+      robots: { index: false, follow: false },
+    });
   });
 });

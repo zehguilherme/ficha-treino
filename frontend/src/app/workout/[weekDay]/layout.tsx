@@ -19,7 +19,10 @@ export const generateMetadata = async ({
   params,
 }: Pick<WorkoutLayoutProps, 'params'>): Promise<Metadata> => {
   const { weekDay } = await params;
-  return { title: DAY_NAMES[weekDay] ?? 'Treino não encontrado' };
+  return {
+    title: DAY_NAMES[weekDay] ?? 'Treino não encontrado',
+    robots: { index: false, follow: false },
+  };
 };
 
 const WorkoutLayout = ({ children }: WorkoutLayoutProps): React.ReactNode => children;
