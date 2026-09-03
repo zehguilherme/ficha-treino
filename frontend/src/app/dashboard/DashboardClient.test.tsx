@@ -112,6 +112,7 @@ describe('DashboardClient', () => {
     expect(screen.getByText('Segunda-feira')).not.toHaveClass('underline');
     expect(expand).toHaveClass('underline');
     expect(expand).not.toHaveClass('border');
+    expect(expand).toHaveClass('tracking-[0.02em]');
     await user.tab();
     await user.tab();
     expect(expand).toHaveFocus();

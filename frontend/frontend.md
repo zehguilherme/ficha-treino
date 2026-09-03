@@ -318,5 +318,5 @@ Testes dos interceptors da instância axios (injeção do JWT e limpeza de sess�
 - Sem API externa de exercícios — tudo via backend local
 - SVGs na UI devem ser componentes React em arquivos separados (ex: `ArrowLeftIcon.tsx`), nunca inline no JSX. Se um SVG já existe inline, extrair para componente.
 - Componentes em `src/components/` devem usar PascalCase (ex: `Button.tsx`, `FeatureCard.tsx`). Arquivos em `src/app/` são exceção (rotas Next.js) — usar skill `component-naming-pascalcase`.
-- Botões e links devem usar componentes ShadCN — renderizar `Button` de `src/components/ui/Button.tsx` para botões e `<Button asChild>` envolvendo `next/link` para links com estilo de botão. **Nunca** usar `<button>` ou `<a>` cru no JSX. Links de texto simples usam `next/link` diretamente.
+- No código de produção do frontend, botões devem renderizar `Button` de `src/components/ui/Button.tsx`; links com estilo de botão devem usar `<Button asChild>` envolvendo `next/link`. Links de texto simples usam `next/link` diretamente. Fixtures de teste podem usar elementos nativos quando isso for necessário para isolar o comportamento testado.
 - **Nunca** expor nomes de variáveis de ambiente, secrets, tokens ou stack traces em mensagens ao usuário, `console.*` ou respostas HTTP. Erros devem ser genéricos no cliente.
