@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { AccountDeleteDialog } from '@/components/account/AccountDeleteDialog';
 import { UserMenu } from '@/components/layout/UserMenu';
+import { Footer } from '@/components/layout/Footer';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
@@ -55,6 +56,7 @@ const AccountPage = (): React.JSX.Element => {
         <main className="flex flex-1 items-center justify-center bg-background">
           <Loading message="Carregando sua conta..." />
         </main>
+        <Footer />
       </>
     );
   if (isProfileError || isRetryingProfile || !user)
@@ -74,6 +76,7 @@ const AccountPage = (): React.JSX.Element => {
             {isRetryingProfile ? 'Tentando novamente…' : 'Tentar novamente'}
           </Button>
         </main>
+        <Footer />
       </>
     );
 
@@ -167,6 +170,7 @@ const AccountPage = (): React.JSX.Element => {
         onOpenChange={setErrorOpen}
         message="Não foi possível excluir sua conta. Tente novamente."
       />
+      <Footer />
     </>
   );
 };

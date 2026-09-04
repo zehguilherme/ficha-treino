@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -52,6 +53,7 @@ export const DashboardClient = (): React.JSX.Element => {
         <main className="flex flex-1 items-center justify-center bg-background">
           <Loading message="Carregando Login..." />
         </main>
+        <Footer />
       </>
     );
   if (workouts.isError || isRetrying)
@@ -78,6 +80,7 @@ export const DashboardClient = (): React.JSX.Element => {
             {workouts.isFetching ? 'Tentando novamente…' : 'Tentar novamente'}
           </Button>
         </main>
+        <Footer />
       </>
     );
   if (status !== 'authenticated' || workouts.isPending)
@@ -87,6 +90,7 @@ export const DashboardClient = (): React.JSX.Element => {
         <main className="flex flex-1 items-center justify-center bg-background">
           <Loading message="Carregando treinos..." />
         </main>
+        <Footer />
       </>
     );
   return (
@@ -166,6 +170,7 @@ export const DashboardClient = (): React.JSX.Element => {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

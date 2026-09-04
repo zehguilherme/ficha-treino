@@ -18,6 +18,9 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 Todas as rotas usam o metadata do Next.js com o padrão `<contexto> — Ficha de Treino`; a landing
 mantém `Ficha de Treino — Seu treino organizado`. A rota dinâmica de treino deriva o contexto do
 dia na URL (ou `Treino não encontrado` para parâmetros inválidos), sem consulta adicional à API.
+Home, login, dashboard, treinos, conta e 404 usam o rodapé compartilhado com links iconográficos
+acessíveis para portfólio, GitHub, LinkedIn e e-mail, além do aviso “Todos os direitos reservados ©
+ano atual”; o callback do Google permanece sem rodapé por ser transitório.
 A origem canônica é `https://fichatreino.vercel.app`; `sitemap.xml` lista apenas a home pública e
 `robots.txt` bloqueia as áreas autenticadas. Login, callback, dashboard, conta e treinos usam
 `noindex, nofollow`. A home publica metadados Open Graph (`website`, locale `pt_BR`, título,

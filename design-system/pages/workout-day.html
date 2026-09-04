@@ -1011,6 +1011,14 @@
       width: 0.875rem;
       height: 0.875rem;
     }
+    .footer { border-top: 1px solid hsl(var(--border)); padding: 2rem 1.5rem; text-align: center; font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+    .footer-brand { margin-bottom: 0.25rem; color: hsl(var(--foreground)); font-weight: 500; }
+    .footer-copy { margin-bottom: 1rem; }
+    .footer-links { display: flex; justify-content: center; gap: 0.5rem; }
+    .footer-link { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); color: hsl(var(--muted-foreground)); }
+    .footer-link:hover { background: hsl(var(--secondary)); }
+    .footer-link:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    .footer-link svg { width: 1rem; height: 1rem; }
   </style>
 </head>
 <body>
@@ -1115,6 +1123,17 @@
     </div>
   </main>
 
+  <footer class="footer">
+    <div class="footer-brand">Ficha de Treino &mdash; Seu treino organizado</div>
+    <div class="footer-copy">Todos os direitos reservados © <span data-current-year></span></div>
+    <div class="footer-links">
+      <a class="footer-link" href="https://joseguilherme.vercel.app/" target="_blank" rel="noreferrer" aria-label="Portfólio" title="Portfólio"><span aria-hidden="true">◎</span></a>
+      <a class="footer-link" href="https://github.com/zehguilherme" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub"><span aria-hidden="true">●</span></a>
+      <a class="footer-link" href="https://www.linkedin.com/in/jos%C3%A9-guilherme-paro-monteiro-tomaine/" target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn"><span aria-hidden="true">in</span></a>
+      <a class="footer-link" href="mailto:jgtomaine@hotmail.com" aria-label="E-mail" title="E-mail"><span aria-hidden="true">@</span></a>
+    </div>
+  </footer>
+
   <div class="modal-overlay" id="clearModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="clearModalTitle">
       <button class="modal-close" onclick="closeClearModal()" aria-label="Fechar" data-od-id="btn-fechar-modal">
@@ -1174,6 +1193,7 @@
   </div>
 
   <script>
+    document.querySelector('[data-current-year]').textContent = new Date().getFullYear();
     const days = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
     const dayNames = {
       domingo: 'Domingo', segunda: 'Segunda-feira', terca: 'Terça-feira',

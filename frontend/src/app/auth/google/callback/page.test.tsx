@@ -47,6 +47,7 @@ describe('GoogleCallbackPage', () => {
     render(<GoogleCallbackPage />);
 
     expect(screen.getByText('Autenticando...').closest('.bg-card')).toBeNull();
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument();
   });
 
   /**

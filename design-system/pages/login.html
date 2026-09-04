@@ -37,9 +37,21 @@
       color: hsl(var(--foreground));
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
     }
+
+    .card { margin: auto; }
+
+    .footer { width: 100%; border-top: 1px solid hsl(var(--border)); padding: 2rem 1.5rem; text-align: center; font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+    .footer-brand { margin-bottom: 0.25rem; color: hsl(var(--foreground)); font-weight: 500; }
+    .footer-copy { margin-bottom: 1rem; }
+    .footer-links { display: flex; justify-content: center; gap: 0.5rem; }
+    .footer-link { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); color: hsl(var(--muted-foreground)); }
+    .footer-link:hover { background: hsl(var(--secondary)); }
+    .footer-link:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    .footer-link svg { width: 1rem; height: 1rem; }
 
     .btn-google {
       display: inline-flex;
@@ -121,7 +133,19 @@
     </p>
   </div>
 
+  <footer class="footer">
+    <div class="footer-brand">Ficha de Treino &mdash; Seu treino organizado</div>
+    <div class="footer-copy">Todos os direitos reservados © <span data-current-year></span></div>
+    <div class="footer-links">
+      <a class="footer-link" href="https://joseguilherme.vercel.app/" target="_blank" rel="noreferrer" aria-label="Portfólio" title="Portfólio"><span aria-hidden="true">◎</span></a>
+      <a class="footer-link" href="https://github.com/zehguilherme" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub"><span aria-hidden="true">●</span></a>
+      <a class="footer-link" href="https://www.linkedin.com/in/jos%C3%A9-guilherme-paro-monteiro-tomaine/" target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn"><span aria-hidden="true">in</span></a>
+      <a class="footer-link" href="mailto:jgtomaine@hotmail.com" aria-label="E-mail" title="E-mail"><span aria-hidden="true">@</span></a>
+    </div>
+  </footer>
+
   <script>
+    document.querySelector('[data-current-year]').textContent = new Date().getFullYear();
     function loginWithGoogle() {
       localStorage.setItem('user', JSON.stringify({
         google_id: '123456789',

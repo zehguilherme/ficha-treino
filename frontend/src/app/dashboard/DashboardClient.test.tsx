@@ -44,6 +44,7 @@ describe('DashboardClient', () => {
     renderDashboard();
 
     expect(screen.getByText('Carregando treinos...')).toBeInTheDocument();
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
     expect(screen.queryByText('Carregando Login...')).not.toBeInTheDocument();
   });
 
