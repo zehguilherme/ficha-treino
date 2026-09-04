@@ -20,16 +20,14 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'Ficha de Treino',
     title: 'Ficha de Treino — Seu treino organizado',
-    description:
-      'Organize seus treinos, acompanhe cada exercício e evolua com consistência. O planejamento que separa quem sonha de quem conquista.',
+    description: 'Organize seus treinos, acompanhe seu progresso e evolua com consistência.',
   },
   twitter: { card: 'summary_large_image' },
   title: {
     default: 'Ficha de Treino — Seu treino organizado',
     template: '%s — Ficha de Treino',
   },
-  description:
-    'Organize seus treinos, acompanhe cada exercício e evolua com consistência. O planejamento que separa quem sonha de quem conquista.',
+  description: 'Organize seus treinos, acompanhe seu progresso e evolua com consistência.',
   icons: {
     icon: '/icon.svg',
     apple: '/apple-icon.svg',

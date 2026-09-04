@@ -30,7 +30,31 @@ const OpenGraphImage = (): ImageResponse =>
           Organize seus treinos, acompanhe cada exercício e evolua com consistência.
         </div>
       </div>
-      <div style={{ color: '#94a3b8', display: 'flex', fontSize: 22 }}>fichatreino.vercel.app</div>
+      <div
+        style={{
+          alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%',
+        }}
+      >
+        <div style={{ color: '#94a3b8', display: 'flex', fontSize: 22 }}>
+          fichatreino.vercel.app
+        </div>
+        <div
+          style={{
+            background: '#bfdbfe',
+            borderRadius: 8,
+            color: '#111827',
+            display: 'flex',
+            fontSize: 22,
+            fontWeight: 700,
+            padding: '12px 18px',
+          }}
+        >
+          Começar agora
+        </div>
+      </div>
     </div>,
     size,
   );
