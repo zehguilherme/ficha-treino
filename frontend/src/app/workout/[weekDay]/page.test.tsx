@@ -120,6 +120,7 @@ describe('WorkoutDayPage', () => {
     expect(
       screen.getByRole('heading', { name: 'Esse treino não existe', level: 1 }),
     ).toBeInTheDocument();
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
     expect(
       screen.getByText('O endereço pode estar incorreto ou este dia não faz parte da sua ficha.'),
     ).toBeInTheDocument();

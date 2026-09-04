@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
@@ -222,6 +223,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
       <>
         {errorDialog}
         <main className="flex-1 bg-background" />
+        <Footer />
       </>
     );
   if (!weekDay)
@@ -248,6 +250,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
             </Button>
           </section>
         </main>
+        <Footer />
       </>
     );
   if (workout.isPending && !isRetryingWorkout)
@@ -258,6 +261,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
         <main className="flex flex-1 items-center justify-center bg-background">
           <Loading message="Carregando treino..." />
         </main>
+        <Footer />
       </>
     );
   if (workout.isError || isRetryingWorkout)
@@ -278,6 +282,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
             {isRetryingWorkout ? 'Tentando novamente…' : 'Tentar novamente'}
           </Button>
         </main>
+        <Footer />
       </>
     );
 
@@ -409,6 +414,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 };

@@ -83,6 +83,7 @@ describe('AccountPage', () => {
       'justify-center',
       'bg-background',
     );
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
   });
 
   /**
