@@ -18,7 +18,11 @@ describe('root metadata', () => {
       url: '/',
       siteName: 'Ficha de Treino',
       title: 'Ficha de Treino — Seu treino organizado',
+      description: 'Organize seus treinos, acompanhe seu progresso e evolua com consistência.',
     });
+    expect(metadata.description).toBe(
+      'Organize seus treinos, acompanhe seu progresso e evolua com consistência.',
+    );
     expect(metadata.twitter).toMatchObject({ card: 'summary_large_image' });
   });
 });

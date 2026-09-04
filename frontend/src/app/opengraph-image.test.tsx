@@ -38,5 +38,6 @@ describe('Open Graph image', () => {
     expect(text).toContain(
       'Organize seus treinos, acompanhe cada exercício e evolua com consistência.',
     );
+    expect(text).toContain('Começar agora');
   });
 });
