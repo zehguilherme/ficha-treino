@@ -150,3 +150,8 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-01 — correção de altura da área clicável da issue #177 — cards em uma mesma linha agora usam coluna flexível e o link `flex-1`, cobrindo também a altura esticada pelo grid quando não há botão de expansão.
 
 2026-09-03 — issue #193 — metadata Open Graph e Twitter Card adicionados à home; card social PNG 1200×630 gerado pela convenção `opengraph-image.tsx`, com testes de contrato e conteúdo.
+
+2026-09-07 — issue #237 — busca e adição de exercícios movidas da modal para `/workout/[weekDay]/add-exercise`, com rolagem natural em viewport completa, retorno ao treino após adicionar, testes da página e protótipo do design system sincronizado.
+2026-09-07 — refinamento responsivo da busca — componente dedicado `AddExercisePage` substituiu o legado `AddExerciseDialog`; apenas a faixa compacta de busca, filtros e chips permanece sticky, enquanto painel expandido e ações acompanham a rolagem em desktop e mobile.
+2026-09-07 — ações acessíveis durante filtros — com o painel avançado aberto, `Limpar busca e filtros` e `Pesquisar exercícios` passaram para uma barra fixa inferior responsiva, com safe area e espaço reservado para os resultados.
+2026-09-07 — reposicionamento após nova busca — a confirmação de uma consulta retorna a página ao topo antes de exibir os novos resultados.

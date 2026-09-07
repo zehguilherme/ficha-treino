@@ -158,15 +158,15 @@
       "category": "functional",
       "description": "Busca manual de exercícios por nome e filtros",
       "steps": [
-        "Na página workout day, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
+        "Na rota /workout/[weekDay]/add-exercise, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
         "Resultados aparecem somente após a ação explícita, ignorando acentos na busca",
         "Clicar em 'Carregar mais exercícios' exibe a próxima página até carregar todos os resultados",
         "Busca da issue 71 implementada; adição ao treino integrada à rota POST de exercícios",
         "Campo de busca tem ícone de lupa",
-        "Modal oferece filtros select fixos para categoria, equipamento, nível, força, mecânica e músculos, combinados com a busca"
+        "A página dedicada oferece filtros select fixos para categoria, equipamento, nível, força, mecânica e músculos, combinados com a busca"
       ],
       "passes": true,
-        "evidence": "WorkoutDayPage implementa busca autenticada no modal de adição com ação manual por botão/Enter, AbortSignal, paginação manual de 20 itens, busca sem acentos e filtros select fixos em painel dedicado; texto e filtros só são enviados juntos após confirmação explícita, que fecha o painel, reinicia a paginação e restaura o foco ao controle de filtros, desfocando o campo quando há pesquisa por texto para fechar o teclado virtual no mobile; recolher o painel ou usar Escape preserva os valores editáveis, enquanto Limpar busca e filtros reseta tudo e retorna ao estado inicial sem resultados ou nova consulta, ficando desabilitado sem filtros nem resultados; chips refletem imediatamente os filtros provisórios e permitem remoção independente; o controle segue visualmente o SelectTrigger sem label externo e exibe os filtros ativos; o X da busca limpa somente o texto, resultados usam o ExerciseCard compartilhado sem alteração visual, com rolagem exclusiva na lista, instruções expansíveis e a ação contextual Adicionar; a adição integrada atualiza os caches do treino/dashboard, fecha o modal e restaura o foco ao botão disparador; loading acessível e retry manual após falha, com testes do card, da modal e de sucesso/falha do retry."
+        "evidence": "A rota /workout/[weekDay]/add-exercise implementa busca autenticada com ação manual por botão/Enter, AbortSignal, paginação manual de 20 itens, busca sem acentos e filtros select fixos em painel dedicado; texto e filtros só são enviados juntos após confirmação explícita, que reinicia a paginação, reposiciona a página no topo e desfoca o campo quando há pesquisa por texto; a faixa compacta de busca, filtros e chips permanece sticky em qualquer largura, enquanto o painel expandido usa a rolagem natural e suas ações ficam em barra fixa inferior com safe area e espaço reservado nos resultados; chips refletem os filtros provisórios e permitem remoção independente, resultados reutilizam o ExerciseCard com instruções expansíveis e a ação contextual Adicionar; a adição atualiza os caches do treino/dashboard, exibe confirmação e retorna ao treino; loading acessível e retry manual permanecem cobertos pelos testes da página dedicada."
     },
     {
       "id": "ui-005",

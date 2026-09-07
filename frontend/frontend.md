@@ -13,11 +13,16 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 | `/auth/google/callback` | `GoogleCallbackPage` | Callback do OAuth Google                 |
 | `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards totalmente clicáveis, status e expansão de exercícios |
 | `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + search               |
+| `/workout/[weekDay]/add-exercise` | `AddExercisePage` | Catálogo paginado para adicionar exercícios |
 | `/account`              | `AccountPage`           | Dados do perfil + excluir conta + retry em falha de carregamento |
 
 Todas as rotas usam o metadata do Next.js com o padrão `<contexto> — Ficha de Treino`; a landing
-mantém `Ficha de Treino — Seu treino organizado`. A rota dinâmica de treino deriva o contexto do
-dia na URL (ou `Treino não encontrado` para parâmetros inválidos), sem consulta adicional à API.
+mantém `Ficha de Treino — Seu treino organizado`. Cada página deve declarar o contexto no seu
+`layout.tsx` ou `generateMetadata`, preferindo a composição pelo template do layout raiz. Em
+segmentos aninhados onde o template não é herdado, usar `title.absolute` com o título final completo,
+sem duplicar o sufixo. Toda nova rota deve incluir um teste de metadata. A rota dinâmica de treino
+deriva o contexto do dia na URL (ou `Treino não encontrado` para parâmetros inválidos), sem consulta
+adicional à API.
 Home, login, dashboard, treinos, conta e 404 usam o rodapé compartilhado com links iconográficos
 acessíveis para portfólio, GitHub, LinkedIn e e-mail, além do aviso “Todos os direitos reservados ©
 ano atual”; o callback do Google permanece sem rodapé por ser transitório.
@@ -46,11 +51,11 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 - **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro. O dashboard recebe o resumo de cada treino com nome e status `done` de todos os exercícios e permite expandir listas longas sem abrir o dia. Durante a adição ou remoção, o estado visual de loading e `aria-busy` é individual do exercício confirmado, enquanto os demais botões permanecem desabilitados para evitar ações concorrentes
 - **Context API**: sessão do usuário (login/logout); a página `/account` reutiliza o perfil carregado (`name`, `email`) e exibe iniciais como avatar. Falhas ao carregar o perfil exibem modal de erro, estado contextual e botão `Tentar novamente` usando o refetch da consulta.
 - A página `/account` usa cabeçalho próprio com link reutilizável de voltar para `/dashboard`, título “Minha Conta” e menu de iniciais contendo somente “Sair”, sem o logo/menu de navegação do cabeçalho global; a ação de exclusão fica alinhada à direita no desktop e ocupa toda a largura no mobile.
-- **`useState`**: input e texto pesquisado, filtros aplicados e provisórios, modal, painel dedicado de filtros, carrossel e estados transitórios de retry
+- **`useState`**: input e texto pesquisado, filtros aplicados e provisórios, painel dedicado de filtros, carrossel e estados transitórios de retry
 
-A página de treino abre um modal shadcn para consultar `GET /api/exercises` somente após o botão `Pesquisar exercícios` ou `Enter` no campo, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. A busca permanece visível em todas as visões. Texto e filtros editados não consultam a API automaticamente; a ação explícita normaliza o nome, confirma os filtros e inicia uma única consulta combinada. Textos de inputs comuns, incluindo seu placeholder, usam `muted-foreground`; todos os textos dos controles de formulário usam a mesma família sans-serif, tamanho `text-sm`, peso normal e espaçamento normal. A modal oferece um painel dedicado com os sete selects de categoria, equipamento, nível, força, mecânica e músculos primário/secundário. Os valores são fixos, as labels são PT-BR, o texto sem seleção dos `Select` usa `muted-foreground`, o item selecionado usa `foreground`, o controle sem label externo segue o tratamento visual do `SelectTrigger`, e filtros aplicados aparecem como chips removíveis em faixa horizontal. Ao abrir o painel, os valores editáveis são preservados; recolher o painel ou pressionar `Escape` apenas o oculta, sem consultar a API nem alterar os chips. O painel possui rolagem própria, uma coluna no mobile e duas no desktop. `Limpar busca e filtros` remove texto, filtros e chips, fecha o painel e retorna ao estado inicial sem resultados nem nova consulta. Limpar o texto da busca pelo X preserva os filtros aplicados e provisórios, enquanto fechar a modal ou concluir a adição executa o reset completo. A consulta também pode ser iniciada apenas por filtros. Os resultados são carregados em páginas de 20 itens, usam o `ExerciseCard` compartilhado com categoria/equipamento e uma faixa responsiva de nível, tipo de força e mecânica, além dos músculos, e possuem rolagem exclusiva na lista; o botão `Carregar mais exercícios` busca as páginas seguintes até exibir todo o resultado. A modal expõe `Instruções` e `Adicionar`, enquanto o treino expõe `Feito`, `Instruções` e `Remover`. As rotas `POST /api/workouts/:weekDay/exercises`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` e `DELETE /api/workouts/:weekDay/exercises/:exerciseId` estão integradas à página, com atualização dos caches do treino/dashboard, estados de loading, erros genéricos e confirmações acessíveis. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
+A página dedicada de adição em `/workout/[weekDay]/add-exercise` consulta `GET /api/exercises` somente após o botão `Pesquisar exercícios` ou `Enter` no campo, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. A faixa compacta de busca, abertura de filtros e chips permanece sticky abaixo do cabeçalho em qualquer largura, enquanto o painel expandido usa a rolagem natural da página. O wrapper dos controles usa `display: contents` para que a faixa sticky permaneça ativa durante a rolagem dos resultados. Quando os filtros avançados estão abertos, os botões de ação ficam em uma barra fixa inferior responsiva; ao fechá-los, retornam à barra compacta. Texto e filtros editados não consultam a API automaticamente; a ação explícita normaliza o nome, confirma os filtros e inicia uma única consulta combinada. A página oferece um painel dedicado com os sete selects de categoria, equipamento, nível, força, mecânica e músculos primário/secundário, chips removíveis, paginação de 20 itens, instruções e estados de loading/erro. Após adicionar, os caches do treino/dashboard são invalidados, uma confirmação é exibida e o usuário retorna ao treino do dia. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
 
-Na busca de exercícios, o placeholder informa que a consulta é feita somente pelo nome do exercício. Abaixo do controle, dos chips e da abertura dos selects, `Limpar busca e filtros` fica à esquerda e `Pesquisar exercícios` à direita; em telas menores, ambos ocupam toda a largura e ficam empilhados. Os chips refletem imediatamente os valores selecionados nos filtros editáveis e cada um pode ser removido de forma independente, sem consulta automática; a nova combinação só é enviada após pesquisar. A faixa de chips mantém largura mínima zero, limite de largura e contenção de overscroll horizontal para não expandir a modal em telas estreitas. O botão de limpeza fica desabilitado quando não há filtros nem exercícios nos resultados. Quando expandido, o painel de filtros usa uma superfície clara `muted/50` com borda e espaçamento próprio; os selects permanecem em `card` e não há ações duplicadas no rodapé. A pesquisa fecha o painel após confirmar texto e filtros; pelo botão, o foco retorna ao controle de filtros, enquanto uma pesquisa por texto desfoca o campo também no envio com `Enter`, permitindo visualizar os resultados no mobile sem o teclado virtual aberto. Fechar a modal limpa texto, filtros, chips e a solicitação do catálogo, portanto a reabertura começa sem resultados.
+Na busca de exercícios, o placeholder informa que a consulta é feita somente pelo nome do exercício. Com o painel fechado, `Limpar busca e filtros` fica à esquerda e `Pesquisar exercícios` à direita na faixa compacta; em telas menores, ambos ocupam toda a largura e ficam empilhados. Com o painel aberto, as mesmas ações passam para uma barra fixa inferior com safe area, empilhada no mobile e horizontal no desktop; os resultados recebem `pb-32` no mobile e `pb-24` a partir de `sm` para que o último card não fique encoberto. Os chips refletem imediatamente os valores selecionados nos filtros editáveis e cada um pode ser removido de forma independente, sem consulta automática; a nova combinação só é enviada após pesquisar, reposicionando a página no topo. A faixa de chips mantém largura mínima zero, limite de largura e contenção de overscroll horizontal para não expandir a página em telas estreitas. O botão de limpeza fica desabilitado quando não há filtros nem exercícios nos resultados. Quando expandido, o painel de filtros usa uma superfície clara `muted/50` com borda e espaçamento próprio; os selects permanecem em `card`. A pesquisa fecha o painel após confirmar texto e retorna o foco ao controle de filtros, enquanto uma pesquisa por texto desfoca o campo também no envio com `Enter`, permitindo visualizar os resultados no mobile sem o teclado virtual aberto.
 
 O cabeçalho fixo da página de treino exibe o dia da semana e o progresso dos exercícios com o componente Shadcn `Progress`: texto explícito de exercícios concluídos, percentual e barra semântica; o dia não é repetido no conteúdo principal. A barra usa `success` quando todos estão concluídos e é omitida quando o treino está vazio. Em telas de até 640px, o rótulo visual usa o formato compacto `concluído/total` para caber na altura fixa do cabeçalho; acima desse breakpoint, o texto completo fica visível, e o nome completo permanece na semântica do indicador em todos os tamanhos.
 
@@ -72,6 +77,7 @@ src/
     dashboard/page.tsx
     workout/[weekDay]/page.tsx
     workout/[weekDay]/layout.tsx (metadata dinâmico por dia)
+    workout/[weekDay]/add-exercise/layout.tsx (metadata final da página)
     account/page.tsx
   components/
     ui/                   (ShadCN)
@@ -100,7 +106,7 @@ src/
       LoginForm.tsx
       LoginGate.tsx
     workout/
-      AddExerciseDialog.tsx
+      AddExercisePage.tsx
       ClearWorkoutDialog.tsx
       RemoveWorkoutExerciseDialog.tsx
     account/
@@ -318,9 +324,13 @@ Testa o card compartilhado de exercícios, incluindo metadados, ações e expans
 
 Testa a pílula reutilizável de rótulo/valor e a omissão de valores vazios.
 
-#### `src/components/workout/AddExerciseDialog.test.tsx`
+#### `src/app/workout/[weekDay]/add-exercise/page.test.tsx`
 
-Também valida o painel dedicado dos sete filtros fixos, busca visível, preservação dos valores ao recolher, foco de teclado, labels PT-BR, chips ativos removíveis, montagem de consultas com nome e filtros, limpeza conjunta da busca e filtros, estados da busca, uso do card compartilhado, abertura de instruções e a ação contextual `Adicionar`.
+Testa a página dedicada, o retorno acessível ao treino do dia, a navegação automática após adicionar um exercício e o comportamento responsivo do shell de busca, filtros e ações.
+
+#### `src/app/workout/[weekDay]/add-exercise/layout.test.ts`
+
+Testa o título final da página de adição, a política `noindex, nofollow` e a compatibilidade com o template global da aba.
 
 #### `src/lib/api.test.ts`
 

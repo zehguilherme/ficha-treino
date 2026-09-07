@@ -1,6 +1,6 @@
 # Design System — Ficha de Treino
 
-Baseado nos tokens ShadCN (HSL) + Tailwind + Inter, extraído de `login.html`, `dashboard.html`, `workout-day.html`, `minha-conta.html`.
+Baseado nos tokens ShadCN (HSL) + Tailwind + Inter, extraído de `login.html`, `dashboard.html`, `workout-day.html`, `add-exercise.html`, `minha-conta.html`.
 
 ---
 
@@ -136,7 +136,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 
 **Back link:** `IconLink` compartilhado pelos cabeçalhos de conta e treino; combina `ArrowLeftIcon`, rótulo acessível, link para `/dashboard`, variante outline e foco visível.
 
-**Exercise card:** the same card composition is used in the workout-day list and the add-exercise dialog. Both show the carousel, exercise metadata, muscles, and expandable instructions. The workout variant exposes `Feito` and `Remover`; the search variant exposes `Adicionar`. On mobile, `Instruções` appears before the contextual action and both actions use the full card width.
+**Exercise card:** the same card composition is used in the workout-day list and the add-exercise page. Both show the carousel, exercise metadata, muscles, and expandable instructions. The workout variant exposes `Feito` and `Remover`; the search variant exposes `Adicionar`. On mobile, `Instruções` appears before the contextual action and both actions use the full card width.
 
 ### 4.4 Formulários
 

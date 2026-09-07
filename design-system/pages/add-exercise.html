@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adicionar exercício — Ficha de Treino</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: hsl(var(--background)); color: hsl(var(--foreground)); font: 400 .875rem/1.6 var(--font-sans, sans-serif); }
+    .page-header { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: .75rem; height: 3.5rem; padding: 0 1rem; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--card)); }
+    .back { display: inline-flex; align-items: center; padding: .5rem .75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); color: inherit; text-decoration: none; }
+    main { max-width: 56rem; margin: 0 auto; padding: 2rem 1rem; }
+    h1 { margin: 0; font-size: 1rem; } h2 { margin: 0; font-size: 1.5rem; } p { color: hsl(var(--muted-foreground)); }
+    .search { display: grid; gap: .75rem; margin-top: 1.5rem; }
+    .search-shell { display: contents; }
+    .search-controls { position: sticky; top: 3.5rem; z-index: 1; margin: 0 -1rem; padding: .25rem 1rem .75rem; background: hsl(var(--background) / .95); backdrop-filter: blur(8px); }
+    input, select, button { min-height: 2.5rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); color: inherit; padding: .5rem .75rem; font: inherit; }
+    button { cursor: pointer; } .primary { background: hsl(var(--foreground)); color: hsl(var(--background)); }
+    .filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: .75rem; padding: 1rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--muted) / .5); }
+    .filters label { display: grid; gap: .375rem; color: hsl(var(--foreground)); }
+    .actions { display: flex; justify-content: space-between; gap: .75rem; margin-top: .75rem; }
+    .action-bar { position: fixed; inset: auto 0 0; z-index: 3; margin: 0; padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom)); border-top: 1px solid hsl(var(--border)); background: hsl(var(--card) / .95); box-shadow: 0 -4px 16px hsl(var(--foreground) / .08); backdrop-filter: blur(8px); }
+    .results { display: grid; gap: .75rem; margin-top: 1.5rem; padding-bottom: 8rem; }
+    .exercise { padding: 1rem; border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) + .125rem); background: hsl(var(--card)); }
+    @media (max-width: 640px) { main { padding: 1.5rem 1rem; } .filters { grid-template-columns: 1fr; } .actions { flex-direction: column; } .actions button { width: 100%; } }
+    @media (min-width: 641px) { .results { padding-bottom: 6rem; } }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <a class="back" href="workout-day.html" aria-label="Voltar para o treino">←</a>
+    <h1>Adicionar exercício</h1>
+  </header>
+  <main>
+    <h2>Adicionar exercício</h2>
+    <p>Busque um exercício para adicioná-lo ao treino.</p>
+    <section class="search" aria-label="Busca de exercícios">
+      <div class="search-shell">
+      <div class="search-controls">
+        <input type="search" aria-label="Buscar exercícios" placeholder="Buscar pelo nome do exercício...">
+        <button type="button" aria-expanded="true">Filtros avançados⌃</button>
+      </div>
+      <div class="filters" aria-label="Filtros de exercícios">
+        <label>Categoria<select><option>Selecionar categoria</option><option>Força</option><option>Cardio</option></select></label>
+        <label>Equipamento<select><option>Selecionar equipamento</option><option>Barra</option><option>Halteres</option></select></label>
+        <label>Nível<select><option>Selecionar nível</option><option>Iniciante</option><option>Avançado</option></select></label>
+        <label>Tipo de força<select><option>Selecionar tipo de força</option><option>Empurrar</option><option>Puxar</option></select></label>
+      </div>
+      <div class="actions action-bar"><button type="button">Limpar busca e filtros</button><button class="primary" type="button">Pesquisar exercícios</button></div>
+      </div>
+    </section>
+    <section class="results" aria-label="Resultados da busca">
+      <article class="exercise"><strong>Supino reto</strong><p>Barra · Peito · Intermediário</p><button class="primary" type="button">Adicionar</button></article>
+      <button type="button">Carregar mais exercícios</button>
+    </section>
+  </main>
+</body>
+</html>

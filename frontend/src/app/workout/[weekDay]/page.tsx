@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
@@ -14,7 +14,6 @@ import { IconLink } from '@/components/ui/IconLink';
 import { ExerciseCard } from '@/components/exercise/ExerciseCard';
 import { Loading } from '@/components/ui/Loading';
 import { Progress } from '@/components/ui/Progress';
-import { AddExerciseDialog } from '@/components/workout/AddExerciseDialog';
 import { ClearWorkoutDialog } from '@/components/workout/ClearWorkoutDialog';
 import { RemoveWorkoutExerciseDialog } from '@/components/workout/RemoveWorkoutExerciseDialog';
 import { ArrowLeftIcon, BrushIcon, TrashIcon } from '@/components/ui/WorkoutIcons';
@@ -44,8 +43,6 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const queryClient = useQueryClient();
   const weekDay = getWeekDay(params.weekDay);
   const [openInstructions, setOpenInstructions] = useState<number | null>(null);
-  const [addExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
-  const addExerciseTriggerRef = useRef<HTMLButtonElement>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [removeExercise, setRemoveExercise] = useState<{
     exerciseId: string;
@@ -321,20 +318,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
               {weekDay ? (
                 <>
-                  <Button
-                    ref={addExerciseTriggerRef}
-                    type="button"
-                    onClick={() => setAddExerciseDialogOpen(true)}
-                    className="w-full sm:w-auto"
-                  >
-                    Adicionar exercício
+                  <Button asChild className="w-full sm:w-auto">
+                    <Link href={`/workout/${weekDay}/add-exercise`}>Adicionar exercício</Link>
                   </Button>
-                  <AddExerciseDialog
-                    weekDay={weekDay}
-                    open={addExerciseDialogOpen}
-                    onOpenChange={setAddExerciseDialogOpen}
-                    triggerRef={addExerciseTriggerRef}
-                  />
                 </>
               ) : null}
               <Button

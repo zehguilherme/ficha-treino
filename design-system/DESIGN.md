@@ -3,7 +3,7 @@
 > Product: Ficha de Treino — Gym workout tracking web app
 > Framework: ShadCN HSL tokens + Tailwind CSS + Inter
 > Language: Brazilian Portuguese
-> Source screens: landing, login, dashboard, workout-day, minha-conta, 404
+> Source screens: landing, login, dashboard, workout-day, add-exercise, minha-conta, 404
 
 ---
 
@@ -11,7 +11,7 @@
 
 Ficha de Treino is a workout tracking web app. Users log in via Google, organize exercises by day of the week, search exercises in Brazilian Portuguese, mark sets as done, and view exercise instructions with image carousels. The app is CSR after auth, with a static landing/login and no external API dependency.
 
-**Screens:** Landing → Login → Dashboard (week grid) → Workout Day (exercise list with search) → Minha Conta (profile + danger zone)
+**Screens:** Landing → Login → Dashboard (week grid) → Workout Day → Add Exercise (full-page catalog) → Minha Conta (profile + danger zone)
 
 ---
 
@@ -280,7 +280,7 @@ Card hover: `border-color: hsl(var(--ring) / 0.12)`, `box-shadow: 0 1px 3px hsl(
 - Pagination remains outside the cards and appears after the result list
 
 ### 7.10 Exercise Card (Workout Day)
-- Shared by the workout-day list and the add-exercise dialog
+- Shared by the workout-day list and the add-exercise page
 - Card body padding: 1.25rem
 - Content order: carousel, exercise name, category/equipment tags, primary and optional secondary muscles, action row, and instructions panel when expanded
 - Exercise name: 0.9375rem, weight 600, wrapping long names instead of clipping
