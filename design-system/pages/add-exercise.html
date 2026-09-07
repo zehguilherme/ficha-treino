@@ -12,16 +12,18 @@
     h1 { margin: 0; font-size: 1rem; } h2 { margin: 0; font-size: 1.5rem; } p { color: hsl(var(--muted-foreground)); }
     .search { display: grid; gap: .75rem; margin-top: 1.5rem; }
     .search-shell { display: contents; }
-    .search-controls { position: sticky; top: 3.5rem; z-index: 1; margin: 0 -1rem; padding: .25rem 1rem .75rem; background: hsl(var(--background) / .95); backdrop-filter: blur(8px); }
+    .search-controls { position: sticky; top: 3.5rem; z-index: 1; margin: 0 -1rem; padding: .25rem 1rem .75rem; background: hsl(var(--background)); }
     input, select, button { min-height: 2.5rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); color: inherit; padding: .5rem .75rem; font: inherit; }
-    button { cursor: pointer; } .primary { background: hsl(var(--foreground)); color: hsl(var(--background)); }
+    button { cursor: pointer; } button:disabled { cursor: not-allowed; opacity: .5; } .primary { background: hsl(var(--foreground)); color: hsl(var(--background)); }
     .filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: .75rem; padding: 1rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--muted) / .5); }
     .filters label { display: grid; gap: .375rem; color: hsl(var(--foreground)); }
     .actions { display: flex; justify-content: space-between; gap: .75rem; margin-top: .75rem; }
-    .action-bar { position: fixed; inset: auto 0 0; z-index: 3; margin: 0; padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom)); border-top: 1px solid hsl(var(--border)); background: hsl(var(--card) / .95); box-shadow: 0 -4px 16px hsl(var(--foreground) / .08); backdrop-filter: blur(8px); }
+    .action-bar { position: fixed; inset: auto 0 0; z-index: 3; margin: 0; border-top: 1px solid hsl(var(--border)); background: hsl(var(--card)); box-shadow: 0 -4px 16px hsl(var(--foreground) / .08); }
+    .action-bar-content { display: flex; width: 100%; max-width: 80rem; margin: 0 auto; padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom)); justify-content: space-between; gap: .75rem; }
     .results { display: grid; gap: .75rem; margin-top: 1.5rem; padding-bottom: 8rem; }
     .exercise { padding: 1rem; border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) + .125rem); background: hsl(var(--card)); }
-    @media (max-width: 640px) { main { padding: 1.5rem 1rem; } .filters { grid-template-columns: 1fr; } .actions { flex-direction: column; } .actions button { width: 100%; } }
+    @media (max-width: 640px) { main { padding: 1.5rem 1rem; } .filters { grid-template-columns: 1fr; } .actions, .action-bar-content { flex-direction: column; } .actions button { width: 100%; } }
+    @media (min-width: 641px) { .action-bar-content { padding-left: 1.5rem; padding-right: 1.5rem; } }
     @media (min-width: 641px) { .results { padding-bottom: 6rem; } }
   </style>
 </head>
@@ -45,7 +47,7 @@
         <label>Nível<select><option>Selecionar nível</option><option>Iniciante</option><option>Avançado</option></select></label>
         <label>Tipo de força<select><option>Selecionar tipo de força</option><option>Empurrar</option><option>Puxar</option></select></label>
       </div>
-      <div class="actions action-bar"><button type="button">Limpar busca e filtros</button><button class="primary" type="button">Pesquisar exercícios</button></div>
+      <div class="actions action-bar"><div class="action-bar-content"><button type="button">Limpar busca e filtros</button><button class="primary" type="button" disabled aria-busy="true"><span aria-hidden="true">◌</span> Pesquisando exercícios…</button></div></div>
       </div>
     </section>
     <section class="results" aria-label="Resultados da busca">
