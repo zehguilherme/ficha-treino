@@ -5,15 +5,10 @@ import { isAxiosError } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { ExerciseCard } from '@/components/exercise/ExerciseCard';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/Dialog';
+import { Footer } from '@/components/layout/Footer';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Input } from '@/components/ui/Input';
+import { IconLink } from '@/components/ui/IconLink';
 import { Loading } from '@/components/ui/Loading';
 import {
   Select,
@@ -22,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/Select';
-import { ChevronDownIcon, SearchIcon, XIcon } from '@/components/ui/WorkoutIcons';
+import { ArrowLeftIcon, ChevronDownIcon, SearchIcon, XIcon } from '@/components/ui/WorkoutIcons';
 import { addWorkoutExercise, getExercises, type ExerciseFilters } from '@/lib/api';
 import { EXERCISE_LABELS } from '@/lib/exerciseLabels';
 import type { WeekDay } from '@/schemas/api';
@@ -95,19 +90,12 @@ const FILTER_DEFINITIONS: ReadonlyArray<FilterDefinition> = [
 const isDuplicateError = (error: unknown): boolean =>
   isAxiosError(error) && error.response?.status === 409;
 
-export interface AddExerciseDialogProps {
+export interface AddExercisePageProps {
   weekDay: WeekDay;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  triggerRef: React.RefObject<HTMLButtonElement | null>;
+  onAdded?: () => void;
 }
 
-const AddExerciseDialog = ({
-  weekDay,
-  open,
-  onOpenChange,
-  triggerRef,
-}: AddExerciseDialogProps): React.JSX.Element => {
+const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.Element => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [submittedSearch, setSubmittedSearch] = useState('');
@@ -124,7 +112,6 @@ const AddExerciseDialog = ({
   const resultsContainerRef = useRef<HTMLDivElement>(null);
   const filterTriggerRef = useRef<HTMLButtonElement>(null);
   const firstFilterRef = useRef<HTMLButtonElement>(null);
-  const wasOpen = useRef(open);
   const normalizedSearch = submittedSearch.trim();
   const hasActiveFilters = Object.values(filters).some(Boolean);
   const hasDraftFilters = Object.values(draftFilters).some(Boolean);
@@ -142,7 +129,7 @@ const AddExerciseDialog = ({
       const nextOffset = allPages.length * EXERCISES_PAGE_SIZE;
       return nextOffset < lastPage.total ? nextOffset : undefined;
     },
-    enabled: open && (catalogRequested || normalizedSearch.length > 0 || hasActiveFilters),
+    enabled: catalogRequested || normalizedSearch.length > 0 || hasActiveFilters,
   });
   const hasSearchResults = searchResults.data?.pages.some(({ items }) => items.length > 0) ?? false;
 
@@ -164,8 +151,7 @@ const AddExerciseDialog = ({
       void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
       void queryClient.invalidateQueries({ queryKey: ['workouts'] });
       toast.success('Exercício adicionado ao treino.');
-      resetDialogState();
-      onOpenChange(false);
+      onAdded?.();
     },
     onError: (error: unknown) => {
       if (isDuplicateError(error)) toast.warning('Este exercício já está no treino.');
@@ -173,24 +159,8 @@ const AddExerciseDialog = ({
     onSettled: () => setAddingExerciseId(null),
   });
 
-  useEffect(() => {
-    if (wasOpen.current && !open) triggerRef.current?.focus();
-    wasOpen.current = open;
-  }, [open, triggerRef]);
-
   const clearSearch = (): void => {
     setSearch('');
-  };
-
-  const resetDialogState = (): void => {
-    setSearch('');
-    setSubmittedSearch('');
-    setCatalogRequested(false);
-    setFilters({});
-    setDraftFilters({});
-    setFilterPanelOpen(false);
-    setFilterAnnouncement('');
-    setOpenInstructions(null);
   };
 
   const openFilterPanel = (): void => {
@@ -219,6 +189,7 @@ const AddExerciseDialog = ({
     const nextFilters = { ...draftFilters };
     const count = Object.values(nextFilters).filter(Boolean).length;
     if (!nextSearch && count === 0 && !hasPendingFilterChanges) return;
+    window.scrollTo({ top: 0, behavior: 'auto' });
     if (nextSearch) searchInputRef.current?.blur();
     setSubmittedSearch(nextSearch);
     setCatalogRequested(false);
@@ -322,145 +293,165 @@ const AddExerciseDialog = ({
     );
   };
 
+  const renderSearchActions = (fixed = false): React.JSX.Element => (
+    <div
+      data-slot={fixed ? 'exercise-action-bar' : undefined}
+      className={
+        fixed
+          ? 'fixed inset-x-0 bottom-0 z-30 flex flex-col gap-2 border-t border-border bg-card/95 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between'
+          : 'mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
+      }
+    >
+      <Button
+        type="button"
+        variant="ghost"
+        className="w-full sm:w-auto"
+        onClick={clearAllSearchAndFilters}
+        disabled={!hasActiveFilters && !hasDraftFilters && !hasSearchResults}
+      >
+        Limpar busca e filtros
+      </Button>
+      <Button
+        type="button"
+        className="w-full sm:w-auto"
+        onClick={() => submitSearch()}
+        disabled={!search.trim() && !hasDraftFilters && !hasPendingFilterChanges}
+      >
+        Pesquisar exercícios
+      </Button>
+    </div>
+  );
+
   return (
     <>
-      <ErrorAlertDialog
-        open={errorMessage !== null}
-        onOpenChange={(nextOpen) => {
-          if (!nextOpen) setDismissedError(activeError?.key ?? null);
-        }}
-        message={errorMessage ?? ''}
-      />
-      <Dialog
-        open={open}
-        onOpenChange={(nextOpen) => {
-          if (!nextOpen) resetDialogState();
-          onOpenChange(nextOpen);
-        }}
-      >
-        <DialogContent
-          onEscapeKeyDown={(event) => {
-            if (filterPanelOpen) {
-              event.preventDefault();
-              closeFilterPanel();
-            }
-          }}
-          className="min-w-0 grid-rows-[auto_auto_auto_minmax(0,1fr)] overflow-hidden"
-        >
-          <DialogHeader>
-            <DialogTitle>Adicionar exercício</DialogTitle>
-            <DialogDescription>Busque um exercício para adicioná-lo ao treino.</DialogDescription>
-          </DialogHeader>
-          <Input
-            ref={searchInputRef}
-            type="search"
-            aria-label="Buscar exercícios"
-            value={search}
-            onChange={(event) => handleSearchChange(event.target.value)}
-            placeholder="Buscar pelo nome do exercício..."
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                event.preventDefault();
-                submitSearch(false);
-              }
-            }}
-            leadingIcon={
-              <SearchIcon
-                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                aria-hidden="true"
-              />
-            }
-            onClear={clearSearchAndFocus}
-            clearLabel="Limpar busca"
-          />
-          <div className="min-w-0 min-h-0">
-            <Button
-              ref={filterTriggerRef}
-              type="button"
+      <main className="flex-1 bg-background">
+        <header className="sticky top-0 z-20 border-b border-border bg-card">
+          <div className="mx-auto flex h-14 max-w-[80rem] items-center gap-3 px-4 sm:px-6">
+            <IconLink
+              href={`/workout/${weekDay}`}
+              icon={<ArrowLeftIcon className="size-4" aria-hidden="true" />}
               variant="outline"
-              aria-expanded={filterPanelOpen}
-              aria-controls="exercise-filters"
-              aria-label="Mais filtros"
-              className="h-10 w-full justify-between bg-card px-3 font-sans text-sm !font-normal !tracking-normal text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10"
-              onClick={filterPanelOpen ? closeFilterPanel : openFilterPanel}
-            >
-              <span>Filtros avançados</span>
-              <ChevronDownIcon
-                className={`size-4 transition-transform ${filterPanelOpen ? 'rotate-180' : ''}`}
-                aria-hidden="true"
-              />
-            </Button>
-            {Object.keys(draftFilters).length > 0 ? (
-              <div
-                className="mt-2 flex min-w-0 max-w-full gap-2 overflow-x-auto overscroll-x-contain pb-1"
-                aria-label="Filtros ativos"
-              >
-                {FILTER_DEFINITIONS.map(({ key, label, options }) => {
-                  const value = draftFilters[key];
-                  if (!value) return null;
-                  const optionLabel =
-                    options.find((option) => option.value === value)?.label ?? value;
-                  return (
-                    <Button
-                      key={key}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      aria-label={`Remover filtro ${label}`}
-                      className="shrink-0 gap-1 rounded-full"
-                      onClick={() => clearFilter(key)}
-                    >
-                      {label}: {optionLabel}
-                      <XIcon className="size-3" aria-hidden="true" />
-                    </Button>
-                  );
-                })}
-              </div>
-            ) : null}
-            {filterAnnouncement ? (
-              <p role="status" aria-live="polite" className="sr-only">
-                {filterAnnouncement}
-              </p>
-            ) : null}
+              size="icon"
+              aria-label="Voltar para o treino"
+            />
+            <h1 className="text-base font-semibold tracking-tight">Adicionar exercício</h1>
           </div>
-          <div className="flex h-full min-w-0 min-h-0 flex-col">
+        </header>
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+          <ErrorAlertDialog
+            open={errorMessage !== null}
+            onOpenChange={(nextOpen) => {
+              if (!nextOpen) setDismissedError(activeError?.key ?? null);
+            }}
+            message={errorMessage ?? ''}
+          />
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold tracking-tight">Adicionar exercício</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Busque um exercício para adicioná-lo ao treino.
+            </p>
+          </div>
+          <div data-slot="exercise-search-shell" className="contents">
             <div
-              id="exercise-filters"
-              hidden={!filterPanelOpen}
-              role="region"
-              aria-label="Filtros de exercícios"
-              className="flex min-w-0 min-h-0 flex-col rounded-[var(--radius)] border border-border bg-muted/50 p-3 sm:p-4"
+              data-slot="exercise-search-controls"
+              className="sticky top-14 z-10 -mx-4 bg-background/95 px-4 pb-3 pt-1 backdrop-blur sm:-mx-6 sm:px-6"
             >
-              <div className="min-h-0 overflow-y-auto pr-1">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {FILTER_DEFINITIONS.map(({ key }) => renderFilter(key))}
+              <Input
+                ref={searchInputRef}
+                type="search"
+                aria-label="Buscar exercícios"
+                value={search}
+                onChange={(event) => handleSearchChange(event.target.value)}
+                placeholder="Buscar pelo nome do exercício..."
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    submitSearch(false);
+                  }
+                }}
+                leadingIcon={
+                  <SearchIcon
+                    className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                }
+                onClear={clearSearchAndFocus}
+                clearLabel="Limpar busca"
+              />
+              <div className="mt-3 min-w-0 min-h-0">
+                <Button
+                  ref={filterTriggerRef}
+                  type="button"
+                  variant="outline"
+                  aria-expanded={filterPanelOpen}
+                  aria-controls="exercise-filters"
+                  aria-label="Mais filtros"
+                  className="h-10 w-full justify-between bg-card px-3 font-sans text-sm !font-normal !tracking-normal text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10"
+                  onClick={filterPanelOpen ? closeFilterPanel : openFilterPanel}
+                >
+                  <span>Filtros avançados</span>
+                  <ChevronDownIcon
+                    className={`size-4 transition-transform ${filterPanelOpen ? 'rotate-180' : ''}`}
+                    aria-hidden="true"
+                  />
+                </Button>
+                {Object.keys(draftFilters).length > 0 ? (
+                  <div
+                    className="mt-2 flex min-w-0 max-w-full gap-2 overflow-x-auto overscroll-x-contain pb-1"
+                    aria-label="Filtros ativos"
+                  >
+                    {FILTER_DEFINITIONS.map(({ key, label, options }) => {
+                      const value = draftFilters[key];
+                      if (!value) return null;
+                      const optionLabel =
+                        options.find((option) => option.value === value)?.label ?? value;
+                      return (
+                        <Button
+                          key={key}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          aria-label={`Remover filtro ${label}`}
+                          className="shrink-0 gap-1 rounded-full"
+                          onClick={() => clearFilter(key)}
+                        >
+                          {label}: {optionLabel}
+                          <XIcon className="size-3" aria-hidden="true" />
+                        </Button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+                {filterAnnouncement ? (
+                  <p role="status" aria-live="polite" className="sr-only">
+                    {filterAnnouncement}
+                  </p>
+                ) : null}
+              </div>
+              {!filterPanelOpen ? renderSearchActions() : null}
+            </div>
+            <div className="contents">
+              <div
+                id="exercise-filters"
+                hidden={!filterPanelOpen}
+                role="region"
+                aria-label="Filtros de exercícios"
+                className="flex min-w-0 min-h-0 flex-col rounded-[var(--radius)] border border-border bg-muted/50 p-3 sm:p-4"
+              >
+                <div className="min-h-0 overflow-y-auto pr-1">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {FILTER_DEFINITIONS.map(({ key }) => renderFilter(key))}
+                  </div>
                 </div>
               </div>
+              {filterPanelOpen ? renderSearchActions(true) : null}
             </div>
-            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <Button
-                type="button"
-                variant="ghost"
-                className="w-full sm:w-auto"
-                onClick={clearAllSearchAndFilters}
-                disabled={!hasActiveFilters && !hasDraftFilters && !hasSearchResults}
-              >
-                Limpar busca e filtros
-              </Button>
-              <Button
-                type="button"
-                className="w-full sm:w-auto"
-                onClick={() => submitSearch()}
-                disabled={!search.trim() && !hasDraftFilters && !hasPendingFilterChanges}
-              >
-                Pesquisar exercícios
-              </Button>
-            </div>
+          </div>
+          <div className="flex min-w-0 flex-col">
             <div
               ref={resultsContainerRef}
               data-slot="exercise-search-results"
-              hidden={filterPanelOpen}
-              className="mt-4 min-w-0 min-h-0 flex-1 overflow-y-auto pr-1"
+              className={filterPanelOpen ? 'mt-4 min-w-0 pb-32 sm:pb-24' : 'mt-4 min-w-0'}
             >
               {catalogRequested || normalizedSearch || hasActiveFilters ? (
                 <>
@@ -542,10 +533,11 @@ const AddExerciseDialog = ({
               ) : null}
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </main>
+      <Footer />
     </>
   );
 };
 
-export { AddExerciseDialog };
+export { AddExercisePage };
