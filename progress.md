@@ -155,3 +155,9 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-07 — refinamento responsivo da busca — componente dedicado `AddExercisePage` substituiu o legado `AddExerciseDialog`; apenas a faixa compacta de busca, filtros e chips permanece sticky, enquanto painel expandido e ações acompanham a rolagem em desktop e mobile.
 2026-09-07 — ações acessíveis durante filtros — com o painel avançado aberto, `Limpar busca e filtros` e `Pesquisar exercícios` passaram para uma barra fixa inferior responsiva, com safe area e espaço reservado para os resultados.
 2026-09-07 — reposicionamento após nova busca — a confirmação de uma consulta retorna a página ao topo antes de exibir os novos resultados.
+2026-09-07 — issue #273 — ações de adicionar e limpar treino permanecem sticky abaixo do cabeçalho durante a rolagem, com teste de regressão.
+2026-09-07 — refinamento visual da issue #273 — barra sticky recebeu altura mais compacta e alinhamento vertical centralizado dos botões.
+2026-09-07 — ajuste visual da issue #273 — barra sticky preserva o background original da página sem perder a opacidade durante a rolagem.
+2026-09-07 — ajuste visual da issue #273 — removida a linha separadora inferior da barra sticky, mantendo apenas a sombra sutil.
+2026-09-07 — ajuste visual da issue #273 — ações alinhadas à borda direita dos cards de exercícios em todos os tamanhos.
+2026-09-07 — ajuste visual da issue #273 — adicionado espaçamento entre a barra sticky de ações e os cards de exercícios.

@@ -193,24 +193,24 @@ Minimalist, utilitarian, neutral. No decorative gradients, no emoji as icons, no
 
 | Variant | Padding | Border | Background | Text | Hover |
 |---------|---------|--------|------------|------|-------|
-| Default (primary) | 0.5rem 1rem | none | `--foreground` | `--primary-foreground` | opacity 0.85 |
+| Default (primary) | 40px height; 0 1rem horizontal | none | `--foreground` | `--primary-foreground` | opacity 0.85 |
 | Back link | 2rem × 2rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
-| Destructive (remove) | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
+| Destructive (remove) | 40px height; 0 1rem horizontal | none | `--destructive` | white | `--destructive / 0.9` |
 | Destructive outline (danger) | 0.375rem 0.75rem | 1px `--destructive / 0.3` | none | `--destructive` | `--destructive / 0.05` |
 | Clear | 0.375rem 0.75rem | 1px `--border` | none | `--muted-fg` | `--destructive`, border `--destructive / 0.3` |
-| Add (solid) | 0.5rem 1rem | none | `--foreground` | `--primary-fg` | opacity 0.85 |
-| Cancel (modal) | 0.5rem 1rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
-| Confirm delete | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
-| Delete account | 0.5rem 1rem | none | `--destructive` | white | `--destructive / 0.9` |
+| Add (solid) | 40px height; 0 1rem horizontal | none | `--foreground` | `--primary-fg` | opacity 0.85 |
+| Cancel (modal) | 40px height; 0 1rem horizontal | 1px `--border` | `--card` | `--foreground` | `--secondary` |
+| Confirm delete | 40px height; 0 1rem horizontal | none | `--destructive` | white | `--destructive / 0.9` |
+| Delete account | 40px height; 0 1rem horizontal | none | `--destructive` | white | `--destructive / 0.9` |
 | Login header | 0.375rem 0.75rem | 1px `--border` | none | `--foreground` | `--secondary` |
 | Google (full) | 0.625rem 1rem | 1px `--border` | `--card` | `--foreground` | `--secondary` |
 | Hero CTA | 0.75rem 2rem | none | `--primary` | `--primary-fg` | opacity 0.9 |
-| Instructions toggle | 0.5rem 1rem | 1px `--border` | none | `--muted-fg` | `--secondary` |
+| Instructions toggle | 40px height; 0 1rem horizontal | 1px `--border` | none | `--muted-fg` | `--secondary` |
 | Home (404) | 0.5rem 1.25rem | none | `--foreground` | `--primary-foreground` | opacity 0.85 |
 
 All buttons: `font-weight: 500`, `letter-spacing: 0.02em`, `border-radius: var(--radius)`, `transition: all 0.15s`.
 
-Default and outline actions share the base size of `0.5rem 1rem` padding and approximately 36px height. Use `sm` only for compact controls, `lg` for deliberate emphasis, and `icon` for square icon-only actions. CTA, Google login, carousel and modal controls may use their documented semantic exceptions.
+Primary, secondary, and tertiary text actions share a fixed base height of 40px through the shared `Button` component. Use `sm` (32px) only for compact controls, `lg` (44px) for deliberate emphasis, and `icon` (32px square) for icon-only actions. CTA and Google login may use their documented semantic exceptions; do not override button height locally for ordinary actions.
 
 Back link: square outline link with `ArrowLeftIcon`, accessible label and SVG 1rem; keyboard focus uses the standard visible ring.
 

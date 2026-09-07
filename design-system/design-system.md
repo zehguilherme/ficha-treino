@@ -99,16 +99,16 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | **Google (full-width)** | 1px `--border` | `--card` | `--fg` | `--secondary`, border `--ring / 0.2` |
 
 **Dimensões:**
-- Default/outline/destrutivo/ações de card: padding `0.5rem 1rem`, border-radius `--radius`
-- Small: padding `0.25rem 0.5rem`, font-size `0.75rem`
-- Large: padding `0.625rem 1.25rem`, font-size `0.875rem`
+- Default/outline/ghost/destrutivo/ações de card: altura fixa `2.5rem` (40px), padding horizontal `1rem`, border-radius `--radius`
+- Small: altura fixa `2rem` (32px), padding horizontal `0.5rem`, font-size `0.75rem`
+- Large: altura fixa `2.75rem` (44px), padding horizontal `1.25rem`, font-size `0.875rem`
 - Ícone-only: 2rem × 2rem
 - Back link: outline link quadrado com seta à esquerda, dimensões `2rem × 2rem`
-- Delete account: padding `0.5rem 1rem`
+- Delete account: altura `2.5rem` (40px), padding horizontal `1rem`
 - Google login: padding `0.75rem 1.5rem`, width 100%
 - CTA da landing: padding `0.875rem 2rem`, font-size `0.9375rem`
 
-**Regra:** ações equivalentes usam a mesma altura base. Variações `small`, `large`, `icon`, CTA e login são exceções semânticas, não overrides locais de altura.
+**Regra:** botões primários, secundários e terciários usam a mesma altura base de 40px pelo componente compartilhado `Button`. Variações `small`, `large`, `icon`, CTA e login são exceções semânticas; ações comuns não devem receber overrides locais de altura.
 
 **Ícone em botões:** sempre SVG 0.875rem × 0.875rem (destrutivos) ou 1rem × 1rem
 

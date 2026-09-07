@@ -185,7 +185,7 @@ describe('WorkoutDayPage', () => {
     expect(secondaryMuscleLabel.querySelector('svg')).toHaveAttribute('fill', 'none');
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeInTheDocument();
     const instructionsButton = screen.getByRole('button', { name: 'Instruções: Supino reto' });
-    expect(instructionsButton).toHaveClass('px-4', 'py-2', 'text-sm');
+    expect(instructionsButton).toHaveClass('h-10', 'px-4', 'text-sm');
     expect(instructionsButton).toHaveClass('max-[640px]:col-span-1', 'max-[640px]:w-full');
     expect(instructionsButton.parentElement).toHaveClass('gap-2');
     expect(instructionsButton.parentElement).toHaveClass(
@@ -197,7 +197,7 @@ describe('WorkoutDayPage', () => {
     expect(instructionsButton).toHaveAttribute('aria-expanded', 'false');
     const removeButton = screen.getByRole('button', { name: 'Remover Supino reto' });
     expect(removeButton).toBeEnabled();
-    expect(removeButton).toHaveClass('px-4', 'py-2', 'text-sm');
+    expect(removeButton).toHaveClass('h-10', 'px-4', 'text-sm');
     expect(removeButton).toHaveClass(
       'ml-auto',
       'gap-1.5',
@@ -248,10 +248,12 @@ describe('WorkoutDayPage', () => {
     expect(screen.getByRole('link', { name: 'Adicionar exercício' })).toHaveClass(
       'w-full',
       'sm:w-auto',
+      'h-10',
     );
     expect(screen.getByRole('button', { name: 'Limpar treino' })).toHaveClass(
       'w-full',
       'sm:w-auto',
+      'h-10',
     );
     expect(workoutActions?.children[0]).toContainElement(
       screen.getByRole('link', { name: 'Adicionar exercício' }),
@@ -264,6 +266,29 @@ describe('WorkoutDayPage', () => {
     expect(screen.getByRole('button', { name: 'Próxima imagem' })).toBeInTheDocument();
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Imagem 1' })).toBeInTheDocument();
+  });
+
+  test('keeps workout actions sticky below the header', async () => {
+    renderPage();
+
+    await screen.findByRole('link', { name: 'Adicionar exercício' });
+
+    const workoutActions = screen.getByRole('link', {
+      name: 'Adicionar exercício',
+    }).parentElement;
+    expect(workoutActions).toHaveClass('items-center');
+    expect(workoutActions?.parentElement?.parentElement).toHaveClass('pt-8', 'pb-4');
+    expect(workoutActions?.parentElement?.parentElement).not.toHaveClass('px-4');
+    expect(workoutActions?.parentElement?.parentElement?.parentElement).toHaveClass(
+      'sticky',
+      'top-14',
+      'z-10',
+      'bg-background',
+      'px-4',
+      'sm:px-6',
+    );
+    expect(workoutActions?.parentElement?.parentElement?.parentElement).not.toHaveClass('border-b');
+    expect(screen.getByRole('main')).toHaveClass('pt-4', 'pb-8');
   });
 
   test('links to the dedicated exercise search page', async () => {
@@ -853,7 +878,7 @@ describe('WorkoutDayPage', () => {
     });
 
     const addButton = await screen.findByRole('button', { name: 'Adicionar Tríceps na polia' });
-    expect(addButton).toHaveClass('px-4', 'py-2', 'text-sm');
+    expect(addButton).toHaveClass('h-10', 'px-4', 'text-sm');
     await user.click(addButton);
 
     expect(mockedAddWorkoutExercise).toHaveBeenCalledWith('TERCA', 'triceps-pushdown');

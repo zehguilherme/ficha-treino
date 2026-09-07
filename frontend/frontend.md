@@ -12,7 +12,7 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 | `/login`                | `LoginPage`          | Login com Google OAuth                   |
 | `/auth/google/callback` | `GoogleCallbackPage` | Callback do OAuth Google                 |
 | `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards totalmente clicáveis, status e expansão de exercícios |
-| `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + search               |
+| `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + ações sticky + search |
 | `/workout/[weekDay]/add-exercise` | `AddExercisePage` | Catálogo paginado para adicionar exercícios |
 | `/account`              | `AccountPage`           | Dados do perfil + excluir conta + retry em falha de carregamento |
 
@@ -58,6 +58,8 @@ A página dedicada de adição em `/workout/[weekDay]/add-exercise` consulta `GE
 Na busca de exercícios, o placeholder informa que a consulta é feita somente pelo nome do exercício. Com o painel fechado, `Limpar busca e filtros` fica à esquerda e `Pesquisar exercícios` à direita na faixa compacta; em telas menores, ambos ocupam toda a largura e ficam empilhados. Com o painel aberto, as mesmas ações passam para uma barra fixa inferior com safe area, empilhada no mobile e horizontal no desktop; o fundo da barra ocupa a viewport, mas seus controles ficam em um contêiner centralizado com a mesma largura máxima de `80rem` dos headers; os resultados recebem `pb-32` no mobile e `pb-24` a partir de `sm` para que o último card não fique encoberto. Os chips refletem imediatamente os valores selecionados nos filtros editáveis e cada um pode ser removido de forma independente, sem consulta automática; a nova combinação só é enviada após pesquisar, reposicionando a página no topo. A faixa de chips mantém largura mínima zero, limite de largura e contenção de overscroll horizontal para não expandir a página em telas estreitas. O botão de limpeza fica desabilitado quando não há filtros nem exercícios nos resultados. Quando expandido, o painel de filtros usa uma superfície clara `muted/50` com borda e espaçamento próprio; os selects permanecem em `card`. A pesquisa fecha o painel após confirmar texto e retorna o foco ao controle de filtros, enquanto uma pesquisa por texto desfoca o campo também no envio com `Enter`, permitindo visualizar os resultados no mobile sem o teclado virtual aberto.
 
 O cabeçalho fixo da página de treino exibe o dia da semana e o progresso dos exercícios com o componente Shadcn `Progress`: texto explícito de exercícios concluídos, percentual e barra semântica; o dia não é repetido no conteúdo principal. A barra usa `success` quando todos estão concluídos e é omitida quando o treino está vazio. Em telas de até 640px, o rótulo visual usa o formato compacto `concluído/total` para caber na altura fixa do cabeçalho; acima desse breakpoint, o texto completo fica visível, e o nome completo permanece na semântica do indicador em todos os tamanhos.
+
+Na página de treino, as ações `Adicionar exercício` e `Limpar treino` ficam em uma barra sticky opaca e compacta imediatamente abaixo do cabeçalho, com sombra sutil; os botões ficam centralizados verticalmente e mantêm os mesmos estados, foco e comportamento responsivo durante a rolagem.
 
 ## Estrutura atual
 
@@ -351,4 +353,5 @@ Testes dos interceptors da instância axios (injeção do JWT e limpeza de sess�
 - SVGs na UI devem ser componentes React em arquivos separados (ex: `ArrowLeftIcon.tsx`), nunca inline no JSX. Se um SVG já existe inline, extrair para componente.
 - Componentes em `src/components/` devem usar PascalCase (ex: `Button.tsx`, `FeatureCard.tsx`). Arquivos em `src/app/` são exceção (rotas Next.js) — usar skill `component-naming-pascalcase`.
 - No código de produção do frontend, botões devem renderizar `Button` de `src/components/ui/Button.tsx`; links com estilo de botão devem usar `<Button asChild>` envolvendo `next/link`. Links de texto simples usam `next/link` diretamente. Fixtures de teste podem usar elementos nativos quando isso for necessário para isolar o comportamento testado.
+- O `Button` compartilhado garante 40px de altura para ações primárias (`default`), secundárias (`outline`) e terciárias (`ghost`); `sm` (32px), `lg` (44px), `icon`, CTA e login são exceções semânticas. Novos botões comuns devem escolher apenas a variante/tamanho e não definir altura local; alterações nessa regra devem atualizar `Button.test.tsx`.
 - **Nunca** expor nomes de variáveis de ambiente, secrets, tokens ou stack traces em mensagens ao usuário, `console.*` ou respostas HTTP. Erros devem ser genéricos no cliente.

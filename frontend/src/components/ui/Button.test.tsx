@@ -30,23 +30,21 @@ describe('Button', () => {
   });
 
   /**
-   * Primary and secondary text actions share the same base touch target.
-   * Assert: default and outline variants use the shared 36px button spacing.
+   * Primary, secondary, and tertiary text actions share the same base height.
+   * Assert: all text variants use the shared 40px button height.
    */
-  test('keeps default and outline variants at the same base size', () => {
+  test('keeps text variants at the same base height', () => {
     render(
       <>
         <Button>Primária</Button>
         <Button variant="outline">Secundária</Button>
+        <Button variant="ghost">Terciária</Button>
       </>,
     );
 
-    expect(screen.getByRole('button', { name: 'Primária' })).toHaveClass('px-4', 'py-2', 'text-sm');
-    expect(screen.getByRole('button', { name: 'Secundária' })).toHaveClass(
-      'px-4',
-      'py-2',
-      'text-sm',
-    );
+    expect(screen.getByRole('button', { name: 'Primária' })).toHaveClass('h-10');
+    expect(screen.getByRole('button', { name: 'Secundária' })).toHaveClass('h-10');
+    expect(screen.getByRole('button', { name: 'Terciária' })).toHaveClass('h-10');
   });
 
   /**
