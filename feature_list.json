@@ -149,7 +149,7 @@
         "Header com contador done/total"
       ],
       "passes": true,
-      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética pelo ExerciseCard compartilhado, com metadados, instruções expansíveis, imagens e contador done/total; integra confirmação acessível e DELETE para remoção, com atualização dos caches, retry do treino, loading acessível e tratamento de erro; nomes longos preservados e primeira imagem priorizada; testes do card e da página, typecheck, lint e build verificados"
+      "evidence": "WorkoutDayPage consome o treino diário, exibe exercícios em ordem alfabética pelo ExerciseCard compartilhado, com metadados, instruções expansíveis, imagens e contador done/total; mantém as ações de adicionar e limpar sticky abaixo do cabeçalho; integra confirmação acessível e DELETE para remoção, com atualização dos caches, retry do treino, loading acessível e tratamento de erro; nomes longos preservados e primeira imagem priorizada; testes do card e da página, typecheck, lint e build verificados"
     },
     {
       "id": "ui-004",

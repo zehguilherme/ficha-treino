@@ -312,16 +312,14 @@ const WorkoutDayPage = (): React.JSX.Element => {
         }}
       />
       {workoutHeader}
-      <main className="flex-1 bg-background px-4 py-8 sm:px-6">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-4 flex justify-end">
-            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+      <div className="sticky top-14 z-10 bg-background px-4 shadow-sm sm:px-6">
+        <div className="mx-auto max-w-4xl pb-4 pt-8">
+          <div className="flex justify-end">
+            <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
               {weekDay ? (
-                <>
-                  <Button asChild className="w-full sm:w-auto">
-                    <Link href={`/workout/${weekDay}/add-exercise`}>Adicionar exercício</Link>
-                  </Button>
-                </>
+                <Button asChild className="w-full sm:w-auto">
+                  <Link href={`/workout/${weekDay}/add-exercise`}>Adicionar exercício</Link>
+                </Button>
               ) : null}
               <Button
                 variant="outline"
@@ -336,6 +334,10 @@ const WorkoutDayPage = (): React.JSX.Element => {
               </Button>
             </div>
           </div>
+        </div>
+      </div>
+      <main className="flex-1 bg-background px-4 pb-8 pt-4 sm:px-6">
+        <div className="mx-auto max-w-4xl">
           {exercises.length === 0 ? (
             <div className="flex min-h-64 flex-col items-center justify-center rounded-lg border border-dashed border-border px-6 text-center">
               <DumbbellIcon className="mb-3 size-8 text-muted-foreground" aria-hidden="true" />
