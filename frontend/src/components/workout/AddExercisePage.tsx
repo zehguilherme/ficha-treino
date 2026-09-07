@@ -297,28 +297,35 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
     <div
       data-slot={fixed ? 'exercise-action-bar' : undefined}
       className={
-        fixed
-          ? 'fixed inset-x-0 bottom-0 z-30 flex flex-col gap-2 border-t border-border bg-card/95 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between'
-          : 'mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
+        fixed ? 'fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card shadow-lg' : 'mt-2'
       }
     >
-      <Button
-        type="button"
-        variant="ghost"
-        className="w-full sm:w-auto"
-        onClick={clearAllSearchAndFilters}
-        disabled={!hasActiveFilters && !hasDraftFilters && !hasSearchResults}
+      <div
+        className={
+          fixed
+            ? 'mx-auto flex w-full max-w-[80rem] flex-col gap-2 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:flex-row sm:items-center sm:justify-between sm:px-6'
+            : 'flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'
+        }
       >
-        Limpar busca e filtros
-      </Button>
-      <Button
-        type="button"
-        className="w-full sm:w-auto"
-        onClick={() => submitSearch()}
-        disabled={!search.trim() && !hasDraftFilters && !hasPendingFilterChanges}
-      >
-        Pesquisar exercícios
-      </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          className="w-full sm:w-auto"
+          onClick={clearAllSearchAndFilters}
+          disabled={!hasActiveFilters && !hasDraftFilters && !hasSearchResults}
+        >
+          Limpar busca e filtros
+        </Button>
+        <Button
+          type="button"
+          className="w-full sm:w-auto"
+          onClick={() => submitSearch()}
+          disabled={!search.trim() && !hasDraftFilters && !hasPendingFilterChanges}
+          loading={searchResults.isFetching}
+        >
+          {searchResults.isFetching ? 'Pesquisando exercícios…' : 'Pesquisar exercícios'}
+        </Button>
+      </div>
     </div>
   );
 
@@ -354,7 +361,7 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
           <div data-slot="exercise-search-shell" className="contents">
             <div
               data-slot="exercise-search-controls"
-              className="sticky top-14 z-10 -mx-4 bg-background/95 px-4 pb-3 pt-1 backdrop-blur sm:-mx-6 sm:px-6"
+              className="sticky top-14 z-10 -mx-4 bg-background px-4 pb-3 pt-1 sm:-mx-6 sm:px-6"
             >
               <Input
                 ref={searchInputRef}

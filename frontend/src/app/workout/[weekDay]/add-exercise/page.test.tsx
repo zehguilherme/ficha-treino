@@ -18,7 +18,7 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ replace: mockedReplace })),
 }));
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { addWorkoutExercise, getExercises } from '@/lib/api';
@@ -113,19 +113,36 @@ describe('AddExercisePage', () => {
     await user.click(screen.getByRole('button', { name: 'Mais filtros' }));
 
     const actionBar = document.querySelector('[data-slot="exercise-action-bar"]');
+    const actionContent = actionBar?.firstElementChild;
     const results = document.querySelector('[data-slot="exercise-search-results"]');
 
-    expect(actionBar).toHaveClass(
-      'fixed',
-      'bottom-0',
-      'z-30',
-      'pb-[calc(1rem+env(safe-area-inset-bottom))]',
-      'sm:flex-row',
-    );
+    expect(actionBar).toHaveClass('fixed', 'bottom-0', 'z-30');
+    expect(actionContent).toHaveClass('mx-auto', 'w-full', 'max-w-[80rem]', 'sm:px-6');
+    expect(actionContent).toHaveClass('pb-[calc(1rem+env(safe-area-inset-bottom))]');
+    expect(actionContent).toHaveClass('sm:flex-row');
     expect(actionBar).not.toHaveClass('sticky');
     expect(results).toHaveClass('pb-32', 'sm:pb-24');
     expect(screen.getByRole('button', { name: 'Limpar busca e filtros' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Pesquisar exercícios' })).toBeInTheDocument();
+  });
+
+  /**
+   * Visual regression: scrolling results must not show the search surfaces through translucent glass.
+   * Assert: sticky controls and fixed actions use opaque backgrounds without backdrop blur.
+   */
+  test('keeps search controls opaque while results scroll', async () => {
+    const user = userEvent.setup();
+
+    renderPage();
+    await user.click(screen.getByRole('button', { name: 'Mais filtros' }));
+
+    const controls = document.querySelector('[data-slot="exercise-search-controls"]');
+    const actionBar = document.querySelector('[data-slot="exercise-action-bar"]');
+
+    expect(controls).toHaveClass('bg-background');
+    expect(controls).not.toHaveClass('bg-background/95', 'backdrop-blur');
+    expect(actionBar).toHaveClass('bg-card');
+    expect(actionBar).not.toHaveClass('bg-card/95', 'backdrop-blur');
   });
 
   /**
@@ -188,6 +205,25 @@ describe('AddExercisePage', () => {
 
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
     scrollTo.mockRestore();
+  });
+
+  /**
+   * A user submits a search whose request is still in flight.
+   * Mock: the exercise catalog request remains pending after explicit submission.
+   * Assert: the search button shows its internal loading state and is unavailable.
+   */
+  test('shows an inline loading state while searching exercises', async () => {
+    mockedGetExercises.mockReturnValue(new Promise(() => {}));
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'supino');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
+
+    const searchButton = screen.getByRole('button', { name: /Pesquisando exercícios/ });
+    expect(searchButton).toBeDisabled();
+    expect(searchButton).toHaveAttribute('aria-busy', 'true');
+    expect(within(searchButton).getByRole('status', { name: 'Carregando' })).toBeInTheDocument();
   });
 
   /**
