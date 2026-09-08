@@ -145,7 +145,7 @@ Não há sincronização periódica com API externa.
 
 ### Pesquisa
 
-- A busca dos exercícios ocorrerá enquanto o usuário digita (debounce).
+- A busca textual e os filtros serão enviados ao backend somente após uma ação explícita de pesquisa pelo usuário, no botão ou pela tecla Enter.
 - A pesquisa será realizada no banco de dados da aplicação.
 - A API aceitará filtros opcionais por `category`, `equipment`, `level`, `force`, `mechanic`, `primaryMuscle` e `secondaryMuscle`, usando somente valores fixos do dataset.
 - Filtros vazios ou ausentes serão ignorados; valores repetidos do mesmo filtro serão combinados com OR e filtros diferentes com AND.
@@ -160,6 +160,9 @@ Cada exercício deverá apresentar:
 - imagem JPG de execução;
 - categoria;
 - equipamento;
+- nível;
+- tipo de força;
+- mecânica;
 - músculo principal;
 - músculos secundários;
 - instruções (em português);
@@ -382,8 +385,8 @@ Implementado:
 - `GET /api/exercises` com paginação, busca sem distinção de acentos e filtros por metadados;
 - `PATCH /api/workout-exercises/:id` para alternar a conclusão e `POST /api/workouts/:weekDay/clear` para desmarcar o treino;
 - `DELETE /api/workouts/:weekDay/exercises/:exerciseId` para remover somente a associação do exercício ao treino autenticado;
-- dashboard semanal e página de treino com busca via debounce, paginação manual, adição, marcação, limpeza e remoção integradas.
+- `DELETE /api/account` para excluir permanentemente a conta autenticada e os dados relacionados em cascata;
+- dashboard semanal e página de treino com busca manual, paginação, adição, marcação, limpeza e remoção integradas.
 
-Ainda pendente:
-
-- exclusão da conta.
+- a busca e a adição são realizadas na rota dedicada `/workout/[weekDay]/add-exercise`, com filtros fixos, paginação manual e retorno ao treino após a adição;
+- o frontend possui página de conta, confirmação acessível para exclusão e redirecionamento para `/login` após a remoção.
