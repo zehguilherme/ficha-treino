@@ -10,11 +10,7 @@
 
 ## 💬 Description
 
-Workout Planner is a web application for managing gym workouts. It lets users organize exercises by day of the week, track progress, and browse a Brazilian Portuguese exercise catalog.
-
-## 🎯 Goal
-
-The project provides a simple, responsive, and accessible workout planner in the browser. Each user has an independent weekly routine, with no data shared between accounts.
+Workout Planner is a simple, responsive, and accessible web application for managing gym workouts. It lets users organize exercises by day of the week, track progress, and browse a Brazilian Portuguese exercise catalog. Each user has an independent weekly routine, with no data shared between accounts.
 
 ## ✨ Features
 
@@ -27,74 +23,23 @@ The project provides a simple, responsive, and accessible workout planner in the
 - Permanent account and related data deletion;
 - Responsive interface for desktop and mobile devices.
 
-## 🚀 Technologies
+## 🌐 Environments
 
-### Front-end
+### Local
 
-- [Next.js 16](https://nextjs.org/) and [React 19](https://react.dev/) — App Router web application;
-- [TypeScript](https://www.typescriptlang.org/) — static typing;
-- [Tailwind CSS](https://tailwindcss.com/) — responsive styling;
-- [ShadCN](https://ui.shadcn.com/) with [Radix UI](https://www.radix-ui.com/) and [Class Variance Authority](https://cva.style/docs) — accessible components and visual variants;
-- [TanStack Query](https://tanstack.com/query) — server-state caching;
-- [Axios](https://axios-http.com/) — API communication;
-- [Zod](https://zod.dev/) — HTTP contract validation;
-- [Jest](https://jestjs.io/) and [Testing Library](https://testing-library.com/) — automated tests.
+- Frontend: [localhost:3000](http://localhost:3000);
+- API: [localhost:3001](http://localhost:3001);
+- Swagger: [local documentation](http://localhost:3001/api/docs);
+- Health check: [check local API](http://localhost:3001/api/health).
 
-### Back-end
+### Production
 
-- [Express 5](https://expressjs.com/) — REST API;
-- [Prisma 7](https://www.prisma.io/) with [PostgreSQL](https://www.postgresql.org/) 16 and the `pg` driver — data persistence;
-- [Google Auth Library](https://cloud.google.com/nodejs/docs/reference/google-auth-library/latest) — Google OAuth 2.0 authentication;
-- [JSON Web Token](https://jwt.io/) — authenticated sessions valid for 24 hours;
-- [Swagger/OpenAPI](https://swagger.io/specification/) — interactive API documentation;
-- [Zod](https://zod.dev/) — input and response validation.
+- Frontend: [fichatreino.vercel.app](https://fichatreino.vercel.app);
+- API: [production API](https://ficha-treino-backend.vercel.app);
+- Swagger: [production documentation](https://ficha-treino-backend.vercel.app/api/docs);
+- Health check: [check production API](https://ficha-treino-backend.vercel.app/api/health).
 
-### Infrastructure
-
-- [Docker Compose](https://docs.docker.com/compose/) — local PostgreSQL for development;
-- [Vercel](https://vercel.com/) — application hosting;
-- [Neon](https://neon.tech/) — PostgreSQL for production.
-
-## 🏗️ Architecture
-
-The frontend and backend are independent applications. The Next.js frontend consumes the Express API through HTTP/JSON, while the backend accesses PostgreSQL through Prisma ORM.
-
-The main flow is:
-
-1. The user authenticates with Google;
-2. The backend validates the token, creates or updates the user, and issues a JWT;
-3. The frontend stores the session and sends the JWT on protected requests;
-4. The backend reads workouts and exercises owned by that user;
-5. Changes are persisted in PostgreSQL.
-
-## 🔐 Authentication
-
-There is no password-based registration. On the first Google login, the backend creates the user and seven weekly workouts automatically. On later logins, the name and email are updated from the Google account.
-
-The JWT is issued by the backend, expires after 24 hours, and has no refresh token. After expiration, the user must authenticate again.
-
-## 🗃️ Database and seed
-
-The database contains `Users`, `Workouts`, `Exercises`, and `Workout_Exercises`. Each user has exactly one workout for each day of the week, and an exercise cannot be repeated in the same workout.
-
-The seed downloads [`exercises-ptbr-full-translation.json`](https://github.com/joao-gugel/exercicios-bd-ptbr/blob/main/exercises/exercises-ptbr-full-translation.json), translated into Brazilian Portuguese, and upserts the exercises into the database. Exercise images are served through the [free-exercise-db](https://github.com/yuhonas/free-exercise-db) CDN.
-
-## 🔌 API
-
-Complete interactive documentation is available at `http://localhost:3001/api/docs` during development.
-
-| Group | Main routes | Description |
-| --- | --- | --- |
-| Authentication | `POST /api/auth/google`, `GET /api/auth/me` | Google login and current profile |
-| Workouts | `GET /api/workouts`, `GET /api/workouts/:weekDay` | Weekly summary and daily workout |
-| Workout exercises | `POST /api/workouts/:weekDay/exercises`, `DELETE /api/workouts/:weekDay/exercises/:exerciseId`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` | Add, remove, complete, and clear |
-| Catalog | `GET /api/exercises` | Paginated and filtered search |
-| Account | `DELETE /api/account` | Cascading account deletion |
-| Health | `GET /api/health` | API health check |
-
-## 🎨 Layout and design system
-
-The design system contains HSL tokens, typography, reusable components, reference HTML pages, and visual previews in [`design-system/`](./design-system/). The application uses the Inter font and is designed for desktop and mobile screens.
+Hosting: [Vercel](https://vercel.com/). Database: [Neon](https://neon.tech/).
 
 ## 🚀 Getting started
 
@@ -132,7 +77,74 @@ npm install
 npm run dev
 ```
 
-The application runs at `http://localhost:3000`, the API at `http://localhost:3001`, and Swagger at `http://localhost:3001/api/docs`.
+After starting both services, see the local links in the [Environments](#-environments) section.
+
+## 🏗️ Architecture
+
+The frontend and backend are independent applications. The Next.js frontend consumes the Express API through HTTP/JSON, while the backend accesses PostgreSQL through Prisma ORM.
+
+The main flow is:
+
+1. The user authenticates with Google;
+2. The backend validates the token, creates or updates the user, and issues a JWT;
+3. The frontend stores the session and sends the JWT on protected requests;
+4. The backend reads workouts and exercises owned by that user;
+5. Changes are persisted in PostgreSQL.
+
+## 🔐 Authentication
+
+There is no password-based registration. On the first Google login, the backend creates the user and seven weekly workouts automatically. On later logins, the name and email are updated from the Google account.
+
+The JWT is issued by the backend, expires after 24 hours, and has no refresh token. After expiration, the user must authenticate again.
+
+## 🗃️ Database and seed
+
+The database contains `Users`, `Workouts`, `Exercises`, and `Workout_Exercises`. Each user has exactly one workout for each day of the week, and an exercise cannot be repeated in the same workout.
+
+The seed downloads [`exercises-ptbr-full-translation.json`](https://github.com/joao-gugel/exercicios-bd-ptbr/blob/main/exercises/exercises-ptbr-full-translation.json), translated into Brazilian Portuguese, and upserts the exercises into the database. Exercise images are served through the [free-exercise-db](https://github.com/yuhonas/free-exercise-db) CDN.
+
+## 🔌 API
+
+| Group | Main routes | Description |
+| --- | --- | --- |
+| Authentication | `POST /api/auth/google`, `GET /api/auth/me` | Google login and current profile |
+| Workouts | `GET /api/workouts`, `GET /api/workouts/:weekDay` | Weekly summary and daily workout |
+| Workout exercises | `POST /api/workouts/:weekDay/exercises`, `DELETE /api/workouts/:weekDay/exercises/:exerciseId`, `PATCH /api/workout-exercises/:id`, `POST /api/workouts/:weekDay/clear` | Add, remove, complete, and clear |
+| Catalog | `GET /api/exercises` | Paginated and filtered search |
+| Account | `DELETE /api/account` | Cascading account deletion |
+| Health | `GET /api/health` | API health check |
+
+## 🎨 Layout and design system
+
+The design system contains HSL tokens, typography, reusable components, reference HTML pages, and visual previews in [`design-system/`](./design-system/). The application uses the Inter font and is designed for desktop and mobile screens.
+
+## 🚀 Technologies
+
+### Front-end
+
+- [Next.js 16](https://nextjs.org/) and [React 19](https://react.dev/) — App Router web application;
+- [TypeScript](https://www.typescriptlang.org/) — static typing;
+- [Tailwind CSS](https://tailwindcss.com/) — responsive styling;
+- [ShadCN](https://ui.shadcn.com/) with [Radix UI](https://www.radix-ui.com/) and [Class Variance Authority](https://cva.style/docs) — accessible components and visual variants;
+- [TanStack Query](https://tanstack.com/query) — server-state caching;
+- [Axios](https://axios-http.com/) — API communication;
+- [Zod](https://zod.dev/) — HTTP contract validation;
+- [Jest](https://jestjs.io/) and [Testing Library](https://testing-library.com/) — automated tests.
+
+### Back-end
+
+- [Express 5](https://expressjs.com/) — REST API;
+- [Prisma 7](https://www.prisma.io/) with [PostgreSQL](https://www.postgresql.org/) 16 and the `pg` driver — data persistence;
+- [Google Auth Library](https://cloud.google.com/nodejs/docs/reference/google-auth-library/latest) — Google OAuth 2.0 authentication;
+- [JSON Web Token](https://jwt.io/) — authenticated sessions valid for 24 hours;
+- [Swagger/OpenAPI](https://swagger.io/specification/) — interactive API documentation;
+- [Zod](https://zod.dev/) — input and response validation.
+
+### Infrastructure
+
+- [Docker Compose](https://docs.docker.com/compose/) — local PostgreSQL for development;
+- [Vercel](https://vercel.com/) — application hosting;
+- [Neon](https://neon.tech/) — PostgreSQL for production.
 
 ## ✅ Tests and validation
 
@@ -167,10 +179,6 @@ design-system/        # Visual tokens, components, and previews
 docker-compose.yml    # Local PostgreSQL
 specification.md      # Requirements and business rules
 ```
-
-## 🌐 Production
-
-The public landing page is available at [fichatreino.vercel.app](https://fichatreino.vercel.app). Production uses Vercel for hosting and Neon for PostgreSQL.
 
 ## 🤔 Contributing
 

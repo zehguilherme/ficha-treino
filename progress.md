@@ -14,13 +14,12 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 
 ### Frontend (páginas de usuário)
 
-3. ui-011: Favicon
-4. ui-012: Page transitions (Motion)
+1. ui-011: Favicon
+2. ui-012: Page transitions (Motion)
 
 ### Demais
 
-7. tool-003: Pular deploy Vercel backend-only
-8. tool-004: README.md + README-en.md
+1. tool-003: Pular deploy Vercel backend-only
 
 ## Histórico
 
@@ -78,7 +77,7 @@ Estado atual em 2026-08-20: `api-005` está concluída; `api-008` (exclusão de 
 
 2026-08-24 — loading e recuperação padronizados — estados de carregamento migrados para o componente `Loading`, botões passaram a expor estado busy/disabled consistente e foram adicionados retries para dashboard, treino e busca de exercícios, com testes para sucesso e falha do retry.
 
-Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `ui-011` e `ui-012` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos e card de exercício compartilhado entre treino e busca. A busca backend agora aceita filtros por listas fixas, enquanto a UI dos filtros permanece na issue #174.
+Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `ui-011`, `ui-012` e `tool-003` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos, card de exercício compartilhado e a página dedicada de busca e adição. A busca backend e a UI dos filtros fixos estão implementadas.
 
 2026-09-01 — api-008 — `DELETE /api/account` implementado com autenticação JWT, exclusão do usuário via cascata de banco, respostas 200/401/404, testes de rota e documentação Swagger sincronizada.
 
@@ -161,3 +160,5 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-07 — ajuste visual da issue #273 — ações alinhadas à borda direita dos cards de exercícios em todos os tamanhos.
 2026-09-07 — ajuste visual da issue #273 — adicionado espaçamento entre a barra sticky de ações e os cards de exercícios.
 2026-09-07 — tool-004 — READMEs PT-BR e EN criados com stack, setup, testes, estrutura, contribuição e captura pública da landing; seletor de idioma e referências locais sincronizados.
+
+2026-09-08 — sincronização documental — conta, filtros, página dedicada de adição e estado atual das features reconciliados entre `feature_list.json`, `specification.md`, `frontend/frontend.md`, `backend/backend.md`, `session-handoff.md` e este arquivo; permanecem pendentes somente `ui-011`, `ui-012` e `tool-003`.

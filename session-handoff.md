@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-09-01: `DELETE /api/account` remove a conta autenticada via cascata do banco, com respostas 200/401/404, testes e Swagger atualizados.
+2026-09-08: documentação reconciliada com o estado atual do código; a exclusão de conta, a página dedicada de busca/adição e os filtros fixos estão concluídos. Permanecem `ui-011`, `ui-012` e `tool-003`.
 
 ## O que foi feito
 
@@ -21,11 +21,12 @@
 - `frontend/src/app/workout/[weekDay]/page.tsx`: retry do treino e da busca, loading padronizado, limpeza condicionada a exercícios concluídos e imagens acima da dobra priorizadas
 - `frontend/src/components/exercise/ExerciseCard.tsx`: estrutura visual compartilhada do card, carrossel, metadados, músculos, instruções e ações contextuais
 - `frontend/src/components/exercise/ExerciseCard.test.tsx`: testes da estrutura, metadados, ações e expansão das instruções
-- `frontend/src/components/workout/AddExerciseDialog.tsx`: resultados da busca renderizados pelo card compartilhado com ação `Adicionar`
-- `frontend/src/components/workout/AddExerciseDialog.test.tsx`: testes da modal, busca, instruções e adição
-- `frontend/src/app/workout/[weekDay]/page.test.tsx`: testes da página usando o card compartilhado e mantendo `Feito`/`Remover`
-- `feature_list.json`: ui-001, ui-002, ui-003, ui-004, ui-005, ui-006, ui-009 e ui-010 concluídos; api-003, api-004, api-005, api-006, api-007 e api-008 concluídos
-- `progress.md`: histórico atualizado até 2026-09-01, incluindo a issue #40
+- `frontend/src/components/workout/AddExercisePage.tsx`: busca, filtros, paginação e adição na rota dedicada
+- `frontend/src/app/workout/[weekDay]/add-exercise/page.test.tsx`: testes da página dedicada, retorno ao treino e estados assíncronos
+- `frontend/src/app/workout/[weekDay]/page.test.tsx`: testes da página de treino usando o card compartilhado e mantendo `Feito`/`Remover`
+- `frontend/src/app/account/page.tsx` e `frontend/src/components/account/AccountDeleteDialog.tsx`: perfil, exclusão autenticada e redirecionamento para login
+- `feature_list.json`: APIs `api-003` a `api-008` e interfaces `ui-001` a `ui-010` concluídas; `tool-004` concluído
+- `progress.md`: histórico atualizado até 2026-09-08
 
 ## Feature ativa
 
@@ -39,10 +40,12 @@
 
 ### Frontend
 
-1. ui-007: Minha conta
-2. ui-008: Modal de exclusão de conta
-3. ui-011: Favicon
-4. ui-012: Page transitions (Motion)
+1. ui-011: Favicon
+2. ui-012: Page transitions (Motion)
+
+### Ferramentas
+
+1. tool-003: Pular deploy Vercel backend-only
 
 ## Branch
 
