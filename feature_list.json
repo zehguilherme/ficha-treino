@@ -269,8 +269,8 @@
       "title": "README.md (PT-BR) + README-en.md (EN)",
       "behavior": "READMEs com descrição, stack, setup, estrutura, contribuição — link linguagem cruzado",
       "verification": "ls README.md README-en.md",
-      "status": "not_started",
-      "evidence": ""
+      "status": "done",
+      "evidence": "README.md e README-en.md criados com seletor de idioma, descrição, stack atual (Next.js 16/React 19, Express 5/Prisma 7/PostgreSQL 16), setup local, testes, estrutura e contribuição; captura pública em .github/img/home.png; links relativos verificados."
     },
     {
       "id": "ui-008",
