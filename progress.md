@@ -19,9 +19,8 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 
 ### Demais
 
-7. infra-002: Mover design-system/ para docs/
-8. tool-003: Pular deploy Vercel backend-only
-9. tool-004: README.md + README-en.md
+7. tool-003: Pular deploy Vercel backend-only
+8. tool-004: README.md + README-en.md
 
 ## Histórico
 
