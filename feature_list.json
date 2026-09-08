@@ -223,16 +223,6 @@
       "evidence": "prisma/schema.prisma com 4 modelos (User, Workout, Exercise, WorkoutExercise); migration 20260729184340_init aplicada com enums, FKs e CASCADE"
     },
     {
-      "id": "infra-002",
-      "type": "infra",
-      "area": "docs",
-      "title": "Mover design-system/ para docs/design-system/",
-      "behavior": "Move pasta design-system/ para docs/design-system/ e atualiza todas as referências em AGENTS.md e frontend.md",
-      "verification": "ls docs/design-system/ && !ls design-system/",
-      "status": "not_started",
-      "evidence": ""
-    },
-    {
       "id": "tool-001",
       "type": "tooling",
       "area": "frontend",
