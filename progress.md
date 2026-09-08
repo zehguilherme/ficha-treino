@@ -161,3 +161,4 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-07 — ajuste visual da issue #273 — removida a linha separadora inferior da barra sticky, mantendo apenas a sombra sutil.
 2026-09-07 — ajuste visual da issue #273 — ações alinhadas à borda direita dos cards de exercícios em todos os tamanhos.
 2026-09-07 — ajuste visual da issue #273 — adicionado espaçamento entre a barra sticky de ações e os cards de exercícios.
+2026-09-07 — tool-004 — READMEs PT-BR e EN criados com stack, setup, testes, estrutura, contribuição e captura pública da landing; seletor de idioma e referências locais sincronizados.
