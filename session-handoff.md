@@ -2,7 +2,7 @@
 
 ## Última sessão
 
-2026-09-08: documentação reconciliada com o estado atual do código; a exclusão de conta, a página dedicada de busca/adição e os filtros fixos estão concluídos. Permanecem `ui-011`, `ui-012` e `tool-003`.
+2026-09-08: documentação reconciliada com o estado atual do código; a exclusão de conta, a página dedicada de busca/adição, os filtros fixos e as rotas públicas em português estão concluídos. Permanecem `ui-011`, `ui-012` e `tool-003`.
 
 ## O que foi feito
 
@@ -17,14 +17,14 @@
 - `design-system/pages/{minha-conta,workout-day}.html`: confirm modals custom (substituem dialogs nativos) + close button no modal
 - Testes: autenticação, dashboard, página de treino, busca, adição, marcação, limpeza, remoção, interceptors e not-found
 - `frontend/src/components/ui/Loading.tsx`: estado de carregamento acessível e reutilizável
-- `frontend/src/app/dashboard/DashboardClient.tsx`: loading separado de autenticação, retry de treinos e preservação de nomes longos
-- `frontend/src/app/workout/[weekDay]/page.tsx`: retry do treino e da busca, loading padronizado, limpeza condicionada a exercícios concluídos e imagens acima da dobra priorizadas
+- `frontend/src/app/treinos/DashboardClient.tsx`: loading separado de autenticação, retry de treinos e preservação de nomes longos
+- `frontend/src/app/treinos/[weekDay]/page.tsx`: retry do treino e da busca, loading padronizado, limpeza condicionada a exercícios concluídos e imagens acima da dobra priorizadas
 - `frontend/src/components/exercise/ExerciseCard.tsx`: estrutura visual compartilhada do card, carrossel, metadados, músculos, instruções e ações contextuais
 - `frontend/src/components/exercise/ExerciseCard.test.tsx`: testes da estrutura, metadados, ações e expansão das instruções
 - `frontend/src/components/workout/AddExercisePage.tsx`: busca, filtros, paginação e adição na rota dedicada
-- `frontend/src/app/workout/[weekDay]/add-exercise/page.test.tsx`: testes da página dedicada, retorno ao treino e estados assíncronos
-- `frontend/src/app/workout/[weekDay]/page.test.tsx`: testes da página de treino usando o card compartilhado e mantendo `Feito`/`Remover`
-- `frontend/src/app/account/page.tsx` e `frontend/src/components/account/AccountDeleteDialog.tsx`: perfil, exclusão autenticada e redirecionamento para login
+- `frontend/src/app/treinos/[weekDay]/adicionar-exercicio/page.test.tsx`: testes da página dedicada, retorno ao treino e estados assíncronos
+- `frontend/src/app/treinos/[weekDay]/page.test.tsx`: testes da página de treino usando o card compartilhado e mantendo `Feito`/`Remover`
+- `frontend/src/app/minha-conta/page.tsx` e `frontend/src/components/account/AccountDeleteDialog.tsx`: perfil, exclusão autenticada e redirecionamento para login
 - `feature_list.json`: APIs `api-003` a `api-008` e interfaces `ui-001` a `ui-010` concluídas; `tool-004` concluído
 - `progress.md`: histórico atualizado até 2026-09-08
 

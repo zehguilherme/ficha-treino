@@ -21,7 +21,7 @@ export const LoginGate = ({
   const { status } = useAuth();
 
   useEffect(() => {
-    if (status === 'authenticated') navigate('/dashboard');
+    if (status === 'authenticated') navigate('/treinos');
   }, [navigate, status]);
 
   if (status !== 'anonymous') {

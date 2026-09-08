@@ -11,7 +11,7 @@ describe('robots', () => {
         {
           userAgent: '*',
           allow: '/',
-          disallow: ['/dashboard', '/workout/', '/account', '/auth/'],
+          disallow: ['/treinos', '/minha-conta', '/auth/'],
         },
       ],
       sitemap: 'https://fichatreino.vercel.app/sitemap.xml',

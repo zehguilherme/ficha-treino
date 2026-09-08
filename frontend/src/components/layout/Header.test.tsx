@@ -64,9 +64,9 @@ describe('Header', () => {
   /**
    * An authenticated user visits the header.
    * Mock: a JWT and a valid user profile are available.
-   * Assert: the logo and title link to the authenticated dashboard.
+   * Assert: the logo and title link to the authenticated workouts page.
    */
-  test('links authenticated users to the dashboard', async () => {
+  test('links authenticated users to the workouts page', async () => {
     setSession('jwt-token');
     mockedGetCurrentUser.mockResolvedValue({
       name: 'João Teste',
@@ -77,7 +77,7 @@ describe('Header', () => {
 
     expect(await screen.findByRole('link', { name: 'Ficha de Treino' })).toHaveAttribute(
       'href',
-      '/dashboard',
+      '/treinos',
     );
   });
 

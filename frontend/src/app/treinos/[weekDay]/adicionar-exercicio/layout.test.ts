@@ -7,7 +7,7 @@ import { metadata } from './layout';
 
 describe('Add exercise metadata', () => {
   /**
-   * The private add-exercise route exposes its contextual page title.
+   * The private exercise-addition route exposes its contextual page title.
    * Assert: the route keeps the shared noindex policy and root title template compatibility.
    */
   test('uses the contextual title with the global browser-tab suffix', () => {

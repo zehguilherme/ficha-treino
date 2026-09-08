@@ -8,7 +8,7 @@ jest.mock('@/contexts/AuthContext', () => ({
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
-  usePathname: jest.fn(() => '/account'),
+  usePathname: jest.fn(() => '/minha-conta'),
 }));
 
 import userEvent from '@testing-library/user-event';
@@ -120,7 +120,7 @@ describe('AccountPage', () => {
 
     expect(screen.getByRole('heading', { name: 'Minha Conta' })).toBeInTheDocument();
     expect(screen.queryByText('Ficha de Treino')).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Voltar' })).toHaveAttribute('href', '/dashboard');
+    expect(screen.getByRole('link', { name: 'Voltar' })).toHaveAttribute('href', '/treinos');
     expect(screen.getByRole('link', { name: 'Voltar' })).toHaveClass('size-8');
     expect(screen.getByRole('button', { name: 'Abrir menu do usuário' })).toHaveTextContent('MS');
     expect(screen.getByRole('button', { name: 'Excluir minha conta' })).toHaveClass(

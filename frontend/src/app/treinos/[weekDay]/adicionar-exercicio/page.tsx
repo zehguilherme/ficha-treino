@@ -43,7 +43,7 @@ const AddExerciseRoutePage = (): React.JSX.Element => {
               O endereço pode estar incorreto ou este dia não faz parte da sua ficha.
             </p>
             <Button asChild className="mt-8 w-full sm:w-auto">
-              <Link href="/dashboard">Voltar para meus treinos</Link>
+              <Link href="/treinos">Voltar para meus treinos</Link>
             </Button>
           </section>
         </main>
@@ -54,7 +54,7 @@ const AddExerciseRoutePage = (): React.JSX.Element => {
   return (
     <AddExercisePage
       weekDay={weekDay}
-      onAdded={() => router.replace(`/workout/${getWeekDaySlug(weekDay)}`)}
+      onAdded={() => router.replace(`/treinos/${getWeekDaySlug(weekDay)}`)}
     />
   );
 };

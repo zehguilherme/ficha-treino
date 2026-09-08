@@ -11,10 +11,10 @@ Next.js App Router com TanStack Query (estado do servidor), Context API (sessão
 | `/`                     | `HomePage`           | Landing page pública com hero + features |
 | `/login`                | `LoginPage`          | Login com Google OAuth                   |
 | `/auth/google/callback` | `GoogleCallbackPage` | Callback do OAuth Google                 |
-| `/dashboard`            | `DashboardPage`      | Grid semanal com 7 cards totalmente clicáveis, status e expansão de exercícios |
-| `/workout/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + ações sticky + search |
-| `/workout/[weekDay]/add-exercise` | `AddExercisePage` | Catálogo paginado para adicionar exercícios |
-| `/account`              | `AccountPage`           | Dados do perfil + excluir conta + retry em falha de carregamento |
+| `/treinos`              | `DashboardPage`      | Grid semanal com 7 cards totalmente clicáveis, status e expansão de exercícios |
+| `/treinos/[weekDay]`    | `WorkoutDayPage`     | Exercícios do dia + ações sticky + search |
+| `/treinos/[weekDay]/adicionar-exercicio` | `AddExercisePage` | Catálogo paginado para adicionar exercícios |
+| `/minha-conta`              | `AccountPage`           | Dados do perfil + excluir conta + retry em falha de carregamento |
 
 Todas as rotas usam o metadata do Next.js com o padrão `<contexto> — Ficha de Treino`; a landing
 mantém `Ficha de Treino — Seu treino organizado`. Cada página deve declarar o contexto no seu
@@ -49,11 +49,11 @@ https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/{id}/1.jpg
 ## Estado
 
 - **TanStack Query**: cache de exercícios pesquisados, treinos e mutações de adicionar, marcar, limpar e remover exercícios; retry manual para consultas com erro. O dashboard recebe o resumo de cada treino com nome e status `done` de todos os exercícios e permite expandir listas longas sem abrir o dia. Durante a adição ou remoção, o estado visual de loading e `aria-busy` é individual do exercício confirmado, enquanto os demais botões permanecem desabilitados para evitar ações concorrentes. Toda ação assíncrona iniciada por botão deve usar o loading interno do componente `Button`, com texto contextual e `aria-busy`/`disabled` derivados do estado pendente.
-- **Context API**: sessão do usuário (login/logout); a página `/account` reutiliza o perfil carregado (`name`, `email`) e exibe iniciais como avatar. Falhas ao carregar o perfil exibem modal de erro, estado contextual e botão `Tentar novamente` usando o refetch da consulta.
-- A página `/account` usa cabeçalho próprio com link reutilizável de voltar para `/dashboard`, título “Minha Conta” e menu de iniciais contendo somente “Sair”, sem o logo/menu de navegação do cabeçalho global; a ação de exclusão fica alinhada à direita no desktop e ocupa toda a largura no mobile.
+- **Context API**: sessão do usuário (login/logout); a página `/minha-conta` reutiliza o perfil carregado (`name`, `email`) e exibe iniciais como avatar. Falhas ao carregar o perfil exibem modal de erro, estado contextual e botão `Tentar novamente` usando o refetch da consulta.
+- A página `/minha-conta` usa cabeçalho próprio com link reutilizável de voltar para `/treinos`, título “Minha Conta” e menu de iniciais contendo somente “Sair”, sem o logo/menu de navegação do cabeçalho global; a ação de exclusão fica alinhada à direita no desktop e ocupa toda a largura no mobile.
 - **`useState`**: input e texto pesquisado, filtros aplicados e provisórios, painel dedicado de filtros, carrossel e estados transitórios de retry
 
-As rotas de treino usam somente slugs ASCII em minúsculas (`domingo`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`); valores em maiúsculas ou fora dessa lista exibem o estado de treino inválido sem consultar a API. O frontend converte os slugs para os enums internos em maiúsculas antes das chamadas ao backend. A página dedicada de adição em `/workout/[weekDay]/add-exercise` consulta `GET /api/exercises` somente após o botão `Pesquisar exercícios` ou `Enter` no campo, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. A faixa compacta de busca, abertura de filtros e chips permanece sticky abaixo do cabeçalho em qualquer largura, enquanto o painel expandido usa a rolagem natural da página. O wrapper dos controles usa `display: contents` para que a faixa sticky permaneça ativa durante a rolagem dos resultados; suas superfícies e a barra fixa de ações usam fundos opacos, sem efeito de vidro translúcido. Quando os filtros avançados estão abertos, os botões de ação ficam em uma barra fixa inferior responsiva; ao fechá-los, retornam à barra compacta. Texto e filtros editados não consultam a API automaticamente; a ação explícita normaliza o nome, confirma os filtros e inicia uma única consulta combinada. A página oferece um painel dedicado com os sete selects de categoria, equipamento, nível, força, mecânica e músculos primário/secundário, chips removíveis, paginação de 20 itens, instruções e estados de loading/erro. Após adicionar, os caches do treino/dashboard são invalidados, uma confirmação é exibida e o usuário retorna ao treino do dia. Parâmetros de dia inválidos exibem um estado contextual com retorno para o dashboard, sem consultar a API de treinos.
+As rotas de treino usam somente slugs ASCII em minúsculas (`domingo`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`); valores em maiúsculas ou fora dessa lista exibem o estado de treino inválido sem consultar a API. O frontend converte os slugs para os enums internos em maiúsculas antes das chamadas ao backend. A página dedicada de adição em `/treinos/[weekDay]/adicionar-exercicio` consulta `GET /api/exercises` somente após o botão `Pesquisar exercícios` ou `Enter` no campo, usando o cliente HTTP local com AbortSignal para cancelar consultas obsoletas. A faixa compacta de busca, abertura de filtros e chips permanece sticky abaixo do cabeçalho em qualquer largura, enquanto o painel expandido usa a rolagem natural da página. O wrapper dos controles usa `display: contents` para que a faixa sticky permaneça ativa durante a rolagem dos resultados; suas superfícies e a barra fixa de ações usam fundos opacos, sem efeito de vidro translúcido. Quando os filtros avançados estão abertos, os botões de ação ficam em uma barra fixa inferior responsiva; ao fechá-los, retornam à barra compacta. Texto e filtros editados não consultam a API automaticamente; a ação explícita normaliza o nome, confirma os filtros e inicia uma única consulta combinada. A página oferece um painel dedicado com os sete selects de categoria, equipamento, nível, força, mecânica e músculos primário/secundário, chips removíveis, paginação de 20 itens, instruções e estados de loading/erro. Após adicionar, os caches do treino/dashboard são invalidados, uma confirmação é exibida e o usuário retorna ao treino do dia. Parâmetros de dia inválidos exibem um estado contextual com retorno para `/treinos`, sem consultar a API de treinos.
 
 Na busca de exercícios, o placeholder informa que a consulta é feita somente pelo nome do exercício. Com o painel fechado, `Limpar busca e filtros` fica à esquerda e `Pesquisar exercícios` à direita na faixa compacta; em telas menores, ambos ocupam toda a largura e ficam empilhados. Com o painel aberto, as mesmas ações passam para uma barra fixa inferior com safe area, empilhada no mobile e horizontal no desktop; o fundo da barra ocupa a viewport, mas seus controles ficam em um contêiner centralizado com a mesma largura máxima de `80rem` dos headers; os resultados recebem `pb-32` no mobile e `pb-24` a partir de `sm` para que o último card não fique encoberto. Os chips refletem imediatamente os valores selecionados nos filtros editáveis e cada um pode ser removido de forma independente, sem consulta automática; a nova combinação só é enviada após pesquisar, reposicionando a página no topo. A faixa de chips mantém largura mínima zero, limite de largura e contenção de overscroll horizontal para não expandir a página em telas estreitas. O botão de limpeza fica desabilitado quando não há filtros nem exercícios nos resultados. Quando expandido, o painel de filtros usa uma superfície clara `muted/50` com borda e espaçamento próprio; os selects permanecem em `card`. A pesquisa fecha o painel após confirmar texto e retorna o foco ao controle de filtros, enquanto uma pesquisa por texto desfoca o campo também no envio com `Enter`, permitindo visualizar os resultados no mobile sem o teclado virtual aberto.
 
@@ -70,17 +70,17 @@ src/
     layout.tsx            (root layout: Inter font, lang pt-BR)
     sitemap.ts            (sitemap da página pública)
     robots.ts             (regras de rastreamento)
-    account/layout.tsx
+    minha-conta/layout.tsx
     auth/google/callback/layout.tsx
     icon.svg              (favicon da aplicação)
     apple-icon.svg        (ícone para atalhos Apple)
     page.tsx              (HomePage — landing)
     login/page.tsx
-    dashboard/page.tsx
-    workout/[weekDay]/page.tsx
-    workout/[weekDay]/layout.tsx (metadata dinâmico por dia)
-    workout/[weekDay]/add-exercise/layout.tsx (metadata final da página)
-    account/page.tsx
+    treinos/page.tsx
+    treinos/[weekDay]/page.tsx
+    treinos/[weekDay]/layout.tsx (metadata dinâmico por dia)
+    treinos/[weekDay]/adicionar-exercicio/layout.tsx (metadata final da página)
+    minha-conta/page.tsx
   components/
     ui/                   (ShadCN)
       Button.tsx
@@ -259,18 +259,18 @@ Testes de integração da callback page (`@/lib/api` e `next/navigation` mockado
 
 | Teste                                                        | Tipo        | Cenário                                                      | Assert principal                                                                      |
 | ------------------------------------------------------------ | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| exchanges the code and redirects to the dashboard on success | integration | `code`+`state` válidos, API retorna token                    | `exchangeGoogleCode` chamado com o `code`, `setSession(token)`, redirect `/dashboard` |
+| exchanges the code and redirects to the workouts page on success | integration | `code`+`state` válidos, API retorna token                    | `exchangeGoogleCode` chamado com o `code`, `setSession(token)`, redirect `/treinos` |
 | shows an error when the OAuth state does not match           | integration | `state` divergente                                           | alerta de falha, `sessionStorage` limpo, sem chamada à API                            |
 | shows an error when code or state is missing                 | integration | URL sem `code`/`state`                                       | alerta de falha                                                                       |
 | redirects to login when the user denies access               | integration | `error=access_denied`                                        | redirect `/login`, sem chamada à API                                                  |
 | shows an error when the backend rejects the code             | integration | `exchangeGoogleCode` rejeita com AxiosError (com `response`) | alerta "Não foi possível autenticar"                                                  |
 | shows a connection error when the API call fails             | integration | `exchangeGoogleCode` rejeita com `Error` (rede)              | alerta "Não foi possível conectar ao servidor"                                        |
 
-#### `src/app/dashboard/DashboardClient.test.tsx`
+#### `src/app/treinos/DashboardClient.test.tsx`
 
 Testes do dashboard para hidratação da autenticação, carregamento dos treinos, cards totalmente clicáveis, status/expansão de exercícios, nomes longos e retry com sucesso ou falha.
 
-#### `src/app/workout/[weekDay]/page.test.tsx`
+#### `src/app/treinos/[weekDay]/page.test.tsx`
 
 Testes da página de treino para carregamento, retry do treino e da busca, adição, marcação, limpeza, remoção, estados de erro e carregamento das imagens.
 
@@ -282,7 +282,7 @@ Testes da página de treino para carregamento, retry do treino e da busca, adiç
 - remove exercícios, mostra loading apenas no exercício confirmado, trata falhas de remoção e prioriza a primeira imagem acima da dobra.
 - exibe estado contextual e link para o dashboard quando o parâmetro do dia é inválido, sem chamar a API de treinos.
 
-#### `src/app/workout/[weekDay]/layout.test.ts`
+#### `src/app/treinos/[weekDay]/layout.test.ts`
 
 Testa o metadata da rota dinâmica para dia válido e parâmetro inválido.
 
@@ -326,11 +326,11 @@ Testa o card compartilhado de exercícios, incluindo metadados, ações e expans
 
 Testa a pílula reutilizável de rótulo/valor e a omissão de valores vazios.
 
-#### `src/app/workout/[weekDay]/add-exercise/page.test.tsx`
+#### `src/app/treinos/[weekDay]/adicionar-exercicio/page.test.tsx`
 
 Testa a página dedicada, o retorno acessível ao treino do dia, a navegação automática após adicionar um exercício, o loading interno das ações assíncronas e o comportamento responsivo do shell de busca, filtros e ações.
 
-#### `src/app/workout/[weekDay]/add-exercise/layout.test.ts`
+#### `src/app/treinos/[weekDay]/adicionar-exercicio/layout.test.ts`
 
 Testa o título final da página de adição, a política `noindex, nofollow` e a compatibilidade com o template global da aba.
 

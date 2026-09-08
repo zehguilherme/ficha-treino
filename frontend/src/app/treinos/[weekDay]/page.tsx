@@ -167,7 +167,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
     <header className="sticky top-0 z-20 border-b border-border bg-card">
       <div className="mx-auto flex h-14 max-w-[80rem] items-center gap-3 px-4 sm:px-6">
         <IconLink
-          href="/dashboard"
+          href="/treinos"
           icon={<ArrowLeftIcon className="size-4" aria-hidden="true" />}
           variant="outline"
           size="icon"
@@ -229,7 +229,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
               O endereço pode estar incorreto ou este dia não faz parte da sua ficha.
             </p>
             <Button asChild className="mt-8 w-full sm:w-auto">
-              <Link href="/dashboard">Voltar para meus treinos</Link>
+              <Link href="/treinos">Voltar para meus treinos</Link>
             </Button>
           </section>
         </main>
@@ -304,7 +304,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
             <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
               {weekDay ? (
                 <Button asChild className="w-full sm:w-auto">
-                  <Link href={`/workout/${getWeekDaySlug(weekDay)}/add-exercise`}>
+                  <Link href={`/treinos/${getWeekDaySlug(weekDay)}/adicionar-exercicio`}>
                     Adicionar exercício
                   </Link>
                 </Button>

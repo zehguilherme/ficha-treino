@@ -10,16 +10,12 @@ describe('IconLink', () => {
    */
   test('renders an accessible link with an icon and label', () => {
     render(
-      <IconLink
-        href="/dashboard"
-        icon={<ArrowLeftIcon aria-hidden="true" />}
-        aria-label="Voltar"
-      />,
+      <IconLink href="/treinos" icon={<ArrowLeftIcon aria-hidden="true" />} aria-label="Voltar" />,
     );
 
     const link = screen.getByRole('link', { name: 'Voltar' });
 
-    expect(link).toHaveAttribute('href', '/dashboard');
+    expect(link).toHaveAttribute('href', '/treinos');
     expect(link).not.toHaveTextContent('Voltar');
     expect(link.querySelector('svg')).toBeInTheDocument();
   });
