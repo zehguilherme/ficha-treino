@@ -11,17 +11,7 @@ import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 import { getWorkouts } from '@/lib/api';
 import { getExercisePreview } from '@/lib/dashboard';
-import type { WeekDay } from '@/schemas/api';
-
-const DAY_NAMES: Record<WeekDay, string> = {
-  DOMINGO: 'Domingo',
-  SEGUNDA: 'Segunda-feira',
-  TERCA: 'Terça-feira',
-  QUARTA: 'Quarta-feira',
-  QUINTA: 'Quinta-feira',
-  SEXTA: 'Sexta-feira',
-  SABADO: 'Sábado',
-};
+import { DAY_NAMES, getWeekDaySlug } from '@/lib/weekDays';
 
 export const DashboardClient = (): React.JSX.Element => {
   const { status } = useAuth();
@@ -115,7 +105,7 @@ export const DashboardClient = (): React.JSX.Element => {
                   className="relative isolate flex flex-col rounded-[calc(var(--radius)+0.125rem)] border border-border bg-card p-5 transition hover:border-ring/15 hover:shadow-sm"
                 >
                   <Link
-                    href={`/workout/${workout.weekDay}`}
+                    href={`/workout/${getWeekDaySlug(workout.weekDay)}`}
                     className={`-m-5 block h-full flex-1 rounded-[calc(var(--radius)+0.125rem)] p-5 ${preview.remaining > 0 ? 'pb-16' : 'pb-5'} outline-none focus-visible:ring-1 focus-visible:ring-ring`}
                   >
                     <div className="flex items-center justify-between gap-3">

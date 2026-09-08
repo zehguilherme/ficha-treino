@@ -1,14 +1,5 @@
 import type { Metadata } from 'next';
-
-const DAY_NAMES: Record<string, string> = {
-  DOMINGO: 'Domingo',
-  SEGUNDA: 'Segunda-feira',
-  TERCA: 'Terça-feira',
-  QUARTA: 'Quarta-feira',
-  QUINTA: 'Quinta-feira',
-  SEXTA: 'Sexta-feira',
-  SABADO: 'Sábado',
-};
+import { DAY_NAMES, getWeekDayFromSlug } from '@/lib/weekDays';
 
 type WorkoutLayoutProps = {
   children: React.ReactNode;
@@ -19,8 +10,9 @@ export const generateMetadata = async ({
   params,
 }: Pick<WorkoutLayoutProps, 'params'>): Promise<Metadata> => {
   const { weekDay } = await params;
+  const resolvedWeekDay = getWeekDayFromSlug(weekDay);
   return {
-    title: DAY_NAMES[weekDay] ?? 'Treino não encontrado',
+    title: resolvedWeekDay ? DAY_NAMES[resolvedWeekDay] : 'Treino não encontrado',
     robots: { index: false, follow: false },
   };
 };

@@ -19,29 +19,15 @@ import { RemoveWorkoutExerciseDialog } from '@/components/workout/RemoveWorkoutE
 import { ArrowLeftIcon, BrushIcon, TrashIcon } from '@/components/ui/WorkoutIcons';
 import { useAuth } from '@/contexts/AuthContext';
 import { clearWorkout, getWorkout, removeWorkoutExercise, toggleWorkoutExercise } from '@/lib/api';
+import { DAY_NAMES, getWeekDayFromSlug, getWeekDaySlug } from '@/lib/weekDays';
 import type { WeekDay, WorkoutResponse } from '@/schemas/api';
 import { toast } from 'sonner';
-
-const DAY_NAMES: Record<WeekDay, string> = {
-  DOMINGO: 'Domingo',
-  SEGUNDA: 'Segunda-feira',
-  TERCA: 'Terça-feira',
-  QUARTA: 'Quarta-feira',
-  QUINTA: 'Quinta-feira',
-  SEXTA: 'Sexta-feira',
-  SABADO: 'Sábado',
-};
-
-const getWeekDay = (value: string | string[] | undefined): WeekDay | null => {
-  const candidate = Array.isArray(value) ? value[0] : value;
-  return candidate && candidate in DAY_NAMES ? (candidate as WeekDay) : null;
-};
 
 const WorkoutDayPage = (): React.JSX.Element => {
   const params = useParams<{ weekDay: string }>();
   const { status } = useAuth();
   const queryClient = useQueryClient();
-  const weekDay = getWeekDay(params.weekDay);
+  const weekDay = getWeekDayFromSlug(params.weekDay);
   const [openInstructions, setOpenInstructions] = useState<number | null>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [removeExercise, setRemoveExercise] = useState<{
@@ -318,7 +304,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
             <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
               {weekDay ? (
                 <Button asChild className="w-full sm:w-auto">
-                  <Link href={`/workout/${weekDay}/add-exercise`}>Adicionar exercício</Link>
+                  <Link href={`/workout/${getWeekDaySlug(weekDay)}/add-exercise`}>
+                    Adicionar exercício
+                  </Link>
                 </Button>
               ) : null}
               <Button

@@ -19,8 +19,8 @@ jest.mock('sonner', () => ({
 }));
 
 jest.mock('next/navigation', () => ({
-  useParams: jest.fn(() => ({ weekDay: 'TERCA' })),
-  usePathname: jest.fn(() => '/workout/TERCA'),
+  useParams: jest.fn(() => ({ weekDay: 'terca' })),
+  usePathname: jest.fn(() => '/workout/terca'),
   useRouter: jest.fn(() => ({ replace: jest.fn() })),
 }));
 
@@ -88,7 +88,7 @@ const renderPage = (): void => {
 describe('WorkoutDayPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseParams.mockReturnValue({ weekDay: 'TERCA' });
+    mockedUseParams.mockReturnValue({ weekDay: 'terca' });
     jest.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
     mockedGetWorkout.mockResolvedValue(workout);
     mockedGetExercises.mockResolvedValue({ items: [], total: 0 });
@@ -128,6 +128,20 @@ describe('WorkoutDayPage', () => {
       'href',
       '/dashboard',
     );
+    expect(mockedGetWorkout).not.toHaveBeenCalled();
+  });
+
+  /**
+   * An uppercase legacy route must not be normalized into a valid weekday.
+   * Mock: the route parameter uses the old uppercase representation.
+   * Assert: no workout request starts and the invalid-route state is shown.
+   */
+  test('rejects uppercase weekday routes', () => {
+    mockedUseParams.mockReturnValue({ weekDay: 'QUARTA' });
+
+    renderPage();
+
+    expect(screen.getByRole('heading', { name: 'Esse treino não existe' })).toBeInTheDocument();
     expect(mockedGetWorkout).not.toHaveBeenCalled();
   });
 
@@ -295,7 +309,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     expect(await screen.findByRole('link', { name: 'Adicionar exercício' })).toHaveAttribute(
       'href',
-      '/workout/TERCA/add-exercise',
+      '/workout/terca/add-exercise',
     );
     expect(screen.queryByRole('searchbox', { name: 'Buscar exercícios' })).not.toBeInTheDocument();
   });

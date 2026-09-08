@@ -14,7 +14,7 @@ jest.mock('sonner', () => ({
 const mockedReplace = jest.fn();
 
 jest.mock('next/navigation', () => ({
-  useParams: jest.fn(() => ({ weekDay: 'TERCA' })),
+  useParams: jest.fn(() => ({ weekDay: 'terca' })),
   useRouter: jest.fn(() => ({ replace: mockedReplace })),
 }));
 
@@ -52,7 +52,7 @@ describe('AddExercisePage', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Voltar para o treino' })).toHaveAttribute(
       'href',
-      '/workout/TERCA',
+      '/workout/terca',
     );
     expect(screen.getByRole('button', { name: 'Mais filtros' }).parentElement).toHaveClass('mt-3');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -301,7 +301,7 @@ describe('AddExercisePage', () => {
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await user.click(await screen.findByRole('button', { name: 'Adicionar Supino reto' }));
 
-    await waitFor(() => expect(mockedReplace).toHaveBeenCalledWith('/workout/TERCA'));
+    await waitFor(() => expect(mockedReplace).toHaveBeenCalledWith('/workout/terca'));
     expect(mockedAddWorkoutExercise).toHaveBeenCalledWith('TERCA', 'supino-reto');
   });
 });
