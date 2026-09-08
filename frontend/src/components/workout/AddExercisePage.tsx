@@ -20,6 +20,7 @@ import {
 import { ArrowLeftIcon, ChevronDownIcon, SearchIcon, XIcon } from '@/components/ui/WorkoutIcons';
 import { addWorkoutExercise, getExercises, type ExerciseFilters } from '@/lib/api';
 import { EXERCISE_LABELS } from '@/lib/exerciseLabels';
+import { getWeekDaySlug } from '@/lib/weekDays';
 import type { WeekDay } from '@/schemas/api';
 import { toast } from 'sonner';
 
@@ -335,7 +336,7 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
         <header className="sticky top-0 z-20 border-b border-border bg-card">
           <div className="mx-auto flex h-14 max-w-[80rem] items-center gap-3 px-4 sm:px-6">
             <IconLink
-              href={`/workout/${weekDay}`}
+              href={`/workout/${getWeekDaySlug(weekDay)}`}
               icon={<ArrowLeftIcon className="size-4" aria-hidden="true" />}
               variant="outline"
               size="icon"

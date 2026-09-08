@@ -143,6 +143,24 @@ describe('DashboardClient', () => {
   });
 
   /**
+   * An authenticated user selects a weekday from the dashboard.
+   * Mock: the workouts query resolves with a Wednesday workout.
+   * Assert: the card links to the canonical lowercase route slug.
+   */
+  test('uses lowercase weekday slugs in workout links', async () => {
+    mockedGetWorkouts.mockResolvedValue({
+      workouts: [{ id: 1, weekDay: 'QUARTA', exerciseCount: 0, exercises: [] }],
+    });
+
+    renderDashboard();
+
+    expect(await screen.findByRole('link', { name: /Quarta-feira/ })).toHaveAttribute(
+      'href',
+      '/workout/quarta',
+    );
+  });
+
+  /**
    * The dashboard request fails and the user retries it.
    * Mock: the first request rejects and the retry resolves after a deferred promise.
    * Assert: retry matches the outline design and exposes the internal loading state.

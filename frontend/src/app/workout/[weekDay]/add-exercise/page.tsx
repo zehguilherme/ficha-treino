@@ -8,28 +8,13 @@ import { DumbbellIcon } from '@/components/ui/DumbbellIcon';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { useAuth } from '@/contexts/AuthContext';
-import type { WeekDay } from '@/schemas/api';
-
-const DAY_NAMES: Record<WeekDay, string> = {
-  DOMINGO: 'Domingo',
-  SEGUNDA: 'Segunda-feira',
-  TERCA: 'Terça-feira',
-  QUARTA: 'Quarta-feira',
-  QUINTA: 'Quinta-feira',
-  SEXTA: 'Sexta-feira',
-  SABADO: 'Sábado',
-};
-
-const getWeekDay = (value: string | string[] | undefined): WeekDay | null => {
-  const candidate = Array.isArray(value) ? value[0] : value;
-  return candidate && candidate in DAY_NAMES ? (candidate as WeekDay) : null;
-};
+import { getWeekDayFromSlug, getWeekDaySlug } from '@/lib/weekDays';
 
 const AddExerciseRoutePage = (): React.JSX.Element => {
   const params = useParams<{ weekDay: string }>();
   const router = useRouter();
   const { status } = useAuth();
-  const weekDay = getWeekDay(params.weekDay);
+  const weekDay = getWeekDayFromSlug(params.weekDay);
 
   if (status !== 'authenticated')
     return (
@@ -67,7 +52,10 @@ const AddExerciseRoutePage = (): React.JSX.Element => {
     );
 
   return (
-    <AddExercisePage weekDay={weekDay} onAdded={() => router.replace(`/workout/${weekDay}`)} />
+    <AddExercisePage
+      weekDay={weekDay}
+      onAdded={() => router.replace(`/workout/${getWeekDaySlug(weekDay)}`)}
+    />
   );
 };
 

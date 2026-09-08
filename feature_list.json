@@ -131,7 +131,7 @@
         "Autenticar e navegar para /dashboard",
         "Ver 7 cards (Domingo a Sábado)",
         "Cada card exibe nome do dia e contagem de exercícios",
-        "Clicar em um card navega para /workout/[weekDay]"
+        "Clicar em um card navega para /workout/[weekDay] usando slug ASCII em minúsculas"
       ],
       "passes": true,
       "evidence": "Dashboard client consome a sessão pelo AuthContext e habilita TanStack Query somente quando autenticado; 7 cards semanais exibem todos os exercícios com status concluído, listas longas podem ser expandidas por botão acessível, nomes longos são preservados e treinos vazios têm estado próprio; loading de autenticação e treinos separado, retry manual com estados busy/disabled e testes de status, expansão por teclado e sucesso/falha do retry; typecheck, lint e build verificados"
@@ -143,7 +143,7 @@
       "category": "functional",
       "description": "Workout day com lista, conclusão e remoção de exercícios",
       "steps": [
-        "Navegar para /workout/[weekDay]",
+        "Navegar para /workout/[weekDay] usando somente os slugs domingo, segunda, terca, quarta, quinta, sexta ou sabado",
         "Ver lista de exercícios em ordem alfabética",
         "Cada exercício mostra nome, imagem, categoria, equipamento, nível, tipo de força, mecânica, músculos e instruções",
         "Header com contador done/total"
@@ -158,7 +158,7 @@
       "category": "functional",
       "description": "Busca manual de exercícios por nome e filtros",
       "steps": [
-        "Na rota /workout/[weekDay]/add-exercise, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
+        "Na rota /workout/[weekDay]/add-exercise com slug minúsculo válido, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
         "Resultados aparecem somente após a ação explícita, ignorando acentos na busca",
         "Clicar em 'Carregar mais exercícios' exibe a próxima página até carregar todos os resultados",
         "Busca da issue 71 implementada; adição ao treino integrada à rota POST de exercícios",

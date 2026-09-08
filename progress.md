@@ -162,3 +162,4 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-07 — tool-004 — READMEs PT-BR e EN criados com stack, setup, testes, estrutura, contribuição e captura pública da landing; seletor de idioma e referências locais sincronizados.
 
 2026-09-08 — sincronização documental — conta, filtros, página dedicada de adição e estado atual das features reconciliados entre `feature_list.json`, `specification.md`, `frontend/frontend.md`, `backend/backend.md`, `session-handoff.md` e este arquivo; permanecem pendentes somente `ui-011`, `ui-012` e `tool-003`.
+2026-09-08 — issue #253 — rotas de treino passaram a usar exclusivamente slugs ASCII em minúsculas, com conversão centralizada para os enums internos da API, rejeição explícita de URLs em maiúsculas e cobertura de links, metadata e estados inválidos.
