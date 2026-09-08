@@ -27,7 +27,7 @@ describe('LoginForm', () => {
    */
   test('renders the Google login button', () => {
     render(<LoginForm />);
-    expect(screen.getByRole('button', { name: 'Entrar com Google' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Entrar com Google' })).toHaveClass('h-auto');
   });
 
   /**
@@ -60,6 +60,7 @@ describe('LoginForm', () => {
     const button = screen.getByRole('button', { name: /entrando/i });
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute('aria-busy', 'true');
+    expect(button).toHaveClass('h-auto');
   });
 
   /**

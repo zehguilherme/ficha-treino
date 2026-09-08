@@ -38,7 +38,7 @@ export const LoginForm = () => {
       <Button
         type="button"
         variant="outline"
-        className="w-full gap-3 px-6 py-3 text-[0.9375rem] bg-card hover:border-ring/20"
+        className="h-auto w-full gap-3 px-6 py-3 text-[0.9375rem] bg-card hover:border-ring/20"
         onClick={handleStartLogin}
         loading={isLoading}
       >

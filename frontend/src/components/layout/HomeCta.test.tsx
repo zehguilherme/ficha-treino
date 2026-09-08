@@ -27,6 +27,7 @@ describe('HomeCta', () => {
 
     render(<HomeCta />);
 
+    expect(screen.getByRole('link', { name: 'Começar agora' })).toHaveClass('h-auto');
     expect(screen.getByRole('link', { name: 'Começar agora' })).toHaveAttribute('href', '/login');
   });
 
@@ -48,6 +49,7 @@ describe('HomeCta', () => {
 
     render(<HomeCta />);
 
+    expect(screen.getByRole('link', { name: 'Ir para meus treinos' })).toHaveClass('h-auto');
     expect(screen.getByRole('link', { name: 'Ir para meus treinos' })).toHaveAttribute(
       'href',
       '/dashboard',
@@ -73,6 +75,7 @@ describe('HomeCta', () => {
     render(<HomeCta />);
 
     expect(screen.getByRole('button', { name: /Carregando…/ })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Carregando…/ })).toHaveClass('h-auto');
     expect(screen.getByRole('button', { name: /Carregando…/ })).toHaveAttribute(
       'aria-busy',
       'true',
