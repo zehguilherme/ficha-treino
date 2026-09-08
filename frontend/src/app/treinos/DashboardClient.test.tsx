@@ -156,7 +156,7 @@ describe('DashboardClient', () => {
 
     expect(await screen.findByRole('link', { name: /Quarta-feira/ })).toHaveAttribute(
       'href',
-      '/workout/quarta',
+      '/treinos/quarta',
     );
   });
 

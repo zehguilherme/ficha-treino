@@ -20,7 +20,7 @@ jest.mock('sonner', () => ({
 
 jest.mock('next/navigation', () => ({
   useParams: jest.fn(() => ({ weekDay: 'terca' })),
-  usePathname: jest.fn(() => '/workout/terca'),
+  usePathname: jest.fn(() => '/treinos/terca'),
   useRouter: jest.fn(() => ({ replace: jest.fn() })),
 }));
 
@@ -126,7 +126,7 @@ describe('WorkoutDayPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Voltar para meus treinos' })).toHaveAttribute(
       'href',
-      '/dashboard',
+      '/treinos',
     );
     expect(mockedGetWorkout).not.toHaveBeenCalled();
   });
@@ -309,7 +309,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     expect(await screen.findByRole('link', { name: 'Adicionar exercício' })).toHaveAttribute(
       'href',
-      '/workout/terca/add-exercise',
+      '/treinos/terca/adicionar-exercicio',
     );
     expect(screen.queryByRole('searchbox', { name: 'Buscar exercícios' })).not.toBeInTheDocument();
   });
@@ -1083,7 +1083,7 @@ describe('WorkoutDayPage', () => {
     expect(screen.getByRole('heading', { name: 'Terça-feira', level: 1 })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Voltar para o dashboard' })).toHaveAttribute(
       'href',
-      '/dashboard',
+      '/treinos',
     );
     expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível carregar o treino.');
     expect(screen.getByRole('button', { name: 'Tentar novamente' })).toHaveClass('border');

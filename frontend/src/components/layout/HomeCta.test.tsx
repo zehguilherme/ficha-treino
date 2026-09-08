@@ -36,7 +36,7 @@ describe('HomeCta', () => {
    * Mock: auth status is authenticated.
    * Assert: the CTA sends the user to their workouts.
    */
-  test('links authenticated users to the dashboard', () => {
+  test('links authenticated users to the workouts page', () => {
     mockedUseAuth.mockReturnValue({
       status: 'authenticated',
       user: undefined,
@@ -52,7 +52,7 @@ describe('HomeCta', () => {
     expect(screen.getByRole('link', { name: 'Ir para meus treinos' })).toHaveClass('h-auto');
     expect(screen.getByRole('link', { name: 'Ir para meus treinos' })).toHaveAttribute(
       'href',
-      '/dashboard',
+      '/treinos',
     );
   });
 

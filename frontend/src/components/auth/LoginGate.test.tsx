@@ -54,9 +54,9 @@ describe('LoginGate', () => {
   /**
    * An authenticated user opens the login page.
    * Mock: auth status is authenticated.
-   * Assert: the user is redirected to the dashboard and login content is hidden.
+   * Assert: the user is redirected to the workouts page and login content is hidden.
    */
-  test('redirects authenticated users to the dashboard', async () => {
+  test('redirects authenticated users to the workouts page', async () => {
     const navigate = jest.fn<(url: string) => void, [url: string]>();
     mockedUseAuth.mockReturnValue({
       status: 'authenticated',
@@ -74,7 +74,7 @@ describe('LoginGate', () => {
       </LoginGate>,
     );
 
-    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/dashboard'));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/treinos'));
     expect(screen.queryByText('Entrar')).not.toBeInTheDocument();
   });
 

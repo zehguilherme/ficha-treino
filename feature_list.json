@@ -116,10 +116,10 @@
         "Navegar para /login",
         "Ver botão 'Entrar com Google'",
         "Clicar inicia fluxo OAuth",
-        "Após sucesso, redirecionar para /dashboard"
+        "Após sucesso, redirecionar para /treinos"
       ],
       "passes": true,
-      "evidence": "Página /login com card centralizado conforme design-system/pages/login.html; botão custom 'Entrar com Google' (GoogleIcon) dispara Google Identity Services via useGoogleLogin (loadGsiScript + initialize + prompt); credential enviado a POST /api/auth/google; JWT salvo em localStorage (lib/auth.ts); redirect para /dashboard; estados loading ('Entrando...' + aria-busy), erro PT-BR (role=alert) e recovery quando popup é bloqueado/pulado; lint + tsc + format verificados"
+      "evidence": "Página /login com card centralizado conforme design-system/pages/login.html; botão custom 'Entrar com Google' (GoogleIcon) dispara Google Identity Services via useGoogleLogin (loadGsiScript + initialize + prompt); credential enviado a POST /api/auth/google; JWT salvo em localStorage (lib/auth.ts); redirect para /treinos; estados loading ('Entrando...' + aria-busy), erro PT-BR (role=alert) e recovery quando popup é bloqueado/pulado; lint + tsc + format verificados"
     },
     {
       "id": "ui-002",
@@ -128,10 +128,10 @@
       "category": "functional",
       "description": "Dashboard com grid semanal de 7 treinos",
       "steps": [
-        "Autenticar e navegar para /dashboard",
+        "Autenticar e navegar para /treinos",
         "Ver 7 cards (Domingo a Sábado)",
         "Cada card exibe nome do dia e contagem de exercícios",
-        "Clicar em um card navega para /workout/[weekDay] usando slug ASCII em minúsculas"
+        "Clicar em um card navega para /treinos/[weekDay] usando slug ASCII em minúsculas"
       ],
       "passes": true,
       "evidence": "Dashboard client consome a sessão pelo AuthContext e habilita TanStack Query somente quando autenticado; 7 cards semanais exibem todos os exercícios com status concluído, listas longas podem ser expandidas por botão acessível, nomes longos são preservados e treinos vazios têm estado próprio; loading de autenticação e treinos separado, retry manual com estados busy/disabled e testes de status, expansão por teclado e sucesso/falha do retry; typecheck, lint e build verificados"
@@ -143,7 +143,7 @@
       "category": "functional",
       "description": "Workout day com lista, conclusão e remoção de exercícios",
       "steps": [
-        "Navegar para /workout/[weekDay] usando somente os slugs domingo, segunda, terca, quarta, quinta, sexta ou sabado",
+        "Navegar para /treinos/[weekDay] usando somente os slugs domingo, segunda, terca, quarta, quinta, sexta ou sabado",
         "Ver lista de exercícios em ordem alfabética",
         "Cada exercício mostra nome, imagem, categoria, equipamento, nível, tipo de força, mecânica, músculos e instruções",
         "Header com contador done/total"
@@ -158,7 +158,7 @@
       "category": "functional",
       "description": "Busca manual de exercícios por nome e filtros",
       "steps": [
-        "Na rota /workout/[weekDay]/add-exercise com slug minúsculo válido, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
+        "Na rota /treinos/[weekDay]/adicionar-exercicio com slug minúsculo válido, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
         "Resultados aparecem somente após a ação explícita, ignorando acentos na busca",
         "Clicar em 'Carregar mais exercícios' exibe a próxima página até carregar todos os resultados",
         "Busca da issue 71 implementada; adição ao treino integrada à rota POST de exercícios",
@@ -166,7 +166,7 @@
         "A página dedicada oferece filtros select fixos para categoria, equipamento, nível, força, mecânica e músculos, combinados com a busca"
       ],
       "passes": true,
-        "evidence": "A rota /workout/[weekDay]/add-exercise implementa busca autenticada com ação manual por botão/Enter, AbortSignal, paginação manual de 20 itens, busca sem acentos e filtros select fixos em painel dedicado; texto e filtros só são enviados juntos após confirmação explícita, que reinicia a paginação, reposiciona a página no topo e desfoca o campo quando há pesquisa por texto; a faixa compacta de busca, filtros e chips permanece sticky em qualquer largura, enquanto o painel expandido usa a rolagem natural e suas ações ficam em barra fixa inferior com safe area e espaço reservado nos resultados; chips refletem os filtros provisórios e permitem remoção independente, resultados reutilizam o ExerciseCard com instruções expansíveis e a ação contextual Adicionar; a adição atualiza os caches do treino/dashboard, exibe confirmação e retorna ao treino; loading acessível e retry manual permanecem cobertos pelos testes da página dedicada."
+      "evidence": "A rota /treinos/[weekDay]/adicionar-exercicio implementa busca autenticada com ação manual por botão/Enter, AbortSignal, paginação manual de 20 itens, busca sem acentos e filtros select fixos em painel dedicado; texto e filtros só são enviados juntos após confirmação explícita, que reinicia a paginação, reposiciona a página no topo e desfoca o campo quando há pesquisa por texto; a faixa compacta de busca, filtros e chips permanece sticky em qualquer largura, enquanto o painel expandido usa a rolagem natural e suas ações ficam em barra fixa inferior com safe area e espaço reservado nos resultados; chips refletem os filtros provisórios e permitem remoção independente, resultados reutilizam o ExerciseCard com instruções expansíveis e a ação contextual Adicionar; a adição atualiza os caches do treino/dashboard, exibe confirmação e retorna ao treino; loading acessível e retry manual permanecem cobertos pelos testes da página dedicada."
     },
     {
       "id": "ui-005",
@@ -205,12 +205,12 @@
       "category": "functional",
       "description": "Página Minha Conta",
       "steps": [
-        "Navegar para /account",
+        "Navegar para /minha-conta",
         "Ver nome e email do usuário",
         "Botão 'Excluir conta' destacado em vermelho"
       ],
       "passes": true,
-      "evidence": "Rota /account protegida pelo AuthContext, exibe nome, e-mail, ID Google e iniciais do usuário, com zona de perigo; testes da página cobrem autenticação e perfil."
+      "evidence": "Rota /minha-conta protegida pelo AuthContext, exibe nome, e-mail, ID Google e iniciais do usuário, com zona de perigo; testes da página cobrem autenticação e perfil."
     },
     {
       "id": "infra-001",
@@ -299,11 +299,11 @@
       "description": "Header: logo + título como link (muda conforme auth)",
       "steps": [
         "Deslogado: clicar no logo navega para /",
-        "Logado: clicar no logo navega para /dashboard",
+        "Logado: clicar no logo navega para /treinos",
         "Navegação por teclado funciona (Tab + Enter)"
       ],
       "passes": true,
-      "evidence": "Header compartilhado consome AuthContext, alterna link público/dashboard pela presença do JWT, mantém fallback U quando o perfil falha e usa DropdownMenu shadcn/Radix com foco e teclado validados; testes, typecheck, lint e build verificados"
+      "evidence": "Header compartilhado consome AuthContext, alterna link público/treinos pela presença do JWT, mantém fallback U quando o perfil falha e usa DropdownMenu shadcn/Radix com foco e teclado validados; testes, typecheck, lint e build verificados"
     },
     {
       "id": "ui-011",

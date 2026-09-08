@@ -388,5 +388,5 @@ Implementado:
 - `DELETE /api/account` para excluir permanentemente a conta autenticada e os dados relacionados em cascata;
 - dashboard semanal e página de treino com busca manual, paginação, adição, marcação, limpeza e remoção integradas.
 
-- a busca e a adição são realizadas na rota dedicada `/workout/[weekDay]/add-exercise`, com filtros fixos, paginação manual e retorno ao treino após a adição;
+- a busca e a adição são realizadas na rota dedicada `/treinos/[weekDay]/adicionar-exercicio`, com filtros fixos, paginação manual e retorno ao treino após a adição;
 - o frontend possui página de conta, confirmação acessível para exclusão e redirecionamento para `/login` após a remoção.

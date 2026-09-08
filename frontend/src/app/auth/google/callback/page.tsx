@@ -44,7 +44,7 @@ const GoogleCallbackPage = () => {
       try {
         const { token } = await exchangeGoogleCode(code);
         login(token);
-        router.replace('/dashboard');
+        router.replace('/treinos');
       } catch (error) {
         const authFailed = axios.isAxiosError(error) && error.response !== undefined;
         failWith(

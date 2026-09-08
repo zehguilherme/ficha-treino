@@ -51,11 +51,11 @@ describe('GoogleCallbackPage', () => {
   });
 
   /**
-   * Exchanges the code and redirects to the dashboard on success.
+   * Exchanges the code and redirects to the workouts page on success.
    * Mock: exchangeGoogleCode resolves with a JWT token, URL has code and state.
-   * Assert: POST /api/auth/google with code, context login called, redirect /dashboard, state cleared.
+   * Assert: POST /api/auth/google with code, context login called, redirect /treinos, state cleared.
    */
-  test('exchanges the code and redirects to the dashboard on success', async () => {
+  test('exchanges the code and redirects to the workouts page on success', async () => {
     mockExchangeGoogleCode.mockResolvedValue({
       token: 'jwt-token',
       name: 'Test User',
@@ -68,7 +68,7 @@ describe('GoogleCallbackPage', () => {
       </StrictMode>,
     );
 
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/dashboard'));
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/treinos'));
     expect(mockExchangeGoogleCode).toHaveBeenCalledTimes(1);
     expect(mockExchangeGoogleCode).toHaveBeenCalledWith('test-code');
     expect(mockLogin).toHaveBeenCalledWith('jwt-token');

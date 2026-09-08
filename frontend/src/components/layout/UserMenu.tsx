@@ -23,7 +23,7 @@ export const UserMenu = ({ name, showAccountLink, onLogout }: UserMenuProps): Re
     <DropdownMenuContent align="end">
       {showAccountLink ? (
         <DropdownMenuItem asChild>
-          <Link href="/account">Minha conta</Link>
+          <Link href="/minha-conta">Minha conta</Link>
         </DropdownMenuItem>
       ) : null}
       <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={onLogout}>

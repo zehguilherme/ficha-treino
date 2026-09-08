@@ -16,7 +16,7 @@ describe('UserMenu', () => {
 
     expect(screen.getByRole('menuitem', { name: 'Minha conta' })).toHaveAttribute(
       'href',
-      '/account',
+      '/minha-conta',
     );
     expect(screen.getByRole('menuitem', { name: 'Sair' })).toBeInTheDocument();
   });
