@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { ExerciseCard, ExerciseLevelTooltip } from '@/components/exercise/ExerciseCard';
 import { Footer } from '@/components/layout/Footer';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
-import { Input } from '@/components/ui/Input';
+import { Combobox, type ComboboxHandle } from '@/components/ui/Combobox';
 import { IconLink } from '@/components/ui/IconLink';
 import { Loading } from '@/components/ui/Loading';
 import {
@@ -17,14 +17,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/Select';
-import { ArrowLeftIcon, ChevronDownIcon, SearchIcon, XIcon } from '@/components/ui/WorkoutIcons';
+import { ArrowLeftIcon, ChevronDownIcon, XIcon } from '@/components/ui/WorkoutIcons';
 import { addWorkoutExercise, getExercises, type ExerciseFilters } from '@/lib/api';
 import { EXERCISE_LABELS } from '@/lib/exerciseLabels';
 import { getWeekDaySlug } from '@/lib/weekDays';
-import type { WeekDay } from '@/schemas/api';
+import type { ExerciseDetails, WeekDay } from '@/schemas/api';
 import { toast } from 'sonner';
 
 const EXERCISES_PAGE_SIZE = 20;
+
+const loadExerciseSuggestions = async (
+  query: string,
+  signal: AbortSignal,
+): Promise<ReadonlyArray<ExerciseDetails>> => {
+  const response = await getExercises(query, 5, 0, signal);
+  return response.items;
+};
 
 type FilterDefinition = {
   key: keyof ExerciseFilters;
@@ -109,10 +117,10 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
   const [isRetryingSearch, setIsRetryingSearch] = useState(false);
   const [openInstructions, setOpenInstructions] = useState<string | null>(null);
   const [addingExerciseId, setAddingExerciseId] = useState<string | null>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
   const filterTriggerRef = useRef<HTMLButtonElement>(null);
   const firstFilterRef = useRef<HTMLButtonElement>(null);
+  const comboboxRef = useRef<ComboboxHandle>(null);
   const normalizedSearch = submittedSearch.trim();
   const hasActiveFilters = Object.values(filters).some(Boolean);
   const hasDraftFilters = Object.values(draftFilters).some(Boolean);
@@ -160,10 +168,6 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
     onSettled: () => setAddingExerciseId(null),
   });
 
-  const clearSearch = (): void => {
-    setSearch('');
-  };
-
   const openFilterPanel = (): void => {
     setFilterPanelOpen(true);
   };
@@ -185,13 +189,13 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
     });
   };
 
-  const submitSearch = (returnFocusToFilters = true): void => {
-    const nextSearch = search.trim();
+  const submitSearch = (query = search, returnFocusToFilters = true): void => {
+    const nextSearch = query.trim();
     const nextFilters = { ...draftFilters };
     const count = Object.values(nextFilters).filter(Boolean).length;
     if (!nextSearch && count === 0 && !hasPendingFilterChanges) return;
     window.scrollTo({ top: 0, behavior: 'auto' });
-    if (nextSearch) searchInputRef.current?.blur();
+    if (nextSearch) comboboxRef.current?.blur();
     setSubmittedSearch(nextSearch);
     setCatalogRequested(false);
     setFilters(nextFilters);
@@ -212,9 +216,10 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
     setFilters({});
     setDraftFilters({});
     setCatalogRequested(false);
+    comboboxRef.current?.clear();
     setFilterPanelOpen(false);
     setFilterAnnouncement('Busca e filtros limpos. Exibindo todos os exercícios.');
-    filterTriggerRef.current?.focus();
+    comboboxRef.current?.focus();
   };
 
   const clearFilter = (key: keyof ExerciseFilters): void => {
@@ -223,11 +228,6 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
       delete next[key];
       return next;
     });
-  };
-
-  const clearSearchAndFocus = (): void => {
-    clearSearch();
-    searchInputRef.current?.focus();
   };
 
   const handleSearchChange = (value: string): void => {
@@ -367,27 +367,14 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
               data-slot="exercise-search-controls"
               className="sticky top-14 z-10 -mx-4 bg-background px-4 pb-3 pt-1 sm:-mx-6 sm:px-6"
             >
-              <Input
-                ref={searchInputRef}
-                type="search"
+              <Combobox
+                ref={comboboxRef}
                 aria-label="Buscar exercícios"
-                value={search}
-                onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder="Buscar pelo nome do exercício..."
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    submitSearch(false);
-                  }
-                }}
-                leadingIcon={
-                  <SearchIcon
-                    className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                    aria-hidden="true"
-                  />
-                }
-                onClear={clearSearchAndFocus}
-                clearLabel="Limpar busca"
+                loadOptions={loadExerciseSuggestions}
+                onQueryChange={handleSearchChange}
+                onSubmit={(query) => submitSearch(query, false)}
+                itemToStringLabel={(item) => item.name}
               />
               <div className="mt-3 min-w-0 min-h-0">
                 <Button

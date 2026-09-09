@@ -128,6 +128,10 @@ src/
     api.ts                 (contratos Zod das respostas HTTP)
 ```
 
+### Combobox de busca
+
+A busca de exercícios usa o componente genérico `Combobox`: ele encapsula seleção única, debounce de 300 ms, carregamento assíncrono de até cinco sugestões, estados de loading/empty/erro, teclado, portal diretamente abaixo do campo e botão acessível para limpar. O estado vazio só é exibido após uma consulta não vazia; focar um campo sem pesquisar não abre resultados. Ao limpar busca e filtros, o foco retorna ao campo de busca. A página fornece apenas o carregador e a ação de busca completa; selecionar uma sugestão por clique ou teclado mantém o rótulo completo no campo e confirma a busca, mantendo a inclusão explícita pelos cards.
+
 ## Verificação
 
 ```bash
@@ -330,6 +334,10 @@ Testa a pílula reutilizável de rótulo/valor e a omissão de valores vazios.
 #### `src/app/treinos/[weekDay]/adicionar-exercicio/page.test.tsx`
 
 Testa a página dedicada, o retorno acessível ao treino do dia, a navegação automática após adicionar um exercício, o loading interno das ações assíncronas, a explicação do filtro de nível e o comportamento responsivo do shell de busca, filtros e ações.
+
+#### `src/components/ui/Combobox.test.tsx`
+
+Testa o debounce do carregador assíncrono, seleção com rótulo completo por clique e por `Enter`, submissão da busca e limpeza por ref.
 
 #### `src/app/treinos/[weekDay]/adicionar-exercicio/layout.test.ts`
 
