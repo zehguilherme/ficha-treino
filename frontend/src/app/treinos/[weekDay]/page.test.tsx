@@ -38,6 +38,7 @@ import {
   toggleWorkoutExercise,
 } from '@/lib/api';
 import type { ExercisesResponse } from '@/schemas/api';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import { toast } from 'sonner';
 import WorkoutDayPage from './page';
 
@@ -79,9 +80,11 @@ const workout = {
 const renderPage = (): void => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(
-    <QueryClientProvider client={queryClient}>
-      <WorkoutDayPage />
-    </QueryClientProvider>,
+    <TooltipProvider>
+      <QueryClientProvider client={queryClient}>
+        <WorkoutDayPage />
+      </QueryClientProvider>
+    </TooltipProvider>,
   );
 };
 

@@ -2,9 +2,11 @@ import * as React from 'react';
 import { ExerciseTag } from '@/components/exercise/ExerciseTag';
 import { ExerciseImageCarousel } from '@/components/exercise/ExerciseImageCarousel';
 import { Button } from '@/components/ui/Button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import {
   ChevronDownIcon,
   ForceIcon,
+  InfoIcon,
   LevelIcon,
   MechanicIcon,
   MuscleIcon,
@@ -20,6 +22,63 @@ export interface ExerciseCardProps {
   leadingActions?: React.ReactNode;
   trailingActions?: React.ReactNode;
 }
+
+export const ExerciseLevelTooltip = (): React.JSX.Element => {
+  const [open, setOpen] = React.useState(false);
+  const pointerInteractionRef = React.useRef(false);
+
+  return (
+    <Tooltip open={open} onOpenChange={setOpen}>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-4 rounded-full p-0 text-muted-foreground hover:text-foreground"
+          aria-label="Sobre os níveis de exercício"
+          aria-expanded={open}
+          onPointerDown={(event) => {
+            pointerInteractionRef.current = true;
+            event.preventDefault();
+            setOpen((current) => !current);
+          }}
+          onClick={(event) => {
+            event.preventDefault();
+            if (!pointerInteractionRef.current) {
+              setOpen((current) => !current);
+            }
+            pointerInteractionRef.current = false;
+          }}
+        >
+          <InfoIcon className="size-3.5" aria-hidden="true" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent className="w-72 max-w-[calc(100vw-2rem)] text-left">
+        <p>
+          O nível é uma classificação relativa do catálogo: ele compara a complexidade de execução
+          entre exercícios. O catálogo não define pontuação, carga, número de repetições, tempo de
+          treino ou um limite técnico exato entre os níveis.
+        </p>
+        <p className="mt-2">
+          <strong>Iniciante:</strong> execução geralmente mais simples, com menor exigência de
+          coordenação, controle e estabilidade.
+        </p>
+        <p className="mt-2">
+          <strong>Intermediário:</strong> requer técnica consistente, maior controle e familiaridade
+          com o movimento.
+        </p>
+        <p className="mt-2">
+          <strong>Avançado:</strong> exige domínio técnico, coordenação e estabilidade elevadas.
+        </p>
+        <p className="mt-2">
+          Use o nível para comparar a complexidade do movimento, não para definir sua experiência ou
+          condicionamento individual. Em caso de dúvida sobre a execução adequada para você, procure
+          orientação profissional.
+        </p>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
 
 const ExerciseCard = ({
   exercise,
@@ -53,9 +112,10 @@ const ExerciseCard = ({
         </div>
         <dl className="mb-3 flex flex-wrap gap-2 border-y border-border py-3 text-xs sm:gap-6">
           <div className="max-w-full shrink-0">
-            <dt className="flex items-center gap-1.5 text-[0.6875rem] font-medium uppercase tracking-[0.06em] text-muted-foreground">
+            <dt className="relative flex items-center gap-1.5 text-[0.6875rem] font-medium uppercase tracking-[0.06em] text-muted-foreground">
               <LevelIcon className="size-3.5 shrink-0" aria-hidden="true" />
               Nível
+              <ExerciseLevelTooltip />
             </dt>
             <dd className="mt-0.5 break-words pl-5 text-foreground">
               {getExerciseLabel('level', exercise.level)}

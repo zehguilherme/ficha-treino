@@ -1,6 +1,11 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ExerciseCard } from './ExerciseCard';
+
+const renderExerciseCard = (ui: ReactElement): ReturnType<typeof render> =>
+  render(<TooltipProvider delayDuration={0}>{ui}</TooltipProvider>);
 
 const exercise = {
   id: 'flat-bench-leg-raise',
@@ -23,7 +28,7 @@ describe('ExerciseCard', () => {
    * Assert: the card exposes the expected exercise details and action footer.
    */
   test('renders the shared exercise details and actions', () => {
-    render(
+    renderExerciseCard(
       <ExerciseCard
         exercise={exercise}
         instructionsOpen={false}
@@ -62,8 +67,66 @@ describe('ExerciseCard', () => {
     expect(screen.getByRole('button', { name: 'Adicionar' })).toBeInTheDocument();
   });
 
+  test('explains exercise levels through the accessible info control', async () => {
+    const user = userEvent.setup();
+
+    renderExerciseCard(
+      <ExerciseCard
+        exercise={exercise}
+        instructionsOpen={false}
+        onToggleInstructions={jest.fn()}
+      />,
+    );
+
+    const infoButton = screen.getByRole('button', { name: 'Sobre os níveis de exercício' });
+    expect(infoButton).toHaveAttribute('data-state', 'closed');
+
+    await user.hover(infoButton);
+    const levelInfo = await screen.findByRole('tooltip');
+    expect(levelInfo).toBeVisible();
+    expect(levelInfo).toHaveClass('max-h-[calc(100dvh-2rem)]');
+    expect(levelInfo).toHaveTextContent(
+      'O nível é uma classificação relativa do catálogo: ele compara a complexidade de execução entre exercícios',
+    );
+    expect(levelInfo).toHaveTextContent('não define pontuação, carga, número de repetições');
+    expect(levelInfo).toHaveTextContent('Iniciante: execução geralmente mais simples');
+    expect(levelInfo).toHaveTextContent('Intermediário: requer técnica consistente');
+    expect(levelInfo).toHaveTextContent('Avançado: exige domínio técnico');
+    expect(levelInfo).toHaveTextContent('Use o nível para comparar a complexidade do movimento');
+
+    await user.keyboard('{Escape}');
+    expect(levelInfo).not.toBeVisible();
+
+    await user.unhover(infoButton);
+    fireEvent.pointerDown(infoButton);
+    fireEvent.click(infoButton);
+    const clickedLevelInfo = await screen.findByRole('tooltip');
+    expect(clickedLevelInfo).toBeVisible();
+  });
+
+  test('opens the level tooltip on the first touch', async () => {
+    renderExerciseCard(
+      <ExerciseCard
+        exercise={exercise}
+        instructionsOpen={false}
+        onToggleInstructions={jest.fn()}
+      />,
+    );
+
+    const infoButton = screen.getByRole('button', { name: 'Sobre os níveis de exercício' });
+    fireEvent.pointerDown(infoButton, { pointerType: 'touch' });
+    fireEvent.click(infoButton);
+
+    const levelInfo = await screen.findByRole('tooltip');
+    expect(levelInfo).toBeVisible();
+
+    fireEvent.pointerDown(infoButton, { pointerType: 'touch' });
+    fireEvent.click(infoButton);
+    expect(levelInfo).not.toBeVisible();
+  });
+
   test('renders exercise metadata with Brazilian Portuguese accents and casing', () => {
-    render(
+    renderExerciseCard(
       <ExerciseCard
         exercise={{
           ...exercise,
@@ -90,7 +153,7 @@ describe('ExerciseCard', () => {
   });
 
   test('omits optional force and mechanic details when unavailable', () => {
-    render(
+    renderExerciseCard(
       <ExerciseCard
         exercise={{ ...exercise, force: null, mechanic: null }}
         instructionsOpen={false}
@@ -111,7 +174,7 @@ describe('ExerciseCard', () => {
     const user = userEvent.setup();
     const onToggleInstructions = jest.fn();
 
-    const { rerender } = render(
+    const { rerender } = renderExerciseCard(
       <ExerciseCard
         exercise={exercise}
         instructionsOpen={false}
@@ -124,12 +187,14 @@ describe('ExerciseCard', () => {
     expect(onToggleInstructions).toHaveBeenCalledTimes(1);
 
     rerender(
-      <ExerciseCard
-        exercise={exercise}
-        instructionsOpen
-        onToggleInstructions={onToggleInstructions}
-        trailingActions={<button type="button">Adicionar</button>}
-      />,
+      <TooltipProvider>
+        <ExerciseCard
+          exercise={exercise}
+          instructionsOpen
+          onToggleInstructions={onToggleInstructions}
+          trailingActions={<button type="button">Adicionar</button>}
+        />
+      </TooltipProvider>,
     );
 
     expect(screen.getByText(`• ${exercise.instructions[0]}`)).toBeVisible();

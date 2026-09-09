@@ -44,6 +44,21 @@ const XIcon = (props: IconProps): React.JSX.Element => (
     <path d="M6 6l12 12M18 6 6 18" />
   </svg>
 );
+const InfoIcon = (props: IconProps): React.JSX.Element => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5" />
+    <path d="M12 8h.01" />
+  </svg>
+);
 const ArrowLeftIcon = (props: IconProps): React.JSX.Element => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
     <path d="m15 18-6-6 6-6" />
@@ -162,6 +177,7 @@ export {
   MuscleIcon,
   LevelIcon,
   ForceIcon,
+  InfoIcon,
   MechanicIcon,
   SearchIcon,
   TrashIcon,

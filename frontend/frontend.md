@@ -84,6 +84,7 @@ src/
   components/
     ui/                   (ShadCN)
       Button.tsx
+      Tooltip.tsx
       IconLink.tsx
       Loading.tsx
       AlertDialog.tsx
@@ -320,7 +321,7 @@ Testes do diálogo de confirmação de limpeza, incluindo confirmação, cancela
 
 #### `src/components/exercise/ExerciseCard.test.tsx`
 
-Testa o card compartilhado de exercícios, incluindo metadados, ações e expansão das instruções.
+Testa o card compartilhado de exercícios, incluindo metadados, ações, expansão das instruções e explicação acessível dos níveis.
 
 #### `src/components/exercise/ExerciseTag.test.tsx`
 
@@ -328,7 +329,7 @@ Testa a pílula reutilizável de rótulo/valor e a omissão de valores vazios.
 
 #### `src/app/treinos/[weekDay]/adicionar-exercicio/page.test.tsx`
 
-Testa a página dedicada, o retorno acessível ao treino do dia, a navegação automática após adicionar um exercício, o loading interno das ações assíncronas e o comportamento responsivo do shell de busca, filtros e ações.
+Testa a página dedicada, o retorno acessível ao treino do dia, a navegação automática após adicionar um exercício, o loading interno das ações assíncronas, a explicação do filtro de nível e o comportamento responsivo do shell de busca, filtros e ações.
 
 #### `src/app/treinos/[weekDay]/adicionar-exercicio/layout.test.ts`
 
