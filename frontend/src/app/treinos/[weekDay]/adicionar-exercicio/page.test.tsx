@@ -62,6 +62,140 @@ describe('AddExercisePage', () => {
   });
 
   /**
+   * A user types an exercise name and chooses one autocomplete suggestion.
+   * Mock: the catalog returns one suggestion and the subsequent full search result.
+   * Assert: the combobox queries five suggestions, then confirms the selected search and renders its card.
+   */
+  test('shows one exercise suggestion and searches after selecting it', async () => {
+    const user = userEvent.setup();
+    const exercise = {
+      id: 'supino-reto',
+      name: 'Supino reto',
+      force: 'push',
+      level: 'beginner',
+      mechanic: 'compound',
+      equipment: 'barbell',
+      primaryMuscles: ['peito'],
+      secondaryMuscles: [],
+      instructions: ['Deite-se no banco.'],
+      category: 'strength',
+      images: ['supino-reto/0.jpg'],
+    };
+    mockedGetExercises.mockResolvedValue({ items: [exercise], total: 1 });
+    renderPage();
+
+    const searchbox = screen.getByRole('combobox', { name: 'Buscar exercícios' });
+    await user.type(searchbox, 'supino');
+
+    await waitFor(() =>
+      expect(mockedGetExercises).toHaveBeenCalledWith('supino', 5, 0, expect.any(AbortSignal)),
+    );
+    expect(await screen.findByRole('option', { name: 'Supino reto' })).toBeInTheDocument();
+    expect(document.querySelector('[data-slot="combobox-positioner"]')).toHaveClass('z-50');
+
+    await user.click(screen.getByRole('option', { name: 'Supino reto' }));
+
+    await screen.findByRole('heading', { name: 'Supino reto' });
+    await waitFor(() => expect(searchbox).toHaveValue('Supino reto'));
+    expect(screen.queryByRole('option', { name: 'Supino reto' })).not.toBeInTheDocument();
+    expect(mockedGetExercises).toHaveBeenCalledWith('Supino reto', 20, 0, expect.any(AbortSignal));
+  });
+
+  /**
+   * A user clears a typed exercise query from the combobox.
+   * Mock: no catalog suggestions are returned for the query.
+   * Assert: the accessible clear action empties the field without adding an exercise.
+   */
+  test('clears the combobox query with its clear button', async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    const searchbox = screen.getByRole('combobox', { name: 'Buscar exercícios' });
+    await user.type(searchbox, 'supino');
+    const clearButton = await screen.findByRole('button', { name: 'Limpar busca' });
+
+    await user.click(clearButton);
+
+    expect(searchbox).toHaveValue('');
+    expect(mockedAddWorkoutExercise).not.toHaveBeenCalled();
+  });
+
+  test('keeps the complete second suggestion after deleting the first selection with backspace', async () => {
+    const user = userEvent.setup();
+    const firstExercise = {
+      id: 'supino-reto',
+      name: 'Supino reto',
+      force: 'push',
+      level: 'beginner',
+      mechanic: 'compound',
+      equipment: 'barbell',
+      primaryMuscles: ['peito'],
+      secondaryMuscles: [],
+      instructions: ['Deite-se no banco.'],
+      category: 'strength',
+      images: ['supino-reto/0.jpg'],
+    };
+    const secondExercise = { ...firstExercise, id: 'cadeira-extensora', name: 'Cadeira extensora' };
+    mockedGetExercises.mockResolvedValue({ items: [firstExercise, secondExercise], total: 2 });
+    renderPage();
+
+    const searchbox = screen.getByRole('combobox', { name: 'Buscar exercícios' });
+    await user.type(searchbox, 'supino');
+    await user.click(await screen.findByRole('option', { name: 'Supino reto' }));
+    await user.click(searchbox);
+    await user.keyboard('{Backspace}'.repeat('Supino reto'.length));
+    expect(searchbox).toHaveValue('');
+    await user.type(searchbox, 'cadeira');
+
+    await user.click(await screen.findByRole('option', { name: 'Cadeira extensora' }));
+
+    expect(searchbox).toHaveValue('Cadeira extensora');
+  });
+
+  /**
+   * A user searches with the shortest and a long query, then confirms with Enter.
+   * Mock: the catalog returns one exercise for both suggestion and full-search requests.
+   * Assert: neither query length is blocked, Enter displays results, and the value remains visible.
+   */
+  test('searches with any query length and confirms with Enter', async () => {
+    const user = userEvent.setup();
+    const exercise = {
+      id: 'cadeira-extensora',
+      name: 'Cadeira extensora',
+      force: 'push',
+      level: 'beginner',
+      mechanic: 'isolation',
+      equipment: 'machine',
+      primaryMuscles: ['quadríceps'],
+      secondaryMuscles: [],
+      instructions: ['Sente-se.'],
+      category: 'strength',
+      images: ['cadeira-extensora/0.jpg'],
+    };
+    mockedGetExercises.mockResolvedValue({ items: [exercise], total: 1 });
+    renderPage();
+
+    const searchbox = screen.getByRole('combobox', { name: 'Buscar exercícios' });
+    await user.type(searchbox, 'a');
+    await waitFor(() =>
+      expect(mockedGetExercises).toHaveBeenCalledWith('a', 5, 0, expect.any(AbortSignal)),
+    );
+
+    await user.keyboard('{Escape}');
+    await user.clear(searchbox);
+    await waitFor(() => expect(searchbox).toHaveValue(''));
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    const longQuery = 'alongamento-de-perna-estendida-na-cadeira';
+    await user.type(searchbox, longQuery);
+    await user.keyboard('{Enter}');
+
+    await screen.findByRole('heading', { name: 'Cadeira extensora' });
+    expect(searchbox).toHaveValue(longQuery);
+    expect(mockedGetExercises).toHaveBeenCalledWith(longQuery, 20, 0, expect.any(AbortSignal));
+    expect(mockedAddWorkoutExercise).not.toHaveBeenCalled();
+  });
+
+  /**
    * A user scrolls through a long exercise catalog and needs to refine the search.
    * Mock: the authenticated dedicated add-exercise page renders its existing controls.
    * Assert: only the compact search controls stay sticky; the expanded filter panel remains in normal flow.
@@ -174,7 +308,7 @@ describe('AddExercisePage', () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'supino');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'supino');
     await user.click(screen.getByRole('button', { name: 'Mais filtros' }));
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
 
@@ -189,7 +323,7 @@ describe('AddExercisePage', () => {
   /**
    * A user abandons a draft filter selection from the fixed action bar.
    * Mock: the category select contains its normal options and no search request is needed.
-   * Assert: all draft values are cleared and focus returns to the filters trigger.
+   * Assert: all draft values are cleared and focus returns to the search combobox.
    */
   test('clears draft filters and restores focus from the fixed action bar', async () => {
     const user = userEvent.setup();
@@ -198,13 +332,15 @@ describe('AddExercisePage', () => {
     await user.click(screen.getByRole('button', { name: 'Mais filtros' }));
     await user.click(screen.getByRole('combobox', { name: 'Categoria' }));
     await user.click(screen.getByRole('option', { name: 'Força' }));
-    await user.click(screen.getByRole('button', { name: 'Limpar busca e filtros' }));
+    const clearButton = screen.getByRole('button', { name: 'Limpar busca e filtros' });
+    clearButton.focus();
+    await user.keyboard('{Enter}');
 
     expect(screen.getByRole('button', { name: 'Mais filtros' })).toHaveAttribute(
       'aria-expanded',
       'false',
     );
-    expect(screen.getByRole('button', { name: 'Mais filtros' })).toHaveFocus();
+    expect(screen.getByRole('combobox', { name: 'Buscar exercícios' })).toHaveFocus();
     expect(
       screen.queryByRole('button', { name: 'Remover filtro Categoria' }),
     ).not.toBeInTheDocument();
@@ -220,7 +356,7 @@ describe('AddExercisePage', () => {
     const scrollTo = jest.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
     renderPage();
 
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'supino');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'supino');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
 
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
@@ -237,7 +373,7 @@ describe('AddExercisePage', () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'supino');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'supino');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
 
     const searchButton = screen.getByRole('button', { name: /Pesquisando exercícios/ });
@@ -273,7 +409,7 @@ describe('AddExercisePage', () => {
     });
     renderPage();
 
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'supino');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'supino');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await screen.findByRole('heading', { name: 'Supino reto' });
     await user.click(screen.getByRole('button', { name: 'Mais filtros' }));
@@ -317,7 +453,7 @@ describe('AddExercisePage', () => {
 
     const user = userEvent.setup();
     renderPage();
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'supino');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'supino');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await user.click(await screen.findByRole('button', { name: 'Adicionar Supino reto' }));
 

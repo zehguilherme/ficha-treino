@@ -158,8 +158,8 @@
       "category": "functional",
       "description": "Busca manual de exercícios por nome e filtros",
       "steps": [
-        "Na rota /treinos/[weekDay]/adicionar-exercicio com slug minúsculo válido, informar o nome no search input e clicar em 'Pesquisar exercícios' ou pressionar Enter",
-        "Resultados aparecem somente após a ação explícita, ignorando acentos na busca",
+        "Na rota /treinos/[weekDay]/adicionar-exercicio com slug minúsculo válido, informar o nome no Combobox e clicar em 'Pesquisar exercícios' ou pressionar Enter",
+        "Sugestões aparecem após a digitação; resultados completos aparecem após a ação explícita, ignorando acentos na busca",
         "Clicar em 'Carregar mais exercícios' exibe a próxima página até carregar todos os resultados",
         "Busca da issue 71 implementada; adição ao treino integrada à rota POST de exercícios",
         "Campo de busca tem ícone de lupa",

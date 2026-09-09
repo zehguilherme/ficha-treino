@@ -12,3 +12,7 @@ dist/
 .playwright-mcp/
 snapshot.txt
 .vercel
+
+# QA living docs — generated views & bulky evidence
+docs/qa/state.csv
+docs/qa/evidence/

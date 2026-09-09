@@ -314,7 +314,7 @@ describe('WorkoutDayPage', () => {
       'href',
       '/treinos/terca/adicionar-exercicio',
     );
-    expect(screen.queryByRole('searchbox', { name: 'Buscar exercícios' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'Buscar exercícios' })).not.toBeInTheDocument();
   });
 
   /**
@@ -592,7 +592,7 @@ describe('WorkoutDayPage', () => {
     );
 
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
+    const search = screen.getByRole('combobox', { name: 'Buscar exercícios' });
     await user.type(search, 'supino');
     expect(search).toHaveValue('supino');
   });
@@ -627,7 +627,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
+    const search = screen.getByRole('combobox', { name: 'Buscar exercícios' });
     await user.type(search, 'triceps');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
@@ -661,7 +661,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'triceps');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
 
     await act(async () => {
@@ -752,7 +752,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'exercício');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'exercício');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -818,7 +818,7 @@ describe('WorkoutDayPage', () => {
     expect(workoutHeading).not.toHaveClass('truncate');
 
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'alongamento');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'alongamento');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -887,7 +887,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    const search = screen.getByRole('searchbox', { name: 'Buscar exercícios' });
+    const search = screen.getByRole('combobox', { name: 'Buscar exercícios' });
     await user.type(search, 'triceps');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
@@ -947,7 +947,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'triceps');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -992,7 +992,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'triceps');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -1029,7 +1029,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'triceps');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -1043,7 +1043,7 @@ describe('WorkoutDayPage', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível buscar exercícios.');
     const retryButton = screen.getByRole('button', { name: 'Tentar novamente' });
     expect(retryButton).toBeEnabled();
-    expect(screen.getByRole('searchbox', { name: 'Buscar exercícios' })).toHaveValue('triceps');
+    expect(screen.getByRole('combobox', { name: 'Buscar exercícios' })).toHaveValue('triceps');
 
     await user.click(retryButton);
     expect(screen.getByRole('button', { name: /Tentando novamente/ })).toBeDisabled();
@@ -1174,7 +1174,7 @@ describe('WorkoutDayPage', () => {
     renderPage();
     await screen.findByText('Supino reto');
     await user.click(screen.getByRole('button', { name: 'Adicionar exercício' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Buscar exercícios' }), 'triceps');
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'triceps');
     await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
     await act(async () => {
       jest.advanceTimersByTime(1000);

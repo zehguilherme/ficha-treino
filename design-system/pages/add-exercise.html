@@ -38,7 +38,10 @@
     <section class="search" aria-label="Busca de exercícios">
       <div class="search-shell">
       <div class="search-controls">
-        <input type="search" aria-label="Buscar exercícios" placeholder="Buscar pelo nome do exercício...">
+        <div role="combobox" aria-label="Buscar exercícios" aria-expanded="false" aria-haspopup="listbox">
+          <input type="search" aria-label="Buscar exercícios" aria-keyshortcuts="Enter" placeholder="Buscar pelo nome do exercício...">
+          <button type="button" aria-label="Limpar busca">×</button>
+        </div>
         <button type="button" aria-expanded="true">Filtros avançados⌃</button>
       </div>
       <div class="filters" aria-label="Filtros de exercícios">
