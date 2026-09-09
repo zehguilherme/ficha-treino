@@ -4,7 +4,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { isAxiosError } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { ExerciseCard } from '@/components/exercise/ExerciseCard';
+import { ExerciseCard, ExerciseLevelTooltip } from '@/components/exercise/ExerciseCard';
 import { Footer } from '@/components/layout/Footer';
 import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Input } from '@/components/ui/Input';
@@ -253,9 +253,12 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
     const value = draftFilters[key];
     return (
       <div key={key} className="flex flex-col gap-1.5">
-        <label htmlFor={`exercise-filter-${key}`} className="text-sm font-medium text-foreground">
-          {label}
-        </label>
+        <div className="flex items-center gap-1.5">
+          <label htmlFor={`exercise-filter-${key}`} className="text-sm font-medium text-foreground">
+            {label}
+          </label>
+          {key === 'level' ? <ExerciseLevelTooltip /> : null}
+        </div>
         <div className="relative">
           <Select
             value={value ?? ''}

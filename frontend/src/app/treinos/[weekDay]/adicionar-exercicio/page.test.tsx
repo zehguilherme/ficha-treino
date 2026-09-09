@@ -22,6 +22,7 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { addWorkoutExercise, getExercises } from '@/lib/api';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import AddExercisePage from './page';
 
 const mockedGetExercises = jest.mocked(getExercises);
@@ -30,9 +31,11 @@ const mockedAddWorkoutExercise = jest.mocked(addWorkoutExercise);
 const renderPage = (): void => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(
-    <QueryClientProvider client={queryClient}>
-      <AddExercisePage />
-    </QueryClientProvider>,
+    <TooltipProvider>
+      <QueryClientProvider client={queryClient}>
+        <AddExercisePage />
+      </QueryClientProvider>
+    </TooltipProvider>,
   );
 };
 
@@ -77,6 +80,23 @@ describe('AddExercisePage', () => {
       'aria-expanded',
       'false',
     );
+  });
+
+  test('explains the level filter next to its label', async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(screen.getByRole('button', { name: 'Mais filtros' }));
+    const infoButton = screen.getByRole('button', { name: 'Sobre os níveis de exercício' });
+
+    await user.hover(infoButton);
+
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip).toHaveTextContent('O nível é uma classificação relativa do catálogo');
+    expect(tooltip).toHaveTextContent('não define pontuação, carga, número de repetições');
+    expect(tooltip).toHaveTextContent('Iniciante: execução geralmente mais simples');
+    expect(tooltip).toHaveTextContent('Intermediário: requer técnica consistente');
+    expect(tooltip).toHaveTextContent('Avançado: exige domínio técnico');
   });
 
   /**
