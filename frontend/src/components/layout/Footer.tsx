@@ -8,9 +8,10 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
+    <footer className="border-t border-border px-4 py-8 text-center text-xs text-muted-foreground sm:px-6">
       <p className="mb-1 font-medium text-foreground">Ficha de Treino — Seu treino organizado</p>
       <p className="mb-4">Todos os direitos reservados © {currentYear}</p>
+      <p className="mb-1">Feito por José Guilherme</p>
       <div className="flex justify-center gap-2">
         <IconLink
           aria-label="Portfólio"
