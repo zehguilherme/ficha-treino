@@ -1,8 +1,10 @@
 # Session Handoff
 
+Last Updated: 2026-09-10
+
 ## Última sessão
 
-2026-09-08: documentação reconciliada com o estado atual do código; a exclusão de conta, a página dedicada de busca/adição, os filtros fixos e as rotas públicas em português estão concluídos. Permanecem `ui-011`, `ui-012` e `tool-003`.
+2026-09-10: harness modular auditado e ajustado; tracker normalizado para `api`/`ui`, docs dos módulos detectados adicionados e catálogo de testes movido para `frontend/testing.md`. A exclusão de conta, a página dedicada de busca/adição, os filtros fixos, as rotas públicas em português, o Combobox responsivo e o footer compartilhado estão concluídos. Permanecem `ui-011`, `ui-012` e `tool-003`.
 
 ## O que foi feito
 
@@ -32,7 +34,17 @@
 
 `backend routes + frontend pages` — rotas de usuário (CRUD treinos, busca exercícios, conta) e páginas correspondentes.
 
-## Próximos passos
+## Bloqueios / Blockers
+
+Nenhum.
+
+## Arquivos relevantes / Files
+
+- `AGENTS.md`, `feature_list.json`, `progress.md` e `init.sh`: harness e estado.
+- `backend/src/src.md` e `frontend/src/app/app.md`: docs dos módulos detectados.
+- `frontend/frontend.md` e `frontend/testing.md`: guia e referência de testes do frontend.
+
+## Próximos passos / Next
 
 ### Backend
 

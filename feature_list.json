@@ -18,7 +18,7 @@
       "title": "Scaffold Express + test route",
       "behavior": "Express app with TypeScript, cors, json middleware. GET /api/test returns { message: \"Teste\" }",
       "verification": "curl http://localhost:3001/api/test | jq '.message == \"Teste\"'",
-      "status": "completed",
+      "status": "passing",
       "evidence": "curl http://localhost:3001/api/test retorna {\"message\":\"Teste\"}"
     },
     {
@@ -38,7 +38,7 @@
       "title": "Google OAuth → JWT",
       "behavior": "POST /api/auth/google com ID token retorna JWT; GET /api/auth/me retorna usuário",
       "verification": "curl -X POST http://localhost:3001/api/auth/google -H 'Content-Type: application/json' -d '{\"token\":\"...\"}'",
-      "status": "completed",
+      "status": "passing",
       "evidence": "POST /api/auth/google valida ID token (google-auth-library, audience GOOGLE_CLIENT_ID), cria usuário + 7 treinos semanais em $transaction no 1º login, atualiza no recorrente, retorna JWT 24h (claims user_id/google_id); GET /api/auth/me protegido por requireAuth retorna name/email/google_id; 26 testes passando; swagger validado em /api/docs"
     },
     {
@@ -48,7 +48,7 @@
       "title": "Criação automática de treinos no signup",
       "behavior": "Ao criar usuário, gerar 7 treinos (um por dia da semana) sem exercícios",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts | jq '.workouts | length == 7'",
-      "status": "completed",
+      "status": "passing",
       "evidence": "Implementado dentro do api-003: routes/auth.ts cria os 7 workouts (tx.workout.createMany) no 1º login, dentro do mesmo $transaction que cria o usuário"
     },
     {
@@ -58,7 +58,7 @@
       "title": "CRUD de treinos e exercícios do treino",
       "behavior": "GET /api/workouts/:weekDay retorna exercícios do dia; POST adiciona; DELETE remove",
       "verification": "curl -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workouts/SEGUNDA",
-      "status": "completed",
+      "status": "passing",
       "evidence": "GET /api/workouts, GET /api/workouts/:weekDay, POST /api/workouts/:weekDay/exercises e DELETE /api/workouts/:weekDay/exercises/:exerciseId implementados com autenticação JWT e filtro por user_id; a remoção exclui somente a associação do treino, rejeita associações ausentes ou de outro usuário com 404 e possui testes e documentação Swagger."
     },
     {
@@ -68,7 +68,7 @@
       "title": "Busca de exercícios",
       "behavior": "GET /api/exercises?q=supino&category=forca&limit=20&offset=0 retorna resultados filtrados por nome e metadados com valores fixos, ignorando maiúsculas, minúsculas e acentos; filtros vazios são ignorados e valores desconhecidos retornam 400",
       "verification": "curl -H 'Authorization: Bearer $JWT' 'http://localhost:3001/api/exercises?q=triceps&category=forca&equipment=halteres' | jq '.total >= 0'",
-      "status": "completed",
+      "status": "passing",
       "evidence": "Rota autenticada implementada com paginação, total pré-paginação, ordenação determinística, filtros por listas fixas e PostgreSQL unaccent; testes cobrem query acentuada/não acentuada, query vazia, filtros escalares e de músculos, paginação inválida, filtro vazio, valores inválidos e 401."
     },
     {
@@ -78,7 +78,7 @@
       "title": "Marcar/desmarcar exercício como concluído",
       "behavior": "PATCH /api/workout-exercises/:id alterna done; POST /:weekDay/clear desmarca todos",
       "verification": "curl -X PATCH -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workout-exercises/1",
-      "status": "completed",
+      "status": "passing",
       "evidence": "PATCH /api/workout-exercises/:id alterna done com autenticação e ownership; POST /api/workouts/:weekDay/clear desmarca todas as associações do treino; testes de rotas e annotations Swagger implementados."
     },
     {
@@ -88,7 +88,7 @@
       "title": "Excluir conta (cascade)",
       "behavior": "DELETE /api/account remove usuário + treinos + associações",
       "verification": "curl -X DELETE -H 'Authorization: Bearer $JWT' http://localhost:3001/api/account",
-      "status": "completed",
+      "status": "passing",
       "evidence": "DELETE /api/account autenticado remove o usuário via Prisma; as FKs existentes removem treinos e associações em cascata. Respostas 200/401/404, testes de rota e annotation Swagger implementados; novo login permanece coberto pelo fluxo de criação inicial dos 7 treinos."
     },
     {
@@ -214,7 +214,7 @@
     },
     {
       "id": "infra-001",
-      "type": "infra",
+      "type": "api",
       "area": "database",
       "title": "Database schema (tables + constraints)",
       "behavior": "Prisma migration cria 4 tabelas (users, workouts, exercises, workout_exercises) com constraints, FKs e CASCADE",
@@ -224,27 +224,27 @@
     },
     {
       "id": "tool-001",
-      "type": "tooling",
+      "type": "api",
       "area": "frontend",
       "title": "PascalCase para componentes de interface",
       "behavior": "Componentes em src/components/ devem começar com maiúscula; script valida; AGENTS.md documenta",
       "verification": "cd frontend && npm run test:component-names",
-      "status": "completed",
+      "status": "passing",
       "evidence": "npm run test:component-names passa sem violações"
     },
     {
       "id": "tool-002",
-      "type": "tooling",
+      "type": "api",
       "area": "backend",
       "title": "Swagger/OpenAPI docs para endpoints implementados",
       "behavior": "Todos os endpoints implementados possuem annotation @openapi JSDoc; /api/docs mostra os endpoints disponíveis",
       "verification": "curl -sf http://localhost:3001/api/docs | grep -q 'swagger-ui'",
-      "status": "completed",
+      "status": "passing",
       "evidence": "src/swagger.ts (spec swagger-jsdoc + swagger-ui-express) servido em /api/docs; annotations @openapi presentes em app.ts (health), routes/auth.ts, routes/workouts.ts, routes/workoutExercises.ts e routes/exercises.ts; endpoints futuros serão documentados ao serem implementados"
     },
     {
       "id": "tool-003",
-      "type": "tooling",
+      "type": "api",
       "area": "infra",
       "title": "Pular deploy Vercel em PRs backend-only",
       "behavior": "ignoredBuildStep no Vercel ignora builds quando apenas backend/ é alterado",
@@ -254,12 +254,12 @@
     },
     {
       "id": "tool-004",
-      "type": "tooling",
+      "type": "api",
       "area": "docs",
       "title": "README.md (PT-BR) + README-en.md (EN)",
       "behavior": "READMEs com descrição, stack, setup, estrutura, contribuição — link linguagem cruzado",
       "verification": "ls README.md README-en.md",
-      "status": "done",
+      "status": "passing",
       "evidence": "README.md e README-en.md criados com seletor de idioma, descrição, stack atual (Next.js 16/React 19, Express 5/Prisma 7/PostgreSQL 16), setup local, testes, estrutura e contribuição; captura pública em .github/img/home.png; links relativos verificados."
     },
     {
