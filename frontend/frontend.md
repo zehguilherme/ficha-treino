@@ -25,7 +25,7 @@ deriva o contexto do dia na URL (ou `Treino não encontrado` para parâmetros in
 adicional à API.
 Home, login, dashboard, treinos, conta e 404 usam o rodapé compartilhado com links iconográficos
 acessíveis para portfólio, GitHub, LinkedIn e e-mail, além do aviso “Todos os direitos reservados ©
-ano atual”; o callback do Google permanece sem rodapé por ser transitório.
+ano atual” e do crédito “Feito por José Guilherme”; o callback do Google permanece sem rodapé por ser transitório.
 A origem canônica é `https://fichatreino.vercel.app`; `sitemap.xml` lista apenas a home pública e
 `robots.txt` bloqueia as áreas autenticadas. Login, callback, dashboard, conta e treinos usam
 `noindex, nofollow`. A home publica metadados Open Graph (`website`, locale `pt_BR`, título,

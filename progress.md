@@ -167,3 +167,4 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-09 — issue #286 — campo de busca da página dedicada migrado para Combobox Base UI com sugestões de até cinco exercícios após debounce de 300 ms, seleção única, limpeza acessível e confirmação da busca completa sem alterar a inclusão explícita pelos cards.
 2026-09-10 — issue #290 — popup do Combobox passou a respeitar a altura disponível do viewport, mantendo as sugestões acessíveis e roláveis quando o teclado virtual está aberto no mobile.
 2026-09-10 — issue #290 — sugestões com nomes iguais passaram a usar IDs estáveis (com fallback compatível), eliminando colisões de chaves React no Combobox.
+2026-09-10 — issue #291 — footer compartilhado passou a exibir o crédito “Feito por José Guilherme”, com as páginas documentais do design system sincronizadas.

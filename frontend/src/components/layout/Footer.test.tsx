@@ -43,7 +43,9 @@ describe('Footer', () => {
     jest.useFakeTimers().setSystemTime(new Date('2030-01-01T12:00:00'));
     render(<Footer />);
 
+    expect(screen.getByRole('contentinfo')).toHaveClass('px-4', 'sm:px-6', 'py-8');
     expect(screen.getByText('Ficha de Treino — Seu treino organizado')).toBeInTheDocument();
     expect(screen.getByText('Todos os direitos reservados © 2030')).toBeInTheDocument();
+    expect(screen.getByText('Feito por José Guilherme')).toBeInTheDocument();
   });
 });
