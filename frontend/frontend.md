@@ -130,7 +130,7 @@ src/
 
 ### Combobox de busca
 
-A busca de exercícios usa o componente genérico `Combobox`: ele encapsula seleção única, debounce de 300 ms, carregamento assíncrono de até cinco sugestões, estados de loading/empty/erro, teclado, portal diretamente abaixo do campo e botão acessível para limpar. O estado vazio só é exibido após uma consulta não vazia; focar um campo sem pesquisar não abre resultados. Ao limpar busca e filtros, o foco retorna ao campo de busca. A página fornece apenas o carregador e a ação de busca completa; selecionar uma sugestão por clique ou teclado mantém o rótulo completo no campo e confirma a busca, mantendo a inclusão explícita pelos cards.
+A busca de exercícios usa o componente genérico `Combobox`: ele encapsula seleção única, debounce de 300 ms, carregamento assíncrono de até cinco sugestões, estados de loading/empty/erro, teclado, portal diretamente abaixo do campo e botão acessível para limpar. Cada item pode fornecer uma chave estável por `itemToKey`; sem ela, o componente usa uma chave composta pelo rótulo e índice. O popup limita sua altura ao menor valor entre 20rem e o espaço disponível no viewport, mantendo rolagem quando o teclado virtual reduz a área visível. O estado vazio só é exibido após uma consulta não vazia; focar um campo sem pesquisar não abre resultados. Ao limpar busca e filtros, o foco retorna ao campo de busca. A página fornece apenas o carregador e a ação de busca completa; selecionar uma sugestão por clique ou teclado mantém o rótulo completo no campo e confirma a busca, mantendo a inclusão explícita pelos cards.
 
 ## Verificação
 
@@ -337,7 +337,7 @@ Testa a página dedicada, o retorno acessível ao treino do dia, a navegação a
 
 #### `src/components/ui/Combobox.test.tsx`
 
-Testa o debounce do carregador assíncrono, seleção com rótulo completo por clique e por `Enter`, submissão da busca e limpeza por ref.
+Testa o debounce do carregador assíncrono, seleção com rótulo completo por clique e por `Enter`, submissão da busca, limite responsivo de altura do popup, erros, limpeza, Escape e chaves únicas para rótulos duplicados.
 
 #### `src/app/treinos/[weekDay]/adicionar-exercicio/layout.test.ts`
 
