@@ -77,7 +77,7 @@ Estado atual em 2026-08-20: `api-005` está concluída; `api-008` (exclusão de 
 
 2026-08-24 — loading e recuperação padronizados — estados de carregamento migrados para o componente `Loading`, botões passaram a expor estado busy/disabled consistente e foram adicionados retries para dashboard, treino e busca de exercícios, com testes para sucesso e falha do retry.
 
-Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `ui-011`, `ui-012` e `tool-003` continuam pendentes. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos, card de exercício compartilhado e a página dedicada de busca e adição. A busca backend e a UI dos filtros fixos estão implementadas.
+Estado atual em 2026-09-10: as features implementadas permanecem concluídas; `ui-011`, `ui-012` e `tool-003` continuam pendentes. `ui-013` adicionou o manifest PWA e `ui-014` adicionou o banner cross-browser de instalação, sem offline, service worker ou notificações. O frontend inclui loading acessível, retry explícito para consultas, carregamento otimizado de imagens, preservação de nomes longos, card de exercício compartilhado e a página dedicada de busca e adição. A busca backend e a UI dos filtros fixos estão implementadas.
 
 2026-09-01 — api-008 — `DELETE /api/account` implementado com autenticação JWT, exclusão do usuário via cascata de banco, respostas 200/401/404, testes de rota e documentação Swagger sincronizada.
 
@@ -168,3 +168,11 @@ Estado atual em 2026-09-03: as features implementadas permanecem concluídas; `u
 2026-09-10 — issue #290 — popup do Combobox passou a respeitar a altura disponível do viewport, mantendo as sugestões acessíveis e roláveis quando o teclado virtual está aberto no mobile.
 2026-09-10 — issue #290 — sugestões com nomes iguais passaram a usar IDs estáveis (com fallback compatível), eliminando colisões de chaves React no Combobox.
 2026-09-10 — issue #291 — footer compartilhado passou a exibir o crédito “Feito por José Guilherme”, com as páginas documentais do design system sincronizadas.
+2026-09-10 — issue #289 — manifest PWA instalável adicionado com ícones PNG 192×192 e 512×512 derivados do símbolo existente; escopo limitado à instalação, sem service worker, offline ou notificações.
+2026-09-10 — issue #289 — banner global não bloqueante adicionado com prompt `beforeinstallprompt`, instruções iOS/iPadOS, tratamento standalone/appinstalled e dispensa por 7 dias.
+2026-09-10 — issue #289 — ações do banner PWA ajustadas para empilhar e ocupar 100% da largura em telas menores.
+2026-09-10 — issue #289 — botão X do banner passou a reutilizar o padrão de fechamento das modais; a dispensa foi reduzida de 30 para 7 dias.
+2026-09-10 — issue #289 — banner passou a reservar espaço extra para o X no desktop e manter informações e ações em largura total no mobile.
+2026-09-10 — issue #289 — área do X deixou de reservar largura no mobile e as ações ganharam margem adicional no desktop.
+2026-09-10 — issue #289 — banner passou a reutilizar o componente base `Dialog`, mantendo o posicionamento inferior sem overlay bloqueante.
+2026-09-10 — issue #289 — banner migrou de `Dialog` para a base não modal `Alert`, preservando aparência, ações e fluxos de instalação.

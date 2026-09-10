@@ -306,6 +306,36 @@
       "evidence": "Header compartilhado consome AuthContext, alterna link público/treinos pela presença do JWT, mantém fallback U quando o perfil falha e usa DropdownMenu shadcn/Radix com foco e teclado validados; testes, typecheck, lint e build verificados"
     },
     {
+      "id": "ui-014",
+      "type": "ui",
+      "area": "layout",
+      "category": "functional",
+      "description": "Banner cross-browser para instalação do PWA",
+      "steps": [
+        "Abrir a aplicação em navegador compatível",
+        "Ver o banner não bloqueante de instalação",
+        "Instalar pelo prompt nativo ou seguir as instruções de iOS",
+        "Dispensar o banner e não recebê-lo novamente por 7 dias"
+      ],
+      "passes": true,
+      "evidence": "PwaInstallPrompt captura beforeinstallprompt, trata appinstalled e display-mode standalone, identifica iOS/iPadOS, persiste dispensa por 7 dias e possui testes de instalação, recusa, standalone, iOS e acessibilidade"
+    },
+    {
+      "id": "ui-013",
+      "type": "ui",
+      "area": "infra",
+      "category": "functional",
+      "description": "Manifest PWA instalável",
+      "steps": [
+        "Abrir a aplicação em HTTPS",
+        "Verificar o manifest da aplicação nos recursos do navegador",
+        "Instalar a aplicação pela ação oferecida pelo navegador",
+        "Abrir a aplicação instalada e iniciar em / no modo standalone"
+      ],
+      "passes": true,
+      "evidence": "src/app/manifest.ts declara nome, descrição, cores, start_url, display standalone e ícones PNG 192x192/512x512; manifest.test.ts valida o contrato; ícones derivados do símbolo existente estão em public/"
+    },
+    {
       "id": "ui-011",
       "type": "ui",
       "area": "layout",

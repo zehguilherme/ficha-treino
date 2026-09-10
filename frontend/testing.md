@@ -29,6 +29,9 @@ que navegam recebem `navigate` injetável porque `window.location` não é spy-a
 - `src/app/treinos/[weekDay]/layout.test.ts`: metadata para dia válido e inválido.
 - `src/app/sitemap.test.ts` e `src/app/robots.test.ts`: URLs públicas e regras de rastreamento.
 - `src/app/layout.test.ts`: origem canônica e metadata Open Graph/Twitter.
+- `src/app/manifest.test.ts`: contrato do manifest PWA e referências aos ícones instaláveis.
+- `src/components/ui/Alert.test.tsx`: semântica, conteúdo e variante do alerta compartilhado.
+- `src/components/layout/PwaInstallPrompt.test.tsx`: prompt nativo, instalação, dispensa, standalone e instruções iOS.
 - `src/app/opengraph-image.test.tsx`: dimensões, tipo, alt e conteúdo do card social.
 - `src/components/ui/Loading.test.tsx`: mensagem, `aria-live` e status acessível.
 - `src/components/ui/IconLink.test.tsx`: texto acessível, ícone e destino.

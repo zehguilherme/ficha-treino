@@ -306,6 +306,17 @@
       .features { padding: 3rem 1rem; }
       .features-grid .feature-card { flex: 1 1 100%; max-width: calc(50% - 0.75rem); }
     }
+    .pwa-install-banner { position: fixed; inset: auto 1rem 1rem; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 36rem; margin-inline: auto; padding: 1rem 5rem 1rem 1rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); color: hsl(var(--card-foreground)); box-shadow: 0 8px 24px hsl(var(--foreground) / .12); }
+    .pwa-install-close { position: absolute; top: .75rem; right: .75rem; display: inline-flex; width: 2rem; height: 2rem; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: hsl(var(--muted-foreground)); }
+    .pwa-install-close:hover { background: hsl(var(--secondary)); color: hsl(var(--foreground)); }
+    .pwa-install-close:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    .pwa-install-banner p { margin: .25rem 0 0; color: hsl(var(--muted-foreground)); font-size: .875rem; }
+    .pwa-install-actions { display: flex; flex-shrink: 0; gap: .5rem; }
+    .pwa-install-banner button { min-height: 2rem; padding: 0 .75rem; border-radius: var(--radius); font-size: .75rem; font-weight: 500; }
+    .pwa-install-banner button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    .pwa-install-banner .btn-primary { border: 0; background: hsl(var(--foreground)); color: hsl(var(--primary-foreground)); }
+    .pwa-install-banner .btn-secondary { border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--foreground)); }
+    @media (max-width: 640px) { .pwa-install-banner { align-items: stretch; flex-direction: column; bottom: 1rem; padding-right: 1rem; } .pwa-install-actions button { flex: 1; } }
   </style>
 </head>
 <body>
@@ -394,5 +405,16 @@
     </div>
   </footer>
   <script>document.querySelector('[data-current-year]').textContent = new Date().getFullYear();</script>
+  <div class="pwa-install-banner" role="alert" aria-live="polite">
+    <button class="pwa-install-close" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    <div>
+      <strong>Instale o Ficha de Treino</strong>
+      <p>Tenha acesso rápido aos seus treinos como um aplicativo.</p>
+    </div>
+    <div class="pwa-install-actions">
+      <button class="btn-primary" type="button">Instalar app</button>
+      <button class="btn-secondary" type="button">Dispensar</button>
+    </div>
+  </div>
 </body>
 </html>

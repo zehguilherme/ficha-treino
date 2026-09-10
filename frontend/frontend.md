@@ -20,6 +20,7 @@ apenas para UI local. Tailwind usa os tokens HSL do design system.
 Rotas autenticadas usam `noindex, nofollow`; a origem canônica é `https://fichatreino.vercel.app`.
 Dias aceitos são somente `domingo`, `segunda`, `terca`, `quarta`, `quinta`, `sexta` e `sabado`.
 Valores inválidos não consultam a API e exibem retorno para `/treinos`.
+O manifest PWA em `src/app/manifest.ts` permite instalação como aplicativo com ícones PNG em `public/`. O componente global `PwaInstallPrompt` reutiliza a base `Alert` para oferecer um banner não bloqueante, prompt nativo em navegadores compatíveis e instruções manuais para iOS; não há offline, service worker ou notificações neste escopo.
 
 ## Estado e contratos
 
