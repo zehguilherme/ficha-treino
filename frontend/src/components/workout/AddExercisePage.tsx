@@ -375,6 +375,7 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
                 onQueryChange={handleSearchChange}
                 onSubmit={(query) => submitSearch(query, false)}
                 itemToStringLabel={(item) => item.name}
+                itemToKey={(item) => item.id}
               />
               <div className="mt-3 min-w-0 min-h-0">
                 <Button

@@ -15,6 +15,7 @@ export interface ComboboxProps<Item> {
   onSubmit: (query: string) => void;
   onQueryChange?: (query: string) => void;
   itemToStringLabel: (item: Item) => string;
+  itemToKey?: (item: Item) => React.Key;
   placeholder?: string;
   leadingIcon?: React.ReactNode;
   loadingMessage?: string;
@@ -29,6 +30,7 @@ const ComboboxComponent = <Item,>(
     onSubmit,
     onQueryChange,
     itemToStringLabel,
+    itemToKey,
     placeholder = 'Buscar…',
     leadingIcon = <SearchIcon className="size-4" aria-hidden="true" />,
     loadingMessage = 'Buscando…',
@@ -192,7 +194,7 @@ const ComboboxComponent = <Item,>(
             data-slot="combobox-positioner"
             className="isolate z-50"
           >
-            <ComboboxPrimitive.Popup className="z-50 mt-1 max-h-80 w-[var(--anchor-width)] overflow-auto rounded-[var(--radius)] border border-border bg-card p-1 shadow-lg">
+            <ComboboxPrimitive.Popup className="z-50 mt-1 max-h-[min(20rem,var(--available-height))] w-[var(--anchor-width)] overflow-auto rounded-[var(--radius)] border border-border bg-card p-1 shadow-lg">
               {isLoading ? (
                 <ComboboxPrimitive.Empty className="px-3 py-2 font-sans text-sm text-muted-foreground">
                   {loadingMessage}
@@ -209,9 +211,9 @@ const ComboboxComponent = <Item,>(
                 </ComboboxPrimitive.Empty>
               ) : null}
               <ComboboxPrimitive.List>
-                {(item: Item) => (
+                {(item: Item, index: number) => (
                   <ComboboxPrimitive.Item
-                    key={itemToStringLabel(item)}
+                    key={itemToKey?.(item) ?? `${itemToStringLabel(item)}-${index}`}
                     value={item}
                     className="cursor-default rounded-sm px-3 py-2 text-sm text-foreground outline-none data-[highlighted]:bg-secondary"
                   >
