@@ -17,6 +17,8 @@
 | backend       | `backend/`       | `backend/backend.md`             | `init.sh`     |
 | frontend      | `frontend/`      | `frontend/frontend.md`           | `init.sh`     |
 | design-system | `design-system/` | `design-system/design-system.md` | previews HTML |
+| backend src | `backend/src/` | `backend/src/src.md` | `backend/src/app.test.ts` |
+| frontend app | `frontend/src/app/` | `frontend/src/app/app.md` | `frontend/src/app/auth/google/callback/page.test.tsx` |
 
 ## Estado atual
 
@@ -33,6 +35,24 @@
 ## Feature ativa
 
 Feature atual: `Usuário: backend routes + frontend pages` — ver `feature_list.json` e `progress.md`
+
+## Startup Workflow
+
+1. Ler este índice e o doc do módulo antes de editar.
+2. Confirmar a feature ativa em `feature_list.json` e seu próximo passo em `progress.md`.
+3. Executar `init.sh` ou a verificação específica do módulo antes e depois da mudança.
+
+Module docs are the source of truth for module boundaries; read only the relevant one.
+
+## Scope and Definition of Done
+
+- Trabalhar em uma feature ativa por vez (one feature at a time) e manter a alteração dentro do módulo e do escopo registrados.
+- Considerar concluído somente com comportamento implementado, evidência atualizada e verificações relevantes passando.
+
+## End of Session
+
+- Atualizar `progress.md` e `session-handoff.md` com estado, arquivos relevantes, bloqueios e próximo passo.
+- Registrar apenas fatos verificáveis; não marcar feature como concluída sem evidência.
 
 ## Workflow
 
