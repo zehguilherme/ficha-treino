@@ -5,6 +5,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/Sonner';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { QueryProvider } from '@/providers/QueryProvider';
+import { PwaInstallPrompt } from '@/components/layout/PwaInstallPrompt';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,6 +48,7 @@ const RootLayout = ({
           <QueryProvider>{children}</QueryProvider>
         </TooltipProvider>
         <Toaster />
+        <PwaInstallPrompt />
         <Analytics />
       </body>
     </html>

@@ -18,6 +18,9 @@ Componentes reutilizáveis vivem em `src/components/`; contratos HTTP ficam em `
 ## Arquivos-chave
 
 - `layout.tsx`: layout raiz, fonte e metadata global.
+- `manifest.ts`: manifest PWA para instalação como aplicativo.
+- `components/ui/Alert.tsx`: base acessível para avisos não modais.
+- `components/layout/PwaInstallPrompt.tsx`: banner global de instalação nativa ou instruções iOS.
 - `treinos/DashboardClient.tsx`: consulta e expansão dos resumos.
 - `treinos/[weekDay]/page.tsx`: treino diário e mutações.
 - `treinos/[weekDay]/adicionar-exercicio/page.tsx`: rota dedicada de catálogo.

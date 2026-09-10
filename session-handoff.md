@@ -4,7 +4,7 @@ Last Updated: 2026-09-10
 
 ## Última sessão
 
-2026-09-10: harness modular auditado e ajustado; tracker normalizado para `api`/`ui`, docs dos módulos detectados adicionados e catálogo de testes movido para `frontend/testing.md`. A exclusão de conta, a página dedicada de busca/adição, os filtros fixos, as rotas públicas em português, o Combobox responsivo e o footer compartilhado estão concluídos. Permanecem `ui-011`, `ui-012` e `tool-003`.
+2026-09-10: manifest PWA e banner global cross-browser da issue #289 concluídos; o banner usa `Alert` não modal, trata prompt nativo, iOS/iPadOS, standalone, appinstalled, dispensa por 7 dias, ações empilhadas em telas menores, informações em largura total no mobile, X sobreposto sem reservar largura no mobile, margem extra das ações no desktop e botão X no padrão das modais. Escopo permanece sem service worker, offline ou notificações. Permanecem `ui-011`, `ui-012` e `tool-003`.
 
 ## O que foi feito
 
@@ -26,8 +26,10 @@ Last Updated: 2026-09-10
 - `frontend/src/components/workout/AddExercisePage.tsx`: busca, filtros, paginação e adição na rota dedicada
 - `frontend/src/app/treinos/[weekDay]/adicionar-exercicio/page.test.tsx`: testes da página dedicada, retorno ao treino e estados assíncronos
 - `frontend/src/app/treinos/[weekDay]/page.test.tsx`: testes da página de treino usando o card compartilhado e mantendo `Feito`/`Remover`
+- `frontend/src/app/manifest.ts` e `frontend/public/icon-*.png`: manifest PWA e ícones instaláveis
+- `frontend/src/components/layout/PwaInstallPrompt.tsx`: banner global de instalação e instruções por plataforma
 - `frontend/src/app/minha-conta/page.tsx` e `frontend/src/components/account/AccountDeleteDialog.tsx`: perfil, exclusão autenticada e redirecionamento para login
-- `feature_list.json`: APIs `api-003` a `api-008` e interfaces `ui-001` a `ui-010` concluídas; `tool-004` concluído
+- `feature_list.json`: APIs `api-003` a `api-008` e interfaces `ui-001` a `ui-010` e `ui-013` a `ui-014` concluídas; `tool-004` concluído
 - `progress.md`: histórico atualizado até 2026-09-08
 
 ## Feature ativa
