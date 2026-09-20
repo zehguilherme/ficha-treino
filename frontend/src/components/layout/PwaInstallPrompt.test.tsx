@@ -47,6 +47,9 @@ describe('PwaInstallPrompt', () => {
 
     expect(event.defaultPrevented).toBe(true);
     expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Instalar app' })).toHaveAccessibleName(
+      'Instalar app',
+    );
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Instalar app' }));
@@ -56,7 +59,7 @@ describe('PwaInstallPrompt', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
-  test('stacks full-width actions below the small-screen breakpoint', async () => {
+  test('renders a compact floating pill in the lower-right corner', async () => {
     render(<PwaInstallPrompt />);
     const event = createInstallPromptEvent();
 
@@ -64,13 +67,16 @@ describe('PwaInstallPrompt', () => {
       window.dispatchEvent(event);
     });
 
-    const installButton = screen.getByRole('button', { name: 'Instalar app' });
-    const dismissButton = screen.getByRole('button', { name: 'Dispensar' });
-    const actions = installButton.parentElement;
-
-    expect(actions).toHaveClass('flex-col', 'sm:flex-row');
-    expect(installButton).toHaveClass('w-full', 'sm:w-auto');
-    expect(dismissButton).toHaveClass('w-full', 'sm:w-auto');
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveClass('fixed', 'bottom-4', 'right-4', 'rounded-full', 'p-0');
+    expect(screen.getByRole('button', { name: 'Instalar app' })).toHaveClass('rounded-l-full');
+    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveClass(
+      'w-[calc(2.5rem+1px)]',
+      'justify-center',
+      'px-0',
+      'rounded-r-full',
+    );
+    expect(screen.getByTestId('download-icon')).toBeInTheDocument();
   });
 
   test('remembers a dismissed native prompt and hides after app installation', async () => {
@@ -100,8 +106,12 @@ describe('PwaInstallPrompt', () => {
     setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)');
     render(<PwaInstallPrompt />);
 
-    expect(await screen.findByText(/Compartilhar/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Dispensar' }));
+    expect(screen.queryByText(/Compartilhar/)).not.toBeInTheDocument();
+    const installButton = await screen.findByRole('button', { name: 'Instalar app' });
+    expect(installButton).toHaveAttribute('aria-controls', 'pwa-install-instructions');
+    fireEvent.click(installButton);
+    expect(screen.getByText(/Compartilhar/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Fechar' }));
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(localStorage.getItem('ficha_treino_pwa_install_dismissed')).not.toBeNull();
@@ -112,19 +122,12 @@ describe('PwaInstallPrompt', () => {
     render(<PwaInstallPrompt />);
 
     const closeButton = await screen.findByRole('button', { name: 'Fechar' });
-    const alert = screen.getByRole('alert');
-
     expect(closeButton).toHaveClass(
-      'absolute',
-      'right-3',
-      'top-3',
-      'size-8',
-      'text-muted-foreground',
+      'h-10',
+      'w-[calc(2.5rem+1px)]',
+      'text-primary-foreground',
       'focus-visible:ring-2',
     );
-    expect(alert).toHaveClass('left-1/2', '-translate-x-1/2', 'bottom-4', 'max-w-xl');
-    expect(alert).toHaveClass('sm:pr-20');
-    expect(screen.getByRole('button', { name: 'Dispensar' }).parentElement).toHaveClass('sm:ml-8');
     fireEvent.click(closeButton);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });

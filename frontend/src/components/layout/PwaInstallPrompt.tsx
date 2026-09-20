@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/Alert';
-import { XIcon } from '@/components/ui/WorkoutIcons';
+import { Alert } from '@/components/ui/Alert';
+import { DownloadIcon, XIcon } from '@/components/ui/WorkoutIcons';
 
 const DISMISSAL_KEY = 'ficha_treino_pwa_install_dismissed';
 const DISMISSAL_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
@@ -53,63 +53,55 @@ type PwaInstallAlertProps = {
   platform: InstallPlatform;
   onInstall: () => void;
   onDismiss: () => void;
+  showIosInstructions: boolean;
+  onToggleIosInstructions: () => void;
 };
 
 const PwaInstallAlert = ({
   platform,
   onInstall,
   onDismiss,
+  showIosInstructions,
+  onToggleIosInstructions,
 }: PwaInstallAlertProps): React.JSX.Element => (
   <Alert
     aria-live="polite"
-    className="fixed bottom-4 left-1/2 right-auto top-auto z-50 mx-0 grid w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 translate-y-0 gap-3 overflow-visible rounded-[var(--radius)] border-border bg-card p-4 pr-4 text-card-foreground shadow-lg [padding-bottom:calc(1rem+env(safe-area-inset-bottom))] sm:pr-20"
+    className="fixed bottom-4 right-4 z-50 m-0 flex w-auto max-w-[calc(100%-2rem)] items-center overflow-visible rounded-full border-0 bg-foreground p-0 text-primary-foreground shadow-lg [margin-bottom:env(safe-area-inset-bottom)]"
   >
+    {platform === 'ios' && showIosInstructions ? (
+      <div
+        id="pwa-install-instructions"
+        className="absolute bottom-full right-0 mb-2 w-72 rounded-lg border border-border bg-card p-3 text-sm text-card-foreground shadow-lg"
+      >
+        Toque em Compartilhar e escolha “Adicionar à Tela de Início”.
+      </div>
+    ) : null}
+    <Button
+      type="button"
+      size="sm"
+      className="h-10 rounded-l-full rounded-r-none px-4 text-primary-foreground hover:bg-foreground/85"
+      aria-expanded={platform === 'ios' ? showIosInstructions : undefined}
+      aria-controls={platform === 'ios' ? 'pwa-install-instructions' : undefined}
+      onClick={platform === 'native' ? onInstall : onToggleIosInstructions}
+    >
+      <DownloadIcon data-testid="download-icon" className="size-4" aria-hidden="true" />
+      Instalar app
+    </Button>
     <button
       type="button"
-      className="absolute right-3 top-3 inline-flex size-8 items-center justify-center rounded-[var(--radius)] p-0 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="inline-flex h-10 w-[calc(2.5rem+1px)] shrink-0 items-center justify-center rounded-r-full border-l border-primary-foreground/30 p-0 px-0 text-primary-foreground transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       aria-label="Fechar"
       onClick={onDismiss}
     >
-      <XIcon className="size-4" />
+      <XIcon className="size-4" aria-hidden="true" />
     </button>
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="w-full min-w-0">
-        <AlertTitle className="mb-0 text-sm font-semibold tracking-normal">
-          Instale o Ficha de Treino
-        </AlertTitle>
-        {platform === 'native' ? (
-          <AlertDescription className="mt-1 text-sm leading-normal text-muted-foreground">
-            Tenha acesso rápido aos seus treinos como um aplicativo.
-          </AlertDescription>
-        ) : (
-          <AlertDescription className="mt-1 text-sm leading-normal text-muted-foreground">
-            Toque em Compartilhar e escolha “Adicionar à Tela de Início”.
-          </AlertDescription>
-        )}
-      </div>
-      <div className="flex w-full shrink-0 flex-col gap-2 sm:ml-8 sm:w-auto sm:flex-row">
-        {platform === 'native' ? (
-          <Button type="button" size="sm" className="w-full sm:w-auto" onClick={onInstall}>
-            Instalar app
-          </Button>
-        ) : null}
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          className="w-full sm:w-auto"
-          onClick={onDismiss}
-        >
-          Dispensar
-        </Button>
-      </div>
-    </div>
   </Alert>
 );
 
 const PwaInstallPrompt = (): React.JSX.Element | null => {
   const [platform, setPlatform] = useState<InstallPlatform | null>(null);
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showIosInstructions, setShowIosInstructions] = useState(false);
 
   useEffect(() => {
     if (isStandalone() || wasRecentlyDismissed()) {
@@ -126,6 +118,7 @@ const PwaInstallPrompt = (): React.JSX.Element | null => {
     const handleAppInstalled = (): void => {
       setInstallEvent(null);
       setPlatform(null);
+      setShowIosInstructions(false);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -147,6 +140,7 @@ const PwaInstallPrompt = (): React.JSX.Element | null => {
     rememberDismissal();
     setPlatform(null);
     setInstallEvent(null);
+    setShowIosInstructions(false);
   };
 
   const install = async (): Promise<void> => {
@@ -156,13 +150,20 @@ const PwaInstallPrompt = (): React.JSX.Element | null => {
     const { outcome } = await installEvent.prompt();
     setInstallEvent(null);
     setPlatform(null);
+    setShowIosInstructions(false);
     if (outcome === 'dismissed') {
       rememberDismissal();
     }
   };
 
   return (
-    <PwaInstallAlert platform={platform} onInstall={() => void install()} onDismiss={dismiss} />
+    <PwaInstallAlert
+      platform={platform}
+      onInstall={() => void install()}
+      onDismiss={dismiss}
+      showIosInstructions={showIosInstructions}
+      onToggleIosInstructions={() => setShowIosInstructions((visible) => !visible)}
+    />
   );
 };
 

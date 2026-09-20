@@ -310,15 +310,15 @@
       "type": "ui",
       "area": "layout",
       "category": "functional",
-      "description": "Banner cross-browser para instalação do PWA",
+      "description": "Pílula cross-browser para instalação do PWA",
       "steps": [
         "Abrir a aplicação em navegador compatível",
-        "Ver o banner não bloqueante de instalação",
+        "Ver a pílula flutuante não bloqueante de instalação",
         "Instalar pelo prompt nativo ou seguir as instruções de iOS",
-        "Dispensar o banner e não recebê-lo novamente por 7 dias"
+        "Dispensar a pílula e não recebê-la novamente por 7 dias"
       ],
       "passes": true,
-      "evidence": "PwaInstallPrompt captura beforeinstallprompt, trata appinstalled e display-mode standalone, identifica iOS/iPadOS, persiste dispensa por 7 dias e possui testes de instalação, recusa, standalone, iOS e acessibilidade"
+      "evidence": "PwaInstallPrompt exibe pílula fixa no canto inferior direito, captura beforeinstallprompt, trata appinstalled e display-mode standalone, identifica iOS/iPadOS, revela instruções sob demanda, persiste dispensa por 7 dias e possui testes de instalação, recusa, standalone, iOS e acessibilidade"
     },
     {
       "id": "ui-013",

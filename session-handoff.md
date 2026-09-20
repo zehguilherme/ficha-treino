@@ -1,10 +1,10 @@
 # Session Handoff
 
-Last Updated: 2026-09-10
+Last Updated: 2026-09-20
 
 ## Última sessão
 
-2026-09-10: manifest PWA e banner global cross-browser da issue #289 concluídos; o banner usa `Alert` não modal, trata prompt nativo, iOS/iPadOS, standalone, appinstalled, dispensa por 7 dias, ações empilhadas em telas menores, informações em largura total no mobile, X sobreposto sem reservar largura no mobile, margem extra das ações no desktop e botão X no padrão das modais. Escopo permanece sem service worker, offline ou notificações. Permanecem `ui-011`, `ui-012` e `tool-003`.
+2026-09-20: pílula PWA refinada; `PwaInstallPrompt` usa controle fixo no canto inferior direito com ícone de download, ação `Instalar app`, X separado e instruções iOS sob demanda. Prompt nativo, standalone, appinstalled e dispensa por 7 dias permanecem. Escopo continua sem service worker, offline ou notificações. Permanecem `ui-011`, `ui-012` e `tool-003`.
 
 ## O que foi feito
 
