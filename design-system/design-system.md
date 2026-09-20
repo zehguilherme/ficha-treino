@@ -159,15 +159,14 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Ícone modal | 2.5rem × 2.5rem, border-radius 9999px, bg `--destructive / 0.1`, svg `--destructive` 1.25rem |
 | Close button | 2rem × 2rem, absolute top-right 0.75rem, `--muted-foreground` → hover bg `--secondary`, svg (Lucide X) 1rem, `aria-label="Fechar"`, `data-od-id="btn-fechar-modal"` |
 
-### 4.6 Banner de instalação PWA
+### 4.6 Pílula flutuante de instalação PWA
 
-- Banner não bloqueante, fixo no rodapé, largura máxima de 36rem e margem de 1rem; reserva espaço extra à direita no desktop para separar o X das ações, mas libera essa área no mobile para manter o conteúdo em largura total.
-- Superfície `--card`, borda `--border`, sombra discreta e espaçamento inferior com safe area no mobile.
-- Ação primária `Instalar app` aparece somente quando o navegador fornece `beforeinstallprompt`; iOS exibe instruções `Compartilhar → Adicionar à Tela de Início`.
-- Em telas menores, as ações ficam empilhadas e ocupam toda a largura; a partir de `sm`, retornam ao alinhamento horizontal com largura automática.
-- O botão `X` no canto superior direito segue o fechamento das modais e também fecha o banner; `Dispensar` permanece como ação textual.
+- Controle não bloqueante em formato de pílula, fixo no canto inferior direito, com ícone de download, ação `Instalar app` e X separado por divisor.
+- Superfície `--foreground`, texto `--primary-foreground`, sombra discreta e margem inferior com safe area.
+- Ação primária abre `beforeinstallprompt` quando disponível; no iOS/iPadOS, revela sob demanda as instruções `Compartilhar → Adicionar à Tela de Início`.
+- O botão `X` fecha o controle e a dispensa continua persistida por 7 dias.
 - Foco visível, navegação por teclado e semântica `role="alert"` são obrigatórios.
-- O banner não aparece em modo standalone e a dispensa é lembrada por 7 dias.
+- O controle não aparece em modo standalone e a dispensa é lembrada por 7 dias.
 
 ### 4.7 Tags / Chips
 
