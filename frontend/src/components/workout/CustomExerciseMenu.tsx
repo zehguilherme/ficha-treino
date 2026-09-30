@@ -31,7 +31,7 @@ export const CustomExerciseMenu = ({
         size="icon"
         aria-label={`Ações para ${exerciseName}`}
         disabled={disabled}
-        className="ml-auto size-8 shrink-0"
+        className="ml-auto size-10 shrink-0"
       >
         <MoreVerticalIcon className="size-4" aria-hidden="true" />
       </Button>

@@ -248,6 +248,7 @@ Card hover: `border-color: hsl(var(--ring) / 0.12)`, `box-shadow: 0 1px 3px hsl(
 
 ### 7.5 Custom Checkbox
 - 1rem × 1rem, border 1.5px `--border`
+- Workout card `Feito` control: 1.25rem × 1.25rem
 - Checked: bg `--foreground`, white SVG checkmark via background-image
 - Border-radius: 0.25rem
 

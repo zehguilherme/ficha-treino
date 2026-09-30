@@ -147,6 +147,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 
 **Checkbox custom:**
 - 1rem × 1rem, border 1.5px `--border`
+- Workout card `Feito` control: 1.25rem × 1.25rem
 - Checked: bg `--fg`, SVG checkmark como background-image
 - Border-radius: 0.25rem
 
