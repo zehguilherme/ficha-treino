@@ -4,6 +4,10 @@ Last Updated: 2026-09-30
 
 ## Última sessão
 
+2026-09-30: pílula “Instalar app” suprimida em `/auth/google/callback` via pathname; validação real confirmou ausência no callback e presença em `/treinos/terca`. Frontend verificado: 44 suítes (205 passaram, 10 ignorados), lint, typecheck, format:check e nomes PascalCase.
+
+2026-09-30: issue #347 — pílula “Instalar app” reposicionada; faixa condicional na busca impede colisão com ações e filtros, com área de rolagem ampliada. Verificados: 44 suítes (204 passaram, 10 ignorados), lint, typecheck, format:check e nomes PascalCase; navegação real desktop e geometria mobile a 390px sem sobreposição; diálogo permanece acima da pílula.
+
 2026-09-21: issue #319 refinada; exercícios personalizados são exclusivos do treino de origem, com menu contextual de editar/excluir, CTA no estado vazio da busca e migration de separação por treino. Permanecem `ui-011`, `ui-012` e `tool-003`.
 
 2026-09-29: `CustomExerciseMenu` extraído da página de treino no padrão `UserMenu`, mantendo botão, callbacks, foco acessível e aparência; frontend verificado com 44 suítes, lint, TypeScript, Prettier e nomes PascalCase.

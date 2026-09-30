@@ -1,6 +1,12 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { PwaInstallPrompt } from './PwaInstallPrompt';
 
+let mockPathname = '/treinos';
+
+jest.mock('next/navigation', () => ({
+  usePathname: () => mockPathname,
+}));
+
 type InstallPromptEvent = Event & {
   prompt: jest.Mock<Promise<{ outcome: 'accepted' | 'dismissed' }>, []>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
@@ -27,8 +33,20 @@ const setUserAgent = (userAgent: string): void => {
 describe('PwaInstallPrompt', () => {
   beforeEach(() => {
     localStorage.clear();
+    mockPathname = '/treinos';
     setUserAgent('Mozilla/5.0 Chrome/140.0');
     window.matchMedia = jest.fn().mockReturnValue({ matches: false });
+  });
+
+  test('hides the install prompt on the Google OAuth callback route', async () => {
+    mockPathname = '/auth/google/callback';
+    render(<PwaInstallPrompt />);
+
+    await act(async () => {
+      window.dispatchEvent(createInstallPromptEvent());
+    });
+
+    expect(screen.queryByRole('button', { name: 'Instalar app' })).not.toBeInTheDocument();
   });
 
   test('stays hidden when the browser cannot offer installation', () => {
@@ -68,7 +86,8 @@ describe('PwaInstallPrompt', () => {
     });
 
     const alert = screen.getByRole('alert');
-    expect(alert).toHaveClass('fixed', 'bottom-4', 'right-4', 'rounded-full', 'p-0');
+    expect(alert).toHaveAttribute('data-slot', 'pwa-install-prompt');
+    expect(alert).toHaveClass('fixed', 'bottom-20', 'right-4', 'z-40', 'rounded-full', 'p-0');
     expect(screen.getByRole('button', { name: 'Instalar app' })).toHaveClass('rounded-l-full');
     expect(screen.getByRole('button', { name: 'Fechar' })).toHaveClass(
       'w-[calc(2.5rem+1px)]',

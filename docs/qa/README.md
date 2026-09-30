@@ -3,6 +3,7 @@
 ## Áreas
 
 - `EXE`: busca e adição de exercícios.
+- `UI`: posicionamento global de interface e acessibilidade de controles.
 
 ## Execução local
 
