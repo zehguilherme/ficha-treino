@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { XIcon } from './WorkoutIcons';
 
 export interface InputProps extends React.ComponentProps<'input'> {
-  label?: string;
+  label?: React.ReactNode;
   leadingIcon?: React.ReactNode;
   onClear?: () => void;
   clearLabel?: string;

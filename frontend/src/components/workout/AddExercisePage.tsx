@@ -10,6 +10,7 @@ import { ErrorAlertDialog } from '@/components/ui/ErrorAlertDialog';
 import { Combobox, type ComboboxHandle } from '@/components/ui/Combobox';
 import { IconLink } from '@/components/ui/IconLink';
 import { Loading } from '@/components/ui/Loading';
+import { CustomExerciseDialog } from '@/components/workout/CustomExerciseDialog';
 import {
   Select,
   SelectContent,
@@ -18,7 +19,12 @@ import {
   SelectValue,
 } from '@/components/ui/Select';
 import { ArrowLeftIcon, ChevronDownIcon, XIcon } from '@/components/ui/WorkoutIcons';
-import { addWorkoutExercise, getExercises, type ExerciseFilters } from '@/lib/api';
+import {
+  addWorkoutExercise,
+  createCustomExercise,
+  getExercises,
+  type ExerciseFilters,
+} from '@/lib/api';
 import { EXERCISE_LABELS } from '@/lib/exerciseLabels';
 import { getWeekDaySlug } from '@/lib/weekDays';
 import type { ExerciseDetails, WeekDay } from '@/schemas/api';
@@ -117,6 +123,8 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
   const [isRetryingSearch, setIsRetryingSearch] = useState(false);
   const [openInstructions, setOpenInstructions] = useState<string | null>(null);
   const [addingExerciseId, setAddingExerciseId] = useState<string | null>(null);
+  const [customDialogOpen, setCustomDialogOpen] = useState(false);
+  const customDialogTriggerRef = useRef<HTMLButtonElement>(null);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
   const filterTriggerRef = useRef<HTMLButtonElement>(null);
   const firstFilterRef = useRef<HTMLButtonElement>(null);
@@ -166,6 +174,18 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
       if (isDuplicateError(error)) toast.warning('Este exercício já está no treino.');
     },
     onSettled: () => setAddingExerciseId(null),
+  });
+  const createCustomExerciseMutation = useMutation({
+    mutationFn: (value: { name: string; primaryMuscle: string }) =>
+      createCustomExercise(weekDay, value.name, value.primaryMuscle),
+    onMutate: () => setDismissedError(null),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
+      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      setCustomDialogOpen(false);
+      toast.success('Exercício personalizado criado.');
+      onAdded?.();
+    },
   });
 
   const openFilterPanel = (): void => {
@@ -243,7 +263,12 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
     ? { key: 'search-error', message: 'Não foi possível buscar exercícios.' }
     : addExercise.isError && !isDuplicateError(addExercise.error)
       ? { key: 'add-exercise-error', message: 'Não foi possível adicionar o exercício.' }
-      : null;
+      : createCustomExerciseMutation.isError
+        ? {
+            key: 'create-custom-exercise-error',
+            message: 'Não foi possível criar o exercício personalizado.',
+          }
+        : null;
   const errorMessage =
     activeError && activeError.key !== dismissedError ? activeError.message : null;
   const renderFilter = (key: keyof ExerciseFilters): React.JSX.Element | null => {
@@ -333,8 +358,24 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
     </div>
   );
 
+  const openCustomExerciseDialog = (trigger?: HTMLButtonElement): void => {
+    if (trigger) customDialogTriggerRef.current = trigger;
+    createCustomExerciseMutation.reset();
+    setCustomDialogOpen(true);
+  };
+
   return (
     <>
+      <CustomExerciseDialog
+        key={`create-${customDialogOpen}`}
+        open={customDialogOpen}
+        onOpenChange={(open) => {
+          setCustomDialogOpen(open);
+          if (!open) customDialogTriggerRef.current?.focus();
+        }}
+        isPending={createCustomExerciseMutation.isPending}
+        onSubmit={(value) => createCustomExerciseMutation.mutate(value)}
+      />
       <main className="flex-1 bg-background">
         <header className="sticky top-0 z-20 border-b border-border bg-card">
           <div className="mx-auto flex h-14 max-w-[80rem] items-center gap-3 px-4 sm:px-6">
@@ -356,11 +397,22 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
             }}
             message={errorMessage ?? ''}
           />
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold tracking-tight">Adicionar exercício</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Busque um exercício para adicioná-lo ao treino.
-            </p>
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight">Adicionar exercício</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Busque um exercício para adicioná-lo ao treino.
+              </p>
+            </div>
+            <Button
+              ref={customDialogTriggerRef}
+              type="button"
+              variant="outline"
+              className="w-full sm:w-auto"
+              onClick={(event) => openCustomExerciseDialog(event.currentTarget)}
+            >
+              Criar exercício personalizado
+            </Button>
           </div>
           <div data-slot="exercise-search-shell" className="contents">
             <div
@@ -473,9 +525,16 @@ const AddExercisePage = ({ weekDay, onAdded }: AddExercisePageProps): React.JSX.
                       <Loading message="Buscando exercícios..." />
                     </div>
                   ) : searchResults.data.pages.flatMap(({ items }) => items).length === 0 ? (
-                    <p className="py-12 text-center text-sm text-muted-foreground">
-                      Nenhum exercício encontrado.
-                    </p>
+                    <div className="flex flex-col items-center gap-4 py-12 text-center">
+                      <p className="text-sm text-muted-foreground">Nenhum exercício encontrado.</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={(event) => openCustomExerciseDialog(event.currentTarget)}
+                      >
+                        Criar exercício personalizado
+                      </Button>
+                    </div>
                   ) : (
                     <>
                       <ul className="flex flex-col gap-3" aria-label="Resultados da busca">

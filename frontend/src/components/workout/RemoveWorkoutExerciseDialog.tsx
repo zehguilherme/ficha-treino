@@ -16,6 +16,7 @@ interface RemoveWorkoutExerciseDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   exerciseName: string;
+  isCustom?: boolean;
   isPending: boolean;
   onConfirm: () => void;
 }
@@ -24,6 +25,7 @@ const RemoveWorkoutExerciseDialog = ({
   open,
   onOpenChange,
   exerciseName,
+  isCustom = false,
   isPending,
   onConfirm,
 }: RemoveWorkoutExerciseDialogProps): React.JSX.Element => (
@@ -45,11 +47,14 @@ const RemoveWorkoutExerciseDialog = ({
         </div>
         <AlertDialogTitle>Remover exercício?</AlertDialogTitle>
         <AlertDialogDescription>
-          O exercício <span className="font-medium text-foreground">{exerciseName}</span> será
-          removido deste treino.
+          O exercício <span className="font-medium text-foreground">{exerciseName}</span>{' '}
+          {isCustom ? 'será removido permanentemente deste treino.' : 'será removido deste treino.'}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
+        <AlertDialogCancel className="w-full sm:w-auto" disabled={isPending}>
+          Cancelar
+        </AlertDialogCancel>
         <AlertDialogAction
           className="w-full border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90 sm:w-auto"
           loading={isPending}
@@ -60,9 +65,6 @@ const RemoveWorkoutExerciseDialog = ({
         >
           {isPending ? 'Removendo…' : 'Sim, remover'}
         </AlertDialogAction>
-        <AlertDialogCancel className="w-full sm:w-auto" disabled={isPending}>
-          Cancelar
-        </AlertDialogCancel>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

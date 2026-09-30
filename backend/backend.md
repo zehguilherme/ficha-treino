@@ -20,13 +20,17 @@ API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`)
 | DELETE | `/api/workouts/:weekDay/exercises/:exerciseId` | Sim  | Remove exercício                                                                     |
 | PATCH  | `/api/workout-exercises/:id`                   | Sim  | Marca/desmarca como concluído                                                        |
 | POST   | `/api/workouts/:weekDay/clear`                 | Sim  | Limpa marcações do treino                                                            |
-| GET    | `/api/exercises?q=&limit=20&offset=0&category=forca` | Sim  | Busca exercícios por nome e metadados com listas fixas, ignorando maiúsculas, minúsculas e acentos |
+| GET    | `/api/exercises?q=&limit=20&offset=0&category=forca` | Sim  | Busca somente exercícios do catálogo |
+| POST   | `/api/workouts/:weekDay/custom-exercises`      | Sim  | Cria exercício personalizado privado e o associa ao treino |
+| PATCH  | `/api/workouts/:weekDay/custom-exercises/:exerciseId` | Sim | Edita personalizado vinculado ao treino |
+| DELETE | `/api/workouts/:weekDay/custom-exercises/:exerciseId` | Sim | Exclui personalizado e sua associação |
 | DELETE | `/api/account`                                 | Sim  | Exclui conta + cascade                                                               |
 | GET    | `/api/health`                                  | Não  | Health check                                                                         |
 
 ## Banco de dados
 
-Schema (4 tabelas): `Users`, `Workouts`, `Exercises`, `Workout_Exercises` — ver `specification.md` para colunas.
+Schema (4 tabelas): `Users`, `Workouts`, `Exercises`, `Workout_Exercises`; personalizados usam `customWorkoutId` e só existem no treino vinculado.
+
 
 **Prisma 7** com driver adapter `@prisma/adapter-pg` (`src/db.ts`) e `prisma.config.ts`. O generator `prisma-client` gera o client em `src/generated/prisma/` (importado como `../generated/prisma/client.js`). Configuração de conexão vem do adapter — o datasource no `schema.prisma` não tem `url`.
 
@@ -58,6 +62,7 @@ src/
   schema.sql         # snapshot do schema (4 tabelas + enum)
   generated/prisma/  # Prisma Client gerado (não editar)
   routes/
+    customExercises.ts
     auth.ts
     workouts.ts      # GET, POST, DELETE e clear implementados
     workoutExercises.ts # PATCH de conclusão implementado
@@ -74,7 +79,7 @@ src/
   *.test.ts          # testes junto ao módulo (app, seed, middleware/auth, routes/auth, routes/exercises e routes/workouts)
 ```
 
-Implementado hoje: `app.ts`, `server.ts`, `db.ts`, `seed.ts`, `swagger.ts`, `routes/auth.ts`, `routes/workouts.ts` (`GET /api/workouts`, `GET /api/workouts/:weekDay`, `POST /api/workouts/:weekDay/exercises`, `DELETE /api/workouts/:weekDay/exercises/:exerciseId` e `POST /api/workouts/:weekDay/clear`), `routes/workoutExercises.ts` (`PATCH /api/workout-exercises/:id`), `routes/exercises.ts` (`GET /api/exercises`), `routes/account.ts` (`DELETE /api/account`), `middleware/auth.ts`, `validators/auth.ts`, `validators/exercises.ts`, `validators/workouts.ts` e `validators/responses.ts`. As rotas de conclusão, remoção e exclusão de conta validam autenticação e ownership; a exclusão remove o usuário e depende das FKs em cascata para treinos e associações. Todas as rotas são documentadas no Swagger.
+As rotas existentes de autenticação, treinos, busca, conclusão, remoção, conta e `routes/customExercises.ts` (`POST`, `PATCH` e `DELETE` vinculados ao treino) estão implementadas e documentadas no Swagger. Exercícios personalizados exigem nome de 2–255 caracteres e músculo principal válido, entram no treino em transação e só podem ser editados ou excluídos no treino de origem. A busca e a adição genérica aceitam somente itens de catálogo; o seed atualiza apenas itens com `isCustom=false`.
 
 Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
 

@@ -27,6 +27,11 @@ describe('ErrorAlertDialog', () => {
     );
     expect(screen.getAllByRole('button', { name: 'Fechar' })).toHaveLength(2);
     expect(screen.getAllByRole('button', { name: 'Fechar' })[1]).toHaveClass('w-full', 'sm:w-auto');
+    expect(screen.getAllByRole('button', { name: 'Fechar' })[1].parentElement).toHaveClass(
+      'flex-col',
+      'sm:flex-row',
+      'sm:justify-end',
+    );
     expect(
       screen.getByRole('alertdialog').querySelector('[data-slot="alert-dialog-icon"]'),
     ).toBeInTheDocument();

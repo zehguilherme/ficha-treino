@@ -2,6 +2,7 @@ import axios, { type AxiosError } from 'axios';
 import { clearSession, getSession } from './auth';
 import {
   addWorkoutExerciseResponseSchema,
+  customExerciseResponseSchema,
   accountDeletionResponseSchema,
   clearWorkoutResponseSchema,
   currentUserResponseSchema,
@@ -12,6 +13,7 @@ import {
   workoutsResponseSchema,
   type CurrentUser,
   type AddWorkoutExerciseResponse,
+  type CustomExerciseResponse,
   type ClearWorkoutResponse,
   type ExercisesResponse,
   type GoogleAuthResponse,
@@ -107,6 +109,47 @@ export const addWorkoutExercise = async (
 ): Promise<AddWorkoutExerciseResponse> =>
   addWorkoutExerciseResponseSchema.parse(
     (await api.post(`/api/workouts/${encodeURIComponent(weekDay)}/exercises`, { exerciseId })).data,
+  );
+
+export const createCustomExercise = async (
+  weekDay: string,
+  name: string,
+  primaryMuscle: string,
+): Promise<AddWorkoutExerciseResponse> =>
+  addWorkoutExerciseResponseSchema.parse(
+    (
+      await api.post(`/api/workouts/${encodeURIComponent(weekDay)}/custom-exercises`, {
+        name,
+        primaryMuscle,
+      })
+    ).data,
+  );
+
+export const updateCustomExercise = async (
+  weekDay: string,
+  exerciseId: string,
+  name: string,
+  primaryMuscle: string,
+): Promise<CustomExerciseResponse> =>
+  customExerciseResponseSchema.parse(
+    (
+      await api.patch(
+        `/api/workouts/${encodeURIComponent(weekDay)}/custom-exercises/${encodeURIComponent(exerciseId)}`,
+        { name, primaryMuscle },
+      )
+    ).data,
+  );
+
+export const deleteCustomExercise = async (
+  weekDay: string,
+  exerciseId: string,
+): Promise<RemoveWorkoutExerciseResponse> =>
+  removeWorkoutExerciseResponseSchema.parse(
+    (
+      await api.delete(
+        `/api/workouts/${encodeURIComponent(weekDay)}/custom-exercises/${encodeURIComponent(exerciseId)}`,
+      )
+    ).data,
   );
 
 export const toggleWorkoutExercise = async (

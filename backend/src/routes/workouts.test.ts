@@ -72,7 +72,7 @@ type MockPrisma = {
     findUnique: jest.Mock<Promise<WorkoutDetails | null>, [args: object]>;
   };
   exercise: {
-    findUnique: jest.Mock<Promise<Pick<Exercise, 'id'> | null>, [args: object]>;
+    findUnique: jest.Mock<Promise<Pick<Exercise, 'id' | 'isCustom'> | null>, [args: object]>;
   };
   workoutExercise: {
     create: jest.Mock<Promise<CreatedWorkoutExercise>, [args: object]>;
@@ -94,7 +94,7 @@ jest.mock('../db.js', () => ({
       findUnique: jest.fn<Promise<WorkoutDetails | null>, [args: object]>(),
     },
     exercise: {
-      findUnique: jest.fn<Promise<Pick<Exercise, 'id'> | null>, [args: object]>(),
+      findUnique: jest.fn<Promise<Pick<Exercise, 'id' | 'isCustom'> | null>, [args: object]>(),
     },
     workoutExercise: {
       create: jest.fn<Promise<CreatedWorkoutExercise>, [args: object]>(),
@@ -381,6 +381,7 @@ describe('workouts routes', () => {
               select: {
                 id: true,
                 name: true,
+                isCustom: true,
                 force: true,
                 level: true,
                 mechanic: true,
@@ -486,7 +487,7 @@ describe('workouts routes', () => {
 
   test('POST /api/workouts/:weekDay/exercises creates an incomplete workout exercise', async () => {
     prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
-    prisma.exercise.findUnique.mockResolvedValue({ id: 'barbell-bench-press' });
+    prisma.exercise.findUnique.mockResolvedValue({ id: 'barbell-bench-press', isCustom: false });
     prisma.workoutExercise.create.mockResolvedValue({
       id: 45,
       exerciseId: 'barbell-bench-press',
@@ -507,7 +508,7 @@ describe('workouts routes', () => {
     });
     expect(prisma.exercise.findUnique).toHaveBeenCalledWith({
       where: { id: 'barbell-bench-press' },
-      select: { id: true },
+      select: { id: true, isCustom: true },
     });
     expect(prisma.workoutExercise.create).toHaveBeenCalledWith({
       data: { workoutId: 2, exerciseId: 'barbell-bench-press', done: false },
@@ -564,9 +565,23 @@ describe('workouts routes', () => {
     expect(prisma.workoutExercise.create).not.toHaveBeenCalled();
   });
 
+  test('POST /api/workouts/:weekDay/exercises rejects a custom exercise', async () => {
+    prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
+    prisma.exercise.findUnique.mockResolvedValue({ id: 'custom-1', isCustom: true });
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .post('/api/workouts/SEGUNDA/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ exerciseId: 'custom-1' });
+
+    expect(response.status).toBe(404);
+    expect(prisma.workoutExercise.create).not.toHaveBeenCalled();
+  });
+
   test('POST /api/workouts/:weekDay/exercises returns 409 for a duplicate exercise', async () => {
     prisma.workout.findUnique.mockResolvedValue({ id: 2, weekDay: 'SEGUNDA', exercises: [] });
-    prisma.exercise.findUnique.mockResolvedValue({ id: 'barbell-bench-press' });
+    prisma.exercise.findUnique.mockResolvedValue({ id: 'barbell-bench-press', isCustom: false });
     prisma.workoutExercise.create.mockRejectedValue(
       new Prisma.PrismaClientKnownRequestError('Duplicate association', {
         code: 'P2002',
@@ -746,6 +761,7 @@ describe('workouts routes', () => {
       where: {
         exerciseId: 'bench-press',
         workout: { userId: 1, weekDay: 'SEGUNDA' },
+        exercise: { isCustom: false },
       },
       select: { id: true },
     });
@@ -777,7 +793,11 @@ describe('workouts routes', () => {
     expect(prisma.workoutExercise.delete).not.toHaveBeenCalled();
     expect(prisma.workoutExercise.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { exerciseId: 'bench-press', workout: { userId: 1, weekDay: 'SEGUNDA' } },
+        where: {
+          exerciseId: 'bench-press',
+          workout: { userId: 1, weekDay: 'SEGUNDA' },
+          exercise: { isCustom: false },
+        },
       }),
     );
   });

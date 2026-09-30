@@ -46,6 +46,7 @@ const muscleFilter = (column: string, values: string[]): Prisma.Sql | null =>
 
 const buildExerciseWhere = (q: string, filters: ExerciseFilters): Prisma.Sql => {
   const conditions = [
+    Prisma.sql`is_custom = false`,
     Prisma.sql`unaccent(name) ILIKE unaccent(${'%' + q.trim() + '%'})`,
     scalarFilter('category', filters.category),
     scalarFilter('equipment', filters.equipment),
@@ -182,7 +183,7 @@ export const exercisesRouter = Router();
  *                   type: array
  *                   items:
  *                     type: object
- *                     required: [id, name, level, primaryMuscles, secondaryMuscles, instructions, category, images]
+ *                     required: [id, name, isCustom, primaryMuscles, secondaryMuscles, instructions, images]
  *                     properties:
  *                       id:
  *                         type: string
@@ -191,8 +192,11 @@ export const exercisesRouter = Router();
  *                       force:
  *                         type: string
  *                         nullable: true
+ *                       isCustom:
+ *                         type: boolean
  *                       level:
  *                         type: string
+ *                         nullable: true
  *                       mechanic:
  *                         type: string
  *                         nullable: true
@@ -213,6 +217,7 @@ export const exercisesRouter = Router();
  *                           type: string
  *                       category:
  *                         type: string
+ *                         nullable: true
  *                       images:
  *                         type: array
  *                         items:
@@ -233,12 +238,19 @@ exercisesRouter.get('/', requireAuth, async (req, res) => {
   }
 
   const { q, limit, offset, ...filters } = parsedQuery.data;
+  const claims = req.user;
+  if (!claims) {
+    res.status(401).json({ error: 'Token inválido ou expirado' });
+    return;
+  }
+
   const where = buildExerciseWhere(q, filters);
   const [items, countRows] = await Promise.all([
     prisma.$queryRaw<ExerciseDetails[]>(Prisma.sql`
       SELECT
         id,
         name,
+        is_custom AS "isCustom",
         force,
         level,
         mechanic,

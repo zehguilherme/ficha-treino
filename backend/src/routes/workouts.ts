@@ -178,6 +178,8 @@ workoutsRouter.get('/', requireAuth, async (req, res) => {
  *                             properties:
  *                               id:
  *                                 type: string
+ *                               isCustom:
+ *                                 type: boolean
  *                               name:
  *                                 type: string
  *                               force:
@@ -245,6 +247,7 @@ workoutsRouter.get('/:weekDay', requireAuth, async (req, res) => {
             select: {
               id: true,
               name: true,
+              isCustom: true,
               force: true,
               level: true,
               mechanic: true,
@@ -359,10 +362,10 @@ workoutsRouter.post('/:weekDay/exercises', requireAuth, async (req, res) => {
 
   const exercise = await prisma.exercise.findUnique({
     where: { id: bodyResult.data.exerciseId },
-    select: { id: true },
+    select: { id: true, isCustom: true },
   });
 
-  if (!exercise) {
+  if (!exercise || exercise.isCustom) {
     res.status(404).json({ error: 'Exercício não encontrado' });
     return;
   }
@@ -447,6 +450,7 @@ workoutsRouter.delete('/:weekDay/exercises/:exerciseId', requireAuth, async (req
     where: {
       exerciseId,
       workout: { userId: claims.user_id, weekDay },
+      exercise: { isCustom: false },
     },
     select: { id: true },
   });

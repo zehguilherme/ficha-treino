@@ -176,3 +176,7 @@ Estado atual em 2026-09-10: as features implementadas permanecem concluídas; `u
 2026-09-10 — issue #289 — área do X deixou de reservar largura no mobile e as ações ganharam margem adicional no desktop.
 2026-09-10 — issue #289 — banner passou a reutilizar o componente base `Dialog`, mantendo o posicionamento inferior sem overlay bloqueante.
 2026-09-10 — issue #289 — banner migrou de `Dialog` para a base não modal `Alert`, preservando aparência, ações e fluxos de instalação.
+2026-09-21 — issue #319 — exercícios personalizados agora são exclusivos do treino de origem: catálogo não retorna personalizados, inclusão genérica os rejeita, criação é transacional, menu contextual permite editar/excluir, estado vazio da busca oferece o mesmo CTA e migration separa associações legadas por treino.
+2026-09-30 — ui-015 — falhas ao criar exercício personalizado passam a aparecer somente na modal global de erro; teste de regressão e documentação sincronizados.
+
+2026-09-30 — ui-015 — campos de criação e edição de exercícios personalizados exibem erros abaixo dos inputs após blur por mouse ou teclado, com associação acessível e remoção ao corrigir; sete testes do componente passam.

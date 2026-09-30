@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
@@ -16,9 +16,18 @@ import { Loading } from '@/components/ui/Loading';
 import { Progress } from '@/components/ui/Progress';
 import { ClearWorkoutDialog } from '@/components/workout/ClearWorkoutDialog';
 import { RemoveWorkoutExerciseDialog } from '@/components/workout/RemoveWorkoutExerciseDialog';
+import { CustomExerciseDialog } from '@/components/workout/CustomExerciseDialog';
+import { CustomExerciseMenu } from '@/components/workout/CustomExerciseMenu';
 import { ArrowLeftIcon, BrushIcon, TrashIcon } from '@/components/ui/WorkoutIcons';
 import { useAuth } from '@/contexts/AuthContext';
-import { clearWorkout, getWorkout, removeWorkoutExercise, toggleWorkoutExercise } from '@/lib/api';
+import {
+  clearWorkout,
+  deleteCustomExercise,
+  getWorkout,
+  removeWorkoutExercise,
+  toggleWorkoutExercise,
+  updateCustomExercise,
+} from '@/lib/api';
 import { DAY_NAMES, getWeekDayFromSlug, getWeekDaySlug } from '@/lib/weekDays';
 import type { WeekDay, WorkoutResponse } from '@/schemas/api';
 import { toast } from 'sonner';
@@ -33,7 +42,12 @@ const WorkoutDayPage = (): React.JSX.Element => {
   const [removeExercise, setRemoveExercise] = useState<{
     exerciseId: string;
     exerciseName: string;
+    isCustom: boolean;
   } | null>(null);
+  const [editingExercise, setEditingExercise] = useState<
+    WorkoutResponse['workout']['exercises'][number]['exercise'] | null
+  >(null);
+  const customActionTriggerRef = useRef<HTMLButtonElement>(null);
   const [dismissedError, setDismissedError] = useState<unknown>(null);
   const [isRetryingWorkout, setIsRetryingWorkout] = useState(false);
   const workout = useQuery({
@@ -114,6 +128,37 @@ const WorkoutDayPage = (): React.JSX.Element => {
       toast.success('Exercício removido do treino.');
     },
   });
+  const updateCustomExerciseMutation = useMutation({
+    mutationFn: (value: { exerciseId: string; name: string; primaryMuscle: string }) =>
+      updateCustomExercise(weekDay ?? '', value.exerciseId, value.name, value.primaryMuscle),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['workout'] });
+      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      setEditingExercise(null);
+      toast.success('Exercício personalizado atualizado.');
+    },
+  });
+  const deleteCustomExerciseMutation = useMutation({
+    mutationFn: (exerciseId: string) => deleteCustomExercise(weekDay ?? '', exerciseId),
+    onSuccess: (_response, exerciseId) => {
+      queryClient.setQueryData<WorkoutResponse>(['workout', weekDay], (current) =>
+        current
+          ? {
+              workout: {
+                ...current.workout,
+                exercises: current.workout.exercises.filter(
+                  (workoutExercise) => workoutExercise.exercise.id !== exerciseId,
+                ),
+              },
+            }
+          : current,
+      );
+      void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
+      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
+      setRemoveExercise(null);
+      toast.success('Exercício personalizado excluído.');
+    },
+  });
 
   const retryWorkout = (): void => {
     setIsRetryingWorkout(true);
@@ -137,7 +182,17 @@ const WorkoutDayPage = (): React.JSX.Element => {
               key: 'remove-exercise-error',
               message: 'Não foi possível remover o exercício.',
             }
-          : null;
+          : updateCustomExerciseMutation.isError
+            ? {
+                key: 'update-custom-exercise-error',
+                message: 'Não foi possível atualizar o exercício personalizado.',
+              }
+            : deleteCustomExerciseMutation.isError
+              ? {
+                  key: 'delete-custom-exercise-error',
+                  message: 'Não foi possível excluir o exercício personalizado.',
+                }
+              : null;
   const errorMessage =
     activeError && activeError.key !== dismissedError ? activeError.message : null;
   const exercises = workout.data?.workout.exercises ?? [];
@@ -283,16 +338,49 @@ const WorkoutDayPage = (): React.JSX.Element => {
       />
       <RemoveWorkoutExerciseDialog
         open={removeExercise !== null}
+        isCustom={removeExercise?.isCustom}
         onOpenChange={(open) => {
-          if (!open && !removeWorkoutExerciseMutation.isPending) setRemoveExercise(null);
+          if (
+            !open &&
+            !removeWorkoutExerciseMutation.isPending &&
+            !deleteCustomExerciseMutation.isPending
+          ) {
+            setRemoveExercise(null);
+          }
         }}
         exerciseName={removeExercise?.exerciseName ?? ''}
-        isPending={removeWorkoutExerciseMutation.isPending}
+        isPending={
+          removeWorkoutExerciseMutation.isPending || deleteCustomExerciseMutation.isPending
+        }
         onConfirm={() => {
           if (weekDay && removeExercise) {
-            removeWorkoutExerciseMutation.mutate({
-              selectedWeekDay: weekDay,
-              exerciseId: removeExercise.exerciseId,
+            if (removeExercise.isCustom) {
+              deleteCustomExerciseMutation.mutate(removeExercise.exerciseId);
+            } else {
+              removeWorkoutExerciseMutation.mutate({
+                selectedWeekDay: weekDay,
+                exerciseId: removeExercise.exerciseId,
+              });
+            }
+          }
+        }}
+      />
+      <CustomExerciseDialog
+        key={`edit-${editingExercise?.id ?? 'new'}`}
+        open={editingExercise !== null}
+        onOpenChange={(open) => {
+          if (!open && !updateCustomExerciseMutation.isPending) {
+            setEditingExercise(null);
+            customActionTriggerRef.current?.focus();
+          }
+        }}
+        initialExercise={editingExercise}
+        isPending={updateCustomExerciseMutation.isPending}
+        onSubmit={(value) => {
+          if (editingExercise) {
+            updateCustomExerciseMutation.mutate({
+              exerciseId: editingExercise.id,
+              ...value,
             });
           }
         }}
@@ -362,26 +450,52 @@ const WorkoutDayPage = (): React.JSX.Element => {
                       </label>
                     }
                     trailingActions={
-                      <Button
-                        variant="default"
-                        disabled={
-                          removeWorkoutExerciseMutation.isPending || clearWorkoutMutation.isPending
-                        }
-                        aria-busy={isRemoving && removeWorkoutExerciseMutation.isPending}
-                        aria-label={`Remover ${exercise.name}`}
-                        onClick={() =>
-                          setRemoveExercise({
-                            exerciseId: exercise.id,
-                            exerciseName: exercise.name,
-                          })
-                        }
-                        className="ml-auto gap-1.5 bg-destructive text-primary-foreground hover:bg-destructive/90 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
-                      >
-                        <TrashIcon className="size-3.5" />
-                        {isRemoving && removeWorkoutExerciseMutation.isPending
-                          ? 'Removendo…'
-                          : 'Remover'}
-                      </Button>
+                      exercise.isCustom !== true ? (
+                        <Button
+                          variant="default"
+                          disabled={
+                            removeWorkoutExerciseMutation.isPending ||
+                            clearWorkoutMutation.isPending
+                          }
+                          aria-busy={isRemoving && removeWorkoutExerciseMutation.isPending}
+                          aria-label={`Remover ${exercise.name}`}
+                          onClick={() =>
+                            setRemoveExercise({
+                              exerciseId: exercise.id,
+                              exerciseName: exercise.name,
+                              isCustom: false,
+                            })
+                          }
+                          className="ml-auto gap-1.5 bg-destructive text-primary-foreground hover:bg-destructive/90 max-[640px]:col-span-1 max-[640px]:ml-0 max-[640px]:w-full"
+                        >
+                          <TrashIcon className="size-3.5" />
+                          {isRemoving && removeWorkoutExerciseMutation.isPending
+                            ? 'Removendo…'
+                            : 'Remover'}
+                        </Button>
+                      ) : (
+                        <CustomExerciseMenu
+                          exerciseName={exercise.name}
+                          disabled={
+                            updateCustomExerciseMutation.isPending ||
+                            deleteCustomExerciseMutation.isPending ||
+                            removeWorkoutExerciseMutation.isPending ||
+                            clearWorkoutMutation.isPending
+                          }
+                          triggerRef={customActionTriggerRef}
+                          onEdit={() => {
+                            updateCustomExerciseMutation.reset();
+                            setEditingExercise(exercise);
+                          }}
+                          onRemove={() => {
+                            setRemoveExercise({
+                              exerciseId: exercise.id,
+                              exerciseName: exercise.name,
+                              isCustom: true,
+                            });
+                          }}
+                        />
+                      )
                     }
                   />
                 );

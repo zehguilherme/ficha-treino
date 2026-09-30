@@ -29,14 +29,15 @@ export const workoutsResponseSchema = z.object({
 export const exerciseDetailsSchema = z.object({
   id: z.string(),
   name: z.string(),
+  isCustom: z.boolean().optional(),
   force: z.string().nullable(),
-  level: z.string(),
+  level: z.string().nullable(),
   mechanic: z.string().nullable(),
   equipment: z.string().nullable(),
   primaryMuscles: z.array(z.string()),
   secondaryMuscles: z.array(z.string()),
   instructions: z.array(z.string()),
-  category: z.string(),
+  category: z.string().nullable(),
   images: z.array(z.string()),
 });
 

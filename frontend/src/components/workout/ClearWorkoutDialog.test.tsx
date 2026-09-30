@@ -25,7 +25,8 @@ describe('ClearWorkoutDialog', () => {
     expect(screen.getByRole('button', { name: 'Sim, limpar' })).toBeInTheDocument();
     const primaryAction = screen.getByRole('button', { name: 'Sim, limpar' });
     const secondaryAction = screen.getByRole('button', { name: 'Cancelar' });
-    expect(primaryAction.compareDocumentPosition(secondaryAction)).toBe(
+    expect(secondaryAction.parentElement).toHaveClass('flex-col', 'sm:flex-row');
+    expect(secondaryAction.compareDocumentPosition(primaryAction)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
     expect(primaryAction).toHaveClass('w-full', 'sm:w-auto');

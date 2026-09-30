@@ -150,6 +150,8 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 - Checked: bg `--fg`, SVG checkmark como background-image
 - Border-radius: 0.25rem
 
+**Validação inline:** campos de exercícios personalizados exibem erro em `--destructive` abaixo do controle após perderem o foco vazios ou inválidos; o erro some quando o valor fica válido. `aria-invalid` e `aria-describedby` acompanham o estado.
+
 ### 4.5 Modal
 
 | Elemento | Valor |
@@ -158,6 +160,8 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 | Modal box | `--card`, border 1px `--border`, radius `--radius + 0.125rem`, shadow `0 8px 30px --fg / 0.1`, max-width 24rem, padding 1.5rem |
 | Ícone modal | 2.5rem × 2.5rem, border-radius 9999px, bg `--destructive / 0.1`, svg `--destructive` 1.25rem |
 | Close button | 2rem × 2rem, absolute top-right 0.75rem, `--muted-foreground` → hover bg `--secondary`, svg (Lucide X) 1rem, `aria-label="Fechar"`, `data-od-id="btn-fechar-modal"` |
+
+**Ações da modal:** ordenar no DOM e na sequência visual: botão secundário (`Cancelar`) antes da ação principal; ação destrutiva mantém o estilo destrutivo da ação principal. No desktop, alinhar o grupo à direita; no mobile, empilhar em coluna com Cancelar acima. Usar essa ordem no Tab sem `tabIndex` positivo ou reordenação visual por CSS. O botão X é um controle de fechamento separado.
 
 ### 4.6 Pílula flutuante de instalação PWA
 

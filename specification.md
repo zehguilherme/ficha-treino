@@ -243,14 +243,16 @@ Exercises
 id                   VARCHAR(100) (PK)
 name                 VARCHAR(255) NOT NULL
 force                VARCHAR(10)
-level                VARCHAR(20) NOT NULL
+level                VARCHAR(20) NULL
 mechanic             VARCHAR(10)
 equipment            VARCHAR(50)
 primary_muscles      TEXT[] NOT NULL
 secondary_muscles    TEXT[]
 instructions         TEXT[] NOT NULL
-category             VARCHAR(30) NOT NULL
+category             VARCHAR(30) NULL
 images               TEXT[] NOT NULL
+custom_workout_id    INTEGER NULL (FK → Workouts.id, ON DELETE CASCADE)
+is_custom            BOOLEAN NOT NULL DEFAULT FALSE
 created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
 updated_at           TIMESTAMPTZ NOT NULL (atualizado em UPDATE)
 
@@ -390,3 +392,4 @@ Implementado:
 
 - a busca e a adição são realizadas na rota dedicada `/treinos/[weekDay]/adicionar-exercicio`, com filtros fixos, paginação manual e retorno ao treino após a adição;
 - o frontend possui página de conta, confirmação acessível para exclusão e redirecionamento para `/login` após a remoção.
+- exercícios personalizados são criados diretamente para um único treino com apenas nome e músculo principal; não aparecem na busca de catálogo, não podem ser reutilizados em outro treino e podem ser editados ou excluídos somente dentro do treino de origem.

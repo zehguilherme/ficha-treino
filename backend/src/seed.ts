@@ -90,7 +90,7 @@ export async function seed(prisma: PrismaClient): Promise<void> {
   console.log('↓ Verificando exercícios removidos do dataset...');
   const dbIds = (await prisma.exercise.findMany({
     select: { id: true },
-    where: { id: { notIn: exercises.map((e) => e.id) } },
+    where: { id: { notIn: exercises.map((e) => e.id) }, isCustom: false },
   })) as { id: string }[];
   const removedIds = dbIds.map((e) => e.id);
 
@@ -100,6 +100,7 @@ export async function seed(prisma: PrismaClient): Promise<void> {
     const result = (await prisma.exercise.deleteMany({
       where: {
         id: { in: removedIds },
+        isCustom: false,
         workoutExercises: { none: {} },
       },
     })) as { count: number };

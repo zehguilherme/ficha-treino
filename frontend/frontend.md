@@ -14,7 +14,7 @@ apenas para UI local. Tailwind usa os tokens HSL do design system.
 | `/auth/google/callback` | Callback transitório do OAuth |
 | `/treinos` | Dashboard semanal com sete cards e expansão |
 | `/treinos/[weekDay]` | Exercícios do dia, progresso e ações sticky |
-| `/treinos/[weekDay]/adicionar-exercicio` | Busca, filtros, paginação e adição |
+| `/treinos/[weekDay]/adicionar-exercicio` | Busca, filtros, paginação, adição do catálogo e criação de personalizados |
 | `/minha-conta` | Perfil e exclusão de conta |
 
 Rotas autenticadas usam `noindex, nofollow`; a origem canônica é `https://fichatreino.vercel.app`.
@@ -29,6 +29,7 @@ O manifest PWA em `src/app/manifest.ts` permite instalação como aplicativo com
 - Schemas Zod próprios validam respostas HTTP na fronteira do cliente.
 - A busca confirma nome e filtros somente por botão ou Enter, com AbortSignal e paginação de 20 itens.
 - Após adicionar ou remover, os caches relacionados são invalidados e o feedback é acessível.
+- O botão `Criar exercício personalizado` fica disponível antes da busca e também no estado sem resultados; o diálogo usa somente nome e músculo principal, mostrando erros de validação abaixo de cada campo após a primeira saída inválida e removendo-os quando corrigidos. Cards personalizados exibem selo, não exibem metadados inexistentes e concentram `Editar` e `Excluir` em um menu contextual do treino. Falhas ao criar ou editar são exibidas somente no diálogo global de erro, sem mensagem duplicada nos diálogos de criação ou edição.
 
 ## Imagens e estrutura
 
@@ -51,6 +52,7 @@ detalhado em [`testing.md`](testing.md).
 ### Checklist de UI/UX/Acessibilidade
 
 - Navegação por teclado, foco visível e `aria-label` em controles de ícone.
+- Em modais com duas ações, Cancelar vem antes da ação principal no DOM, no Tab e na ordem visual: ambas as ações ficam alinhadas à direita no desktop e empilhadas com Cancelar acima no mobile; o X é um controle separado.
 - Contraste somente com tokens HSL; estados hover, focus, active, disabled e error.
 - Responsividade mobile-first, rolagem sem quebra e safe area nas barras fixas.
 - Loading, empty state, erro e retry em consultas e mutações.
