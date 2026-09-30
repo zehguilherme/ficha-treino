@@ -380,7 +380,7 @@
     .exercise-name-row { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; }
     .custom-exercise-tag { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); padding-top: .25rem; padding-bottom: .25rem; }
     .custom-exercise-tag .tag-label { color: hsl(var(--primary-foreground) / .75); opacity: 1; }
-    .exercise-menu-trigger { min-height: 2rem; width: 2rem; margin-left: auto; padding: .25rem; border: 0; background: transparent; }
+    .exercise-menu-trigger { min-height: 2.5rem; width: 2.5rem; margin-left: auto; padding: .25rem; border: 0; background: transparent; }
     .exercise-menu { min-width: 9rem; padding: .25rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: 0 4px 12px hsl(var(--foreground) / .08); }
 
     .exercise-card-body {
@@ -700,6 +700,7 @@
 
     .checkbox-wrap {
       display: flex;
+      width: fit-content;
       align-items: center;
       gap: 0.5rem;
       font-size: 0.8125rem;
@@ -710,8 +711,8 @@
 
     .checkbox-wrap input[type="checkbox"] {
       appearance: none;
-      width: 1rem;
-      height: 1rem;
+      width: 1.25rem;
+      height: 1.25rem;
       border: 1.5px solid hsl(var(--border));
       border-radius: 0.25rem;
       background: hsl(var(--card));
@@ -724,7 +725,7 @@
       background: hsl(var(--foreground));
       border-color: hsl(var(--foreground));
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
-      background-size: 0.75rem;
+      background-size: 0.875rem;
       background-position: center;
       background-repeat: no-repeat;
     }
@@ -950,6 +951,8 @@
         grid-template-columns: 1fr;
         row-gap: 0.5rem;
       }
+      .exercise-actions:has(.exercise-menu-trigger) { grid-template-columns: 1fr auto; }
+      .exercise-menu-trigger { grid-column: 2; grid-row: 1; }
       .instructions-toggle { gap: 0.125rem; }
       .instructions-toggle,
       .btn-remove-exercise { grid-column: 1; width: 100%; margin-left: 0; }

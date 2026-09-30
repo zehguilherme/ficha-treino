@@ -435,9 +435,10 @@ const WorkoutDayPage = (): React.JSX.Element => {
                     instructionsOpen={instructionsOpen}
                     onToggleInstructions={() => setOpenInstructions(instructionsOpen ? null : id)}
                     leadingActions={
-                      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <label className="flex w-fit items-center gap-2 text-sm text-muted-foreground">
                         <Checkbox
                           checked={done}
+                          className="size-5"
                           disabled={
                             toggleExercise.isPending ||
                             clearWorkoutMutation.isPending ||

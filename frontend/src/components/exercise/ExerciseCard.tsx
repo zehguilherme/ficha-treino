@@ -196,7 +196,13 @@ const ExerciseCard = ({
           ) : null}
         </div>
       </div>
-      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3 max-[640px]:grid max-[640px]:grid-cols-1 max-[640px]:gap-y-2">
+      <div
+        className={`mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3 max-[640px]:grid max-[640px]:gap-y-2 ${
+          exercise.isCustom === true
+            ? 'max-[640px]:grid-cols-[1fr_auto]'
+            : 'max-[640px]:grid-cols-1'
+        }`}
+      >
         {leadingActions}
         {exercise.isCustom !== true ? (
           <Button
