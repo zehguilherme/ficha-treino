@@ -5,6 +5,7 @@ import { XIcon } from './WorkoutIcons';
 
 export interface InputProps extends React.ComponentProps<'input'> {
   label?: React.ReactNode;
+  error?: string | null;
   leadingIcon?: React.ReactNode;
   onClear?: () => void;
   clearLabel?: string;
@@ -15,15 +16,19 @@ const Input = ({
   type,
   id,
   label,
+  error,
   leadingIcon,
   onClear,
   clearLabel = 'Limpar campo',
   value,
   onKeyDown,
+  'aria-invalid': ariaInvalid,
+  'aria-describedby': ariaDescribedBy,
   ...props
 }: InputProps): React.JSX.Element => {
   const generatedId = React.useId();
   const inputId = id ?? generatedId;
+  const errorId = `${inputId}-error`;
   const hasValue = value !== undefined && value !== '';
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     onKeyDown?.(event);
@@ -47,12 +52,18 @@ const Input = ({
           type={type}
           value={value}
           onKeyDown={handleKeyDown}
+          aria-invalid={error ? true : (ariaInvalid ?? false)}
+          aria-describedby={
+            error ? [ariaDescribedBy, errorId].filter(Boolean).join(' ') : ariaDescribedBy
+          }
           data-custom-clear={type === 'search' && onClear ? 'true' : undefined}
           data-slot="input"
           className={cn(
             'flex h-10 w-full rounded-[var(--radius)] border border-border bg-card px-3 py-2.5 font-sans text-sm font-normal tracking-normal text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10 disabled:cursor-not-allowed disabled:opacity-50',
             leadingIcon && 'pl-9',
             onClear && 'pr-10',
+            error &&
+              'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
             className,
           )}
           {...props}
@@ -70,6 +81,11 @@ const Input = ({
           </Button>
         ) : null}
       </div>
+      {error ? (
+        <p id={errorId} className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 };

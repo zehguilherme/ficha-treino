@@ -19,6 +19,24 @@ const ControlledInput = (): React.JSX.Element => {
 };
 
 describe('Input', () => {
+  test('shows a received error below the input and clears it when removed', () => {
+    const { rerender } = render(
+      <Input id="field" aria-label="Campo" aria-describedby="field-hint" error="Valor inválido" />,
+    );
+
+    const input = screen.getByRole('textbox', { name: 'Campo' });
+    const error = screen.getByText('Valor inválido');
+    expect(input.compareDocumentPosition(error)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveAttribute('aria-describedby', 'field-hint field-error');
+    expect(error).toHaveAttribute('id', 'field-error');
+
+    rerender(<Input id="field" aria-label="Campo" aria-describedby="field-hint" error={null} />);
+    expect(screen.queryByText('Valor inválido')).not.toBeInTheDocument();
+    expect(input).toHaveAttribute('aria-invalid', 'false');
+    expect(input).toHaveAttribute('aria-describedby', 'field-hint');
+  });
+
   test('uses muted foreground for input text and placeholder text', () => {
     render(<Input aria-label="Campo" placeholder="Digite aqui" />);
 

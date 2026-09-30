@@ -180,3 +180,5 @@ Estado atual em 2026-09-10: as features implementadas permanecem concluídas; `u
 2026-09-30 — ui-015 — falhas ao criar exercício personalizado passam a aparecer somente na modal global de erro; teste de regressão e documentação sincronizados.
 
 2026-09-30 — ui-015 — campos de criação e edição de exercícios personalizados exibem erros abaixo dos inputs após blur por mouse ou teclado, com associação acessível e remoção ao corrigir; sete testes do componente passam.
+
+2026-09-30 — apresentação dos erros de campo centralizada em `Input` e `SelectTrigger` por prop opcional `error`; validação e mensagens permanecem no diálogo de exercícios personalizados.
