@@ -166,7 +166,8 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 
 ### 4.6 Pílula flutuante de instalação PWA
 
-- Controle não bloqueante em formato de pílula, fixo no canto inferior direito, com ícone de download, ação `Instalar app` e X separado por divisor.
+- Controle não bloqueante em formato de pílula, fixo no canto inferior direito a 5rem da borda inferior, com ícone de download, ação `Instalar app` e X separado por divisor; z-index 40 mantém o controle acima de barras fixas e abaixo de diálogos. O controle não aparece no callback transitório `/auth/google/callback`.
+- Na página de busca, quando filtros e pílula estão visíveis, reservar 64px no topo da barra de ações; posicionar a pílula a 8.5rem do rodapé no mobile e 5rem no desktop, e ampliar a rolagem dos resultados pela mesma altura.
 - Superfície `--foreground`, texto `--primary-foreground`, sombra discreta e margem inferior com safe area.
 - Ação primária abre `beforeinstallprompt` quando disponível; no iOS/iPadOS, revela sob demanda as instruções `Compartilhar → Adicionar à Tela de Início`.
 - O botão `X` fecha o controle e a dispensa continua persistida por 7 dias.

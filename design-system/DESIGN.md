@@ -348,6 +348,11 @@ Card hover: `border-color: hsl(var(--ring) / 0.12)`, `box-shadow: 0 1px 3px hsl(
 - Title: 1.125rem 600 -0.01em
 - Description: 0.875rem `--muted-foreground`, line-height 1.6
 
+### 7.18 PWA Install Prompt
+- Keep the install pill fixed to the lower-right corner, 5rem above the viewport edge, with the device safe-area margin; use z-index 40 so fixed page actions remain below it and dialogs remain above it.
+- Hide the pill on the transient `/auth/google/callback` route.
+- On the exercise search page, when the fixed filter actions are open, reserve a 64px strip above those actions for the pill. Position it 8.5rem above the viewport edge on mobile and 5rem on desktop; reserve the same extra scroll space for results.
+
 ---
 
 ## 8. Motion & Interaction

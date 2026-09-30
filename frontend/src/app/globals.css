@@ -52,6 +52,37 @@ input[type='search'][data-custom-clear='true']::-ms-clear {
   display: none;
 }
 
+body:has([data-slot='exercise-action-bar']):has([data-slot='pwa-install-prompt']) {
+  --pwa-install-prompt-bottom: 8.5rem;
+}
+
+body:has([data-slot='exercise-action-bar']):has([data-slot='pwa-install-prompt'])
+  [data-slot='exercise-action-bar']
+  > div {
+  padding-block-start: 5rem;
+}
+
+body:has([data-slot='exercise-action-bar']):has([data-slot='pwa-install-prompt'])
+  [data-slot='pwa-install-prompt'] {
+  bottom: var(--pwa-install-prompt-bottom);
+}
+
+body:has([data-slot='exercise-action-bar']):has([data-slot='pwa-install-prompt'])
+  [data-slot='exercise-search-results'] {
+  padding-bottom: calc(12rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  body:has([data-slot='exercise-action-bar']):has([data-slot='pwa-install-prompt']) {
+    --pwa-install-prompt-bottom: 5rem;
+  }
+
+  body:has([data-slot='exercise-action-bar']):has([data-slot='pwa-install-prompt'])
+    [data-slot='exercise-search-results'] {
+    padding-bottom: calc(10rem + env(safe-area-inset-bottom));
+  }
+}
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

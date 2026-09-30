@@ -314,11 +314,12 @@
       "steps": [
         "Abrir a aplicação em navegador compatível",
         "Ver a pílula flutuante não bloqueante de instalação",
+        "Verificar que a pílula não cobre filtros, ações ou links do rodapé em mobile e desktop",
         "Instalar pelo prompt nativo ou seguir as instruções de iOS",
         "Dispensar a pílula e não recebê-la novamente por 7 dias"
       ],
       "passes": true,
-      "evidence": "PwaInstallPrompt exibe pílula fixa no canto inferior direito, captura beforeinstallprompt, trata appinstalled e display-mode standalone, identifica iOS/iPadOS, revela instruções sob demanda, persiste dispensa por 7 dias e possui testes de instalação, recusa, standalone, iOS e acessibilidade"
+      "evidence": "PwaInstallPrompt captura beforeinstallprompt, trata appinstalled e display-mode standalone, identifica iOS/iPadOS, revela instruções sob demanda, persiste dispensa por 7 dias, oculta a pílula no callback transitório /auth/google/callback e a exibe acima da margem inferior nas demais páginas; a busca reserva uma faixa acima das ações fixas para evitar sobreposição. Testes de instalação, recusa, standalone, iOS, callback e acessibilidade passam."
     },
     {
       "id": "ui-013",

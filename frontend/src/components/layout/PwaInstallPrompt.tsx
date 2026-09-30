@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
 import { DownloadIcon, XIcon } from '@/components/ui/WorkoutIcons';
@@ -66,7 +67,8 @@ const PwaInstallAlert = ({
 }: PwaInstallAlertProps): React.JSX.Element => (
   <Alert
     aria-live="polite"
-    className="fixed bottom-4 right-4 z-50 m-0 flex w-auto max-w-[calc(100%-2rem)] items-center overflow-visible rounded-full border-0 bg-foreground p-0 text-primary-foreground shadow-lg [margin-bottom:env(safe-area-inset-bottom)]"
+    data-slot="pwa-install-prompt"
+    className="fixed bottom-20 right-4 z-40 m-0 flex w-auto max-w-[calc(100%-2rem)] items-center overflow-visible rounded-full border-0 bg-foreground p-0 text-primary-foreground shadow-lg [margin-bottom:env(safe-area-inset-bottom)]"
   >
     {platform === 'ios' && showIosInstructions ? (
       <div
@@ -99,6 +101,7 @@ const PwaInstallAlert = ({
 );
 
 const PwaInstallPrompt = (): React.JSX.Element | null => {
+  const pathname = usePathname();
   const [platform, setPlatform] = useState<InstallPlatform | null>(null);
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [showIosInstructions, setShowIosInstructions] = useState(false);
@@ -132,7 +135,7 @@ const PwaInstallPrompt = (): React.JSX.Element | null => {
     };
   }, []);
 
-  if (!platform) {
+  if (pathname === '/auth/google/callback' || !platform) {
     return null;
   }
 

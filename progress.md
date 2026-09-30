@@ -184,3 +184,7 @@ Estado atual em 2026-09-10: as features implementadas permanecem concluídas; `u
 2026-09-30 — apresentação dos erros de campo centralizada em `Input` e `SelectTrigger` por prop opcional `error`; validação e mensagens permanecem no diálogo de exercícios personalizados.
 
 2026-09-30 — Socket configurado para publicar alertas e check runs neste repositório; `Project Report` removido dos checks exigidos em PR para `master`.
+
+2026-09-30 — issue #347 — pílula “Instalar app” reposicionada acima da margem inferior; busca reserva uma faixa quando filtros e pílula coexistem para manter controles acessíveis.
+
+2026-09-30 — pílula “Instalar app” ocultada em `/auth/google/callback`, uma etapa transitória do OAuth.
