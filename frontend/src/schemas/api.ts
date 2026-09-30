@@ -35,14 +35,15 @@ export const workoutsResponseSchema = z.object({
 export const exerciseDetailsSchema = z.object({
   id: z.string(),
   name: z.string(),
+  isCustom: z.boolean().optional(),
   force: z.string().nullable(),
-  level: z.string(),
+  level: z.string().nullable(),
   mechanic: z.string().nullable(),
   equipment: z.string().nullable(),
   primaryMuscles: z.array(z.string()),
   secondaryMuscles: z.array(z.string()),
   instructions: z.array(z.string()),
-  category: z.string(),
+  category: z.string().nullable(),
   images: z.array(z.string()),
 });
 
@@ -71,6 +72,8 @@ export const addWorkoutExerciseResponseSchema = z.object({
   done: z.boolean(),
 });
 
+export const customExerciseResponseSchema = exerciseDetailsSchema;
+
 export const clearWorkoutResponseSchema = z.object({
   cleared: z.number().int().nonnegative(),
 });
@@ -95,6 +98,7 @@ export type WeekDay = z.infer<typeof weekDaySchema>;
 export type WorkoutsResponse = z.infer<typeof workoutsResponseSchema>;
 export type WorkoutResponse = z.infer<typeof workoutResponseSchema>;
 export type AddWorkoutExerciseResponse = z.infer<typeof addWorkoutExerciseResponseSchema>;
+export type CustomExerciseResponse = z.infer<typeof customExerciseResponseSchema>;
 export type ClearWorkoutResponse = z.infer<typeof clearWorkoutResponseSchema>;
 export type RemoveWorkoutExerciseResponse = z.infer<typeof removeWorkoutExerciseResponseSchema>;
 export type ExerciseDetails = z.infer<typeof exerciseDetailsSchema>;

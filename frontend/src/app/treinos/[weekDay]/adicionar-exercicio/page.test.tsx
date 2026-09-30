@@ -1,5 +1,6 @@
 jest.mock('@/lib/api', () => ({
   addWorkoutExercise: jest.fn(),
+  createCustomExercise: jest.fn(),
   getExercises: jest.fn(),
 }));
 
@@ -21,12 +22,13 @@ jest.mock('next/navigation', () => ({
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { addWorkoutExercise, getExercises } from '@/lib/api';
+import { addWorkoutExercise, createCustomExercise, getExercises } from '@/lib/api';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import AddExercisePage from './page';
 
 const mockedGetExercises = jest.mocked(getExercises);
 const mockedAddWorkoutExercise = jest.mocked(addWorkoutExercise);
+const mockedCreateCustomExercise = jest.mocked(createCustomExercise);
 
 const renderPage = (): void => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -459,5 +461,42 @@ describe('AddExercisePage', () => {
 
     await waitFor(() => expect(mockedReplace).toHaveBeenCalledWith('/treinos/terca'));
     expect(mockedAddWorkoutExercise).toHaveBeenCalledWith('TERCA', 'supino-reto');
+  });
+
+  test('shows custom exercise creation failures only in the error dialog', async () => {
+    mockedCreateCustomExercise.mockRejectedValueOnce(new Error('Request failed'));
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(screen.getByRole('button', { name: 'Criar exercício personalizado' }));
+    await user.type(
+      screen.getByRole('textbox', { name: 'Nome do exercício' }),
+      'Supino personalizado',
+    );
+    await user.click(screen.getByRole('combobox', { name: 'Músculo principal' }));
+    await user.click(screen.getByRole('option', { name: 'Peito' }));
+    await user.click(screen.getByRole('button', { name: 'Criar exercício personalizado' }));
+
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
+      'Não foi possível criar o exercício personalizado.',
+    );
+    const createDialog = document.querySelector('[role="dialog"]');
+    expect(createDialog).toBeInTheDocument();
+    expect(createDialog).toHaveTextContent('Criar exercício personalizado');
+    expect(createDialog).not.toHaveTextContent('Não foi possível criar o exercício personalizado.');
+  });
+
+  test('offers custom exercise creation again when a confirmed search has no results', async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.type(screen.getByRole('combobox', { name: 'Buscar exercícios' }), 'inexistente');
+    await user.click(screen.getByRole('button', { name: 'Pesquisar exercícios' }));
+
+    expect(await screen.findByText('Nenhum exercício encontrado.')).toBeInTheDocument();
+    const customButtons = screen.getAllByRole('button', { name: 'Criar exercício personalizado' });
+    expect(customButtons).toHaveLength(2);
+    await user.click(customButtons[1]);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });

@@ -130,6 +130,7 @@ describe('exercises routes', () => {
 
     const itemQuery = getSqlQuery(0);
     const itemSql = itemQuery.strings.join('?');
+    expect(itemSql).toContain('is_custom');
     expect(itemSql).toContain('category');
     expect(itemSql).toContain('equipment');
     expect(itemSql).toContain('primary_muscles');

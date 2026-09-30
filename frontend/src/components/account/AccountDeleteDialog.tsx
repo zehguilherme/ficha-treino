@@ -44,6 +44,9 @@ const AccountDeleteDialog = ({
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
+        <AlertDialogCancel className="w-full sm:w-auto" disabled={isPending}>
+          Cancelar
+        </AlertDialogCancel>
         <AlertDialogAction
           className="w-full border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90 sm:w-auto"
           loading={isPending}
@@ -55,9 +58,6 @@ const AccountDeleteDialog = ({
           <TrashIcon className="size-4" aria-hidden="true" />
           {isPending ? 'Excluindo…' : 'Sim, excluir'}
         </AlertDialogAction>
-        <AlertDialogCancel className="w-full sm:w-auto" disabled={isPending}>
-          Cancelar
-        </AlertDialogCancel>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

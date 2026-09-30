@@ -25,7 +25,8 @@ describe('RemoveWorkoutExerciseDialog', () => {
     expect(screen.getByRole('button', { name: 'Sim, remover' })).toBeInTheDocument();
     const primaryAction = screen.getByRole('button', { name: 'Sim, remover' });
     const secondaryAction = screen.getByRole('button', { name: 'Cancelar' });
-    expect(primaryAction.compareDocumentPosition(secondaryAction)).toBe(
+    expect(secondaryAction.parentElement).toHaveClass('flex-col', 'sm:flex-row', 'sm:justify-end');
+    expect(secondaryAction.compareDocumentPosition(primaryAction)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
     expect(primaryAction).toHaveClass('w-full', 'sm:w-auto');
@@ -33,6 +34,26 @@ describe('RemoveWorkoutExerciseDialog', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancelar' }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  test('tabs from cancel to the primary action', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <RemoveWorkoutExerciseDialog
+        open
+        onOpenChange={jest.fn()}
+        exerciseName="Supino reto"
+        isPending={false}
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    const cancel = screen.getByRole('button', { name: 'Cancelar' });
+    const primary = screen.getByRole('button', { name: 'Sim, remover' });
+    expect(cancel).toHaveFocus();
+    await user.tab();
+    expect(primary).toHaveFocus();
   });
 
   /**

@@ -199,4 +199,37 @@ describe('ExerciseCard', () => {
 
     expect(screen.getByText(`• ${exercise.instructions[0]}`)).toBeVisible();
   });
+
+  test('renders custom actions in the card footer', () => {
+    const customActions = <button type="button">Ações do exercício</button>;
+
+    renderExerciseCard(
+      <ExerciseCard
+        exercise={{ ...exercise, id: 'custom-1', isCustom: true, level: null, category: null }}
+        instructionsOpen={false}
+        onToggleInstructions={jest.fn()}
+        leadingActions={<label>Feito</label>}
+        trailingActions={customActions}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Ações do exercício' })).toBeInTheDocument();
+    expect(screen.queryByLabelText('Exercício personalizado')).not.toBeInTheDocument();
+    expect(screen.getByText('Personalizado')).toHaveClass('uppercase');
+    expect(screen.getByText('Personalizado').parentElement).toHaveClass(
+      'bg-primary',
+      'py-1',
+      'text-primary-foreground',
+    );
+    expect(screen.getByText('Tipo')).toHaveClass('text-primary-foreground/75', 'opacity-100');
+    expect(screen.queryByText('Tipo', { selector: '.exercise-tags *' })).not.toBeInTheDocument();
+    expect(screen.getByText('Feito').closest('div')).toContainElement(
+      screen.getByRole('button', { name: 'Ações do exercício' }),
+    );
+    expect(screen.getByText('Músculo primário').parentElement?.parentElement).toHaveClass(
+      'border-t',
+      'pt-3',
+    );
+    expect(screen.queryByRole('button', { name: /Instruções:/ })).not.toBeInTheDocument();
+  });
 });

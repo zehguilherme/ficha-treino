@@ -28,7 +28,7 @@ const equipmentValues = [
 const levelValues = ['avancado', 'iniciante', 'intermediario'] as const;
 const forceValues = ['pull', 'push', 'static'] as const;
 const mechanicValues = ['composto', 'isolado'] as const;
-const muscleValues = [
+export const muscleValues = [
   'abdominais',
   'abdutores',
   'adutores',

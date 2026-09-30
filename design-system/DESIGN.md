@@ -257,6 +257,8 @@ Card hover: `border-color: hsl(var(--ring) / 0.12)`, `box-shadow: 0 1px 3px hsl(
 - Icon: 2.5rem circle, `--destructive / 0.1` bg, SVG `--destructive` 1.25rem
 - Close button: 2rem × 2rem icon-only, absolute top-right `0.75rem`, `--muted-foreground`, hover bg `--secondary` + `--foreground`, SVG (Lucide X) 1rem, `aria-label="Fechar"`, `data-od-id="btn-fechar-modal"`
 - Dismiss: `Escape` key, close button, or Cancel button
+- Actions: keep the secondary action (`Cancelar`) before the primary action in DOM and Tab order. Destructive confirmations use the destructive primary style. Align the action group right on desktop and stack it with Cancel above the primary action on mobile; do not reverse the visual order with CSS. The X close control is separate from the action pair.
+- Custom exercise fields show a `--destructive` message below each empty or invalid control after blur, clear it when corrected, and expose `aria-invalid` plus `aria-describedby`; opening the muscle Select does not count as leaving the field.
 
 ### 7.7 Tags / Chips
 - Padding: 0.125rem 0.5rem

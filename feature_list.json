@@ -361,6 +361,34 @@
         "Skeleton/loading com animação sutil"
       ],
       "passes": false
+    },
+    {
+      "id": "api-009",
+      "type": "api",
+      "area": "exercises",
+      "title": "Exercícios personalizados privados",
+      "behavior": "Usuário autenticado cria, edita e exclui exercícios próprios vinculados a um único treino; personalizados ficam fora da busca do catálogo",
+      "verification": "npm test -- --runInBand src/routes/customExercises.test.ts",
+      "status": "passing",
+      "evidence": "POST transacional e PATCH/DELETE vinculados ao treino, validação, migration Prisma com cópias por associação legada, seed protegido e annotations Swagger; testes backend passam."
+    },
+    {
+      "id": "ui-015",
+      "type": "ui",
+      "area": "exercises",
+      "category": "functional",
+      "description": "Criar exercício na página de adição e editar/excluir no treino de origem",
+      "steps": [
+        "Ver o botão Criar exercício personalizado antes de pesquisar",
+        "Criar informando nome e músculo principal",
+        "Mostrar erros de cada campo ao sair vazio ou inválido por mouse ou teclado",
+        "Falha na criação aparece somente na modal global de erro",
+        "Ver o selo Personalizado no treino",
+        "Abrir o menu de ações do card",
+        "Editar ou excluir o personalizado pelo menu"
+      ],
+      "passes": true,
+      "evidence": "CustomExerciseDialog, AddExercisePage e WorkoutDayPage implementados; testes verificam validação por blur após mouse e teclado, correção dos erros, criação/edição, foco, cancelamento, falha de criação somente na modal global e invalidação de caches."
     }
   ]
 }

@@ -1,10 +1,12 @@
 jest.mock('@/lib/api', () => ({
   addWorkoutExercise: jest.fn(),
   clearWorkout: jest.fn(),
+  deleteCustomExercise: jest.fn(),
   getWorkout: jest.fn(),
   getExercises: jest.fn(),
   removeWorkoutExercise: jest.fn(),
   toggleWorkoutExercise: jest.fn(),
+  updateCustomExercise: jest.fn(),
 }));
 
 jest.mock('@/contexts/AuthContext', () => ({
@@ -32,10 +34,12 @@ import { useParams } from 'next/navigation';
 import {
   addWorkoutExercise,
   clearWorkout,
+  deleteCustomExercise,
   getExercises,
   getWorkout,
   removeWorkoutExercise,
   toggleWorkoutExercise,
+  updateCustomExercise,
 } from '@/lib/api';
 import type { ExercisesResponse } from '@/schemas/api';
 import { TooltipProvider } from '@/components/ui/Tooltip';
@@ -49,6 +53,8 @@ const mockedClearWorkout = jest.mocked(clearWorkout);
 const mockedToast = jest.mocked(toast);
 const mockedToggleWorkoutExercise = jest.mocked(toggleWorkoutExercise);
 const mockedRemoveWorkoutExercise = jest.mocked(removeWorkoutExercise);
+const mockedDeleteCustomExercise = jest.mocked(deleteCustomExercise);
+const mockedUpdateCustomExercise = jest.mocked(updateCustomExercise);
 const mockedUseParams = jest.mocked(useParams);
 
 const workout = {
@@ -218,9 +224,6 @@ describe('WorkoutDayPage', () => {
     expect(removeButton).toHaveClass(
       'ml-auto',
       'gap-1.5',
-      'max-[640px]:col-span-1',
-      'max-[640px]:ml-0',
-      'max-[640px]:w-full',
       'bg-destructive',
       'text-primary-foreground',
       'hover:bg-destructive/90',
@@ -279,10 +282,95 @@ describe('WorkoutDayPage', () => {
       screen.getByRole('button', { name: 'Limpar treino' }),
     );
     expect(screen.getByRole('checkbox', { name: 'Feito: Supino reto' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Remover Supino reto' })).toHaveClass('ml-auto');
     expect(screen.getByRole('button', { name: 'Imagem anterior' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Próxima imagem' })).toBeInTheDocument();
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Imagem 1' })).toBeInTheDocument();
+  });
+
+  test('keeps custom exercise actions in its contextual menu', async () => {
+    mockedGetWorkout.mockResolvedValue({
+      ...workout,
+      workout: {
+        ...workout.workout,
+        exercises: [
+          {
+            ...workout.workout.exercises[0],
+            exercise: {
+              ...workout.workout.exercises[0].exercise,
+              id: 'custom-1',
+              isCustom: true,
+              level: null,
+              category: null,
+            },
+          },
+        ],
+      },
+    });
+
+    const user = userEvent.setup();
+    renderPage();
+
+    await screen.findByRole('heading', { name: 'Supino reto' });
+    const customActions = screen.getByRole('button', { name: 'Ações para Supino reto' });
+    expect(customActions).toHaveClass('ml-auto');
+    await user.click(customActions);
+
+    expect(screen.getByRole('menuitem', { name: /Editar/ })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: /Remover/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Editar/ })).not.toBeInTheDocument();
+    expect(mockedDeleteCustomExercise).not.toHaveBeenCalled();
+    expect(mockedUpdateCustomExercise).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('menuitem', { name: /Remover/ }));
+    expect(screen.getByRole('alertdialog')).toHaveTextContent(
+      'será removido permanentemente deste treino.',
+    );
+    expect(mockedDeleteCustomExercise).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Custom exercise edit request fails.
+   * Mock: API rejects the update mutation.
+   * Assert: error appears in the global alert dialog and not in the edit dialog.
+   */
+  test('shows custom exercise edit failures only in the error dialog', async () => {
+    mockedGetWorkout.mockResolvedValue({
+      ...workout,
+      workout: {
+        ...workout.workout,
+        exercises: [
+          {
+            ...workout.workout.exercises[0],
+            exercise: {
+              ...workout.workout.exercises[0].exercise,
+              id: 'custom-1',
+              isCustom: true,
+              level: null,
+              category: null,
+            },
+          },
+        ],
+      },
+    });
+    mockedUpdateCustomExercise.mockRejectedValueOnce(new Error('Request failed'));
+
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(await screen.findByRole('button', { name: 'Ações para Supino reto' }));
+    await user.click(screen.getByRole('menuitem', { name: /Editar/ }));
+    await user.click(await screen.findByRole('button', { name: 'Salvar alterações' }));
+
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
+      'Não foi possível atualizar o exercício personalizado.',
+    );
+    const editDialog = document.querySelector('[role="dialog"]');
+    expect(editDialog).toHaveTextContent('Editar exercício personalizado');
+    expect(editDialog).not.toHaveTextContent(
+      'Não foi possível atualizar o exercício personalizado.',
+    );
   });
 
   test('keeps workout actions sticky below the header', async () => {

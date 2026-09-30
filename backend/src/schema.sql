@@ -56,8 +56,8 @@ CREATE TABLE EXERCISES(
 	NAME VARCHAR(255) NOT NULL,
 	-- PRISMA: force String? @db.VarChar(10)
 	FORCE VARCHAR(10),
-	-- PRISMA: level String @db.VarChar(20)
-	LEVEL VARCHAR(20) NOT NULL,
+	-- PRISMA: level String? @db.VarChar(20)
+	LEVEL VARCHAR(20),
 	-- PRISMA: mechanic String? @db.VarChar(10)
 	MECHANIC VARCHAR(10),
 	-- PRISMA: equipment String? @db.VarChar(50)
@@ -68,14 +68,18 @@ CREATE TABLE EXERCISES(
 	SECONDARY_MUSCLES TEXT[],
 	-- PRISMA: instructions String[]
 	INSTRUCTIONS TEXT[] NOT NULL,
-	-- PRISMA: category String @db.VarChar(30)
-	CATEGORY VARCHAR(30) NOT NULL,
+	-- PRISMA: category String? @db.VarChar(30)
+	CATEGORY VARCHAR(30),
 	-- PRISMA: images String[]
 	IMAGES TEXT[] NOT NULL,
 	-- PRISMA: createdAt DateTime @default(now()) @map("created_at")
 	CREATED_AT TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	-- PRISMA: updatedAt DateTime @updatedAt @map("updated_at")
-	UPDATED_AT TIMESTAMPTZ NOT NULL
+	UPDATED_AT TIMESTAMPTZ NOT NULL,
+	-- PRISMA: customWorkoutId Int? @map("custom_workout_id")
+	CUSTOM_WORKOUT_ID INTEGER,
+	-- PRISMA: isCustom Boolean @default(false) @map("is_custom")
+	IS_CUSTOM BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- WORKOUT_EXERCISES
@@ -129,6 +133,20 @@ WEEK_DAY);
 ALTER TABLE EXERCISES
 ADD CONSTRAINT PK_EXERCISES
 PRIMARY KEY (ID);
+
+-- PRISMA: customWorkout Workout? @relation("CustomExercises", fields: [customWorkoutId], references: [id], onDelete: Cascade)
+ALTER TABLE EXERCISES
+ADD CONSTRAINT FK_EXERCISES_CUSTOM_WORKOUTS
+FOREIGN KEY (CUSTOM_WORKOUT_ID)
+REFERENCES WORKOUTS(ID)
+ON DELETE CASCADE;
+
+CREATE INDEX IDX_EXERCISES_CUSTOM_WORKOUT_ID ON EXERCISES(CUSTOM_WORKOUT_ID);
+
+ALTER TABLE EXERCISES
+ADD CONSTRAINT CK_EXERCISES_CUSTOM_WORKOUT
+CHECK ((IS_CUSTOM = TRUE AND CUSTOM_WORKOUT_ID IS NOT NULL)
+    OR (IS_CUSTOM = FALSE AND CUSTOM_WORKOUT_ID IS NULL));
 
 -- PRISMA: id Int @id @default(autoincrement())
 ALTER TABLE WORKOUT_EXERCISES
@@ -211,6 +229,7 @@ CREATE TRIGGER trg_exercises_updated_at
 --   createdAt DateTime  @default(now()) @map("created_at")
 --   updatedAt DateTime  @updatedAt @map("updated_at")
 --   workouts  Workout[]
+--   customExercises Exercise[] @relation("CustomExercises")
 --
 --   @@map("users")
 -- }
@@ -221,6 +240,7 @@ CREATE TRIGGER trg_exercises_updated_at
 --   user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 --   weekDay   WeekDay           @map("week_day")
 --   exercises WorkoutExercise[]
+--   customExercises Exercise[]  @relation("CustomExercises")
 --
 --   @@unique([userId, weekDay])
 --   @@map("workouts")
@@ -230,17 +250,20 @@ CREATE TRIGGER trg_exercises_updated_at
 --   id               String             @id @db.VarChar(100)
 --   name             String             @db.VarChar(255)
 --   force            String?            @db.VarChar(10)
---   level            String             @db.VarChar(20)
+--   level            String?            @db.VarChar(20)
 --   mechanic         String?            @db.VarChar(10)
 --   equipment        String?            @db.VarChar(50)
 --   primaryMuscles   String[]           @map("primary_muscles")
 --   secondaryMuscles String[]           @map("secondary_muscles")
 --   instructions     String[]
---   category         String             @db.VarChar(30)
+--   category         String?            @db.VarChar(30)
 --   images           String[]
 --   createdAt        DateTime           @default(now()) @map("created_at")
 --   updatedAt        DateTime           @updatedAt @map("updated_at")
 --   workoutExercises WorkoutExercise[]
+--   customWorkoutId  Int?              @map("custom_workout_id")
+--   customWorkout    Workout?          @relation("CustomExercises", fields: [customWorkoutId], references: [id], onDelete: Cascade)
+--   isCustom         Boolean            @default(false) @map("is_custom")
 --
 --   @@map("exercises")
 -- }
@@ -250,7 +273,7 @@ CREATE TRIGGER trg_exercises_updated_at
 --   workoutId  Int      @map("workout_id")
 --   workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
 --   exerciseId String   @map("exercise_id")
---   exercise   Exercise @relation(fields: [exerciseId], references: [id])
+--   exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 --   done       Boolean  @default(false)
 --   createdAt  DateTime @default(now()) @map("created_at")
 --

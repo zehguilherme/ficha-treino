@@ -1,10 +1,16 @@
 # Session Handoff
 
-Last Updated: 2026-09-20
+Last Updated: 2026-09-30
 
 ## Última sessão
 
-2026-09-20: pílula PWA refinada; `PwaInstallPrompt` usa controle fixo no canto inferior direito com ícone de download, ação `Instalar app`, X separado e instruções iOS sob demanda. Prompt nativo, standalone, appinstalled e dispensa por 7 dias permanecem. Escopo continua sem service worker, offline ou notificações. Permanecem `ui-011`, `ui-012` e `tool-003`.
+2026-09-21: issue #319 refinada; exercícios personalizados são exclusivos do treino de origem, com menu contextual de editar/excluir, CTA no estado vazio da busca e migration de separação por treino. Permanecem `ui-011`, `ui-012` e `tool-003`.
+
+2026-09-29: `CustomExerciseMenu` extraído da página de treino no padrão `UserMenu`, mantendo botão, callbacks, foco acessível e aparência; frontend verificado com 44 suítes, lint, TypeScript, Prettier e nomes PascalCase.
+
+2026-09-30: falhas na criação de exercício personalizado passaram a usar somente a `ErrorAlertDialog`; teste de regressão incluído e frontend verificado com 44 suítes, lint, TypeScript e Prettier.
+
+2026-09-30: `CustomExerciseDialog` passou a validar nome e músculo após blur, tratar abertura do Select sem falso erro e expor mensagens associadas por ARIA; 7 testes do componente e as 44 suítes do frontend (202 testes passaram, 10 ignorados), lint, TypeScript, Prettier e nomes PascalCase verificados.
 
 ## O que foi feito
 
@@ -24,6 +30,10 @@ Last Updated: 2026-09-20
 - `frontend/src/components/exercise/ExerciseCard.tsx`: estrutura visual compartilhada do card, carrossel, metadados, músculos, instruções e ações contextuais
 - `frontend/src/components/exercise/ExerciseCard.test.tsx`: testes da estrutura, metadados, ações e expansão das instruções
 - `frontend/src/components/workout/AddExercisePage.tsx`: busca, filtros, paginação e adição na rota dedicada
+- `frontend/src/components/workout/CustomExerciseDialog.tsx`: criação e edição de personalizados
+- `frontend/src/components/workout/CustomExerciseMenu.tsx`: gatilho e opções do menu de exercício personalizado
+- `backend/src/routes/customExercises.ts`: endpoints privados de criação e edição
+- `backend/prisma/migrations/20260922020000_custom_exercises_per_workout/migration.sql`: vínculo exclusivo por treino e cópia de associações legadas
 - `frontend/src/app/treinos/[weekDay]/adicionar-exercicio/page.test.tsx`: testes da página dedicada, retorno ao treino e estados assíncronos
 - `frontend/src/app/treinos/[weekDay]/page.test.tsx`: testes da página de treino usando o card compartilhado e mantendo `Feito`/`Remover`
 - `frontend/src/app/manifest.ts` e `frontend/public/icon-*.png`: manifest PWA e ícones instaláveis

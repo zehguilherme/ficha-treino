@@ -127,6 +127,7 @@ describe('seed', () => {
     expect(db.exercise.deleteMany).toHaveBeenCalledWith({
       where: {
         id: { in: ['2', '3'] },
+        isCustom: false,
         workoutExercises: { none: {} },
       },
     });

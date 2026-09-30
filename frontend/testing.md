@@ -25,7 +25,7 @@ que navegam recebem `navigate` injetável porque `window.location` não é spy-a
 - `src/components/auth/LoginForm.test.tsx`: render, início, loading e erro do login.
 - `src/app/auth/google/callback/page.test.tsx`: troca de código, state inválido, recusa e falhas.
 - `src/app/treinos/DashboardClient.test.tsx`: hidratação, cards, expansão, nomes longos e retry.
-- `src/app/treinos/[weekDay]/page.test.tsx`: carregamento, busca, marcar, limpar, remover e erro.
+- `src/app/treinos/[weekDay]/page.test.tsx`: carregamento, busca, marcar, limpar, remover e erros de mutação, incluindo erro de edição personalizada apenas no diálogo global.
 - `src/app/treinos/[weekDay]/layout.test.ts`: metadata para dia válido e inválido.
 - `src/app/sitemap.test.ts` e `src/app/robots.test.ts`: URLs públicas e regras de rastreamento.
 - `src/app/layout.test.ts`: origem canônica e metadata Open Graph/Twitter.

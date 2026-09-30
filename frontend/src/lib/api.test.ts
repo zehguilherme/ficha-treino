@@ -3,10 +3,13 @@ import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import {
   api,
   addWorkoutExercise,
+  createCustomExercise,
+  deleteCustomExercise,
   getCurrentUser,
   getExercises,
   getWorkouts,
   removeWorkoutExercise,
+  updateCustomExercise,
 } from './api';
 import { setSession } from './auth';
 import type { ExerciseFilters } from './api';
@@ -207,5 +210,80 @@ describe('api axios instance', () => {
     expect(response).toEqual({ deleted: true });
     expect(requestConfig?.method).toBe('delete');
     expect(requestConfig?.url).toBe('/api/workouts/TERCA/exercises/barbell-bench-press');
+  });
+
+  test('creates a custom exercise in a workout', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { id: 47, exerciseId: 'custom-1', done: false },
+        status: 201,
+        statusText: 'Created',
+        headers: {},
+        config,
+      };
+    };
+
+    const response = await createCustomExercise('TERCA', 'Supino personalizado', 'peito');
+
+    expect(response).toEqual({ id: 47, exerciseId: 'custom-1', done: false });
+    expect(requestConfig?.url).toBe('/api/workouts/TERCA/custom-exercises');
+    expect(requestConfig?.data).toBe(
+      JSON.stringify({ name: 'Supino personalizado', primaryMuscle: 'peito' }),
+    );
+  });
+
+  test('updates a custom exercise', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: {
+          id: 'custom-1',
+          name: 'Nome corrigido',
+          isCustom: true,
+          force: null,
+          level: null,
+          mechanic: null,
+          equipment: null,
+          primaryMuscles: ['ombros'],
+          secondaryMuscles: [],
+          instructions: [],
+          category: null,
+          images: [],
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      };
+    };
+
+    const response = await updateCustomExercise('TERCA', 'custom-1', 'Nome corrigido', 'ombros');
+
+    expect(response.name).toBe('Nome corrigido');
+    expect(requestConfig?.url).toBe('/api/workouts/TERCA/custom-exercises/custom-1');
+    expect(requestConfig?.method).toBe('patch');
+  });
+
+  test('deletes a custom exercise from its workout', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { deleted: true },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      };
+    };
+
+    const response = await deleteCustomExercise('TERCA', 'custom-1');
+
+    expect(response).toEqual({ deleted: true });
+    expect(requestConfig?.url).toBe('/api/workouts/TERCA/custom-exercises/custom-1');
+    expect(requestConfig?.method).toBe('delete');
   });
 });

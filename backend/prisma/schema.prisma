@@ -37,6 +37,7 @@ model Workout {
   user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   weekDay   WeekDay           @map("week_day")
   exercises WorkoutExercise[]
+  customExercises Exercise[] @relation("CustomExercises")
 
   @@unique([userId, weekDay])
   @@map("workouts")
@@ -46,17 +47,22 @@ model Exercise {
   id               String            @id @db.VarChar(100)
   name             String            @db.VarChar(255)
   force            String?           @db.VarChar(10)
-  level            String            @db.VarChar(20)
+  level            String?           @db.VarChar(20)
   mechanic         String?           @db.VarChar(10)
   equipment        String?           @db.VarChar(50)
   primaryMuscles   String[]          @map("primary_muscles")
   secondaryMuscles String[]          @map("secondary_muscles")
   instructions     String[]
-  category         String            @db.VarChar(30)
+  category         String?           @db.VarChar(30)
   images           String[]
+  customWorkoutId  Int?              @map("custom_workout_id")
+  customWorkout    Workout?          @relation("CustomExercises", fields: [customWorkoutId], references: [id], onDelete: Cascade)
+  isCustom         Boolean           @default(false) @map("is_custom")
   createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz()
   workoutExercises WorkoutExercise[]
+
+  @@index([customWorkoutId])
 
   @@map("exercises")
 }
@@ -66,7 +72,7 @@ model WorkoutExercise {
   workoutId  Int      @map("workout_id")
   workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   exerciseId String   @map("exercise_id") @db.VarChar(100)
-  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   done       Boolean  @default(false)
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
