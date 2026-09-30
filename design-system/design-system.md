@@ -150,7 +150,7 @@ OBS: `login.html` usa `--background: 0 0% 100%` (branco puro) na página de logi
 - Checked: bg `--fg`, SVG checkmark como background-image
 - Border-radius: 0.25rem
 
-**Validação inline:** campos de exercícios personalizados exibem erro em `--destructive` abaixo do controle após perderem o foco vazios ou inválidos; o erro some quando o valor fica válido. `aria-invalid` e `aria-describedby` acompanham o estado.
+**Validação inline:** campos de exercícios personalizados exibem erro em `--destructive` abaixo do controle após perderem o foco vazios ou inválidos; o erro some quando o valor fica válido. A mensagem vem do formulário pela prop `error` de `Input` ou `SelectTrigger`; esses componentes apenas a exibem e associam `aria-invalid` e `aria-describedby` ao controle.
 
 ### 4.5 Modal
 

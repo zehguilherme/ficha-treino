@@ -12,6 +12,10 @@ Last Updated: 2026-09-30
 
 2026-09-30: `CustomExerciseDialog` passou a validar nome e músculo após blur, tratar abertura do Select sem falso erro e expor mensagens associadas por ARIA; 7 testes do componente e as 44 suítes do frontend (202 testes passaram, 10 ignorados), lint, TypeScript, Prettier e nomes PascalCase verificados.
 
+2026-09-30: `Input` e `SelectTrigger` passaram a exibir mensagens recebidas por `error`, incluindo estilo e associação ARIA; `CustomExerciseDialog` continua definindo as mensagens e o momento de exibição. Frontend verificado com 44 suítes (204 testes passaram, 10 ignorados), lint, TypeScript, Prettier nos arquivos alterados e nomes PascalCase. `format:check` global aponta 21 arquivos não relacionados com CRLF preexistente no checkout.
+
+2026-09-30: Socket configurado em `socket.yml` para manter habilitados os alertas de PR, relatórios de projeto e check runs; `Socket Security: Project Report` removido da proteção de `master`, pois não se aplica a checks de PR.
+
 ## O que foi feito
 
 - `frontend/src/app/login/page.tsx`: página de login com card centralizado

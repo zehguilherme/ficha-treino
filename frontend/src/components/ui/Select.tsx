@@ -7,24 +7,63 @@ const Select = SelectPrimitive.Root;
 const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 
+interface SelectTriggerProps extends React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Trigger
+> {
+  error?: string | null;
+}
+
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      'flex h-10 w-full items-center justify-between rounded-[var(--radius)] border border-border bg-card px-3 py-2.5 font-sans text-left text-sm font-normal tracking-normal text-muted-foreground outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:text-foreground data-[placeholder]:[&>span]:text-muted-foreground',
+  SelectTriggerProps
+>(
+  (
+    {
       className,
-    )}
-    {...props}
-  >
-    {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDownIcon className="size-4 text-muted-foreground" aria-hidden="true" />
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
-));
+      children,
+      error,
+      id,
+      'aria-invalid': ariaInvalid,
+      'aria-describedby': ariaDescribedBy,
+      ...props
+    },
+    ref,
+  ) => {
+    const generatedId = React.useId();
+    const triggerId = id ?? generatedId;
+    const errorId = `${triggerId}-error`;
+
+    return (
+      <>
+        <SelectPrimitive.Trigger
+          ref={ref}
+          id={triggerId}
+          aria-invalid={error ? true : (ariaInvalid ?? false)}
+          aria-describedby={
+            error ? [ariaDescribedBy, errorId].filter(Boolean).join(' ') : ariaDescribedBy
+          }
+          className={cn(
+            'flex h-10 w-full items-center justify-between rounded-[var(--radius)] border border-border bg-card px-3 py-2.5 font-sans text-left text-sm font-normal tracking-normal text-muted-foreground outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/10 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:text-foreground data-[placeholder]:[&>span]:text-muted-foreground',
+            error &&
+              'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
+            className,
+          )}
+          {...props}
+        >
+          {children}
+          <SelectPrimitive.Icon asChild>
+            <ChevronDownIcon className="size-4 text-muted-foreground" aria-hidden="true" />
+          </SelectPrimitive.Icon>
+        </SelectPrimitive.Trigger>
+        {error ? (
+          <p id={errorId} className="text-sm text-destructive">
+            {error}
+          </p>
+        ) : null}
+      </>
+    );
+  },
+);
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectContent = React.forwardRef<

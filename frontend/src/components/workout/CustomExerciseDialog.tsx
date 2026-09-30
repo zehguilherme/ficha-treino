@@ -68,37 +68,24 @@ const CustomExerciseDialog = ({
           </DialogDescription>
         </DialogHeader>
         <form className="flex flex-col gap-4" onSubmit={submit}>
-          <div className="flex flex-col gap-1.5">
-            <Input
-              autoFocus
-              id="custom-exercise-name"
-              label={
-                <>
-                  Nome do exercício <span aria-hidden="true">*</span>
-                </>
-              }
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              onBlur={() => setTouched((current) => ({ ...current, name: true }))}
-              placeholder="Ex.: Supino inclinado"
-              minLength={2}
-              maxLength={255}
-              required
-              disabled={isPending}
-              aria-invalid={Boolean(nameError)}
-              aria-describedby={nameError ? 'custom-exercise-name-error' : undefined}
-              className={
-                nameError
-                  ? 'aria-invalid:border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
-                  : undefined
-              }
-            />
-            {nameError ? (
-              <p id="custom-exercise-name-error" className="text-sm text-destructive">
-                {nameError}
-              </p>
-            ) : null}
-          </div>
+          <Input
+            autoFocus
+            id="custom-exercise-name"
+            label={
+              <>
+                Nome do exercício <span aria-hidden="true">*</span>
+              </>
+            }
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            onBlur={() => setTouched((current) => ({ ...current, name: true }))}
+            placeholder="Ex.: Supino inclinado"
+            minLength={2}
+            maxLength={255}
+            required
+            disabled={isPending}
+            error={nameError}
+          />
           <div className="flex flex-col gap-1.5">
             <label htmlFor="custom-exercise-muscle" className="text-sm font-medium text-foreground">
               Músculo principal <span aria-hidden="true">*</span>
@@ -113,18 +100,12 @@ const CustomExerciseDialog = ({
               <SelectTrigger
                 id="custom-exercise-muscle"
                 aria-label="Músculo principal"
-                aria-invalid={Boolean(muscleError)}
-                aria-describedby={muscleError ? 'custom-exercise-muscle-error' : undefined}
+                error={muscleError}
                 onBlur={() => {
                   if (!muscleSelectOpen) {
                     setTouched((current) => ({ ...current, primaryMuscle: true }));
                   }
                 }}
-                className={
-                  muscleError
-                    ? 'aria-invalid:border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
-                    : undefined
-                }
               >
                 <SelectValue placeholder="Selecionar músculo" />
               </SelectTrigger>
@@ -136,11 +117,6 @@ const CustomExerciseDialog = ({
                 ))}
               </SelectContent>
             </Select>
-            {muscleError ? (
-              <p id="custom-exercise-muscle-error" className="text-sm text-destructive">
-                {muscleError}
-              </p>
-            ) : null}
           </div>
           {errorMessage ? (
             <p role="alert" className="text-sm text-destructive">
