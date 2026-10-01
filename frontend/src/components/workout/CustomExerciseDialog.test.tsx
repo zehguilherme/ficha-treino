@@ -18,7 +18,7 @@ describe('CustomExerciseDialog', () => {
 
     expect(screen.getByRole('textbox', { name: 'Nome do exercício' })).toHaveFocus();
     await user.type(screen.getByRole('textbox', { name: 'Nome do exercício' }), 'Teste');
-    await user.click(screen.getByRole('combobox', { name: 'Músculo principal' }));
+    await user.click(screen.getByRole('combobox', { name: 'Músculo primário' }));
     await user.click(await screen.findByRole('option', { name: 'Peito' }));
     await user.tab();
     expect(cancel).toHaveFocus();
@@ -38,7 +38,7 @@ describe('CustomExerciseDialog', () => {
       screen.getByRole('textbox', { name: 'Nome do exercício' }),
       'Supino personalizado',
     );
-    await user.click(screen.getByRole('combobox', { name: 'Músculo principal' }));
+    await user.click(screen.getByRole('combobox', { name: 'Músculo primário' }));
     await user.click(await screen.findByRole('option', { name: 'Peito' }));
     await user.click(screen.getByRole('button', { name: 'Criar exercício personalizado' }));
 
@@ -78,22 +78,22 @@ describe('CustomExerciseDialog', () => {
       <CustomExerciseDialog open onOpenChange={jest.fn()} isPending={false} onSubmit={jest.fn()} />,
     );
 
-    const muscle = screen.getByRole('combobox', { name: 'Músculo principal' });
+    const muscle = screen.getByRole('combobox', { name: 'Músculo primário' });
     await user.click(muscle);
-    expect(screen.queryByText('Selecione o músculo principal.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Selecione o músculo primário.')).not.toBeInTheDocument();
     await user.keyboard('{Escape}');
     await user.tab();
 
-    expect(screen.getByText('Selecione o músculo principal.')).toBeInTheDocument();
+    expect(screen.getByText('Selecione o músculo primário.')).toBeInTheDocument();
     expect(muscle).toHaveAttribute('aria-invalid', 'true');
     expect(muscle).toHaveAttribute('aria-describedby', 'custom-exercise-muscle-error');
-    expect(muscle.compareDocumentPosition(screen.getByText('Selecione o músculo principal.'))).toBe(
+    expect(muscle.compareDocumentPosition(screen.getByText('Selecione o músculo primário.'))).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
 
     await user.click(muscle);
     await user.click(await screen.findByRole('option', { name: 'Peito' }));
-    expect(screen.queryByText('Selecione o músculo principal.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Selecione o músculo primário.')).not.toBeInTheDocument();
     expect(muscle).toHaveAttribute('aria-invalid', 'false');
   });
 
@@ -104,7 +104,7 @@ describe('CustomExerciseDialog', () => {
       <CustomExerciseDialog open onOpenChange={jest.fn()} isPending={false} onSubmit={jest.fn()} />,
     );
 
-    await user.click(screen.getByRole('combobox', { name: 'Músculo principal' }));
+    await user.click(screen.getByRole('combobox', { name: 'Músculo primário' }));
 
     expect(screen.getByText('Informe pelo menos 2 caracteres.')).toBeInTheDocument();
   });
@@ -116,15 +116,15 @@ describe('CustomExerciseDialog', () => {
       <CustomExerciseDialog open onOpenChange={jest.fn()} isPending={false} onSubmit={jest.fn()} />,
     );
 
-    const muscle = screen.getByRole('combobox', { name: 'Músculo principal' });
+    const muscle = screen.getByRole('combobox', { name: 'Músculo primário' });
     await user.click(muscle);
-    expect(screen.queryByText('Selecione o músculo principal.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Selecione o músculo primário.')).not.toBeInTheDocument();
     await user.keyboard('{Escape}');
     const name = document.querySelector<HTMLInputElement>('#custom-exercise-name');
     expect(name).not.toBeNull();
     await user.click(name as HTMLInputElement);
 
-    expect(screen.getByText('Selecione o músculo principal.')).toBeInTheDocument();
+    expect(screen.getByText('Selecione o músculo primário.')).toBeInTheDocument();
   });
 
   test('validates an edited exercise after its name is cleared', async () => {

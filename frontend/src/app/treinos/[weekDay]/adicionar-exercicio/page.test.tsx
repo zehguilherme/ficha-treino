@@ -473,7 +473,7 @@ describe('AddExercisePage', () => {
       screen.getByRole('textbox', { name: 'Nome do exercício' }),
       'Supino personalizado',
     );
-    await user.click(screen.getByRole('combobox', { name: 'Músculo principal' }));
+    await user.click(screen.getByRole('combobox', { name: 'Músculo primário' }));
     await user.click(screen.getByRole('option', { name: 'Peito' }));
     await user.click(screen.getByRole('button', { name: 'Criar exercício personalizado' }));
 

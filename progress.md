@@ -190,3 +190,7 @@ Estado atual em 2026-09-10: as features implementadas permanecem concluídas; `u
 2026-09-30 — pílula “Instalar app” ocultada em `/auth/google/callback`, uma etapa transitória do OAuth.
 
 2026-09-30 — issue #343 — endpoints de treino passaram a ordenar nomes em português sem diferenciar maiúsculas/minúsculas, colocando maiúsculas primeiro em empates; regressões para resumo semanal e treino diário e Swagger sincronizados.
+
+2026-10-01 — issue #346 — rótulo, descrição e validação do diálogo de exercício personalizado atualizados de “músculo principal” para “músculo primário”; documentação e expectativas dos testes sincronizadas.
+
+2026-10-01 — issue reportada — foco retorna ao botão de ações do exercício personalizado sem deslocar a rolagem ao fechar o diálogo de edição.
