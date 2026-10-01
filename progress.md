@@ -188,3 +188,5 @@ Estado atual em 2026-09-10: as features implementadas permanecem concluídas; `u
 2026-09-30 — issue #347 — pílula “Instalar app” reposicionada acima da margem inferior; busca reserva uma faixa quando filtros e pílula coexistem para manter controles acessíveis.
 
 2026-09-30 — pílula “Instalar app” ocultada em `/auth/google/callback`, uma etapa transitória do OAuth.
+
+2026-09-30 — issue #343 — endpoints de treino passaram a ordenar nomes em português sem diferenciar maiúsculas/minúsculas, colocando maiúsculas primeiro em empates; regressões para resumo semanal e treino diário e Swagger sincronizados.
