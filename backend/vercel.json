@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm install",
-  "buildCommand": "npm run swagger:gen && npm run build",
+  "installCommand": "npm ci --include=dev --legacy-peer-deps",
+  "buildCommand": "npm run swagger:gen && npm run build && npm run migrate:deploy",
   "outputDirectory": "dist",
   "framework": null,
   "routes": [

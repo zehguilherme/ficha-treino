@@ -7,15 +7,15 @@ apenas para UI local. Tailwind usa os tokens HSL do design system.
 
 ## Páginas
 
-| Rota | Responsabilidade |
-| --- | --- |
-| `/` | Landing pública, features e metadata social |
-| `/login` | Login Google OAuth |
-| `/auth/google/callback` | Callback transitório do OAuth |
-| `/treinos` | Dashboard semanal com sete cards e expansão |
-| `/treinos/[weekDay]` | Exercícios do dia, progresso e ações sticky |
+| Rota                                     | Responsabilidade                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------- |
+| `/`                                      | Landing pública, features e metadata social                               |
+| `/login`                                 | Login Google OAuth                                                        |
+| `/auth/google/callback`                  | Callback transitório do OAuth                                             |
+| `/treinos`                               | Dashboard semanal com sete cards e expansão                               |
+| `/treinos/[weekDay]`                     | Exercícios do dia, progresso e ações sticky                               |
 | `/treinos/[weekDay]/adicionar-exercicio` | Busca, filtros, paginação, adição do catálogo e criação de personalizados |
-| `/minha-conta` | Perfil e exclusão de conta |
+| `/minha-conta`                           | Perfil e exclusão de conta                                                |
 
 Rotas autenticadas usam `noindex, nofollow`; a origem canônica é `https://fichatreino.vercel.app`.
 Dias aceitos são somente `domingo`, `segunda`, `terca`, `quarta`, `quinta`, `sexta` e `sabado`.
@@ -38,6 +38,8 @@ Rotas ficam em `src/app/`; componentes compartilhados em `src/components/`; hook
 `src/hooks/`, `src/schemas/` e `src/lib/`.
 
 ## Verificação
+
+`npm run lint` executa `eslint .` no módulo inteiro, incluindo scripts e configurações fora de `src/`. `npm run format` e `npm run format:check` executam Prettier na raiz do módulo para todos os formatos suportados, incluindo configurações e documentação. Dependências, builds (`.next/`, `out/`, `build/`, `dist/`), cobertura, caches e metadados da Vercel são excluídos. Prettier também ignora `next-env.d.ts`, `package-lock.json`, credenciais e logs locais. Imagens e outros formatos sem parser não são alterados.
 
 ```bash
 npm test

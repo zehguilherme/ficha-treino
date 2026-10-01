@@ -10,27 +10,26 @@ API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`)
 
 ## Rotas esperadas
 
-| Método | Rota                                           | Auth | Descrição                                                                            |
-| ------ | ---------------------------------------------- | ---- | ------------------------------------------------------------------------------------ |
-| POST   | `/api/auth/google`                             | Não  | Login com `code` OAuth2 ou `token` do Google; no 1º login cria os 7 treinos semanais |
-| GET    | `/api/auth/me`                                 | Sim  | Retorna usuário atual                                                                |
-| GET    | `/api/workouts`                                | Sim  | Lista os 7 treinos do usuário com contagem e exercícios (`name` + `done`) em ordem alfabética sem diferenciar caixa |
-| GET    | `/api/workouts/:weekDay`                       | Sim  | Exercícios do dia em ordem alfabética sem diferenciar caixa                          |
-| POST   | `/api/workouts/:weekDay/exercises`             | Sim  | Adiciona exercício                                                                   |
-| DELETE | `/api/workouts/:weekDay/exercises/:exerciseId` | Sim  | Remove exercício                                                                     |
-| PATCH  | `/api/workout-exercises/:id`                   | Sim  | Marca/desmarca como concluído                                                        |
-| POST   | `/api/workouts/:weekDay/clear`                 | Sim  | Limpa marcações do treino                                                            |
-| GET    | `/api/exercises?q=&limit=20&offset=0&category=forca` | Sim  | Busca somente exercícios do catálogo |
-| POST   | `/api/workouts/:weekDay/custom-exercises`      | Sim  | Cria exercício personalizado privado e o associa ao treino |
-| PATCH  | `/api/workouts/:weekDay/custom-exercises/:exerciseId` | Sim | Edita personalizado vinculado ao treino |
-| DELETE | `/api/workouts/:weekDay/custom-exercises/:exerciseId` | Sim | Exclui personalizado e sua associação |
-| DELETE | `/api/account`                                 | Sim  | Exclui conta + cascade                                                               |
-| GET    | `/api/health`                                  | Não  | Health check                                                                         |
+| Método | Rota                                                  | Auth | Descrição                                                                                                           |
+| ------ | ----------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/auth/google`                                    | Não  | Login com `code` OAuth2 ou `token` do Google; no 1º login cria os 7 treinos semanais                                |
+| GET    | `/api/auth/me`                                        | Sim  | Retorna usuário atual                                                                                               |
+| GET    | `/api/workouts`                                       | Sim  | Lista os 7 treinos do usuário com contagem e exercícios (`name` + `done`) em ordem alfabética sem diferenciar caixa |
+| GET    | `/api/workouts/:weekDay`                              | Sim  | Exercícios do dia em ordem alfabética sem diferenciar caixa                                                         |
+| POST   | `/api/workouts/:weekDay/exercises`                    | Sim  | Adiciona exercício                                                                                                  |
+| DELETE | `/api/workouts/:weekDay/exercises/:exerciseId`        | Sim  | Remove exercício                                                                                                    |
+| PATCH  | `/api/workout-exercises/:id`                          | Sim  | Marca/desmarca como concluído                                                                                       |
+| POST   | `/api/workouts/:weekDay/clear`                        | Sim  | Limpa marcações do treino                                                                                           |
+| GET    | `/api/exercises?q=&limit=20&offset=0&category=forca`  | Sim  | Busca somente exercícios do catálogo                                                                                |
+| POST   | `/api/workouts/:weekDay/custom-exercises`             | Sim  | Cria exercício personalizado privado e o associa ao treino                                                          |
+| PATCH  | `/api/workouts/:weekDay/custom-exercises/:exerciseId` | Sim  | Edita personalizado vinculado ao treino                                                                             |
+| DELETE | `/api/workouts/:weekDay/custom-exercises/:exerciseId` | Sim  | Exclui personalizado e sua associação                                                                               |
+| DELETE | `/api/account`                                        | Sim  | Exclui conta + cascade                                                                                              |
+| GET    | `/api/health`                                         | Não  | Health check                                                                                                        |
 
 ## Banco de dados
 
 Schema (4 tabelas): `Users`, `Workouts`, `Exercises`, `Workout_Exercises`; personalizados usam `customWorkoutId` e só existem no treino vinculado.
-
 
 **Prisma 7** com driver adapter `@prisma/adapter-pg` (`src/db.ts`) e `prisma.config.ts`. O generator `prisma-client` gera o client em `src/generated/prisma/` (importado como `../generated/prisma/client.js`). Configuração de conexão vem do adapter — o datasource no `schema.prisma` não tem `url`.
 
@@ -42,7 +41,15 @@ Gerenciado via Prisma Migrate:
 - `prisma generate` — gera o Prisma Client (executado automaticamente no `prebuild`)
 - `npm run studio` — Prisma Studio
 
-**Ambientes:** dev usa PostgreSQL local via Docker (`docker compose up -d`, credenciais `POSTGRES_*` no `.env`). Produção usa **Neon** (projeto `ficha-treino`, branch `production`, db `neondb`); o `DATABASE_URL` de produção está no Vercel e em `.env.production.local`. Migrations/seed em produção rodam sobrescrevendo o env: `DATABASE_URL="<neon-url>" npx prisma migrate deploy` / `npm run seed` (usar conexão direta para migrate, pooled para runtime).
+**Ambientes:** dev usa PostgreSQL local via Docker (`docker compose up -d`, credenciais `POSTGRES_*` no `.env`). Produção usa **Neon** (projeto `ficha-treino`, branch `production`, db `neondb`). A Vercel publica a API a partir de `master`; as variáveis de sistema estão habilitadas.
+
+**Deploy de migrations:** `backend/vercel.json` instala dependências com `npm ci --include=dev --legacy-peer-deps` e executa Swagger → build da API → `npm run migrate:deploy`, interrompendo o deploy se qualquer etapa falhar. O script `scripts/deploy-migrations.mjs` executa a CLI Prisma instalada somente com `VERCEL_ENV=production`. Usa `DATABASE_URL_UNPOOLED` como `DATABASE_URL` apenas no subprocesso de migration; a conexão do runtime permanece intacta. A conexão direta está configurada como variável sensível exclusivamente em Production na Vercel. Preview e execução local ignoram essa etapa; conexão ausente, inválida ou pooled bloqueia o deploy de produção.
+
+Para alterações publicáveis, criar `prisma migrate dev --name <nome>`, revisar o SQL e versionar schema e migration juntos. `db push` é somente para protótipos locais: não cria migrations publicáveis. `migrate deploy` aplica migrations pendentes e não altera o banco quando não há pendências. Não executar seed automaticamente no deploy.
+
+Migrations precisam ser compatíveis com a API ainda em execução; remoções e renomeações incompatíveis exigem publicação em etapas. Uma falha posterior não desfaz migrations já aplicadas. Promoções de builds preview sem reconstrução não executam a etapa de produção: publicar por build de produção.
+
+Verificação em 2026-10-01: as seis migrations versionadas já estão aplicadas no Neon production. Na branch `verify-deploy-migrations-20261001`, uma execução sem pendências preservou as associações existentes. Em schema isolado dessa mesma branch, a última migration foi aplicada sobre as cinco anteriores com um personalizado compartilhado por dois treinos: ambos os vínculos e estados `done` foram preservados, cada cópia recebeu seu treino de origem, e a segunda execução não teve pendências. A branch de validação foi excluída com autorização; o deploy da nova configuração ainda não foi publicado.
 
 Seed (`npm run seed` → `src/seed.ts`): baixa `exercises-ptbr-full-translation.json` de `raw.githubusercontent.com/joao-gugel/exercicios-bd-ptbr/main/exercises/`, faz upsert em lotes de 50 via `$transaction`, e remove exercícios que saíram do dataset (somente os sem `workout_exercises` associados).
 
@@ -91,6 +98,8 @@ Estado verificado em 2026-09-03: a migration da extensão `unaccent` foi adicion
 
 ## Verificação
 
+`npm run lint` executa `eslint .` no módulo inteiro, incluindo `api/`, `scripts/` e configurações da raiz. O projeto padrão de tipagem inclui arquivos de configuração e scripts externos a `src/`. `npm run format` e `npm run format:check` executam Prettier na raiz do módulo para todos os formatos suportados, incluindo JSON e Markdown. Dependências, builds, cobertura, caches e arquivos gerados ficam excluídos pelas configurações: Prisma Client em `src/generated/`, Swagger em `public/swagger.json` e `package-lock.json` não são formatados manualmente. Credenciais e logs locais também são ignorados pelo Prettier.
+
 ```bash
 npm run lint && npm run format:check
 docker compose up -d
@@ -121,6 +130,8 @@ npm test                # Todos os testes
 npm run test:watch      # Modo watch
 npm run test:coverage   # Com cobertura
 ```
+
+`npm test` também executa os testes nativos Node de `scripts/deploy-migrations.test.mjs`: produção com conexão direta, propagação de falha, bloqueio de configuração inválida e ausência de migrations em preview/desenvolvimento/local. Os testes usam uma CLI simulada e não acessam o banco.
 
 ### Convenções
 

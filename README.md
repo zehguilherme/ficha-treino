@@ -41,6 +41,8 @@ A Ficha de Treino é uma aplicação web simples, responsiva e acessível para g
 
 Hospedagem: [Vercel](https://vercel.com/). Banco de dados: [Neon](https://neon.tech/).
 
+O build de produção da API gera Swagger, compila e aplica as migrations Prisma versionadas antes de publicar. A conexão direta de migrations fica restrita ao ambiente Production na Vercel; previews e builds locais ignoram essa etapa. Consulte [o fluxo de banco e deploy](backend/backend.md#banco-de-dados) para configuração e limites.
+
 ## 🚀 Começando
 
 ### Pré-requisitos

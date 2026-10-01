@@ -19,9 +19,14 @@ Tudo relacionado ao usuário: autenticação, gerenciamento de treinos, busca e 
 
 ### Demais
 
+0. infra-002: Publicar o deploy de migrations da API em produção e validar os fluxos de consulta/criação; configuração e credencial prontas, testes locais e em branch Neon passaram. Branch temporária excluída com autorização.
 1. tool-003: Pular deploy Vercel backend-only
 
 ## Histórico
+
+2026-10-01 — verificações dos módulos — lint, format e format:check passaram a alcançar a raiz de frontend e backend, incluindo arquivos autorais fora de src; exclusões específicas mantêm dependências e artefatos gerados fora dos comandos. Lint, formatação e typecheck passaram em ambos; backend 83 testes e frontend 205 testes passaram (dez ignorados). Inclusões e exclusões verificadas pelas APIs de ESLint e Prettier.
+
+2026-10-01 — deploy de migrations — build Vercel instala dependências de desenvolvimento e executa Swagger → build → migrations somente em produção; conexão direta sensível configurada apenas em Production, `master` confirmado. Verificados 74 testes Jest e nove testes do script, lint, formatação, build e migrations reais em branch derivada de produção (pendência aplicada com vínculos/estados de personalizados preservados e segunda execução sem pendências). Publicação e validação pós-deploy ainda pendentes.
 
 | Data       | Feature                                                             | Status     |
 | ---------- | ------------------------------------------------------------------- | ---------- |
