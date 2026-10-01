@@ -4,6 +4,8 @@ Last Updated: 2026-09-30
 
 ## Última sessão
 
+2026-09-30: issue #343 — ordenação dos exercícios nos endpoints de treino agora ignora diferenças de caixa e prioriza maiúsculas em empates. Backend verificado: 9 suítes/74 testes, typecheck, lint e Prettier nos arquivos alterados; `format:check` global continua apontando dez arquivos preexistentes não relacionados. `/api/docs/swagger-ui-init.js` serviu a spec atualizada.
+
 2026-09-30: pílula “Instalar app” suprimida em `/auth/google/callback` via pathname; validação real confirmou ausência no callback e presença em `/treinos/terca`. Frontend verificado: 44 suítes (205 passaram, 10 ignorados), lint, typecheck, format:check e nomes PascalCase.
 
 2026-09-30: issue #347 — pílula “Instalar app” reposicionada; faixa condicional na busca impede colisão com ações e filtros, com área de rolagem ampliada. Verificados: 44 suítes (204 passaram, 10 ignorados), lint, typecheck, format:check e nomes PascalCase; navegação real desktop e geometria mobile a 390px sem sobreposição; diálogo permanece acima da pílula.
@@ -41,6 +43,8 @@ Last Updated: 2026-09-30
 - `frontend/src/components/workout/CustomExerciseDialog.tsx`: criação e edição de personalizados
 - `frontend/src/components/workout/CustomExerciseMenu.tsx`: gatilho e opções do menu de exercício personalizado
 - `backend/src/routes/customExercises.ts`: endpoints privados de criação e edição
+- `backend/src/routes/workouts.ts` e `backend/src/routes/workouts.test.ts`: ordenação sem diferenciação de caixa e cobertura da issue #343
+- `backend/public/swagger.json`: descrições regeneradas para a ordenação dos endpoints de treino
 - `backend/prisma/migrations/20260922020000_custom_exercises_per_workout/migration.sql`: vínculo exclusivo por treino e cópia de associações legadas
 - `frontend/src/app/treinos/[weekDay]/adicionar-exercicio/page.test.tsx`: testes da página dedicada, retorno ao treino e estados assíncronos
 - `frontend/src/app/treinos/[weekDay]/page.test.tsx`: testes da página de treino usando o card compartilhado e mantendo `Feito`/`Remover`

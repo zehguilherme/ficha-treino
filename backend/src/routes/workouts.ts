@@ -21,6 +21,11 @@ const WEEK_DAY_ORDER = [
 
 const weekDayRank = (weekDay: WeekDay): number => WEEK_DAY_ORDER.indexOf(weekDay);
 
+const exerciseNameCollator = new Intl.Collator('pt-BR', { sensitivity: 'accent' });
+
+const compareExerciseNames = (left: string, right: string): number =>
+  exerciseNameCollator.compare(left, right) || (left < right ? -1 : left > right ? 1 : 0);
+
 export const workoutsRouter = Router();
 
 /**
@@ -33,7 +38,7 @@ export const workoutsRouter = Router();
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Treinos do usuário autenticado com contagem e nomes de exercícios
+ *         description: Treinos do usuário autenticado com exercícios em ordem alfabética sem diferenciar maiúsculas e minúsculas; maiúsculas vêm primeiro em nomes equivalentes
  *         content:
  *           application/json:
  *             schema:
@@ -107,11 +112,6 @@ workoutsRouter.get('/', requireAuth, async (req, res) => {
           },
           done: true,
         },
-        orderBy: {
-          exercise: {
-            name: 'asc',
-          },
-        },
       },
       _count: { select: { exercises: true } },
     },
@@ -122,10 +122,12 @@ workoutsRouter.get('/', requireAuth, async (req, res) => {
       id: workout.id,
       weekDay: workout.weekDay,
       exerciseCount: workout._count.exercises,
-      exercises: workout.exercises.map((workoutExercise) => ({
-        name: workoutExercise.exercise.name,
-        done: workoutExercise.done,
-      })),
+      exercises: workout.exercises
+        .map((workoutExercise) => ({
+          name: workoutExercise.exercise.name,
+          done: workoutExercise.done,
+        }))
+        .sort((left, right) => compareExerciseNames(left.name, right.name)),
     }))
     .sort((left, right) => weekDayRank(left.weekDay) - weekDayRank(right.weekDay));
 
@@ -150,7 +152,7 @@ workoutsRouter.get('/', requireAuth, async (req, res) => {
  *         description: Dia da semana oficial do treino
  *     responses:
  *       200:
- *         description: Treino diário com exercícios completos ordenados por nome
+ *         description: Treino diário com exercícios em ordem alfabética sem diferenciar maiúsculas e minúsculas; maiúsculas vêm primeiro em nomes equivalentes
  *         content:
  *           application/json:
  *             schema:
@@ -260,11 +262,6 @@ workoutsRouter.get('/:weekDay', requireAuth, async (req, res) => {
             },
           },
         },
-        orderBy: {
-          exercise: {
-            name: 'asc',
-          },
-        },
       },
     },
   });
@@ -274,7 +271,16 @@ workoutsRouter.get('/:weekDay', requireAuth, async (req, res) => {
     return;
   }
 
-  res.json(workoutResponseSchema.parse({ workout }));
+  res.json(
+    workoutResponseSchema.parse({
+      workout: {
+        ...workout,
+        exercises: [...workout.exercises].sort((left, right) =>
+          compareExerciseNames(left.exercise.name, right.exercise.name),
+        ),
+      },
+    }),
+  );
 });
 
 /**

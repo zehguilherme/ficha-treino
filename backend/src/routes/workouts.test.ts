@@ -119,6 +119,24 @@ const makeUser = (overrides: Partial<User> = {}): User => ({
   ...overrides,
 });
 
+const makeWorkoutExerciseDetails = (id: number, name: string): WorkoutExerciseDetails => ({
+  id,
+  done: false,
+  exercise: {
+    id: `custom-${id}`,
+    name,
+    force: null,
+    level: 'beginner',
+    mechanic: null,
+    equipment: null,
+    primaryMuscles: [],
+    secondaryMuscles: [],
+    instructions: [],
+    category: 'strength',
+    images: [],
+  },
+});
+
 beforeEach(() => {
   jest.clearAllMocks();
   process.env.JWT_SECRET = 'test-secret';
@@ -129,6 +147,39 @@ beforeEach(() => {
  * `db.js` is mocked — no real PostgreSQL connection.
  */
 describe('workouts routes', () => {
+  test('GET /api/workouts sorts exercise names without case sensitivity and puts uppercase first', async () => {
+    prisma.user.findUnique.mockResolvedValue(makeUser());
+    prisma.workout.findMany.mockResolvedValue([
+      {
+        id: 2,
+        weekDay: 'SEGUNDA',
+        exercises: [
+          { done: false, exercise: { name: 'bb' } },
+          { done: false, exercise: { name: 'aa' } },
+          { done: false, exercise: { name: 'Ab' } },
+          { done: false, exercise: { name: 'Bb' } },
+          { done: false, exercise: { name: 'Aa' } },
+        ],
+        _count: { exercises: 5 },
+      },
+    ]);
+
+    const token = signJwt({ user_id: 1, google_id: 'google-123' });
+    const response = await request(app)
+      .get('/api/workouts')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    const responseBody = response.body as { workouts: { exercises: { name: string }[] }[] };
+    expect(responseBody.workouts[0].exercises.map(({ name }) => name)).toEqual([
+      'Aa',
+      'aa',
+      'Ab',
+      'Bb',
+      'bb',
+    ]);
+  });
+
   /**
    * Valid JWT and an existing user with all weekly workouts.
    * Assert: 200 with workouts ordered from DOMINGO to SABADO, `_count.exercises`
@@ -252,11 +303,6 @@ describe('workouts routes', () => {
               },
             },
           },
-          orderBy: {
-            exercise: {
-              name: 'asc',
-            },
-          },
         },
         _count: { select: { exercises: true } },
       },
@@ -310,30 +356,18 @@ describe('workouts routes', () => {
   /**
    * Valid JWT and a populated workout for the requested weekday.
    * Mock: Prisma returns the workout with complete exercise data and the association state.
-   * Assert: 200, `{ workout }` envelope, full exercise fields, and alphabetical Prisma ordering.
+   * Assert: 200, `{ workout }` envelope, full exercise fields, and alphabetical ordering.
    */
   test('GET /api/workouts/:weekDay returns the complete sorted workout', async () => {
     prisma.workout.findUnique.mockResolvedValue({
       id: 2,
       weekDay: 'SEGUNDA',
       exercises: [
-        {
-          id: 45,
-          done: false,
-          exercise: {
-            id: 'barbell-bench-press',
-            name: 'Supino reto',
-            force: 'push',
-            level: 'intermediate',
-            mechanic: 'compound',
-            equipment: 'barbell',
-            primaryMuscles: ['peito'],
-            secondaryMuscles: ['tríceps'],
-            instructions: ['Deite-se no banco.'],
-            category: 'strength',
-            images: ['0.jpg', '1.jpg'],
-          },
-        },
+        makeWorkoutExerciseDetails(1, 'bb'),
+        makeWorkoutExerciseDetails(2, 'aa'),
+        makeWorkoutExerciseDetails(3, 'Ab'),
+        makeWorkoutExerciseDetails(4, 'Bb'),
+        makeWorkoutExerciseDetails(5, 'Aa'),
       ],
     });
 
@@ -348,23 +382,11 @@ describe('workouts routes', () => {
         id: 2,
         weekDay: 'SEGUNDA',
         exercises: [
-          {
-            id: 45,
-            done: false,
-            exercise: {
-              id: 'barbell-bench-press',
-              name: 'Supino reto',
-              force: 'push',
-              level: 'intermediate',
-              mechanic: 'compound',
-              equipment: 'barbell',
-              primaryMuscles: ['peito'],
-              secondaryMuscles: ['tríceps'],
-              instructions: ['Deite-se no banco.'],
-              category: 'strength',
-              images: ['0.jpg', '1.jpg'],
-            },
-          },
+          makeWorkoutExerciseDetails(5, 'Aa'),
+          makeWorkoutExerciseDetails(2, 'aa'),
+          makeWorkoutExerciseDetails(3, 'Ab'),
+          makeWorkoutExerciseDetails(4, 'Bb'),
+          makeWorkoutExerciseDetails(1, 'bb'),
         ],
       },
     });
@@ -394,7 +416,6 @@ describe('workouts routes', () => {
               },
             },
           },
-          orderBy: { exercise: { name: 'asc' } },
         },
       },
     });

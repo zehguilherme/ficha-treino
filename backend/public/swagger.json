@@ -76,7 +76,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Treinos do usuário autenticado com contagem e nomes de exercícios",
+            "description": "Treinos do usuário autenticado com exercícios em ordem alfabética sem diferenciar maiúsculas e minúsculas; maiúsculas vêm primeiro em nomes equivalentes",
             "content": {
               "application/json": {
                 "schema": {
@@ -197,7 +197,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Treino diário com exercícios completos ordenados por nome",
+            "description": "Treino diário com exercícios em ordem alfabética sem diferenciar maiúsculas e minúsculas; maiúsculas vêm primeiro em nomes equivalentes",
             "content": {
               "application/json": {
                 "schema": {

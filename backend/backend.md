@@ -14,8 +14,8 @@ API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`)
 | ------ | ---------------------------------------------- | ---- | ------------------------------------------------------------------------------------ |
 | POST   | `/api/auth/google`                             | Não  | Login com `code` OAuth2 ou `token` do Google; no 1º login cria os 7 treinos semanais |
 | GET    | `/api/auth/me`                                 | Sim  | Retorna usuário atual                                                                |
-| GET    | `/api/workouts`                                | Sim  | Lista os 7 treinos do usuário com contagem e exercícios (`name` + `done`)             |
-| GET    | `/api/workouts/:weekDay`                       | Sim  | Exercícios de um dia                                                                |
+| GET    | `/api/workouts`                                | Sim  | Lista os 7 treinos do usuário com contagem e exercícios (`name` + `done`) em ordem alfabética sem diferenciar caixa |
+| GET    | `/api/workouts/:weekDay`                       | Sim  | Exercícios do dia em ordem alfabética sem diferenciar caixa                          |
 | POST   | `/api/workouts/:weekDay/exercises`             | Sim  | Adiciona exercício                                                                   |
 | DELETE | `/api/workouts/:weekDay/exercises/:exerciseId` | Sim  | Remove exercício                                                                     |
 | PATCH  | `/api/workout-exercises/:id`                   | Sim  | Marca/desmarca como concluído                                                        |
@@ -82,6 +82,8 @@ src/
 As rotas existentes de autenticação, treinos, busca, conclusão, remoção, conta e `routes/customExercises.ts` (`POST`, `PATCH` e `DELETE` vinculados ao treino) estão implementadas e documentadas no Swagger. Exercícios personalizados exigem nome de 2–255 caracteres e músculo principal válido, entram no treino em transação e só podem ser editados ou excluídos no treino de origem. A busca e a adição genérica aceitam somente itens de catálogo; o seed atualiza apenas itens com `isCustom=false`.
 
 Todo usuário autenticado possui sete treinos criados no primeiro login, um para cada valor do enum `WeekDay`: `DOMINGO`, `SEGUNDA`, `TERCA`, `QUARTA`, `QUINTA`, `SEXTA` e `SABADO`. Um treino pode conter zero ou mais exercícios.
+
+Os endpoints de treino ordenam exercícios em português sem diferenciar maiúsculas e minúsculas; quando os nomes só diferem pela caixa, a grafia com maiúscula vem primeiro. Acentos continuam sendo considerados na ordenação.
 
 A busca de exercícios usa a extensão PostgreSQL `unaccent` para que consultas com e sem acentos produzam os mesmos resultados. Além de `q`, aceita filtros opcionais com valores fixos do dataset em `category`, `equipment`, `level`, `force`, `mechanic`, `primaryMuscle` e `secondaryMuscle`; filtros vazios são ignorados e valores repetidos no mesmo filtro usam OR. A rota retorna no máximo 100 itens por página, ordenados por nome e ID, e `total` representa o total filtrado antes da paginação. Valores fora das listas permitidas retornam 400.
 
@@ -189,7 +191,7 @@ Testes unitários para a função `seed` (download HTTP via `http.get` + upsert 
 Testes de integração das rotas de treinos, adição, marcação e limpeza, com autenticação e ownership.
 
 - `GET /api/workouts` lista os sete treinos do usuário;
-- `GET /api/workouts/:weekDay` retorna exercícios completos ordenados;
+- `GET /api/workouts` e `GET /api/workouts/:weekDay` retornam exercícios em ordem alfabética sem diferenciar caixa, com maiúsculas primeiro nos empates;
 - `POST /api/workouts/:weekDay/exercises` valida exercício, duplicidade e ownership;
 - `DELETE /api/workouts/:weekDay/exercises/:exerciseId` remove associação existente e rejeita associações ausentes ou de outro usuário;
 - `PATCH /api/workout-exercises/:id` alterna `done` e rejeita associações de outro usuário;
