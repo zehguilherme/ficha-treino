@@ -47,7 +47,7 @@ const CustomExerciseDialog = ({
   const nameError =
     touched.name && name.trim().length < 2 ? 'Informe pelo menos 2 caracteres.' : null;
   const muscleError =
-    touched.primaryMuscle && !primaryMuscle ? 'Selecione o músculo principal.' : null;
+    touched.primaryMuscle && !primaryMuscle ? 'Selecione o músculo primário.' : null;
 
   const submit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -64,7 +64,7 @@ const CustomExerciseDialog = ({
             {isEditing ? 'Editar exercício personalizado' : 'Criar exercício personalizado'}
           </DialogTitle>
           <DialogDescription>
-            Informe apenas o nome e o músculo principal para identificar este exercício.
+            Informe apenas o nome e o músculo primário para identificar este exercício.
           </DialogDescription>
         </DialogHeader>
         <form className="flex flex-col gap-4" onSubmit={submit}>
@@ -88,7 +88,7 @@ const CustomExerciseDialog = ({
           />
           <div className="flex flex-col gap-1.5">
             <label htmlFor="custom-exercise-muscle" className="text-sm font-medium text-foreground">
-              Músculo principal <span aria-hidden="true">*</span>
+              Músculo primário <span aria-hidden="true">*</span>
             </label>
             <Select
               value={primaryMuscle}
@@ -99,7 +99,7 @@ const CustomExerciseDialog = ({
             >
               <SelectTrigger
                 id="custom-exercise-muscle"
-                aria-label="Músculo principal"
+                aria-label="Músculo primário"
                 error={muscleError}
                 onBlur={() => {
                   if (!muscleSelectOpen) {

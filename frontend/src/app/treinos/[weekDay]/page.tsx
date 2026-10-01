@@ -371,7 +371,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
         onOpenChange={(open) => {
           if (!open && !updateCustomExerciseMutation.isPending) {
             setEditingExercise(null);
-            customActionTriggerRef.current?.focus();
+            customActionTriggerRef.current?.focus({ preventScroll: true });
           }
         }}
         initialExercise={editingExercise}

@@ -381,7 +381,7 @@
       "description": "Criar exercício na página de adição e editar/excluir no treino de origem",
       "steps": [
         "Ver o botão Criar exercício personalizado antes de pesquisar",
-        "Criar informando nome e músculo principal",
+        "Criar informando nome e músculo primário",
         "Mostrar erros de cada campo ao sair vazio ou inválido por mouse ou teclado",
         "Falha na criação aparece somente na modal global de erro",
         "Ver o selo Personalizado no treino",

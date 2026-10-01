@@ -1,8 +1,12 @@
 # Session Handoff
 
-Last Updated: 2026-09-30
+Last Updated: 2026-10-01
 
 ## Última sessão
+
+2026-10-01: ao fechar a edição de exercício personalizado, o foco retorna ao botão de ações com `preventScroll`, evitando rolar a página até o fim do treino.
+
+2026-10-01: issue #346 — cópia do diálogo de exercício personalizado atualizada para “músculo primário”, incluindo descrição, validação e nomes acessíveis; documentação do frontend, página de referência, feature e expectativas de teste sincronizadas.
 
 2026-09-30: issue #343 — ordenação dos exercícios nos endpoints de treino agora ignora diferenças de caixa e prioriza maiúsculas em empates. Backend verificado: 9 suítes/74 testes, typecheck, lint e Prettier nos arquivos alterados; `format:check` global continua apontando dez arquivos preexistentes não relacionados. `/api/docs/swagger-ui-init.js` serviu a spec atualizada.
 
