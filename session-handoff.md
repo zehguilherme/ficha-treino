@@ -4,6 +4,10 @@ Last Updated: 2026-10-01
 
 ## Última sessão
 
+2026-10-01: lint e formatação ampliados para a raiz de backend e frontend (`eslint .` e `prettier .`), incluindo scripts, configurações e documentação nos formatos suportados. Artefatos gerados, dependências, builds, cobertura, caches e credenciais ficam excluídos. No backend, o projeto padrão do ESLint agora cobre configurações da raiz, scripts e API, sem lista específica dos scripts de migration. Verificados em ambos: lint, format, format:check e typecheck; backend com 74 testes Jest + nove Node, frontend com 44 suítes (205 testes passaram, dez ignorados). As APIs das ferramentas confirmaram inclusão de arquivos autorais fora de src e exclusão dos artefatos gerados. Não houve alteração funcional ou de interface.
+
+2026-10-01: deploy automático de migrations implementado em `backend/vercel.json`, `backend/package.json` e `backend/scripts/deploy-migrations.mjs`, com nove testes nativos Node no `posttest` de `npm test`, preservando argumentos do Jest. ESLint e Prettier também verificam os scripts. Credencial direta sensível configurada na Vercel somente em Production, preservando runtime; `master` e exposição das variáveis de sistema confirmados. As seis migrations já estavam aplicadas no Neon production. Em `verify-deploy-migrations-20261001`, verificados deploy sem pendências e aplicação da última migration em schema isolado sobre cinco anteriores, preservando dois vínculos e estados de conclusão de um personalizado legado. Testes locais: 74 Jest + nove Node, lint, formatação, build, typecheck do backend e checkJs estrito dos scripts passaram; fluxo completo de preview também passou sem executar migrations. Publicação e teste dos fluxos pós-deploy pendentes. Branch temporária excluída com autorização. Revisão final feita pelo próprio implementador, sem subagente disponível.
+
 2026-10-01: ao fechar a edição de exercício personalizado, o foco retorna ao botão de ações com `preventScroll`, evitando rolar a página até o fim do treino.
 
 2026-10-01: issue #346 — cópia do diálogo de exercício personalizado atualizada para “músculo primário”, incluindo descrição, validação e nomes acessíveis; documentação do frontend, página de referência, feature e expectativas de teste sincronizadas.
@@ -76,7 +80,7 @@ Nenhum.
 
 ### Backend
 
-1. Nenhuma pendência de backend
+1. Publicar a nova configuração de deploy e verificar status das migrations e consulta/criação de personalizados; não houve commit, push ou publicação nesta sessão.
 
 ### Frontend
 

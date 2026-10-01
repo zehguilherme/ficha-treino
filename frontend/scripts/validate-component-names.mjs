@@ -1,10 +1,10 @@
-import { readdirSync } from "fs";
-import { join, extname, basename } from "path";
-import { fileURLToPath } from "url";
+import { readdirSync } from 'fs';
+import { join, extname, basename } from 'path';
+import { fileURLToPath } from 'url';
 
-const componentsDir = join(fileURLToPath(new URL("..", import.meta.url)), "src/components");
+const componentsDir = join(fileURLToPath(new URL('..', import.meta.url)), 'src/components');
 
-const allowedExtensions = new Set([".tsx", ".ts"]);
+const allowedExtensions = new Set(['.tsx', '.ts']);
 const errors = [];
 
 function walk(dir) {
@@ -26,9 +26,9 @@ walk(componentsDir);
 
 if (errors.length > 0) {
   console.error(
-    `ERRO: Os seguintes arquivos em src/components/ não começam com maiúscula:\n${errors.map((f) => `  - ${f}`).join("\n")}`
+    `ERRO: Os seguintes arquivos em src/components/ não começam com maiúscula:\n${errors.map((f) => `  - ${f}`).join('\n')}`,
   );
   process.exit(1);
 }
 
-console.log("OK: Todos os componentes seguem PascalCase.");
+console.log('OK: Todos os componentes seguem PascalCase.');

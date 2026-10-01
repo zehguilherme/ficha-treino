@@ -1,0 +1,19 @@
+# Dependências, builds, cobertura e caches
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+.vercel/
+.cache/
+*.tsbuildinfo
+
+# Credenciais e logs locais
+.env*
+.secrets/
+*.log
+
+# Arquivos gerados por ferramentas
+next-env.d.ts
+package-lock.json

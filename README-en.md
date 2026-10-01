@@ -41,6 +41,8 @@ Workout Planner is a simple, responsive, and accessible web application for mana
 
 Hosting: [Vercel](https://vercel.com/). Database: [Neon](https://neon.tech/).
 
+The production API build generates Swagger, compiles the API, and applies committed Prisma migrations before publishing. The direct migration connection is restricted to Vercel's Production environment; previews and local builds skip this step. See [database and deployment](backend/backend.md#banco-de-dados) for configuration and limitations.
+
 ## 🚀 Getting started
 
 ### Prerequisites

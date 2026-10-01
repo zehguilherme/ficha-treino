@@ -1,0 +1,18 @@
+# Dependências, builds, cobertura e caches
+node_modules/
+dist/
+build/
+coverage/
+.vercel/
+.cache/
+*.tsbuildinfo
+
+# Credenciais e logs locais
+.env*
+.secrets/
+*.log
+
+# Arquivos gerados por ferramentas
+src/generated/
+public/swagger.json
+package-lock.json

@@ -1,6 +1,6 @@
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
-import eslintConfigPrettier from "eslint-config-prettier/flat";
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -9,28 +9,36 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ["eslint.config.mjs", "api/index.ts", "scripts/generate-swagger.ts"],
+          allowDefaultProject: ['*.{ts,mjs}', 'api/*.ts', 'scripts/*.{ts,mjs}'],
         },
       },
     },
     rules: {
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/no-unsafe-argument": "error",
-      "@typescript-eslint/no-unsafe-assignment": "error",
-      "@typescript-eslint/no-unsafe-call": "error",
-      "@typescript-eslint/no-unsafe-member-access": "error",
-      "@typescript-eslint/no-unsafe-return": "error",
-      "no-console": "error",
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unsafe-argument': 'error',
+      '@typescript-eslint/no-unsafe-assignment': 'error',
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-member-access': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
+      'no-console': 'error',
     },
   },
   {
-    files: ["src/seed.ts", "src/server.ts", "src/app.ts", "scripts/generate-swagger.ts"],
+    files: ['src/seed.ts', 'src/server.ts', 'src/app.ts', 'scripts/generate-swagger.ts'],
     rules: {
-      "no-console": "off",
+      'no-console': 'off',
     },
   },
   {
-    ignores: ["dist/", "node_modules/"],
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      '.vercel/**',
+      '.cache/**',
+      'src/generated/**',
+    ],
   },
   eslintConfigPrettier,
 );

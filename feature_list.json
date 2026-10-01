@@ -2,6 +2,16 @@
   "project_type": "fullstack",
   "features": [
     {
+      "id": "infra-002",
+      "type": "api",
+      "area": "infra",
+      "title": "Migrations automáticas no deploy de produção",
+      "behavior": "Build Vercel executa Swagger, build da API e migrations pendentes via conexão direta somente em produção; falhas impedem publicação",
+      "verification": "npm test && npm run lint && npm run format:check; publicar em master e conferir migrations e fluxos de personalizados",
+      "status": "pending",
+      "evidence": "Implementação pronta: 74 testes Jest e nove Node, lint, formatação, build, typecheck e preview verificados; credencial direta sensível configurada apenas em Production, master confirmado. Teste real em branch Neon preservou associações e estados de personalizados; segunda execução sem pendências. Branch de teste excluída com autorização. Publicação e validação pós-deploy pendentes."
+    },
+    {
       "id": "api-001",
       "type": "api",
       "area": "infra",
