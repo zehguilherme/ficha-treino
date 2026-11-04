@@ -1,8 +1,12 @@
 # Session Handoff
 
-Last Updated: 2026-10-01
+Last Updated: 2026-10-23
 
 ## Última sessão
+
+2026-10-23: corrigida a janela de corrida no bloqueio da marcação otimista. `requestCompletion` ativa o estado local e a ref síncrona antes da mutação; a ref bloqueia abertura por mouse/teclado antes da renderização e o menu fecha enquanto a tela está bloqueada. O bloqueio dura até terminar a revalidação. Lint do frontend passou; testes não executados.
+
+2026-10-23: marcação de conclusão otimista implementada em `develop`. PATCH `/api/workout-exercises/:id` exige `{ done: boolean }`, valida via Zod, atualiza de forma idempotente e documenta 400 para corpo inválido ou JSON malformado. Frontend atualiza o cache antes da resposta, permite marcar exercícios diferentes em paralelo, reverte cada falha isoladamente, mostra erro genérico e invalida treino/resumo ao final; ações conflitantes são bloqueadas durante salvamentos, com foco preservado no checkbox por teclado. Verificações: backend 9 suítes/80 testes Jest + 9 testes Node; frontend 44 suítes/208 passaram/10 ignorados; lint, typecheck, build dos dois módulos, PascalCase e Prettier nos arquivos alterados passaram; `/api/docs` confirmado no navegador. `npm run format:check` global segue apontando somente arquivos de configuração não alterados nesta tarefa (6 frontend, 5 backend). Não houve commit, push ou publicação; publicar backend antes do frontend depende de autorização explícita.
 
 2026-10-01: lint e formatação ampliados para a raiz de backend e frontend (`eslint .` e `prettier .`), incluindo scripts, configurações e documentação nos formatos suportados. Artefatos gerados, dependências, builds, cobertura, caches e credenciais ficam excluídos. No backend, o projeto padrão do ESLint agora cobre configurações da raiz, scripts e API, sem lista específica dos scripts de migration. Verificados em ambos: lint, format, format:check e typecheck; backend com 74 testes Jest + nove Node, frontend com 44 suítes (205 testes passaram, dez ignorados). As APIs das ferramentas confirmaram inclusão de arquivos autorais fora de src e exclusão dos artefatos gerados. Não houve alteração funcional ou de interface.
 

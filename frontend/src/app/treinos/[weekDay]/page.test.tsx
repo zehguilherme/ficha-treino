@@ -5,7 +5,7 @@ jest.mock('@/lib/api', () => ({
   getWorkout: jest.fn(),
   getExercises: jest.fn(),
   removeWorkoutExercise: jest.fn(),
-  toggleWorkoutExercise: jest.fn(),
+  setWorkoutExerciseDone: jest.fn(),
   updateCustomExercise: jest.fn(),
 }));
 
@@ -26,7 +26,7 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ replace: jest.fn() })),
 }));
 
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AxiosError, type InternalAxiosRequestConfig } from 'axios';
@@ -38,7 +38,7 @@ import {
   getExercises,
   getWorkout,
   removeWorkoutExercise,
-  toggleWorkoutExercise,
+  setWorkoutExerciseDone,
   updateCustomExercise,
 } from '@/lib/api';
 import type { ExercisesResponse } from '@/schemas/api';
@@ -51,7 +51,7 @@ const mockedGetExercises = jest.mocked(getExercises);
 const mockedAddWorkoutExercise = jest.mocked(addWorkoutExercise);
 const mockedClearWorkout = jest.mocked(clearWorkout);
 const mockedToast = jest.mocked(toast);
-const mockedToggleWorkoutExercise = jest.mocked(toggleWorkoutExercise);
+const mockedSetWorkoutExerciseDone = jest.mocked(setWorkoutExerciseDone);
 const mockedRemoveWorkoutExercise = jest.mocked(removeWorkoutExercise);
 const mockedDeleteCustomExercise = jest.mocked(deleteCustomExercise);
 const mockedUpdateCustomExercise = jest.mocked(updateCustomExercise);
@@ -108,7 +108,7 @@ describe('WorkoutDayPage', () => {
     });
     mockedClearWorkout.mockResolvedValue({ cleared: 1 });
     mockedRemoveWorkoutExercise.mockResolvedValue({ deleted: true });
-    mockedToggleWorkoutExercise.mockResolvedValue({
+    mockedSetWorkoutExerciseDone.mockResolvedValue({
       id: 45,
       exerciseId: 'barbell-bench-press',
       done: true,
@@ -470,19 +470,25 @@ describe('WorkoutDayPage', () => {
 
   /**
    * User marks an exercise as completed.
-   * Mock: PATCH returns the toggled association and the workout query is refreshed afterward.
-   * Assert: the association ID is sent and the checkbox enters a pending state during the request.
+   * Mock: the PATCH remains pending while another exercise can be marked.
+   * Assert: cache and progress update immediately and only the pending checkbox is disabled.
    */
-  test('toggles an exercise completion state', async () => {
-    mockedGetWorkout.mockResolvedValueOnce(workout).mockResolvedValueOnce({
-      workout: {
-        ...workout.workout,
-        exercises: [{ ...workout.workout.exercises[0], done: true }],
+  test('updates completion optimistically and allows marking another exercise', async () => {
+    const secondExercise = {
+      ...workout.workout.exercises[0],
+      id: 46,
+      exercise: {
+        ...workout.workout.exercises[0].exercise,
+        id: 'incline-press',
+        name: 'Supino inclinado',
       },
+    };
+    mockedGetWorkout.mockResolvedValue({
+      workout: { ...workout.workout, exercises: [...workout.workout.exercises, secondExercise] },
     });
     let resolveToggle: (response: { id: number; exerciseId: string; done: boolean }) => void = () =>
       undefined;
-    mockedToggleWorkoutExercise.mockReturnValueOnce(
+    mockedSetWorkoutExerciseDone.mockReturnValueOnce(
       new Promise((resolve) => {
         resolveToggle = resolve;
       }),
@@ -491,18 +497,117 @@ describe('WorkoutDayPage', () => {
 
     renderPage();
     const checkbox = await screen.findByRole('checkbox', { name: 'Feito: Supino reto' });
-    await user.click(checkbox);
+    checkbox.focus();
+    await user.keyboard(' ');
+    await user.keyboard(' ');
 
-    expect(mockedToggleWorkoutExercise).toHaveBeenCalledWith(45);
-    expect(checkbox).toBeDisabled();
+    expect(mockedSetWorkoutExerciseDone).toHaveBeenCalledWith(45, true);
+    expect(mockedSetWorkoutExerciseDone).toHaveBeenCalledTimes(1);
+    expect(checkbox).toHaveAttribute('aria-disabled', 'true');
+    expect(checkbox).toBeEnabled();
+    expect(checkbox).toHaveAttribute('aria-busy', 'true');
+    await waitFor(() => expect(checkbox).toBeChecked());
+    expect(checkbox).toHaveFocus();
+    expect(screen.getByText('1 de 2 exercícios concluídos')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
+    expect(screen.getByRole('checkbox', { name: 'Feito: Supino inclinado' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeDisabled();
+    expect(screen.getByRole('link', { name: 'Adicionar exercício' })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
 
     resolveToggle({ id: 45, exerciseId: 'barbell-bench-press', done: true });
-    expect(await screen.findByText('1 de 1 exercício concluído')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
-    expect(
-      screen.getByRole('progressbar').querySelector('[data-slot="progress-indicator"]'),
-    ).toHaveClass('bg-success');
-    expect(screen.getByRole('button', { name: 'Limpar treino' })).toBeEnabled();
+    await waitFor(() => expect(checkbox).toBeEnabled());
+  });
+
+  test('rolls back a failed optimistic completion and shows a generic error', async () => {
+    let rejectToggle: (error: Error) => void = () => undefined;
+    mockedSetWorkoutExerciseDone.mockReturnValueOnce(
+      new Promise((_resolve, reject) => {
+        rejectToggle = reject;
+      }),
+    );
+    const user = userEvent.setup();
+
+    renderPage();
+    const checkbox = await screen.findByRole('checkbox', { name: 'Feito: Supino reto' });
+    await user.click(checkbox);
+
+    await waitFor(() => expect(checkbox).toBeChecked());
+    rejectToggle(new Error('network failure'));
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
+      'Não foi possível atualizar o exercício.',
+    );
+    expect(checkbox).not.toBeChecked();
+    expect(screen.getByText('0 de 1 exercício concluído')).toBeInTheDocument();
+  });
+
+  test('rolls back only the failed exercise when completions run concurrently', async () => {
+    const secondExercise = {
+      ...workout.workout.exercises[0],
+      id: 46,
+      exercise: {
+        ...workout.workout.exercises[0].exercise,
+        id: 'incline-press',
+        name: 'Supino inclinado',
+      },
+    };
+    const twoExercises = {
+      workout: { ...workout.workout, exercises: [...workout.workout.exercises, secondExercise] },
+    };
+    mockedGetWorkout.mockResolvedValueOnce(twoExercises).mockResolvedValue({
+      workout: {
+        ...twoExercises.workout,
+        exercises: [twoExercises.workout.exercises[0], { ...secondExercise, done: true }],
+      },
+    });
+    const pending: Array<{
+      id: number;
+      resolve: (response: { id: number; exerciseId: string; done: boolean }) => void;
+      reject: (error: Error) => void;
+    }> = [];
+    mockedSetWorkoutExerciseDone.mockImplementation(
+      (id) =>
+        new Promise((resolve, reject) => {
+          pending.push({ id, resolve, reject });
+        }),
+    );
+    const user = userEvent.setup();
+
+    renderPage();
+    const firstCheckbox = await screen.findByRole('checkbox', { name: 'Feito: Supino reto' });
+    const secondCheckbox = await screen.findByRole('checkbox', {
+      name: 'Feito: Supino inclinado',
+    });
+    await user.click(firstCheckbox);
+    await waitFor(() => expect(firstCheckbox).toBeChecked());
+    await user.click(secondCheckbox);
+    await waitFor(() => expect(secondCheckbox).toBeChecked());
+
+    expect(pending).toHaveLength(2);
+    act(() =>
+      pending
+        .find(({ id }) => id === 46)
+        ?.resolve({
+          id: 46,
+          exerciseId: 'incline-press',
+          done: true,
+        }),
+    );
+    act(() => pending.find(({ id }) => id === 45)?.reject(new Error('network failure')));
+
+    await waitFor(() => expect(firstCheckbox).not.toBeChecked());
+    expect(secondCheckbox).toBeChecked();
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent(
+      'Não foi possível atualizar o exercício.',
+    );
+    await waitFor(() =>
+      expect(screen.getByRole('progressbar', { hidden: true })).toHaveAttribute(
+        'aria-valuenow',
+        '50',
+      ),
+    );
   });
 
   /**

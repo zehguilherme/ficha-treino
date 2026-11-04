@@ -29,6 +29,7 @@ O manifest PWA em `src/app/manifest.ts` permite instalação como aplicativo com
 - Schemas Zod próprios validam respostas HTTP na fronteira do cliente.
 - A busca confirma nome e filtros somente por botão ou Enter, com AbortSignal e paginação de 20 itens.
 - Após adicionar ou remover, os caches relacionados são invalidados e o feedback é acessível.
+- Marcar exercícios atualiza checkbox e progresso imediatamente; falhas revertem somente a associação afetada. Exercícios diferentes podem salvar em paralelo. A página bloqueia ações de forma síncrona ao iniciar a marcação, até finalizar a mutação e revalidar os dados. Limpar, remover, editar, excluir e iniciar uma adição ficam bloqueados; menus contextuais fecham e seus itens ficam desabilitados.
 - O botão `Criar exercício personalizado` fica disponível antes da busca e também no estado sem resultados; o diálogo usa somente nome e músculo primário, define as mensagens de validação após a primeira saída inválida e as repassa por `error` a `Input` e `SelectTrigger`, que as exibem abaixo dos controles e as removem quando corrigidas. Cards personalizados exibem selo, não exibem metadados inexistentes e concentram `Editar` e `Excluir` em um menu contextual do treino; ao fechar a edição, o foco retorna ao botão de ações sem mover a rolagem da página. Falhas ao criar ou editar são exibidas somente no diálogo global de erro, sem mensagem duplicada nos diálogos de criação ou edição.
 
 ## Imagens e estrutura

@@ -5,3 +5,9 @@ export const addWorkoutExerciseBodySchema = z.object({
 });
 
 export type AddWorkoutExerciseBody = z.infer<typeof addWorkoutExerciseBodySchema>;
+
+export const setWorkoutExerciseDoneBodySchema = z.object({
+  done: z.boolean(),
+});
+
+export type SetWorkoutExerciseDoneBody = z.infer<typeof setWorkoutExerciseDoneBodySchema>;

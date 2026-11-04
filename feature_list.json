@@ -86,10 +86,10 @@
       "type": "api",
       "area": "workouts",
       "title": "Marcar/desmarcar exercício como concluído",
-      "behavior": "PATCH /api/workout-exercises/:id alterna done; POST /:weekDay/clear desmarca todos",
-      "verification": "curl -X PATCH -H 'Authorization: Bearer $JWT' http://localhost:3001/api/workout-exercises/1",
+      "behavior": "PATCH /api/workout-exercises/:id recebe { done: boolean } e define o estado idempotentemente; POST /:weekDay/clear desmarca todos",
+      "verification": "npm test -- --runInBand src/routes/workouts.test.ts",
       "status": "passing",
-      "evidence": "PATCH /api/workout-exercises/:id alterna done com autenticação e ownership; POST /api/workouts/:weekDay/clear desmarca todas as associações do treino; testes de rotas e annotations Swagger implementados."
+      "evidence": "PATCH /api/workout-exercises/:id valida { done: boolean }, define o estado idempotentemente e preserva autenticação/ownership; corpos ausentes, inválidos ou JSON malformado retornam 400; POST /api/workouts/:weekDay/clear desmarca todas as associações; testes de rota e annotation Swagger atualizados."
     },
     {
       "id": "api-008",
@@ -191,7 +191,7 @@
         "Instruções expansíveis com chevron"
       ],
       "passes": true,
-      "evidence": "ExerciseCard compartilhado mantém carrossel, metadados, músculos e instruções expansíveis nos cards do treino e da busca; WorkoutDayPage integra PATCH /api/workout-exercises/:id com bloqueio durante a mutação, atualização do progresso textual e visual no cabeçalho, e invalidação do cache; a barra usa o estado success ao concluir todos os exercícios e é omitida no treino vazio; carrossel mantém setas visíveis, imagens acima da dobra usam carregamento eager e instruções são validadas nas suítes do card, da modal e da página."
+      "evidence": "ExerciseCard compartilhado mantém carrossel, metadados, músculos e instruções expansíveis; WorkoutDayPage define conclusão via PATCH otimista, atualiza checkbox e progresso antes da resposta, reverte individualmente em falhas e permite marcações paralelas; estado local bloqueia ações desde o handler e uma ref também impede abertura por mouse/teclado antes da renderização; menus contextuais fecham enquanto bloqueados e o bloqueio segue até a revalidação; coberto por testes de resposta imediata, reversão e concorrência."
     },
     {
       "id": "ui-006",

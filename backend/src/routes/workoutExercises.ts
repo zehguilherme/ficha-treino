@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
+import { setWorkoutExerciseDoneBodySchema } from '../validators/workouts.js';
 
 export const workoutExercisesRouter = Router();
 
@@ -9,7 +10,7 @@ export const workoutExercisesRouter = Router();
  * /api/workout-exercises/{id}:
  *   patch:
  *     tags: [Workouts]
- *     summary: Alterna o estado de conclusão de um exercício do treino
+ *     summary: Define o estado de conclusão de um exercício do treino
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -19,6 +20,16 @@ export const workoutExercisesRouter = Router();
  *         schema:
  *           type: integer
  *         description: ID da associação entre treino e exercício
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [done]
+ *             properties:
+ *               done:
+ *                 type: boolean
  *     responses:
  *       200:
  *         description: Associação atualizada
@@ -36,6 +47,8 @@ export const workoutExercisesRouter = Router();
  *                   type: boolean
  *       401:
  *         description: Token JWT ausente, inválido ou expirado
+ *       400:
+ *         description: Campo done ausente ou inválido
  *       404:
  *         description: Associação inexistente ou pertencente a outro usuário
  */
@@ -43,6 +56,12 @@ workoutExercisesRouter.patch('/:id', requireAuth, async (req, res) => {
   const claims = req.user;
   if (!claims) {
     res.status(401).json({ error: 'Token inválido ou expirado' });
+    return;
+  }
+
+  const body = setWorkoutExerciseDoneBodySchema.safeParse(req.body);
+  if (!body.success) {
+    res.status(400).json({ error: 'Estado de conclusão inválido' });
     return;
   }
 
@@ -69,7 +88,7 @@ workoutExercisesRouter.patch('/:id', requireAuth, async (req, res) => {
 
   const updatedWorkoutExercise = await prisma.workoutExercise.update({
     where: { id: workoutExercise.id },
-    data: { done: !workoutExercise.done },
+    data: { done: body.data.done },
     select: { id: true, exerciseId: true, done: true },
   });
 

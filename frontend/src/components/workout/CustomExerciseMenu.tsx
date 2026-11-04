@@ -10,6 +10,7 @@ import { MoreVerticalIcon, PencilIcon, TrashIcon } from '@/components/ui/Workout
 interface CustomExerciseMenuProps {
   exerciseName: string;
   disabled: boolean;
+  completionLockRef: React.RefObject<boolean>;
   triggerRef: React.Ref<HTMLButtonElement>;
   onEdit: () => void;
   onRemove: () => void;
@@ -18,33 +19,52 @@ interface CustomExerciseMenuProps {
 export const CustomExerciseMenu = ({
   exerciseName,
   disabled,
+  completionLockRef,
   triggerRef,
   onEdit,
   onRemove,
-}: CustomExerciseMenuProps): React.JSX.Element => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button
-        ref={triggerRef}
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={`Ações para ${exerciseName}`}
-        disabled={disabled}
-        className="ml-auto size-10 shrink-0"
-      >
-        <MoreVerticalIcon className="size-4" aria-hidden="true" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-      <DropdownMenuItem onSelect={onEdit}>
-        <PencilIcon className="mr-2 size-3.5" aria-hidden="true" />
-        Editar
-      </DropdownMenuItem>
-      <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={onRemove}>
-        <TrashIcon className="mr-2 size-3.5" aria-hidden="true" />
-        Remover
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
+}: CustomExerciseMenuProps): React.JSX.Element => {
+  return (
+    <DropdownMenu key={disabled ? 'disabled' : 'enabled'}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          ref={triggerRef}
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={`Ações para ${exerciseName}`}
+          disabled={disabled}
+          onPointerDown={(event) => {
+            if (completionLockRef.current) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }}
+          onKeyDown={(event) => {
+            if (completionLockRef.current) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }}
+          className="ml-auto size-10 shrink-0"
+        >
+          <MoreVerticalIcon className="size-4" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem disabled={disabled} onSelect={onEdit}>
+          <PencilIcon className="mr-2 size-3.5" aria-hidden="true" />
+          Editar
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          disabled={disabled}
+          className="text-destructive focus:text-destructive"
+          onSelect={onRemove}
+        >
+          <TrashIcon className="mr-2 size-3.5" aria-hidden="true" />
+          Remover
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

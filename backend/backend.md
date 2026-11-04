@@ -18,7 +18,7 @@ API REST em Express com TypeScript, PostgreSQL com Prisma ORM (`@prisma/client`)
 | GET    | `/api/workouts/:weekDay`                              | Sim  | Exercícios do dia em ordem alfabética sem diferenciar caixa                                                         |
 | POST   | `/api/workouts/:weekDay/exercises`                    | Sim  | Adiciona exercício                                                                                                  |
 | DELETE | `/api/workouts/:weekDay/exercises/:exerciseId`        | Sim  | Remove exercício                                                                                                    |
-| PATCH  | `/api/workout-exercises/:id`                          | Sim  | Marca/desmarca como concluído                                                                                       |
+| PATCH  | `/api/workout-exercises/:id`                          | Sim  | Define `done` com corpo `{ done: boolean }`; repetição do mesmo valor é idempotente                                 |
 | POST   | `/api/workouts/:weekDay/clear`                        | Sim  | Limpa marcações do treino                                                                                           |
 | GET    | `/api/exercises?q=&limit=20&offset=0&category=forca`  | Sim  | Busca somente exercícios do catálogo                                                                                |
 | POST   | `/api/workouts/:weekDay/custom-exercises`             | Sim  | Cria exercício personalizado privado e o associa ao treino                                                          |
@@ -205,7 +205,7 @@ Testes de integração das rotas de treinos, adição, marcação e limpeza, com
 - `GET /api/workouts` e `GET /api/workouts/:weekDay` retornam exercícios em ordem alfabética sem diferenciar caixa, com maiúsculas primeiro nos empates;
 - `POST /api/workouts/:weekDay/exercises` valida exercício, duplicidade e ownership;
 - `DELETE /api/workouts/:weekDay/exercises/:exerciseId` remove associação existente e rejeita associações ausentes ou de outro usuário;
-- `PATCH /api/workout-exercises/:id` alterna `done` e rejeita associações de outro usuário;
+- `PATCH /api/workout-exercises/:id` exige `{ done: boolean }`, define o estado idempotentemente e rejeita corpo inválido ou associação de outro usuário;
 - `POST /api/workouts/:weekDay/clear` desmarca todas as associações do treino.
 
 ## Constraints

@@ -528,7 +528,7 @@
         "tags": [
           "Workouts"
         ],
-        "summary": "Alterna o estado de conclusão de um exercício do treino",
+        "summary": "Define o estado de conclusão de um exercício do treino",
         "security": [
           {
             "bearerAuth": []
@@ -545,6 +545,24 @@
             "description": "ID da associação entre treino e exercício"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "done"
+                ],
+                "properties": {
+                  "done": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Associação atualizada",
@@ -571,6 +589,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Campo done ausente ou inválido"
           },
           "401": {
             "description": "Token JWT ausente, inválido ou expirado"

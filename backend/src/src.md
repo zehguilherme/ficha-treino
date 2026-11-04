@@ -21,7 +21,7 @@ Este módulo contém a aplicação Express, middleware, rotas, validação, Pris
 - `/api/auth/*` implementa login Google, sessão e perfil.
 - `/api/workouts/*` lista e altera treinos por dia.
 - `/api/exercises` pesquisa o catálogo autenticado.
-- `/api/workout-exercises/*` alterna conclusão.
+- `/api/workout-exercises/*` define conclusão com estado explícito e idempotente.
 - `/api/account` remove a conta autenticada.
 
 ## Verificação
@@ -34,6 +34,7 @@ Endpoints novos ou alterados também devem ser conferidos em `/api/docs`.
 
 - Não adicionar rotas de API ao Next.js.
 - Toda entrada externa passa por validação e autenticação quando exigida.
+- Corpos JSON malformados retornam 400 genérico; falhas internas não expõem detalhes ao cliente.
 - Respostas ao cliente não expõem secrets, variáveis de ambiente ou stack traces.
 - Alterações de rota mantêm annotation `@openapi` e testes de ownership.
 

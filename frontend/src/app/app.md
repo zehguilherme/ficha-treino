@@ -22,7 +22,7 @@ Componentes reutilizáveis vivem em `src/components/`; contratos HTTP ficam em `
 - `components/ui/Alert.tsx`: base acessível para avisos não modais.
 - `components/layout/PwaInstallPrompt.tsx`: pílula global flutuante de instalação nativa ou instruções iOS sob demanda.
 - `treinos/DashboardClient.tsx`: consulta e expansão dos resumos.
-- `treinos/[weekDay]/page.tsx`: treino diário e mutações.
+- `treinos/[weekDay]/page.tsx`: treino diário e mutações; a conclusão atualiza o cache imediatamente, permite marcar exercícios diferentes em paralelo e reverte apenas a associação que falhar. O bloqueio local é aplicado no handler de marcação e os menus contextuais fecham enquanto ações estiverem bloqueadas.
 - `treinos/[weekDay]/adicionar-exercicio/page.tsx`: rota dedicada de catálogo.
 - `minha-conta/page.tsx`: perfil autenticado.
 
