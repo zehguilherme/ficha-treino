@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useMutationState, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -25,12 +25,20 @@ import {
   deleteCustomExercise,
   getWorkout,
   removeWorkoutExercise,
-  toggleWorkoutExercise,
+  setWorkoutExerciseDone,
   updateCustomExercise,
 } from '@/lib/api';
 import { DAY_NAMES, getWeekDayFromSlug, getWeekDaySlug } from '@/lib/weekDays';
 import type { WeekDay, WorkoutResponse } from '@/schemas/api';
 import { toast } from 'sonner';
+
+const completionMutationKey = ['workout-exercise-done'] as const;
+
+interface CompletionVariables {
+  weekDay: WeekDay;
+  workoutExerciseId: number;
+  done: boolean;
+}
 
 const WorkoutDayPage = (): React.JSX.Element => {
   const params = useParams<{ weekDay: string }>();
@@ -49,17 +57,63 @@ const WorkoutDayPage = (): React.JSX.Element => {
   >(null);
   const customActionTriggerRef = useRef<HTMLButtonElement>(null);
   const [dismissedError, setDismissedError] = useState<unknown>(null);
+  const [completionErrorKey, setCompletionErrorKey] = useState<number | null>(null);
+  const [localPendingCompletionCount, setLocalPendingCompletionCount] = useState(0);
+  const completionErrorSequence = useRef(0);
+  const completionLockRef = useRef(false);
+  const requestedCompletions = useRef(new Set<number>());
   const [isRetryingWorkout, setIsRetryingWorkout] = useState(false);
+  const pendingCompletions = useMutationState<CompletionVariables>({
+    filters: { mutationKey: completionMutationKey, status: 'pending' },
+    select: (mutation) => mutation.state.variables as CompletionVariables,
+  });
+  const pendingDayCompletions = pendingCompletions.filter(
+    (variables) => variables.weekDay === weekDay,
+  );
+  const hasPendingCompletion = localPendingCompletionCount > 0 || pendingDayCompletions.length > 0;
   const workout = useQuery({
     queryKey: ['workout', weekDay],
     queryFn: () => getWorkout(weekDay ?? ''),
-    enabled: status === 'authenticated' && weekDay !== null,
+    enabled: status === 'authenticated' && weekDay !== null && !hasPendingCompletion,
+    refetchOnWindowFocus: !hasPendingCompletion,
+    refetchOnReconnect: !hasPendingCompletion,
   });
   const toggleExercise = useMutation({
-    mutationFn: (workoutExerciseId: number) => toggleWorkoutExercise(workoutExerciseId),
-    onMutate: () => setDismissedError(null),
-    onSuccess: (updatedExercise) => {
-      queryClient.setQueryData<WorkoutResponse>(['workout', weekDay], (current) =>
+    mutationKey: completionMutationKey,
+    mutationFn: ({ workoutExerciseId, done }: CompletionVariables) =>
+      setWorkoutExerciseDone(workoutExerciseId, done),
+    onMutate: async (variables) => {
+      if (queryClient.isMutating({ mutationKey: completionMutationKey }) === 1) {
+        setDismissedError(null);
+        setCompletionErrorKey(null);
+      }
+      await queryClient.cancelQueries({ queryKey: ['workout', variables.weekDay] });
+      const current = queryClient.getQueryData<WorkoutResponse>(['workout', variables.weekDay]);
+      const previousDone = current?.workout.exercises.find(
+        (exercise) => exercise.id === variables.workoutExerciseId,
+      )?.done;
+      queryClient.setQueryData<WorkoutResponse>(['workout', variables.weekDay], (current) =>
+        current
+          ? {
+              workout: {
+                ...current.workout,
+                exercises: current.workout.exercises.map((workoutExercise) =>
+                  workoutExercise.id === variables.workoutExerciseId
+                    ? { ...workoutExercise, done: variables.done }
+                    : workoutExercise,
+                ),
+              },
+            }
+          : current,
+      );
+      return {
+        weekDay: variables.weekDay,
+        workoutExerciseId: variables.workoutExerciseId,
+        previousDone,
+      };
+    },
+    onSuccess: (updatedExercise, variables) => {
+      queryClient.setQueryData<WorkoutResponse>(['workout', variables.weekDay], (current) =>
         current
           ? {
               workout: {
@@ -73,8 +127,42 @@ const WorkoutDayPage = (): React.JSX.Element => {
             }
           : current,
       );
-      void queryClient.invalidateQueries({ queryKey: ['workout', weekDay] });
-      void queryClient.invalidateQueries({ queryKey: ['workouts'] });
+    },
+    onError: (_error, _variables, context) => {
+      const previousDone = context?.previousDone;
+      if (context && previousDone !== undefined) {
+        queryClient.setQueryData<WorkoutResponse>(['workout', context.weekDay], (current) =>
+          current
+            ? {
+                workout: {
+                  ...current.workout,
+                  exercises: current.workout.exercises.map((exercise) =>
+                    exercise.id === context.workoutExerciseId
+                      ? { ...exercise, done: previousDone }
+                      : exercise,
+                  ),
+                },
+              }
+            : current,
+        );
+      }
+      setCompletionErrorKey(++completionErrorSequence.current);
+    },
+    onSettled: async (_data, _error, variables) => {
+      requestedCompletions.current.delete(variables.workoutExerciseId);
+      try {
+        if (queryClient.isMutating({ mutationKey: completionMutationKey }) === 1) {
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['workout'] }),
+            queryClient.invalidateQueries({ queryKey: ['workouts'] }),
+          ]);
+        }
+      } finally {
+        if (queryClient.isMutating({ mutationKey: completionMutationKey }) === 1) {
+          completionLockRef.current = false;
+        }
+        setLocalPendingCompletionCount((count) => count - 1);
+      }
     },
   });
   const clearWorkoutMutation = useMutation({
@@ -160,16 +248,38 @@ const WorkoutDayPage = (): React.JSX.Element => {
     },
   });
 
+  const hasConflictingMutation =
+    clearWorkoutMutation.isPending ||
+    removeWorkoutExerciseMutation.isPending ||
+    updateCustomExerciseMutation.isPending ||
+    deleteCustomExerciseMutation.isPending;
+  const isCompletionBlocked = hasPendingCompletion || hasConflictingMutation;
+  const requestCompletion = (workoutExerciseId: number, done: boolean): void => {
+    if (
+      !weekDay ||
+      hasConflictingMutation ||
+      requestedCompletions.current.has(workoutExerciseId) ||
+      pendingDayCompletions.some((variables) => variables.workoutExerciseId === workoutExerciseId)
+    ) {
+      return;
+    }
+    requestedCompletions.current.add(workoutExerciseId);
+    completionLockRef.current = true;
+    setLocalPendingCompletionCount((count) => count + 1);
+    toggleExercise.mutate({ weekDay, workoutExerciseId, done });
+  };
+
   const retryWorkout = (): void => {
+    if (hasPendingCompletion) return;
     setIsRetryingWorkout(true);
     void workout.refetch().finally(() => setIsRetryingWorkout(false));
   };
 
   const activeError = workout.isError
     ? { key: 'workout-error', message: 'Não foi possível carregar o treino.' }
-    : toggleExercise.isError
+    : completionErrorKey !== null
       ? {
-          key: 'toggle-exercise-error',
+          key: `completion-error-${completionErrorKey}`,
           message: 'Não foi possível atualizar o exercício.',
         }
       : clearWorkoutMutation.isError
@@ -333,7 +443,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
         dayName={dayName}
         isPending={clearWorkoutMutation.isPending}
         onConfirm={() => {
-          if (weekDay) clearWorkoutMutation.mutate(weekDay);
+          if (weekDay && !hasPendingCompletion) clearWorkoutMutation.mutate(weekDay);
         }}
       />
       <RemoveWorkoutExerciseDialog
@@ -353,7 +463,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
           removeWorkoutExerciseMutation.isPending || deleteCustomExerciseMutation.isPending
         }
         onConfirm={() => {
-          if (weekDay && removeExercise) {
+          if (weekDay && removeExercise && !hasPendingCompletion) {
             if (removeExercise.isCustom) {
               deleteCustomExerciseMutation.mutate(removeExercise.exerciseId);
             } else {
@@ -377,7 +487,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
         initialExercise={editingExercise}
         isPending={updateCustomExerciseMutation.isPending}
         onSubmit={(value) => {
-          if (editingExercise) {
+          if (editingExercise && !hasPendingCompletion) {
             updateCustomExerciseMutation.mutate({
               exerciseId: editingExercise.id,
               ...value,
@@ -391,15 +501,22 @@ const WorkoutDayPage = (): React.JSX.Element => {
           <div className="flex justify-end">
             <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
               {weekDay ? (
-                <Button asChild className="w-full sm:w-auto">
-                  <Link href={`/treinos/${getWeekDaySlug(weekDay)}/adicionar-exercicio`}>
+                <Button asChild aria-disabled={isCompletionBlocked} className="w-full sm:w-auto">
+                  <Link
+                    href={`/treinos/${getWeekDaySlug(weekDay)}/adicionar-exercicio`}
+                    aria-disabled={isCompletionBlocked}
+                    tabIndex={isCompletionBlocked ? -1 : undefined}
+                    onClick={(event) => {
+                      if (isCompletionBlocked) event.preventDefault();
+                    }}
+                  >
                     Adicionar exercício
                   </Link>
                 </Button>
               ) : null}
               <Button
                 variant="outline"
-                disabled={completed === 0 || clearWorkoutMutation.isPending}
+                disabled={completed === 0 || clearWorkoutMutation.isPending || isCompletionBlocked}
                 aria-label="Limpar treino"
                 aria-busy={clearWorkoutMutation.isPending}
                 onClick={() => setClearDialogOpen(true)}
@@ -427,6 +544,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
               {exercises.map(({ id, done, exercise }, index) => {
                 const instructionsOpen = openInstructions === id;
                 const isRemoving = removeExercise?.exerciseId === exercise.id;
+                const isSavingCompletion = pendingDayCompletions.some(
+                  (variables) => variables.workoutExerciseId === id,
+                );
                 return (
                   <ExerciseCard
                     key={id}
@@ -438,14 +558,11 @@ const WorkoutDayPage = (): React.JSX.Element => {
                       <label className="flex w-fit items-center gap-2 text-sm text-muted-foreground">
                         <Checkbox
                           checked={done}
-                          className="size-5"
-                          disabled={
-                            toggleExercise.isPending ||
-                            clearWorkoutMutation.isPending ||
-                            removeWorkoutExerciseMutation.isPending
-                          }
+                          className="size-5 aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
                           aria-label={`Feito: ${exercise.name}`}
-                          onCheckedChange={() => toggleExercise.mutate(id)}
+                          aria-disabled={hasConflictingMutation || isSavingCompletion}
+                          aria-busy={isSavingCompletion}
+                          onCheckedChange={(checked) => requestCompletion(id, checked === true)}
                         />
                         Feito
                       </label>
@@ -455,6 +572,7 @@ const WorkoutDayPage = (): React.JSX.Element => {
                         <Button
                           variant="default"
                           disabled={
+                            isCompletionBlocked ||
                             removeWorkoutExerciseMutation.isPending ||
                             clearWorkoutMutation.isPending
                           }
@@ -477,7 +595,9 @@ const WorkoutDayPage = (): React.JSX.Element => {
                       ) : (
                         <CustomExerciseMenu
                           exerciseName={exercise.name}
+                          completionLockRef={completionLockRef}
                           disabled={
+                            isCompletionBlocked ||
                             updateCustomExerciseMutation.isPending ||
                             deleteCustomExerciseMutation.isPending ||
                             removeWorkoutExerciseMutation.isPending ||

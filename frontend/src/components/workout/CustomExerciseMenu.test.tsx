@@ -13,6 +13,7 @@ describe('CustomExerciseMenu', () => {
       <CustomExerciseMenu
         exerciseName="Supino reto"
         disabled={false}
+        completionLockRef={{ current: false }}
         triggerRef={createRef<HTMLButtonElement>()}
         onEdit={onEdit}
         onRemove={onRemove}
@@ -33,6 +34,7 @@ describe('CustomExerciseMenu', () => {
       <CustomExerciseMenu
         exerciseName="Supino reto"
         disabled
+        completionLockRef={{ current: false }}
         triggerRef={createRef<HTMLButtonElement>()}
         onEdit={jest.fn()}
         onRemove={jest.fn()}
@@ -48,6 +50,7 @@ describe('CustomExerciseMenu', () => {
       <CustomExerciseMenu
         exerciseName="Supino reto"
         disabled={false}
+        completionLockRef={{ current: false }}
         triggerRef={createRef<HTMLButtonElement>()}
         onEdit={jest.fn()}
         onRemove={jest.fn()}

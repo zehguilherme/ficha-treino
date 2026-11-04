@@ -385,7 +385,7 @@ Implementado:
 - criação automática dos sete treinos no primeiro login;
 - seed dos exercícios, `GET /api/workouts` com resumo dos treinos, `GET /api/workouts/:weekDay` com os exercícios completos do dia e `POST /api/workouts/:weekDay/exercises` para adicionar exercícios ao treino autenticado;
 - `GET /api/exercises` com paginação, busca sem distinção de acentos e filtros por metadados;
-- `PATCH /api/workout-exercises/:id` para alternar a conclusão e `POST /api/workouts/:weekDay/clear` para desmarcar o treino;
+- `PATCH /api/workout-exercises/:id` com `{ done: boolean }` para definir a conclusão de forma idempotente e `POST /api/workouts/:weekDay/clear` para desmarcar o treino;
 - `DELETE /api/workouts/:weekDay/exercises/:exerciseId` para remover somente a associação do exercício ao treino autenticado;
 - `DELETE /api/account` para excluir permanentemente a conta autenticada e os dados relacionados em cascata;
 - dashboard semanal e página de treino com busca manual, paginação, adição, marcação, limpeza e remoção integradas.

@@ -19,10 +19,10 @@ import {
   type GoogleAuthResponse,
   type WorkoutResponse,
   type WorkoutsResponse,
-  type ToggleWorkoutExerciseResponse,
+  type SetWorkoutExerciseDoneResponse,
   type RemoveWorkoutExerciseResponse,
   type AccountDeletionResponse,
-  toggleWorkoutExerciseResponseSchema,
+  setWorkoutExerciseDoneResponseSchema,
 } from '@/schemas/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
@@ -152,11 +152,12 @@ export const deleteCustomExercise = async (
     ).data,
   );
 
-export const toggleWorkoutExercise = async (
+export const setWorkoutExerciseDone = async (
   workoutExerciseId: number,
-): Promise<ToggleWorkoutExerciseResponse> =>
-  toggleWorkoutExerciseResponseSchema.parse(
-    (await api.patch(`/api/workout-exercises/${workoutExerciseId}`)).data,
+  done: boolean,
+): Promise<SetWorkoutExerciseDoneResponse> =>
+  setWorkoutExerciseDoneResponseSchema.parse(
+    (await api.patch(`/api/workout-exercises/${workoutExerciseId}`, { done })).data,
   );
 
 export const clearWorkout = async (weekDay: string): Promise<ClearWorkoutResponse> =>

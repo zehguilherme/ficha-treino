@@ -82,7 +82,7 @@ export const removeWorkoutExerciseResponseSchema = z.object({
   deleted: z.literal(true),
 });
 
-export const toggleWorkoutExerciseResponseSchema = z.object({
+export const setWorkoutExerciseDoneResponseSchema = z.object({
   id: z.number().int(),
   exerciseId: z.string(),
   done: z.boolean(),
@@ -103,5 +103,5 @@ export type ClearWorkoutResponse = z.infer<typeof clearWorkoutResponseSchema>;
 export type RemoveWorkoutExerciseResponse = z.infer<typeof removeWorkoutExerciseResponseSchema>;
 export type ExerciseDetails = z.infer<typeof exerciseDetailsSchema>;
 export type ExercisesResponse = z.infer<typeof exercisesResponseSchema>;
-export type ToggleWorkoutExerciseResponse = z.infer<typeof toggleWorkoutExerciseResponseSchema>;
+export type SetWorkoutExerciseDoneResponse = z.infer<typeof setWorkoutExerciseDoneResponseSchema>;
 export type AccountDeletionResponse = z.infer<typeof accountDeletionResponseSchema>;

@@ -382,6 +382,7 @@
     .custom-exercise-tag .tag-label { color: hsl(var(--primary-foreground) / .75); opacity: 1; }
     .exercise-menu-trigger { min-height: 2.5rem; width: 2.5rem; margin-left: auto; padding: .25rem; border: 0; background: transparent; }
     .exercise-menu { min-width: 9rem; padding: .25rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: 0 4px 12px hsl(var(--foreground) / .08); }
+    .exercise-menu [role="menuitem"]:disabled { cursor: not-allowed; opacity: .5; }
 
     .exercise-card-body {
       padding: 1.25rem;
@@ -728,6 +729,11 @@
       background-size: 0.875rem;
       background-position: center;
       background-repeat: no-repeat;
+    }
+
+    .checkbox-wrap input[type="checkbox"]:disabled {
+      cursor: wait;
+      opacity: .65;
     }
 
     .btn-remove-exercise {
@@ -1324,6 +1330,7 @@
     document.getElementById('pageDayName').textContent = dayDisplay;
 
     let doneState = {};
+    let pendingCompletionCount = 0;
     let currentIds = [...(defaultExercises[day] || [])];
     let searchTimer = null;
 
@@ -1455,8 +1462,21 @@
     }
 
     function toggleDone(id) {
-      doneState[id] = !doneState[id];
+      const checkbox = document.querySelector(`[data-od-id="check-feito-${id}"]`);
+      doneState[id] = checkbox.checked;
+      checkbox.disabled = true;
+      checkbox.setAttribute('aria-busy', 'true');
+      pendingCompletionCount += 1;
+      document.querySelectorAll('[role="menuitem"]').forEach(item => { item.disabled = true; });
       updateHeaderCounter();
+      setTimeout(() => {
+        checkbox.disabled = false;
+        checkbox.setAttribute('aria-busy', 'false');
+        pendingCompletionCount -= 1;
+        if (pendingCompletionCount === 0) {
+          document.querySelectorAll('[role="menuitem"]').forEach(item => { item.disabled = false; });
+        }
+      }, 300);
     }
 
     function toggleInstructions(id) {

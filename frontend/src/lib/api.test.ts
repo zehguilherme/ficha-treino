@@ -9,6 +9,7 @@ import {
   getExercises,
   getWorkouts,
   removeWorkoutExercise,
+  setWorkoutExerciseDone,
   updateCustomExercise,
 } from './api';
 import { setSession } from './auth';
@@ -185,6 +186,29 @@ describe('api axios instance', () => {
     expect(requestConfig?.method).toBe('post');
     expect(requestConfig?.url).toBe('/api/workouts/TERCA/exercises');
     expect(requestConfig?.data).toBe(JSON.stringify({ exerciseId: 'triceps-pushdown' }));
+  });
+
+  test('sets an exercise completion state', async () => {
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+      requestConfig = config;
+      return {
+        data: { id: 45, exerciseId: 'barbell-bench-press', done: true },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      };
+    };
+
+    await expect(setWorkoutExerciseDone(45, true)).resolves.toEqual({
+      id: 45,
+      exerciseId: 'barbell-bench-press',
+      done: true,
+    });
+    expect(requestConfig?.method).toBe('patch');
+    expect(requestConfig?.url).toBe('/api/workout-exercises/45');
+    expect(requestConfig?.data).toBe(JSON.stringify({ done: true }));
   });
 
   /**

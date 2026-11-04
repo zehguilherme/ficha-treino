@@ -78,6 +78,10 @@ app.use('/api/workouts', customExercisesRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Express error handler requires 4 params
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  if (err instanceof SyntaxError) {
+    res.status(400).json({ error: 'Corpo JSON inválido' });
+    return;
+  }
   console.error('Unhandled error:', err.message);
   res.status(500).json({ error: 'Erro interno do servidor' });
 });

@@ -199,3 +199,9 @@ Estado atual em 2026-09-10: as features implementadas permanecem concluídas; `u
 2026-10-01 — issue #346 — rótulo, descrição e validação do diálogo de exercício personalizado atualizados de “músculo principal” para “músculo primário”; documentação e expectativas dos testes sincronizadas.
 
 2026-10-01 — issue reportada — foco retorna ao botão de ações do exercício personalizado sem deslocar a rolagem ao fechar o diálogo de edição.
+
+2026-10-23 — marcação otimista de exercícios — PATCH de conclusão passou a receber `{ done: boolean }` com gravação idempotente e validação 400; página atualiza checkbox/progresso imediatamente, permite solicitações paralelas com reversão individual e bloqueia ações conflitantes. Testes de API, cliente, concorrência e foco por teclado adicionados; Swagger e documentação viva sincronizados. Backend 80 testes Jest + 9 Node; frontend 208 passaram e 10 ignorados; lint, typecheck e builds passaram. Publicação não executada.
+
+2026-10-23 — marcação otimista — itens Editar/Remover dos menus de exercícios personalizados também são desabilitados se a marcação começar com o menu aberto.
+
+2026-10-23 — marcação otimista — ref síncrona passou a bloquear abertura dos menus por mouse/teclado desde o clique inicial até concluir a revalidação.
